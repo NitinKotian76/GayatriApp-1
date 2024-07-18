@@ -1,144 +1,145 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    {% load static %}
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-    <link rel="stylesheet" href="{% static 'gayatriapp/css/style.css' %}">
-    <script src="{% static 'gayatriapp/script/jquery-3.7.1.min.js'%}"></script>
-    <title>Document</title>
-</head>
-<body>
-    <header>
-        <nav >
-            <ul class="w3-bar w3-light-grey" style="padding-left: 0px;">
+    <head>
+        {% load static %}
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+        <link rel="stylesheet" href="{% static 'gayatriapp/css/style.css' %}">
+        <script src="{% static 'gayatriapp/script/jquery-3.7.1.min.js'%}"></script>
+        <script src="{% static 'gayatriapp/script/htmx.min.js'%}"></script>
+        <script src="{% static 'gayatriapp/script/json-enc.js'%}"></script>
+        <script src="{% static 'gayatriapp/script/CustomScript.js'%}"></script>
+    </head>
+    <body>
+        {% csrf_token %}
+        <nav>
+            <ul class="w3-light-grey" style="padding-left: 0px;">
                 <div class="w3-dropdown-hover">
-                    <a style="text-decoration: none;" class="w3-button w3-light-grey" href="#">App</a>
+                    <a style="text-decoration: none;" 
+                        class="w3-button w3-light-grey" href="#" 
+                        hx-post="/main/form" 
+                        hx-target="#contentArea" >Forms
+                    </a>
                     <div class="w3-dropdown-content w3-bar-block w3-card-4">
-                        <a href="#" class="w3-bar-item w3-button">label</a>
-                        <a href="#" class="w3-bar-item w3-button">label</a>
-                        <a href="#" class="w3-bar-item w3-button">label</a>
-                        <a href="#" class="w3-bar-item w3-button">label</a>
-                    </div>
+                    <a href="#" class="w3-bar-item w3-button" 
+                        hx-post="/main/create_form" 
+                        hx-vals='{"something": "hello"}' 
+                        hx-target="#contentArea">create form
+                    </a>
+                    <a href="#" class="w3-bar-item w3-button" 
+                        hx-post="/main/delete_form" 
+                        hx-target="#contentArea" >delete form
+                    </a>
+                    <a href="#" class="w3-bar-item w3-button" 
+                        hx-post="/main/edit_form" 
+                        hx-target="#contentArea" >edit form
+                    </a>
+                </div>
                 </div>
                 <div class="w3-dropdown-hover">
-                    <a style="text-decoration: none;" class="w3-button w3-light-grey" href="#">Form</a>
+                    <a style="text-decoration: none;" 
+                        class="w3-button w3-light-grey" href="#" 
+                        hx-post="/main/report" 
+                        hx-target="#contentArea">Reports
+                    </a>
                     <div class="w3-dropdown-content w3-bar-block w3-card-4">
-                        <a href="#" class="w3-bar-item w3-button">label</a>
-                        <a href="#" class="w3-bar-item w3-button">label</a>
-                        <a href="#" class="w3-bar-item w3-button">label</a>
-                        <a href="#" class="w3-bar-item w3-button">label</a>
-                    </div>
+                    <a href="#" class="w3-bar-item w3-button" 
+                        hx-post="/main/new_report" 
+                        hx-target="#contentArea">new report
+                    </a>
+                    <a href="#" class="w3-bar-item w3-button" 
+                        hx-post="/main/edit_report" 
+                        hx-target="#contentArea">edit report
+                    </a>
+                    <a href="#" class="w3-bar-item w3-button" 
+                        hx-post="/main/delete_report" 
+                        hx-target="#contentArea">delete report
+                    </a>
+                </div>
                 </div>
                 <div class="w3-dropdown-hover">
-                    <a style="text-decoration: none;" class="w3-button w3-light-grey" href="#">Database</a>
+                    <a style="text-decoration: none;" 
+                        class="w3-button w3-light-grey" href="#" 
+                        hx-post="/main/user" 
+                        hx-target="#contentArea">Users
+                    </a>
                     <div class="w3-dropdown-content w3-bar-block w3-card-4">
-                        <a href="#" class="w3-bar-item w3-button">label</a>
-                        <a href="#" class="w3-bar-item w3-button">label</a>
-                        <a href="#" class="w3-bar-item w3-button">label</a>
-                        <a href="#" class="w3-bar-item w3-button">label</a>
-                    </div>
+                    <a href="#" class="w3-bar-item w3-button" 
+                        hx-post="/main/new_user" 
+                        hx-target="#contentArea">new user
+                    </a>
+                    <a href="#" class="w3-bar-item w3-button" 
+                        hx-post="/main/edit_user" 
+                        hx-target="#contentArea">edit user
+                    </a>
+                    <a href="#" class="w3-bar-item w3-button" 
+                        hx-post="/main/delete_user" 
+                        hx-target="#contentArea">delete user
+                    </a>
+                    <a href="#" class="w3-bar-item w3-button" 
+                        hx-post="/main/new_group" 
+                        hx-target="#contentArea">new group
+                    </a>
+                    <a href="#" class="w3-bar-item w3-button" 
+                        hx-post="/main/edit_group" 
+                        hx-target="#contentArea">edit group
+                    </a>
+                    <a href="#" class="w3-bar-item w3-button" 
+                        hx-post="/main/delete_group" 
+                        hx-target="#contentArea">delete group
+                    </a>
+                </div>
                 </div>
                 <div class="w3-dropdown-hover">
-                    <a style="text-decoration: none;" class="w3-button w3-light-grey" href="#">History</a>
+                    <a style="text-decoration: none;" 
+                        class="w3-button w3-light-grey" href="#" 
+                        hx-post="/main/database" 
+                        hx-target="#contentArea">database
+                    </a>
                     <div class="w3-dropdown-content w3-bar-block w3-card-4">
-                        <a href="#" class="w3-bar-item w3-button">label</a>
-                        <a href="#" class="w3-bar-item w3-button">label</a>
-                        <a href="#" class="w3-bar-item w3-button">label</a>
-                        <a href="#" class="w3-bar-item w3-button">label</a>
-                    </div>
+                    <a href="#" class="w3-bar-item w3-button" 
+                        hx-post="/main/create_db" 
+                        hx-target="#contentArea">create database
+                    </a>
+                    <a href="#" class="w3-bar-item w3-button" 
+                        hx-post="/main/createtable_db" 
+                        hx-target="#contentArea">create table
+                    </a>
+                    <a href="#" class="w3-bar-item w3-button" 
+                        hx-post="/main/edittable_db" 
+                        hx-target="#contentArea">edit table
+                    </a>
+                    <a href="#" class="w3-bar-item w3-button" 
+                        hx-post="/main/deletetable_db" 
+                        hx-target="#contentArea">delete table
+                    </a>
+                    <a href="#" class="w3-bar-item w3-button" 
+                        hx-post="/main/backup" 
+                        hx-target="#contentArea">backup
+                    </a>
                 </div>
-                <div class="w3-dropdown-hover">
-                    <a style="text-decoration: none;" class="w3-button w3-light-grey" href="#">Help</a>
-                    <div class="w3-dropdown-content w3-bar-block w3-card-4">
-                        <a href="#" class="w3-bar-item w3-button">label</a>
-                        <a href="#" class="w3-bar-item w3-button">label</a>
-                        <a href="#" class="w3-bar-item w3-button">label</a>
-                        <a href="#" class="w3-bar-item w3-button">label</a>
-                    </div>
                 </div>
             </ul>
         </nav>
-    </header>
-    <main>
-        <h4>{{form}}</h4>
-        <section>
-        <!-- this is a form 
-        When the Admin wants to create and when the user wants to view the form this module
-        will be the root for all other input and view and output modules -->
-        
-        <form action="post" class="w3-container w3-cell-row ">
-            <div class="w3-container w3-cell">
-                <!-- this would be an input module  -->
-                <div class="w3-section"> 
-                    <label class="" for="">Label</label>
-                    <input class="w3-input w3-border w3-round-large" type="text">
-                </div>
-                <div class="w3-cell-row w3-section">
-                    <label class="w3-cell" for="">Label</label>
-                    <input class="w3-cell w3-input w3-border w3-round-large" type="text">
-                </div>
+        <main>
+            <section class="w3-modal"> 
+                <!-- modals -->
+            <div class="w3-modal-content">
+                {{modalView}}
             </div>
-            <div class="w3-container w3-cell">
-                <div class="w3-section">
-                    <label class="" for="">Label</label>
-                    <input class="w3-input w3-border w3-round-large" type="text">
-                </div>
-                <!-- this would be a view module and will be a bit special 
-                    due to the addition of search section  -->
-                <div>
-                    <div class="w3-cell-row w3-section">
-                        <label for="" class="w3-cell">Label</label>
-                        <input type="text" class="w3-input w3-cell w3-border w3-round-large" style="width:75%">
-                        <button class="w3-button w3-cell">search</button>
-                    </div>
-                    <div>
-                        <table class="w3-table-all">
-                            <thead>
-                                <tr>
-                                    <th>header 1</th>
-                                    <th>header 2</th>
-                                    <th>header 3</th>
-                                    <th>header 4</th>
-                                </tr>
-                            </thead>
-                            <tr>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                        </table>
-                    </div>
-                    
-                </div>
-            </div>
-        </form>
-        </section>
-    </main>
-    <footer>
-        <address>
+            </section>
+            <section>
+                <!-- this is a form 
+                When the Admin wants to create and when the user wants to view the form this module
+                will be the root for all other input and view and output modules -->
+                {{formDisplay}}
+            </section>
+        </main>
+        <footer>
+            <address>
 
-        </address>
-    </footer>
-</body>
+            </address>
+        </footer>
+    </body>
 </html>

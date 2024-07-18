@@ -17,7 +17,18 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
+from gayatriapp import settings
+
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('main/',include("main.urls"))
+    path('main/',include("main.urls")),
+    path('debugtoolbar/',include("debug_toolbar.urls")),
+    path('sonar/',include("django_sonar.urls")),
+
 ]
+
+# if not settings.TESTING:
+#     urlpatterns = [
+#         *urlpatterns,
+#         path("__debug__/", include("debug_toolbar.urls")),
+#     ]
