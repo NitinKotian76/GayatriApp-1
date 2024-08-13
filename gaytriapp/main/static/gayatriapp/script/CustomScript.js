@@ -1,7 +1,6 @@
-$(document).ready( function () {
-    console.log("hello");
+$(document).ready( function() {
 	function getCSRFToken() {
-        //this function gets the csrftoken 
+	       //this function gets the csrftoken 
 		let name = "csrftoken=";
 		let decodedCookie = decodeURIComponent(document.cookie);
 		let ca = decodedCookie.split(';');
@@ -16,10 +15,15 @@ $(document).ready( function () {
 		}
 		return "";
 	}
-    //this event is triggered by htmx requests     
-	document.body.addEventListener('htmx:configRequest', (event) => {
-		event.detail.headers['X-CSRFToken'] = getCSRFToken();  
+	   //this event is triggered by htmx requests     
+    console.log(getCSRFToken());
+    document.body.addEventListener('htmx:configRequest', (event) => {
+		event.detail.headers['X-CSRFToken'] = getCSRFToken();
 	}); 
-    document.getElementById('login').style.display='block';// this triggers the login Modal
+    document.body.addEventListener('htmx:configRequest', (event) => {
+        console.log(event.detail.headers); // Check if the CSRF token is included
+    });
+    document.getElementById('modal').style.display='block';// this triggers the login Modal
 });
+
 

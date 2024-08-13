@@ -1,30 +1,38 @@
-from marshmallow import Schema,fields
-from dataclasses import dataclass
-from pprint import pprint
+from . import BaseForm as bf 
 
-@dataclass
-class form:
-    author:str
-    formData:str
-    
-class datastore(Schema):
-    author = fields.Str()
-    formData = fields.Str()
+class formFieldData():
 
-# def appendfields():
+ def addFields():
+    pass 
+ def removeFields():
 
-# def selectField():
+  pass
 
+ def changeFields():
+  pass
 
-    # <script>
-    #     $(function() {
-    #         $('.addBtn').click(function(){
-    #             $.ajax({
-    #                 url: "{% url 'samples' %}",
-    #                 success: function(data){
-    #                     return data;
-    #                 }
-    #             });
-    #         });
-    #     });
-    # </script>
+ def modifyAccess():
+  pass
+
+ def saveForm():
+  # form.write(json.dumps(fieldData))
+  pass 
+
+ def saveDraft(*args, **kwargs):
+  #dictionary data for the draft
+  formdata = Kwargs.get()
+ 
+  # draftFormData= { "field1": {
+  #                 "fieldType": "textInput",
+  #                 "fieldLabel": "label",
+  #                 "attributes": {
+  #                     "disabled": true,
+  #                     "autocomplete": true,
+  #                     }, 
+  #                 "tableVar": "table1",
+  #                 "VarName": "fieldvar"
+  #           }
+  return draftFormData
+
+ def deleteDraft():
+  pass

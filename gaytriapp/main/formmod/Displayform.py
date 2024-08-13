@@ -1,7 +1,5 @@
 from . import BaseForm as bf
-from django.template.loader import render_to_string 
-from django.utils.html import format_html
-from .. import views 
+from . import CreateForm as cf
 # DisplayForm returns html strings
 
 class DisplayForm():
@@ -9,21 +7,43 @@ class DisplayForm():
  BF = bf.base
  AP = bf.appControls
  
- def show(data):
-  inputs =  BF.checkbox(data)
-  return BF.form(inputs+AP.add())
+ 
+ def AddFields():
+  # ui for form creation
+  return (AP.getInputFields())
 
- def loginForm(*args, **kwargs):
-  csrf = kwargs.get('csrf', None)
+ def loginForm():
+ # ui for form display
   return (
-   BF.modalContainer(BF.form(
-     BF.textInput("User Name")+BF.password("Password")+
-     BF.list("select Company:",attr='style="width:50%;"')+
+   BF.modalContainer(
+     BF.textInput("Username")+BF.password("Password")+
+     BF.list("select Company:",attr='style="width:52%;"')+
      BF.button("Login",attr='id="loginbtn"')+
      BF.button("Forgot password",attr='id="forgotbtn"')
-    ),
-     attr='id="login" action="/main"',
-     csrf=csrf,
-   )
+    )
   )
+
+ def UserForm(data):
+     return(
+     BF.textInput("Username")+BF.password("Password")+
+     BF.list("select Company:",attr='style="width:52%;"')+
+     BF.button("Login",attr='id="loginbtn"')+
+     BF.button("Forgot password",attr='id="forgotbtn"')
+             )
+ def loginSuccess():
+     return(BF.modalContainer("<p>Login successful</p>"))
+
+ def loginFail():
+     return(BF.modalContainer("<p>Login failed</p>"))
+
+ def home():
+     return(BF.modalContainer('<a href="/main/login" class="w3-cell w3-button w3-blue w3-round-large">Login</a>'))
+
+ def getBase(data):
+     pass
+     # match data:
+     #     case clear:
+     #         pass
+     #     case _:
+     #         print("not valid")
 
