@@ -1,8 +1,15 @@
-from django.test import TestCase, SimpleTestCase
-from ..formmod.Displayform import DisplayForm
+from django.test import TestCase
+from django.utils import safestring
+from ..formmod.Displayform import displayDefaultForms as df
 # Create your tests here.
 
-class displayFormtest(SimpleTestCase):
+class TestdisplayForm(TestCase):
 
-    def check_if_login_is_displayed(self): 
-        print("hello")
+    def setUp(self):
+        pass
+    def test_loginform(self): 
+        self.assertEqual(df.loginForm(),safestring.SafeString())
+    def test_Addfield(self):
+        pass
+        
+    

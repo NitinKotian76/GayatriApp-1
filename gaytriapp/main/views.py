@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.utils.html import format_html
 from django.http import JsonResponse,HttpResponse
-from .formmod.Displayform import DisplayForm
+from .formmod.Displayform import DisplayForm,displayDefaultForms
 from .formmod.CreateForm import formFieldData
 from django.views.decorators.http import require_http_methods 
 from django.views.decorators.csrf import ensure_csrf_cookie, csrf_protect
@@ -10,16 +10,19 @@ from django.contrib.auth import authenticate
 import json
 
 # Create your views here.
+global df
+df = displayDefaultForms()
+
 class home():
     def index(request):
         return render(request,"main/index.html",{
                 "nav":"navigation",
-                "itemlist":DisplayForm.AddFields()
+                "itemlist":df.addFields()
             })
 
     def start(request):
         return render(request,"main/home.html",{
-                "home":DisplayForm.home(),
+                "home":df.home()
             })
 
 class form():
@@ -27,7 +30,7 @@ class form():
          # use the ui to get the no each type of field required in a queue 
          if request.method == "POST":
           data = request.POST.get("additem")
-          return HttpResponse(DisplayForm.UserForm(data))
+          return HttpResponse(df.userForm())
          else:
           return JsonResponse({"response":"other response"})
     
@@ -78,13 +81,13 @@ class user():
             if user is not None:
                 return redirect("main:index")
             else:
-                return render(request,"main/login.html",{"login":DisplayForm.loginFail()})
+                return render(request,"main/login.html",{"login":df.loginFail()})
         else:
             return render(request,"main/login.html",{
-                "login":DisplayForm.loginForm()
+                "login":df.loginForm()
                 }
             )
-    def logout():
+    def logout(self):
         pass
     
     def new_user (request):

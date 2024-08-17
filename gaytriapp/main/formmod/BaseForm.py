@@ -15,96 +15,14 @@ class Style():
     
 
 class appControls():
- def getInputFields():
-  # methods_list = [method for method in dir(base) if callable(getattr(base, method)) and not method.startswith("__")]
-  # print(methods_list)
-  return "hello"
- def items(item):
-  match item:
-    case 'button':
-        # button(children)
-        pass
-    case 'checkbox':
-        pass
-    case 'color':
-        pass
-
-    case 'columnContainer':
-        pass
-
-    case 'container':
-        pass
-
-    case 'date':
-        pass
-
-    case 'datetime':
-        pass
-
-    case 'email':
-        pass
-
-    case 'fieldsetContainer':
-        pass
-
-    case 'files':
-        pass
-
-    case 'image':
-        pass
-
-    case 'list':
-        pass
-
-    case 'modalContainer':
-        pass
-
-    case 'month':
-        pass
-
-    case 'number':
-        pass
-
-    case 'password':
-        pass
-
-    case 'radio':
-        pass
-
-    case 'range':
-        pass
-
-    case 'reset':
-        pass
-
-    case 'search':
-        pass
-
-    case 'submit':
-        pass
-
-    case 'tel':
-        pass
-
-    case 'textInput':
-        pass
-
-    case 'textInput2':
-        pass
-
-    case 'time':
-        pass
-
-    case 'url':
-        pass
-
-    case 'week':
-        pass
+ def getInputFields(self):
+  methods_list = [method for method in dir(base) if callable(getattr(base, method)) and not method.startswith("__")]
+  return(methods_list)
 
 class base(Style):
 
-
- def textInput(label, *args, **kwargs):
+ def textInput(*args,**kwargs):
+  label = kwargs.get('label','')
   attr = kwargs.get('attr','')
   t=format_html(f'<div class="{globalSpacing}"> \
                   <label class="w3-cell" for="{label}">{label}</label> \
@@ -112,7 +30,8 @@ class base(Style):
               </div>')
   return t
 
- def textInput2(label, *args, **kwargs):
+ def textInput2(*args,**kwargs):
+  label = kwargs.get('label','')
   attr = kwargs.get('attr','')
   t=format_html(f'<div class="w3-cell-row {globalSpacing}"> \
                   <label class="w3-cell" for="{label}">{label}</label>\
@@ -120,17 +39,20 @@ class base(Style):
               </div>')
   return t
 
- def container(children, *args, **kwargs): 
+ def container(children,*args,**kwargs):
+  label = kwargs.get('label','') 
   attr = kwargs.get('attr','')
   t=format_html(f'<div class="w3-container w3-row-cell{globalSpacing}">{children}</div>')
   return t
 
- def columnContainer(children, *args, **kwargs):
+ def columnContainer(children,*args,**kwargs):
+  label = kwargs.get('label','')
   attr = kwargs.get('attr','')
   t=format_html(f'<div class="w3-container {RowStyle}{globalSpacing}">{children}</div>')
   return t
 
- def modalContainer(children, *args, **kwargs):
+ def modalContainer(children,*args,**kwargs):
+  label = kwargs.get('label','')
   attr = kwargs.get('attr','')
   t=format_html(f'<div class="w3-modal" id="modal" {attr}>\
         <div class="w3-modal-content w3-round-large w3-row-cell w3-display-middle {globalSpacing}" style="width:40%;">\
@@ -139,16 +61,20 @@ class base(Style):
     </div>')
   return t
 
- def fieldsetContainer(label,children,*args,**kwargs):
-     attr = kargs.get('attr','')
+ def fieldsetContainer(children,*args,**kwargs):
+     label = kwargs.get('label','')
+     attr = kwargs.get('attr','')
      t=format_html(f'<fieldset><legend>{label}</legend>{children}</fieldset>')
+     return t
 
- def button(label, *args, **kwargs):
+ def button(*args,**kwargs):
+  label = kwargs.get('label','')
   attr = kwargs.get('attr','')
   t=format_html(f'<button class="{ButtonStyle}{globalSpacing}" for="{label}"{attr}>{label}</button>')
   return t
 
- def radio(label, *args, **kwargs):
+ def radio(*args,**kwargs):
+  label = kwargs.get('label','')
   attr = kwargs.get('attr','')
   t=format_html(f'<div class="{globalSpacing}"> \
                      <label class="w3-padding-16" for="{label}">{label}</label> \
@@ -156,7 +82,8 @@ class base(Style):
                      </div>')
   return t
  
- def checkbox(label, *args, **kwargs):
+ def checkbox(*args,**kwargs):
+  label = kwargs.get('label','')
   attr = kwargs.get('attr','')
   t=format_html(f'<div class="{globalSpacing}"> \
                      <label class="" for="{label}">{label}</label> \
@@ -164,7 +91,8 @@ class base(Style):
                      </div>')
   return t
 
- def list(label, *args, **kwargs):
+ def list(*args,**kwargs):
+  label = kwargs.get('label','')
   attr = kwargs.get('attr','')
   itemlist = ["company1","company2","company3"]
   option = ""
@@ -179,7 +107,8 @@ class base(Style):
                   </div>')
   return t
  
- def color(label, *args, **kwargs):
+ def color(*args,**kwargs):
+  label = kwargs.get('label','')
   attr = kwargs.get('attr','')
   t=format_html(f'<div class="{globalSpacing}"> \
                      <label class="" for="{label}">{label}</label> \
@@ -187,7 +116,8 @@ class base(Style):
                      </div>')
   return t
 
- def date(label, *args, **kwargs):
+ def date(*args,**kwargs):
+  label = kwargs.get('label','')
   attr = kwargs.get('attr','')
   t=format_html(f'<div class="{globalSpacing}"> \
                      <label class="" for="{label}">{label}</label> \
@@ -195,7 +125,8 @@ class base(Style):
                      </div>')
   return t
 
- def datetime(label, *args, **kwargs):
+ def datetime(*args,**kwargs):
+  label = kwargs.get('label','')
   attr = kwargs.get('attr','')
   t=format_html(f'<div class="{globalSpacing}"> \
                      <label class="" for="{label}">{label}</label> \
@@ -203,7 +134,8 @@ class base(Style):
                      </div>')
   return t
 
- def email(label, *args, **kwargs):
+ def email(*args,**kwargs):
+  label = kwargs.get('label','')
   attr = kwargs.get('attr','')
   t=format_html(f'<div class="{globalSpacing}"> \
                      <label class="" for="{label}">{label}</label> \
@@ -211,7 +143,8 @@ class base(Style):
                      </div>')
   return t
 
- def files(label, *args, **kwargs):
+ def files(*args,**kwargs):
+  label = kwargs.get('label','')
   attr = kwargs.get('attr','')
   t=format_html(f'<div class="{globalSpacing}"> \
                      <label class="" for="{label}">{label}</label> \
@@ -219,7 +152,8 @@ class base(Style):
                      </div>')
   return t
 
- def image(label, *args, **kwargs):
+ def image(*args,**kwargs):
+  label = kwargs.get('label','')
   attr = kwargs.get('attr','')
   t=format_html(f'<div class="{globalSpacing}"> \
                      <label class="" for="{label}">{label}</label> \
@@ -227,7 +161,8 @@ class base(Style):
                      </div>')
   return t
 
- def month(label, *args, **kwargs):
+ def month(*args,**kwargs):
+  label = kwargs.get('label','')
   attr = kwargs.get('attr','')
   t=format_html(f'<div class="{globalSpacing}"> \
                      <label class="" for="{label}">{label}</label> \
@@ -235,7 +170,8 @@ class base(Style):
                      </div>')
   return t
 
- def number(label, *args, **kwargs):
+ def number(*args,**kwargs):
+  label = kwargs.get('label','')
   attr = kwargs.get('attr','')
   t=format_html(f'<div class="{globalSpacing}"> \
                      <label class="" for="{label}">{label}</label> \
@@ -243,7 +179,8 @@ class base(Style):
                      </div>')
   return t
 
- def password(label, *args, **kwargs):
+ def password(*args,**kwargs):
+  label = kwargs.get('label','')
   attr = kwargs.get('attr','')
   t=format_html(f'<div class="{globalSpacing}"> \
                      <label class="" for="{label}">{label}</label> \
@@ -251,7 +188,8 @@ class base(Style):
                      </div>')
   return t
 
- def range(label, *args, **kwargs):
+ def range(*args,**kwargs):
+  label = kwargs.get('label','')
   attr = kwargs.get('attr','')
   t=format_html(f'<div class="{globalSpacing}"> \
                      <label class="" for="{label}">{label}</label> \
@@ -259,7 +197,8 @@ class base(Style):
                      </div>')
   return t
 
- def reset(label, *args, **kwargs):
+ def reset(*args,**kwargs):
+  label = kwargs.get('label','')
   attr = kwargs.get('attr','')
   t=format_html(f'<div class="{globalSpacing}"> \
                      <label class="" for="{label}">{label}</label> \
@@ -267,7 +206,8 @@ class base(Style):
                      </div>')
   return t
 
- def search(label, *args, **kwargs):
+ def search(*args,**kwargs):
+  label = kwargs.get('label','')
   attr = kwargs.get('attr','')
   t=format_html(f'<div class="{globalSpacing}"> \
                      <label class="" for="{label}">{label}</label> \
@@ -275,7 +215,8 @@ class base(Style):
                      </div>')
   return t
 
- def submit(label, *args, **kwargs):
+ def submit(*args,**kwargs):
+  label = kwargs.get('label','')
   attr = kwargs.get('attr','')
   t=format_html(f'<div class="{globalSpacing}"> \
                      <label class="" for="{label}">{label}</label> \
@@ -283,7 +224,8 @@ class base(Style):
                      </div>')
   return t
 
- def tel(label, *args, **kwargs):
+ def tel(*args,**kwargs):
+  label = kwargs.get('label','')
   attr = kwargs.get('attr','')
   t=format_html(f'<div class="{globalSpacing}"> \
                      <label class="" for="{label}">{label}</label> \
@@ -291,7 +233,8 @@ class base(Style):
                      </div>')
   return t
 
- def time(label, *args, **kwargs):
+ def time(*args,**kwargs):
+  label = kwargs.get('label','')
   attr = kwargs.get('attr','')
   t=format_html(f'<div class="{globalSpacing}"> \
                      <label class="" for="{label}">{label}</label> \
@@ -299,7 +242,8 @@ class base(Style):
                      </div>')
   return t
 
- def url(label, *args, **kwargs):
+ def url(*args,**kwargs):
+  label = kwargs.get('label','')
   attr = kwargs.get('attr','')
   t=format_html(f'<div class="{globalSpacing}"> \
                      <label class="" for="{label}">{label}</label> \
@@ -307,7 +251,8 @@ class base(Style):
                      </div>')
   return t
 
- def week(label, *args, **kwargs):
+ def week(*args,**kwargs):
+  label = kwargs.get('label','')
   attr = kwargs.get('attr','')
   t=format_html(f'<div class="{globalSpacing}"> \
                      <label class="" for="{label}">{label}</label> \
