@@ -15,7 +15,7 @@ class Style():
     
 
 class appControls():
- def getInputFields(self):
+ def getInputFields():
   methods_list = [method for method in dir(base) if callable(getattr(base, method)) and not method.startswith("__")]
   return(methods_list)
 

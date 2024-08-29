@@ -18,14 +18,6 @@ def loginForm():
     BF.button(label="Forgot password",attr='id="forgotbtn"')
    )
  )
-
-def UserForm():
-    return(
-    BF.textInput(label="Username")+BF.password(label="Password")+
-    BF.list(label="select Company:",attr='style="width:52%;"')+
-    BF.button(label="Login",attr='id="loginbtn"')+
-    BF.button(label="Forgot password",attr='id="forgotbtn"')
-            )
 def loginSuccess():
     return(BF.modalContainer("<p>Login successful</p>"))
 

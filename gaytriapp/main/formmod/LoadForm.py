@@ -1,2 +1,4 @@
-# this function will load the form using the json decode method
+from .CreateForm import formFieldData
+
+ff = formFieldData()
 

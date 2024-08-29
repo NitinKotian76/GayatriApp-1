@@ -21,9 +21,14 @@ $(document).ready( function() {
 		event.detail.headers['X-CSRFToken'] = getCSRFToken();
 	}); 
     document.body.addEventListener('htmx:configRequest', (event) => {
-        console.log(event.detail.headers); // Check if the CSRF token is included
+        console.log(event.detail.formData); // Check if the CSRF token is included
+        if(event.detail.elt.id === "fieldList")
+            console.log("clicked");
     });
     document.getElementById('modal').style.display='block';// this triggers the login Modal
+    //get the no of clicks on field list
+
+
 });
 
 

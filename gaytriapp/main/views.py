@@ -1,9 +1,7 @@
 from django.shortcuts import render, redirect
-from django.utils.html import format_html
 from django.http import JsonResponse,HttpResponse
 from .formmod.Displayform import DisplayForm,displayDefaultForms
 from .formmod.CreateForm import formFieldData
-from django.views.decorators.http import require_http_methods 
 from django.views.decorators.csrf import ensure_csrf_cookie, csrf_protect
 from .models import Profile, AdminProfile
 from django.contrib.auth import authenticate
@@ -12,12 +10,14 @@ import json
 # Create your views here.
 global df
 df = displayDefaultForms()
+ds = DisplayForm()
 
 class home():
     def index(request):
         return render(request,"main/index.html",{
                 "nav":"navigation",
-                "itemlist":df.addFields()
+                "itemlist":df.addFields(),
+                "count":0
             })
 
     def start(request):
@@ -27,49 +27,63 @@ class home():
 
 class form():
     def create_form (request):
-         # use the ui to get the no each type of field required in a queue 
-         if request.method == "POST":
-          data = request.POST.get("additem")
-          return HttpResponse(df.userForm())
-         else:
-          return JsonResponse({"response":"other response"})
+        # use the ui to get the no each type of field required in a queue 
+        ff = formFieldData()
+        if request.method == "POST":
+             data = request.POST.get("additem")
+
+             if request.POST.get("additem") != None:
+
+                 ff.setField("demo1",["user1","user2"],["table1","table2"])
+                 ff.addField(data,"argument","form1")
+                 ff.saveDraft(ff.getFormData())
+                 return JsonResponse(ff.getFormData())
+
+             elif request.POST.get("save") != None:
+                 # ff.saveForm(ff.getFormData())
+                 pass
+             elif request.POST.get("rmitem"):
+                 pass
+
+        else:
+             return JsonResponse({"response":"other response"})
     
     def delete_form (request):
          if request.method == "POST":
-          data = request.POST.get("something") 
-          return JsonResponse({"response":"response"})
+             data = request.POST.get("something") 
+             return JsonResponse({"response":"response"})
          else:
-          return JsonResponse({"response":"other response"})
+             return JsonResponse({"response":"other response"})
     
     def edit_form (request):
          if request.method == "POST":
-          data = request.POST.get("something") 
-          return JsonResponse({"response":"response"})
+             data = request.POST.get("something") 
+             return JsonResponse({"response":"response"})
          else:
-          return JsonResponse({"response":"other response"})
+             return JsonResponse({"response":"other response"})
 
 class report():
     
     def new_report (request):
          if request.method == "POST":
-          data = request.POST.get("something") 
-          return JsonResponse({"response":"response"})
+             data = request.POST.get("something") 
+             return JsonResponse({"response":"response"})
          else:
-          return JsonResponse({"response":"other response"})
+             return JsonResponse({"response":"other response"})
     
     def edit_report (request):
          if request.method == "POST":
-          data = request.POST.get("something") 
-          return JsonResponse({"response":"response"})
+             data = request.POST.get("something") 
+             return JsonResponse({"response":"response"})
          else:
-          return JsonResponse({"response":"other response"})
+             return JsonResponse({"response":"other response"})
     
     def delete_report (request):
          if request.method == "POST":
-          data = request.POST.get("something") 
-          return JsonResponse({"response":"response"})
+             data = request.POST.get("something") 
+             return JsonResponse({"response":"response"})
          else:
-          return JsonResponse({"response":"other response"})
+             return JsonResponse({"response":"other response"})
 
 class user():
 
@@ -92,58 +106,58 @@ class user():
     
     def new_user (request):
      if request.method == "POST":
-      data = request.POST.get("something") 
-      return JsonResponse({"response":"response"})
+         data = request.POST.get("something") 
+         return JsonResponse({"response":"response"})
      else:
-      return JsonResponse({"response":"other response"})
+         return JsonResponse({"response":"other response"})
 
 
     
     def edit_user (request):
      if request.method == "POST":
-      data = request.POST.get("something") 
-      return JsonResponse({"response":"response"})
+         data = request.POST.get("something") 
+         return JsonResponse({"response":"response"})
      else:
-      return JsonResponse({"response":"other response"})
+         return JsonResponse({"response":"other response"})
 
 
     
     def delete_user (request):
      if request.method == "POST":
-      data = request.POST.get("something") 
-      return JsonResponse({"response":"response"})
+         data = request.POST.get("something") 
+         return JsonResponse({"response":"response"})
      else:
-      return JsonResponse({"response":"other response"})
+         return JsonResponse({"response":"other response"})
 
 class group():
     
     def new_group (request):
      if request.method == "POST":
-      data = request.POST.get("something") 
-      return JsonResponse({"response":"response"})
+         data = request.POST.get("something") 
+         return JsonResponse({"response":"response"})
      else:
-      return JsonResponse({"response":"other response"})
+         return JsonResponse({"response":"other response"})
     
     def edit_group (request):
      if request.method == "POST":
-      data = request.POST.get("something") 
-      return JsonResponse({"response":"response"})
+         data = request.POST.get("something") 
+         return JsonResponse({"response":"response"})
      else:
-      return JsonResponse({"response":"other response"})
+         return JsonResponse({"response":"other response"})
     
     def delete_group (request):
      if request.method == "POST":
-      data = request.POST.get("something") 
-      return JsonResponse({"response":"response"})
+         data = request.POST.get("something") 
+         return JsonResponse({"response":"response"})
      else:
-      return JsonResponse({"response":"other response"})
+         return JsonResponse({"response":"other response"})
 
 class db():
     
     def create_db (request):
      if request.method == "POST":
-      data = request.POST.get("something") 
-      return JsonResponse({"response":"response"})
+         data = request.POST.get("something") 
+         return JsonResponse({"response":"response"})
      else:
       return JsonResponse({"response":"other response"})
     

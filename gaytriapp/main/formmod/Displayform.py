@@ -1,23 +1,23 @@
 from . import DefaultForm as df
+from . import CreateForm as cf
 # DisplayForm returns html strings
 
 class DisplayForm():
-    def displayLoadedForms():
-        pass
-    def displayDraftForms():
+    def LoadForms(self): 
+       return cf.formFieldData().getFormData()
+
+    def loadDraftForms(self):
         pass
 
 class displayDefaultForms():
 
-    def addFields():
+    def addFields(self):
         return df.AddFields()
-    def loginForm():
+    def loginForm(self):
         return df.loginForm()
-    def userForm():
-        return df.UserForm()
-    def loginSuccess():
+    def loginSuccess(self):
         return df.loginSuccess()
-    def loginFail():
+    def loginFail(self):
         return df.loginFail()
-    def home():
+    def home(self):
         return df.home()
