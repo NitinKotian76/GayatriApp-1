@@ -1,0 +1,51 @@
+[tool.poetry]
+name = "gaytriapp"
+version = "0.1.0"
+description = ""
+authors = ["Your Name <you@example.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+django = "4.*.*"
+gunicorn = "^22.0.0"
+httpie = "^3.2.2"
+psycopg = "^3.1.19"
+marshmallow = "^3.21.3"
+selenium = "^4.21.0"
+coverage = "^7.5.3"
+django-sonar = "^0.1.8"
+django-debug-toolbar = "^4.4.2"
+pandas = "^2.2.2"
+django-htmx = "^1.18.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pyright]
+include = ["src"]
+venvPath = "/home/nixon/.cache/pypoetry/virtualenvs"
+venv = "gaytriapp-c3pCIBYR-py3.11"
+exclude = ["**/node_modules",
+    "**/__pycache__",
+    "src/experimental",
+    "src/typestubs"
+]
+ignore = ["src/oldstuff"]
+defineConstant = { DEBUG = true }
+stubPath = "src/stubs"
+
+reportMissingImports = "error"
+reportMissingTypeStubs = false
+
+pythonVersion = "3.12"
+pythonPlatform = "Linux"
+
+executionEnvironments = [
+  { root = "src/web", extraPaths = [ "src/service_libs" ], reportMissingImports = "warning" },
+  { root = "src/sdk", extraPaths = [ "src/backend" ] },
+  { root = "src/tests", extraPaths = ["src/tests/e2e", "src/sdk" ]},
+  { root = "src" }
+]
