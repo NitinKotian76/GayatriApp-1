@@ -1,4 +1,5 @@
 $(document).ready( function() {
+	let count = 0;
 	function getCSRFToken() {
 	       //this function gets the csrftoken 
 		let name = "csrftoken=";
@@ -15,18 +16,19 @@ $(document).ready( function() {
 		}
 		return "";
 	}
-	   //this event is triggered by htmx requests     
-    console.log(getCSRFToken());
-    document.body.addEventListener('htmx:configRequest', (event) => {
+	console.log(getCSRFToken());
+    document.body.addEventListener('htmx:beforeRequest', (event)=>{
+        //if(event.target.className == "fieldlist"){
+            count++;
+            console.log(event.target);
+            let value= JSON.parse(event.target.getAttribute("hx-vals"));
+            value["count"] = count;
+            event.target.setAttribute("hx-vals",JSON.stringify(value));
+        //}
+    });
+	document.body.addEventListener('htmx:configRequest', (event) => {
 		event.detail.headers['X-CSRFToken'] = getCSRFToken();
 	}); 
-    document.body.addEventListener('htmx:configRequest', (event) => {
-        console.log(event.detail.formData); // Check if the CSRF token is included
-        if(event.detail.elt.id === "fieldList")
-            console.log("clicked");
-    });
-    document.getElementById('modal').style.display='block';// this triggers the login Modal
-    //get the no of clicks on field list
 
 
 });

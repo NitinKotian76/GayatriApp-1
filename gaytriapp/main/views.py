@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import JsonResponse,HttpResponse
 from .formmod.Displayform import DisplayForm,displayDefaultForms
 from .formmod.CreateForm import formFieldData
+from .formmod.LoadForm import Filedata
 from django.views.decorators.csrf import ensure_csrf_cookie, csrf_protect
 from .models import Profile, AdminProfile
 from django.contrib.auth import authenticate
@@ -17,7 +18,6 @@ class home():
         return render(request,"main/index.html",{
                 "nav":"navigation",
                 "itemlist":df.addFields(),
-                "count":0
             })
 
     def start(request):
@@ -26,22 +26,22 @@ class home():
             })
 
 class form():
+
     def create_form (request):
         # use the ui to get the no each type of field required in a queue 
-        ff = formFieldData()
+        ff = formFieldData("demo1",[["user1","r","w","x"]],["table1","table2"])
         if request.method == "POST":
              data = request.POST.get("additem")
-
+             fieldNo = request.POST.get("count")
+             # arguments = somefunction()
              if request.POST.get("additem") != None:
-
-                 ff.setField("demo1",["user1","user2"],["table1","table2"])
-                 ff.addField(data,"argument","form1")
-                 ff.saveDraft(ff.getFormData())
-                 return JsonResponse(ff.getFormData())
+                 ff.addField(data,'arguments',"form1",fieldNo)
+                 return HttpResponse(Filedata(ff.filename))
 
              elif request.POST.get("save") != None:
-                 # ff.saveForm(ff.getFormData())
-                 pass
+                 # ff.Savetodb()
+                 pass 
+
              elif request.POST.get("rmitem"):
                  pass
 

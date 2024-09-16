@@ -1,0 +1,67 @@
+{
+    "form_name": "demo1",
+    "access_rights": [
+        [
+            "user1",
+            "r",
+            "w",
+            "x"
+        ]
+    ],
+    "tables": [
+        "table1",
+        "table2"
+    ],
+    "fields": {
+        "null": {
+            "method": "date",
+            "arguments": "arguments",
+            "variable": "form1"
+        },
+        "2": {
+            "method": "checkbox",
+            "arguments": "arguments",
+            "variable": "form1"
+        },
+        "4": {
+            "method": "checkbox",
+            "arguments": "arguments",
+            "variable": "form1"
+        },
+        "1": {
+            "method": "button",
+            "arguments": "arguments",
+            "variable": "form1"
+        },
+        "5": {
+            "method": "checkbox",
+            "arguments": "arguments",
+            "variable": "form1"
+        },
+        "7": {
+            "method": "checkbox",
+            "arguments": "arguments",
+            "variable": "form1"
+        },
+        "3": {
+            "method": "columnContainer",
+            "arguments": "arguments",
+            "variable": "form1"
+        },
+        "10": {
+            "method": "columnContainer",
+            "arguments": "arguments",
+            "variable": "form1"
+        },
+        "9": {
+            "method": "color",
+            "arguments": "arguments",
+            "variable": "form1"
+        },
+        "6": {
+            "method": "button",
+            "arguments": "arguments",
+            "variable": "form1"
+        }
+    }
+}

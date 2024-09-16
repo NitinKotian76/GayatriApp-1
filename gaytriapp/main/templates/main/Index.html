@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% block nav %}
+    <div class="navigation">
         <nav>
             <ul class="w3-light-grey" style="padding-left: 0px;">
                 <div class="w3-dropdown-hover">
@@ -109,11 +110,10 @@
                 </div>
             </ul>
         </nav>
-{% endblock %}
-{% block userlegend %}
         <div>
             <img class="w3-bar-item w3-circle w3-hide-small"/>
         </div>
+    </div>
 {% endblock %}
 {% block content %}
       <main>
@@ -130,7 +130,6 @@
                 <!-- this is a form 
                 When the Admin wants to create and when the user wants to view the form this module
                 will be the root for all other input and view and output modules -->
-                
             </section>
             <section>
                 <div class="w3-cell-row w3-margin-top">
@@ -140,10 +139,14 @@
                               {% for item in itemlist %}
                                 <a hx-post="/main/create_form" 
                                    hx-vals='{"additem": "{{item}}"}' 
-                                   hx-target="#mainform" hx-swap="innerhtml" 
-                                   class="w3-bar-item w3-button" id="fieldList">
-                                    {% csrf_token %}
-                                    {{item}}
+                                   hx-target="#mainform" hx-swap="innerhtml"
+                                   class="w3-bar-item w3-button fieldlist" id="{{item}}">
+                                {% comment %} this is a comment
+                                onclick='customPost("{{item}}")'
+                                <a  class="w3-bar-item w3-button fieldlist" id="{{item}}">
+                                    {% endcomment %}
+                                   {% csrf_token %}
+                                   {{item}}
                                 </a>
                               {% endfor %}
                           </div>

@@ -1,24 +1,57 @@
+"""
+when clicked the method should already have a draft file saved in the path
+the click should only trigger an append function and the draft form should be saved
+the next click should do the same 
+"""
+
 from . import BaseForm as bf
+from main import models 
 import tempfile
 import json
 import os
 # crud
 
 class formFieldData:
+    """ 
+    processes the field selections from user input
 
-    def setField(self,formName,AccessRights,tables):
+    Attributes
+    ----------
+    FieldDataDict : default form constants and variable
+    count : no of fields
+    filename : filename
+    draftfilename : draft file name 
+    """
+    def __init__(self,formName,AccessRights,tables):
         self.FieldDataDict = {
                 "form_name": formName,
                 "access_rights" : AccessRights,
                 "tables" : tables,
-                "fields" :{} 
-                }
+                "fields" : {} 
+        }
         self.count = 0
+        self.filename= f"form_{formName}.json"
+        # self.draftfilename = f"draftForm_{formName}.json"
 
-    def removeField(self):
-        pass
+    def removeField(self,fieldno):
+        self.FieldDataDict["fields"].pop(fieldno)
 
-    def addField(self,field,args,var):
+    def addField(self,field,args,var,FieldNo):
+        """
+        addfield to a dictionary and save the file using json
+
+        Parameters
+        ----------
+        field : field name
+            
+        args : any arguments passed to the field 
+            
+        var : any variables assigned to the field            
+
+        FieldNo : fieldno/ id
+
+        """
+        # check if the function is callable
         method = getattr(bf.base,field)
         if callable(method):
             basemethod = {
@@ -26,34 +59,45 @@ class formFieldData:
                     "arguments":args,
                     "variable":var,
             }
-            fieldnum = "field %s" % self.count
-            self.FieldDataDict['fields'][fieldnum] = basemethod 
-            print(self.count ,self.FieldDataDict)
+            # fieldname ="field"+FieldNo
+            data={FieldNo: basemethod}
+            self.AddDatatoDraft(data)
+
+    def saveForm(self,formdata):
+        with open(self.filename,'w') as file:
+            json.dump(formdata,file,indent=4)
+
+    def deleteForm(self,filename):
+        if os.path.exists(filename):
+            os.remove(filename)
 
 
+    def AddDatatoDraft(self,data):
+        """
+        this function will add to the dictionary in the json file
 
-    def saveForm(self,formdata,formname="data.json"):
-        with open(formname,'w') as file:
-            file.write(json.dumps(formdata,indent=4))
-
-    def deleteForm(self,formname="data.json"):
-        if os.path.exists(formname):
-            os.remove(formname)
-
-    def saveDraft(self,formdata,formname="data.json.draft"):
-        with open(formname,'w') as file:
-            file.write(json.dumps(formdata,indent=4))
-    
-    def saveTempData(self,formdata,formname= "temp"):
-        with tempfile.TemporaryFile() as tfile:
-            tfile.write(bytes(json.dumps(formdata),encoding='utf8'))
-            # tfile.seek(0)
-            # print(tfile.read())
-        #dictionary data for the draft
-
-    def deleteDraft(self):
-        pass
-
+        Returns
+        -------
+        none
+        """
+        filedata = {}
+        if os.path.exists(self.filename):
+            with open(self.filename,'r') as file:
+                filedata=json.load(file)
+                filedata["fields"].update(data)
+                # print(filedata)
+                self.saveForm(filedata)
+        else:
+            self.FieldDataDict["fields"].update(data)
+            self.saveForm(self.FieldDataDict)
 
     def getFormData(self):  
-        return self.FieldDataDict
+        """
+        Returns
+        -------
+        the field dictionary
+            
+        """
+        with open(self.draftfilename,'r') as file:
+            filedata=json.load(file)
+            return filedata
