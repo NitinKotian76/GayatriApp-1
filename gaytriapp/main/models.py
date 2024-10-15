@@ -7,3 +7,5 @@ class Profile(models.Model):
 
 class AdminProfile(models.Model):
     AdminName= models.CharField()
+
+

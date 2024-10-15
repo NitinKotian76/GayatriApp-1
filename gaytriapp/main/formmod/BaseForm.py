@@ -39,38 +39,42 @@ class base(Style):
               </div>')
   return t
 
- def container(children,*args,**kwargs):
+ def container(*args,**kwargs):
   label = kwargs.get('label','') 
   attr = kwargs.get('attr','')
-  t=format_html(f'<div class="w3-container w3-row-cell{globalSpacing}">{children}</div>')
+  children = kwargs.get('children','')
+  t=format_html(f'<div class="w3-container w3-row-cell{globalSpacing}" {attr} >{children}</div>')
   return t
 
- def columnContainer(children,*args,**kwargs):
+ def columnContainer(*args,**kwargs):
   label = kwargs.get('label','')
   attr = kwargs.get('attr','')
-  t=format_html(f'<div class="w3-container {RowStyle}{globalSpacing}">{children}</div>')
+  children = kwargs.get('children','')
+  t=format_html(f'<div class="w3-container {RowStyle}{globalSpacing}" {attr}>{children}</div>')
   return t
 
- def modalContainer(children,*args,**kwargs):
-  label = kwargs.get('label','')
-  attr = kwargs.get('attr','')
-  t=format_html(f'<div class="w3-modal" id="modal" {attr}>\
+ def modalContainer(*args,**kwargs):
+    label = kwargs.get('label','')
+    attr = kwargs.get('attr','')
+    children = kwargs.get('children','')
+    t=format_html(f'<div class="w3-modal" id="modal" {attr}>\
         <div class="w3-modal-content w3-round-large w3-row-cell w3-display-middle {globalSpacing}" style="width:40%;">\
             {children}\
         </div>\
     </div>')
-  return t
+    return t
 
- def fieldsetContainer(children,*args,**kwargs):
-     label = kwargs.get('label','')
-     attr = kwargs.get('attr','')
-     t=format_html(f'<fieldset><legend>{label}</legend>{children}</fieldset>')
-     return t
+ def fieldsetContainer(*args,**kwargs):
+    label = kwargs.get('label','')
+    attr = kwargs.get('attr','')
+    children = kwargs.get('children','')
+    t=format_html(f'<fieldset {attr}><legend>{label}</legend>{children}</fieldset>')
+    return t
 
  def button(*args,**kwargs):
   label = kwargs.get('label','')
   attr = kwargs.get('attr','')
-  t=format_html(f'<button class="{ButtonStyle}{globalSpacing}" for="{label}"{attr}>{label}</button>')
+  t=format_html(f'<button class="{ButtonStyle}{globalSpacing}" for="{label}" {attr}>{label}</button>')
   return t
 
  def radio(*args,**kwargs):
@@ -78,7 +82,7 @@ class base(Style):
   attr = kwargs.get('attr','')
   t=format_html(f'<div class="{globalSpacing}"> \
                      <label class="w3-padding-16" for="{label}">{label}</label> \
-                     <input type="radio" name="{label}" class="{leftSpace}{RowStyle}{InputStyle}"/> \
+                     <input type="radio" name="{label}" class="{leftSpace}{RowStyle}{InputStyle}" {attr}/> \
                      </div>')
   return t
  
@@ -87,22 +91,25 @@ class base(Style):
   attr = kwargs.get('attr','')
   t=format_html(f'<div class="{globalSpacing}"> \
                      <label class="" for="{label}">{label}</label> \
-                     <input type="checkbox" name="{label}" class="{leftSpace}{RowStyle}{InputStyle}"/> \
+                     <input type="checkbox" name="{label}" class="{leftSpace}{RowStyle}{InputStyle}" {attr}/> \
                      </div>')
   return t
 
  def list(*args,**kwargs):
   label = kwargs.get('label','')
   attr = kwargs.get('attr','')
-  itemlist = ["company1","company2","company3"]
+  children = kwargs.get('children','')
+  # itemlist = ["company1","company2","company3"]
   option = ""
-  for item in itemlist:
-    option += f'<option>{item}</option>'
+  if(len(children)!= 0):
+      for item in children:
+      # for item in itemlist:
+        option += f'<option>{item}</option>'
 
   t=format_html(f'<div class="{globalSpacing}"> \
                      <label class="" for="{label}">{label}</label> \
                      <div class="w3-dropdown-hover">\
-                         <select name="{label}" class="w3-button {leftSpace}{RowStyle}{InputStyle}">{option}</select>\
+                         <select name="{label}" class="w3-button {leftSpace}{RowStyle}{InputStyle}" {attr}>{option}</select>\
                      </div>\
                   </div>')
   return t

@@ -13,55 +13,40 @@
         "table2"
     ],
     "fields": {
-        "null": {
-            "method": "date",
-            "arguments": "arguments",
-            "variable": "form1"
-        },
-        "2": {
-            "method": "checkbox",
-            "arguments": "arguments",
-            "variable": "form1"
-        },
-        "4": {
-            "method": "checkbox",
-            "arguments": "arguments",
-            "variable": "form1"
-        },
-        "1": {
+        "225": {
             "method": "button",
-            "arguments": "arguments",
-            "variable": "form1"
+            "label": "hello",
+            "attr": "hide",
+            "variable": "form1",
+            "children": "no children"
         },
-        "5": {
+        "226": {
             "method": "checkbox",
-            "arguments": "arguments",
-            "variable": "form1"
+            "label": "hello",
+            "attr": "hide",
+            "variable": "form1",
+            "children": "no children"
         },
-        "7": {
-            "method": "checkbox",
-            "arguments": "arguments",
-            "variable": "form1"
-        },
-        "3": {
-            "method": "columnContainer",
-            "arguments": "arguments",
-            "variable": "form1"
-        },
-        "10": {
-            "method": "columnContainer",
-            "arguments": "arguments",
-            "variable": "form1"
-        },
-        "9": {
-            "method": "color",
-            "arguments": "arguments",
-            "variable": "form1"
-        },
-        "6": {
+        "227": {
             "method": "button",
-            "arguments": "arguments",
-            "variable": "form1"
+            "label": "hello",
+            "attr": "hide",
+            "variable": "form1",
+            "children": "no children"
+        },
+        "228": {
+            "method": "columnContainer",
+            "label": "hello",
+            "attr": "hide",
+            "variable": "form1",
+            "children": "no children"
+        },
+        "229": {
+            "method": "container",
+            "label": "hello",
+            "attr": "hide",
+            "variable": "form1",
+            "children": "no children"
         }
     }
 }

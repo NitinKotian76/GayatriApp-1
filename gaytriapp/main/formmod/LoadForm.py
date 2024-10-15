@@ -15,11 +15,17 @@ def Filedata(filename):
         for i in range(len(data["fields"].keys())):
             fields = list(data["fields"].keys())
             method = getattr(base,data["fields"][fields[i]]["method"])
-            htmllist.append(method(data["fields"][fields[i]]["arguments"]))
-        print(htmllist)
+            print(data["fields"][fields[i]]["attr"])
+            print(data["fields"][fields[i]]["label"])
+            label= data["fields"][fields[i]]["label"]
+            attr= data["fields"][fields[i]]["attr"]
+            child= data["fields"][fields[i]]["children"]
+            field = method(children=child,label=label,attr=attr)
+            htmllist.append(field)
+        # print(htmllist)
         for i in range(len(htmllist)):
-            print(htmllist[i])
+            # print(htmllist[i])
             html += htmllist[i]
-        print(type(html))
+        # print(type(html))
         return html
 

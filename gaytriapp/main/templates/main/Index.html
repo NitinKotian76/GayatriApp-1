@@ -117,14 +117,14 @@
 {% endblock %}
 {% block content %}
       <main>
-            <section class="w3-modal"> 
+            <section id="modalView" class="w3-modal"> 
                 <!-- modals -->
-                <form method="post" action={% url 'main:index' %}>
-                {% csrf_token %}
-                <div class="w3-modal-content">
-                    {{modalView}}
-                </div>
-                </form>
+		<div class="w3-modal-content">
+			<form method="post">
+			{% csrf_token %}
+			<a>link</a>
+			</form>
+		</div>
             </section>
             <section id="mainform" >
                 <!-- this is a form 
@@ -138,13 +138,9 @@
                           <div class="w3-dropdown-content w3-bar-block w3-border">
                               {% for item in itemlist %}
                                 <a hx-post="/main/create_form" 
-                                   hx-vals='{"additem": "{{item}}"}' 
+                                   hx-vals='{"additem": "{{item}}","rm_field":"110"}' 
                                    hx-target="#mainform" hx-swap="innerhtml"
                                    class="w3-bar-item w3-button fieldlist" id="{{item}}">
-                                {% comment %} this is a comment
-                                onclick='customPost("{{item}}")'
-                                <a  class="w3-bar-item w3-button fieldlist" id="{{item}}">
-                                    {% endcomment %}
                                    {% csrf_token %}
                                    {{item}}
                                 </a>

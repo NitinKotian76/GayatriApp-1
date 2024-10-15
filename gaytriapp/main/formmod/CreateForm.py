@@ -5,7 +5,6 @@ the next click should do the same
 """
 
 from . import BaseForm as bf
-from main import models 
 import tempfile
 import json
 import os
@@ -35,8 +34,16 @@ class formFieldData:
 
     def removeField(self,fieldno):
         self.FieldDataDict["fields"].pop(fieldno)
+        # after poping field update the fieldnos for every field after the poped field
+        tempdatadict = self.FieldDataDict
+        fieldStart = list(self.FieldDataDict["fields"].keys())[0]
+        fields = len(self.FieldDataDict["fields"].keys())
+        for  i in range(fieldno+1,fields+fieldStart):
+            tempdatadict.update(str(i-1),list(self.FieldDataDict["fields"].values())[i])
+        self.FieldDataDict = tempdatadict
 
-    def addField(self,field,args,var,FieldNo):
+
+    def addField(self,field,label,attr,var,FieldNo,child):
         """
         addfield to a dictionary and save the file using json
 
@@ -52,16 +59,38 @@ class formFieldData:
 
         """
         # check if the function is callable
-        method = getattr(bf.base,field)
+        method = getattr(bf.base,field) # method is the base.field
+        incontainer = False
+        # if field is a container then nest the form 
+        # and use a flag to get out of the nesting 
+        # if(SearchArray(field)):
+        #     incontainer = true # flag
+        #     if callable(method):
+        #         basemethod = {
+        #                 "method":field,
+        #                 "arguments":args,
+        #                 "variable":var,
+        #                 "children":nestField
+        #         }
+        # else:
         if callable(method):
             basemethod = {
                     "method":field,
-                    "arguments":args,
+                    "label":label,
+                    "attr":attr,
                     "variable":var,
+                    "children":child
             }
-            # fieldname ="field"+FieldNo
-            data={FieldNo: basemethod}
-            self.AddDatatoDraft(data)
+        data={FieldNo: basemethod}
+        self.AddDatatoDraft(data)
+
+    def SearchArray(self,field):
+        containerlist = ['Container','columnContainer','modalContainer','fieldsetContainer']
+        for i in containerlist:
+            if field == i:
+                return 1
+            else:
+                return 0
 
     def saveForm(self,formdata):
         with open(self.filename,'w') as file:
@@ -98,6 +127,6 @@ class formFieldData:
         the field dictionary
             
         """
-        with open(self.draftfilename,'r') as file:
+        with open(self.filename,'r') as file:
             filedata=json.load(file)
             return filedata

@@ -1,4 +1,4 @@
-$(document).ready( function() {
+$(document).ready(function() {
 	let count = 0;
 	function getCSRFToken() {
 	       //this function gets the csrftoken 
@@ -16,21 +16,17 @@ $(document).ready( function() {
 		}
 		return "";
 	}
+
+    /** the count is not updated immideately it updates after two requests */
 	console.log(getCSRFToken());
-    document.body.addEventListener('htmx:beforeRequest', (event)=>{
-        //if(event.target.className == "fieldlist"){
-            count++;
-            console.log(event.target);
-            let value= JSON.parse(event.target.getAttribute("hx-vals"));
-            value["count"] = count;
-            event.target.setAttribute("hx-vals",JSON.stringify(value));
-        //}
-    });
+
+    //document.getElementByClassName("fieldlist").addEventListener("click", function(){
+    //    count++;
+    //    console.log(count);
+    //});
+
 	document.body.addEventListener('htmx:configRequest', (event) => {
 		event.detail.headers['X-CSRFToken'] = getCSRFToken();
 	}); 
 
-
 });
-
-
