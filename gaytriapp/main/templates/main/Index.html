@@ -12,8 +12,10 @@
                     <div class="w3-dropdown-content w3-bar-block w3-card-4">
                     <a class="w3-bar-item w3-button" 
                         hx-post="/main/create_form" 
-                        hx-vals='{"something": "hello"}' 
-                        hx-target="#contentArea">create form
+                        hx-vals='{"createForm":""}' 
+                        hx-target="#modalView"
+			hx-swap="innerhtml"
+			>create form
                     </a>
                     <a  class="w3-bar-item w3-button" 
                         hx-post="/main/delete_form" 
@@ -119,12 +121,6 @@
       <main>
             <section id="modalView" class="w3-modal"> 
                 <!-- modals -->
-		<div class="w3-modal-content">
-			<form method="post">
-			{% csrf_token %}
-			<a>link</a>
-			</form>
-		</div>
             </section>
             <section id="mainform" >
                 <!-- this is a form 
@@ -137,8 +133,8 @@
                           <button type="button" class="w3-cell-row w3-button w3-blue">+</button>
                           <div class="w3-dropdown-content w3-bar-block w3-border">
                               {% for item in itemlist %}
-                                <a hx-post="/main/create_form" 
-                                   hx-vals='{"additem": "{{item}}","rm_field":"110"}' 
+                                <a hx-post="/main/add_field" 
+                                   hx-vals='{"additem": "{{item}}"}' 
                                    hx-target="#mainform" hx-swap="innerhtml"
                                    class="w3-bar-item w3-button fieldlist" id="{{item}}">
                                    {% csrf_token %}

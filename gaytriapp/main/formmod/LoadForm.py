@@ -15,8 +15,8 @@ def Filedata(filename):
         for i in range(len(data["fields"].keys())):
             fields = list(data["fields"].keys())
             method = getattr(base,data["fields"][fields[i]]["method"])
-            print(data["fields"][fields[i]]["attr"])
-            print(data["fields"][fields[i]]["label"])
+            # print(data["fields"][fields[i]]["attr"])
+            # print(data["fields"][fields[i]]["label"])
             label= data["fields"][fields[i]]["label"]
             attr= data["fields"][fields[i]]["attr"]
             child= data["fields"][fields[i]]["children"]

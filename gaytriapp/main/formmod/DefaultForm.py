@@ -28,7 +28,13 @@ def loginFail():
 def home():
     return(BF.modalContainer(children='<a href="/main/login" class="w3-cell w3-button w3-blue w3-round-large">Login</a>', attr='style="display:block;"'))
 # edit the field
-def formConfig():
+def formSetup():
     # this is the config page for the fields 
     # should contain the label, variable name, default value, 
-    return(BF.label(label="hello")+BF.textInput())
+    childlist = ['user1','user2','user3']
+    return(BF.modalContainer(children=BF.fieldsetContainer(children=BF.textInput(label="Form Name")+
+                                BF.list(label="user name",children=childlist)+
+                                BF.checkbox(label="read")+BF.checkbox(label="write")+
+                                BF.textInput(label="Form Name"),
+                                label="Form Setup")
+           ))

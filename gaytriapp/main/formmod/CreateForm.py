@@ -63,26 +63,21 @@ class formFieldData:
         incontainer = False
         # if field is a container then nest the form 
         # and use a flag to get out of the nesting 
-        # if(SearchArray(field)):
-        #     incontainer = true # flag
-        #     if callable(method):
-        #         basemethod = {
-        #                 "method":field,
-        #                 "arguments":args,
-        #                 "variable":var,
-        #                 "children":nestField
-        #         }
-        # else:
-        if callable(method):
-            basemethod = {
-                    "method":field,
-                    "label":label,
-                    "attr":attr,
-                    "variable":var,
-                    "children":child
-            }
-        data={FieldNo: basemethod}
-        self.AddDatatoDraft(data)
+        if(SearchArray(field)):
+            incontainer = true # flag
+            if incontainer :
+                pass
+            else :
+                if callable(method):
+                    basemethod = {
+                            "method":field,
+                            "label":label,
+                            "attr":attr,
+                            "variable":var,
+                            "children":child
+                    }
+                data={FieldNo: basemethod}
+                self.AddDatatoDraft(data)
 
     def SearchArray(self,field):
         containerlist = ['Container','columnContainer','modalContainer','fieldsetContainer']

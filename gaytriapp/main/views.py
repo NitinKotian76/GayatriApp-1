@@ -10,10 +10,10 @@ from django.contrib.auth import authenticate
 import json
 
 # Create your views here.
-global df,ds
+global df, ds, ff
 df = displayDefaultForms()
 ds = DisplayForm()
-
+ff = None
 class home():
     def index(request):
         request.session.setdefault('count',0)
@@ -34,32 +34,18 @@ class form():
         this view should get the user input and show the field config modal 
         then after the user clicks save or cancel the mainform should be updated
         """
-        # use the ui to get the no each type of field required in a queue 
-        ff = formFieldData("demo1",[["user1","r","w","x"]],["table1","table2"])
+        # initialize the form data
         if request.method == "POST":
-             data = request.POST.get("additem")
-             # arguments = somefunction()
-             if request.POST.get("additem") != None:# choose field
-                 request.session['count'] = request.session.get('count',0)+1
-                 print(request.session.get('count',0))
-                 editable = True
-                 # ff.addField(container,'')
-                 label="hello"
-                 attr="hide"
-                 ff.addField(data,label,attr,"form1",request.session.get('count',0),child="no children")
-                 return HttpResponse(Filedata(ff.filename))
-
-    def edit_field(request):                
-        return HttpResponse(df.fieldConfig())
-    
-    def save_config(request):
-        pass
-    def rm_field(request):
-         fieldno=request.POST.get("rm_field")
-         ff.removeField(fieldno)
-         request.session['count'] = request.session.get('count',0)-1
-         print(request.session.get('count',0))
-         return HttpResponse(Filedata(ff.filename))
+            if request.POST.get("createForm"):
+                return HTTPResponse(df.formSetup())
+    def form_setup():
+        # name the form , give permissions , attach tables to the form
+        if request.method == "POST":
+            if request.POST.get("submit"):
+                formName = request.POST.get("formname")
+                permissions = request.POST.get("permission")
+                tables = request.POST.get("tables")
+                ff = formFieldData(formname,permissions,tables)
 
     def save_form(request):
         pass
@@ -77,6 +63,33 @@ class form():
              return JsonResponse({"response":"response"})
          else:
              return JsonResponse({"response":"other response"})
+
+    def add_field(request):
+        if request.method == "POST":
+             data = request.POST.get("additem")
+             # arguments = somefunction()
+             if request.POST.get("additem") != None:# choose field
+                 request.session['count'] = request.session.get('count',0)+1
+                 print(request.session.get('count',0))
+                 editable = True
+                 # ff.addField(container,'')
+                 label="hello"
+                 attr="hide"
+                 ff.addField(data,label,attr,"form1",request.session.get('count',0),child="no children")
+                 return HttpResponse(Filedata(ff.filename))
+
+    def edit_field(request):                
+        return HttpResponse(df.fieldConfig())
+    
+    def save_field_config(request):
+        pass
+    def rm_field(request):
+         fieldno=request.POST.get("rm_field")
+         ff.removeField(fieldno)
+         request.session['count'] = request.session.get('count',0)-1
+         print(request.session.get('count',0))
+         return HttpResponse(Filedata(ff.filename))
+
 
 class report():
     
