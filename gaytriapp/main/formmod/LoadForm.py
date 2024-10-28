@@ -26,6 +26,6 @@ def Filedata(filename):
         for i in range(len(htmllist)):
             # print(htmllist[i])
             html += htmllist[i]
-        # print(type(html))
+        print(type(html))
         return html
 

@@ -9,15 +9,3 @@ class DisplayForm():
     def loadDraftForms(self):
         pass
 
-class displayDefaultForms():
-
-    def addFields(self):
-        return df.AddFields()
-    def loginForm(self):
-        return df.loginForm()
-    def loginSuccess(self):
-        return df.loginSuccess()
-    def loginFail(self):
-        return df.loginFail()
-    def home(self):
-        return df.home()

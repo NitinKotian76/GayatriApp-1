@@ -1,68 +1,111 @@
 from django.shortcuts import render, redirect
 from django.http import JsonResponse,HttpResponse 
-from .formmod.Displayform import DisplayForm,displayDefaultForms
-from .formmod.CreateForm import formFieldData
-from .formmod.LoadForm import Filedata
-from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import ensure_csrf_cookie, csrf_protect
 from .models import Profile, AdminProfile
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate
 import json
 
-# Create your views here.
-global df, ds, ff
-df = displayDefaultForms()
-ds = DisplayForm()
-ff = None
-class home():
-    def index(request):
-        request.session.setdefault('count',0)
-        return render(request,"main/index.html",{
-                "nav":"navigation",
-                "itemlist":df.addFields(),
-            })
+from .formmod.Displayform import DisplayForm as ds
+from .formmod  import DefaultForm as df
+from .formmod.CreateForm import formFieldData
+from .formmod.LoadForm import Filedata
 
+# Create your views here.
+global  ff
+# ds = DisplayForm()
+ff = None
+        
+
+class home():
     def start(request):
         return render(request,"main/home.html",{
                 "home":df.home()
             })
 
+    def login(request):
+        if request.method == "POST":
+            username = request.POST["Username"]
+            password = request.POST["Password"]
+            user = authenticate(request, username=username, password=password)
+            if user is not None:
+                return redirect("main:index")
+            else:
+                return render(request,"main/login.html",{"login":df.loginFail()})
+        else:
+            return render(request,"main/login.html",{
+                "login":df.loginForm()
+                }
+            )
+
+    def index(request):
+        request.session.setdefault('count',0) 
+        return render(request,"main/index.html",{"itemlist":df.addFields()})
+class user():
+
+    def logout(self):
+        pass
+    
+    def new_user (request):
+     if request.method == "POST":
+         data = request.POST.get("something") 
+         return JsonResponse({"response":"response"})
+     else:
+         return JsonResponse({"response":"other response"})
+
+
+    
+    def edit_user (request):
+     if request.method == "POST":
+         data = request.POST.get("something") 
+         return JsonResponse({"response":"response"})
+     else:
+         return JsonResponse({"response":"other response"})
+
+
+    
+    def delete_user (request):
+     if request.method == "POST":
+         data = request.POST.get("something") 
+         return JsonResponse({"response":"response"})
+     else:
+         return JsonResponse({"response":"other response"})
+
+@login_required
 class form():
-    @login_required
-    def create_form (request):
+
+    def create_form(request):
         """
         this view should get the user input and show the field config modal 
         then after the user clicks save or cancel the mainform should be updated
         """
         # initialize the form data
-        if request.method == "POST":
-            if request.POST.get("createForm"):
-                return HTTPResponse(df.formSetup())
-    def form_setup():
+        if request.method == "GET":
+            return HttpResponse(df.formSetup())
+
+    def form_setup(request):
         # name the form , give permissions , attach tables to the form
         if request.method == "POST":
             if request.POST.get("submit"):
                 formName = request.POST.get("formname")
                 permissions = request.POST.get("permission")
                 tables = request.POST.get("tables")
-                ff = formFieldData(formname,permissions,tables)
+                # create formfield object
+                ff=formFieldData(formname,permissions,tables)
+                return HttpResponse("success")
 
     def save_form(request):
-        pass
+        if request.method == "POST":
+            ff.saveForm(ff.FieldDataDict)
+            return("success")
     
     def delete_form (request):
          if request.method == "POST":
-             data = request.POST.get("something") 
-             return JsonResponse({"response":"response"})
-         else:
-             return JsonResponse({"response":"other response"})
+             return(ff.deleteForm(ff.filename))
     
-    def edit_form (request):
+    def edit_form(request):
          if request.method == "POST":
-             data = request.POST.get("something") 
-             return JsonResponse({"response":"response"})
-         else:
-             return JsonResponse({"response":"other response"})
+             return render(request,"main/formEditor.html",{"itemlist":df.addFields()})
 
     def add_field(request):
         if request.method == "POST":
@@ -79,10 +122,15 @@ class form():
                  return HttpResponse(Filedata(ff.filename))
 
     def edit_field(request):                
-        return HttpResponse(df.fieldConfig())
+        return HttpResponse(df.fieldSetup())
     
     def save_field_config(request):
-        pass
+        if request.method == "POST":
+            if request.POST.get("submit"):
+                fieldName = request.POST.get("fieldname")
+                permissions = request.POST.get("permission")
+                tables = request.POST.get("tables")
+                ff = formFieldData(formname,permissions,tables)
     def rm_field(request):
          fieldno=request.POST.get("rm_field")
          ff.removeField(fieldno)
@@ -114,49 +162,6 @@ class report():
          else:
              return JsonResponse({"response":"other response"})
 
-class user():
-
-    def login(request):
-        if request.method == "POST":
-            username = request.POST["Username"]
-            password = request.POST["Password"]
-            user = authenticate(request, username=username, password=password)
-            if user is not None:
-                return redirect("main:index")
-            else:
-                return render(request,"main/login.html",{"login":df.loginFail()})
-        else:
-            return render(request,"main/login.html",{
-                "login":df.loginForm()
-                }
-            )
-    def logout(self):
-        pass
-    
-    def new_user (request):
-     if request.method == "POST":
-         data = request.POST.get("something") 
-         return JsonResponse({"response":"response"})
-     else:
-         return JsonResponse({"response":"other response"})
-
-
-    
-    def edit_user (request):
-     if request.method == "POST":
-         data = request.POST.get("something") 
-         return JsonResponse({"response":"response"})
-     else:
-         return JsonResponse({"response":"other response"})
-
-
-    
-    def delete_user (request):
-     if request.method == "POST":
-         data = request.POST.get("something") 
-         return JsonResponse({"response":"response"})
-     else:
-         return JsonResponse({"response":"other response"})
 
 class group():
     

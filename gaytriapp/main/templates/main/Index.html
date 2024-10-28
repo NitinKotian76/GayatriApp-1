@@ -1,157 +1,131 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 {% block nav %}
-    <div class="navigation">
-        <nav>
-            <ul class="w3-light-grey" style="padding-left: 0px;">
-                <div class="w3-dropdown-hover">
-                    <a style="text-decoration: none;" 
-                        class="w3-button w3-light-grey"  
-                        hx-post="/main/form" 
-                        hx-target="#contentArea" >Forms
-                    </a>
-                    <div class="w3-dropdown-content w3-bar-block w3-card-4">
-                    <a class="w3-bar-item w3-button" 
-                        hx-post="/main/create_form" 
-                        hx-vals='{"createForm":""}' 
-                        hx-target="#modalView"
-			hx-swap="innerhtml"
-			>create form
-                    </a>
-                    <a  class="w3-bar-item w3-button" 
-                        hx-post="/main/delete_form" 
-                        hx-target="#contentArea" >delete form
-                    </a>
-                    <a  class="w3-bar-item w3-button" 
-                        hx-post="/main/edit_form" 
-                        hx-target="#contentArea" >edit form
-                    </a>
-                </div>
-                </div>
-                <div class="w3-dropdown-hover">
-                    <a style="text-decoration: none;" 
-                        class="w3-button w3-light-grey"  
-                        hx-post="/main/report" 
-                        hx-target="#contentArea">Reports
-                    </a>
-                    <div class="w3-dropdown-content w3-bar-block w3-card-4">
-                    <a  class="w3-bar-item w3-button" 
-                        hx-post="/main/new_report" 
-                        hx-target="#contentArea">new report
-                    </a>
-                    <a  class="w3-bar-item w3-button" 
-                        hx-post="/main/edit_report" 
-                        hx-target="#contentArea">edit report
-                    </a>
-                    <a  class="w3-bar-item w3-button" 
-                        hx-post="/main/delete_report" 
-                        hx-target="#contentArea">delete report
-                    </a>
-                </div>
-                </div>
-                <div class="w3-dropdown-hover">
-                    <a style="text-decoration: none;" 
-                        class="w3-button w3-light-grey"  
-                        hx-post="/main/user" 
-                        hx-target="#contentArea">Users
-                    </a>
-                    <div class="w3-dropdown-content w3-bar-block w3-card-4">
-                    <a  class="w3-bar-item w3-button" 
-                        hx-post="/main/new_user" 
-                        hx-target="#contentArea">new user
-                    </a>
-                    <a  class="w3-bar-item w3-button" 
-                        hx-post="/main/edit_user" 
-                        hx-target="#contentArea">edit user
-                    </a>
-                    <a  class="w3-bar-item w3-button" 
-                        hx-post="/main/delete_user" 
-                        hx-target="#contentArea">delete user
-                    </a>
-                    <a  class="w3-bar-item w3-button" 
-                        hx-post="/main/new_group" 
-                        hx-target="#contentArea">new group
-                    </a>
-                    <a  class="w3-bar-item w3-button" 
-                        hx-post="/main/edit_group" 
-                        hx-target="#contentArea">edit group
-                    </a>
-                    <a  class="w3-bar-item w3-button" 
-                        hx-post="/main/delete_group" 
-                        hx-target="#contentArea">delete group
-                    </a>
-                </div>
-                </div>
-                <div class="w3-dropdown-hover">
-                    <a style="text-decoration: none;" 
-                        class="w3-button w3-light-grey"  
-                        hx-post="/main/database" 
-                        hx-target="#contentArea">database
-                    </a>
-                    <div class="w3-dropdown-content w3-bar-block w3-card-4">
-                    <a  class="w3-bar-item w3-button" 
-                        hx-post="/main/create_db" 
-                        hx-target="#contentArea">create database
-                    </a>
-                    <a  class="w3-bar-item w3-button" 
-                        hx-post="/main/createtable_db" 
-                        hx-target="#contentArea">create table
-                    </a>
-                    <a  class="w3-bar-item w3-button" 
-                        hx-post="/main/edittable_db" 
-                        hx-target="#contentArea">edit table
-                    </a>
-                    <a  class="w3-bar-item w3-button" 
-                        hx-post="/main/deletetable_db" 
-                        hx-target="#contentArea">delete table
-                    </a>
-                    <a  class="w3-bar-item w3-button" 
-                        hx-post="/main/backup" 
-                        hx-target="#contentArea">backup
-                    </a>
-                </div>
-                </div>
-            </ul>
-        </nav>
-        <div>
-            <img class="w3-bar-item w3-circle w3-hide-small"/>
-        </div>
-    </div>
+<div class="navigation">
+<nav>
+    <ul class="w3-light-grey" style="padding-left: 0px;">
+	<div class="w3-dropdown-hover">
+	    <a style="text-decoration: none;" 
+		class="w3-button w3-light-grey"  
+		hx-post="/main/form" 
+		hx-target="#contentArea" >Forms
+	    </a>
+	    <div class="w3-dropdown-content w3-bar-block w3-card-4">
+		    <a class="w3-bar-item w3-button" 
+		       hx-get="/main/create_form" 
+		       hx-target="#modalView"
+		       hx-swap="innerhtml"
+		       onclick='document.getElementById("modalView").style.display="block"'>
+			    create form
+		    </a>
+		    <a  class="w3-bar-item w3-button" 
+			hx-post="/main/delete_form" 
+			hx-target="#contentArea" >delete form
+		    </a>
+		    <a  class="w3-bar-item w3-button" 
+			hx-post="/main/edit_form" 
+			hx-target="#contentArea" >edit form
+		    </a>
+	    </div>
+	</div>
+	<div class="w3-dropdown-hover">
+	    <a style="text-decoration: none;" 
+		class="w3-button w3-light-grey"  
+		hx-post="/main/report" 
+		hx-target="#contentArea">Reports
+	    </a>
+	    <div class="w3-dropdown-content w3-bar-block w3-card-4">
+		    <a  class="w3-bar-item w3-button" 
+			hx-post="/main/new_report" 
+			hx-target="#contentArea">new report
+		    </a>
+		    <a  class="w3-bar-item w3-button" 
+			hx-post="/main/edit_report" 
+			hx-target="#contentArea">edit report
+		    </a>
+		    <a  class="w3-bar-item w3-button" 
+			hx-post="/main/delete_report" 
+			hx-target="#contentArea">delete report
+		    </a>
+	    </div>
+	</div>
+	<div class="w3-dropdown-hover">
+	    <a style="text-decoration: none;" 
+		class="w3-button w3-light-grey"  
+		hx-post="/main/user" 
+		hx-target="#contentArea">Users
+	    </a>
+	    <div class="w3-dropdown-content w3-bar-block w3-card-4">
+		    <a  class="w3-bar-item w3-button" 
+			hx-post="/main/new_user" 
+			hx-target="#contentArea">new user
+		    </a>
+		    <a  class="w3-bar-item w3-button" 
+			hx-post="/main/edit_user" 
+			hx-target="#contentArea">edit user
+		    </a>
+		    <a  class="w3-bar-item w3-button" 
+			hx-post="/main/delete_user" 
+			hx-target="#contentArea">delete user
+		    </a>
+		    <a  class="w3-bar-item w3-button" 
+			hx-post="/main/new_group" 
+			hx-target="#contentArea">new group
+		    </a>
+		    <a  class="w3-bar-item w3-button" 
+			hx-post="/main/edit_group" 
+			hx-target="#contentArea">edit group
+		    </a>
+		    <a  class="w3-bar-item w3-button" 
+			hx-post="/main/delete_group" 
+			hx-target="#contentArea">delete group
+		    </a>
+	    </div>
+	</div>
+	<div class="w3-dropdown-hover">
+	    <a style="text-decoration: none;" 
+		class="w3-button w3-light-grey"  
+		hx-post="/main/database" 
+		hx-target="#contentArea">database
+	    </a>
+	    <div class="w3-dropdown-content w3-bar-block w3-card-4">
+		    <a  class="w3-bar-item w3-button" 
+			hx-post="/main/create_db" 
+			hx-target="#contentArea">create database
+		    </a>
+		    <a  class="w3-bar-item w3-button" 
+			hx-post="/main/createtable_db" 
+			hx-target="#contentArea">create table
+		    </a>
+		    <a  class="w3-bar-item w3-button" 
+			hx-post="/main/edittable_db" 
+			hx-target="#contentArea">edit table
+		    </a>
+		    <a  class="w3-bar-item w3-button" 
+			hx-post="/main/deletetable_db" 
+			hx-target="#contentArea">delete table
+		    </a>
+		    <a  class="w3-bar-item w3-button" 
+			hx-post="/main/backup" 
+			hx-target="#contentArea">backup
+		    </a>
+	    </div>
+	</div>
+    </ul>
+</nav>
+<div>
+    <img class="w3-bar-item w3-circle w3-hide-small"/>
+</div>
+</div>
 {% endblock %}
 {% block content %}
-      <main>
-            <section id="modalView" class="w3-modal"> 
-                <!-- modals -->
-            </section>
             <section id="mainform" >
                 <!-- this is a form 
                 When the Admin wants to create and when the user wants to view the form this module
                 will be the root for all other input and view and output modules -->
             </section>
-            <section>
-                <div class="w3-cell-row w3-margin-top">
-                      <div class="w3-dropdown-hover w3-cell" style="width:80%">
-                          <button type="button" class="w3-cell-row w3-button w3-blue">+</button>
-                          <div class="w3-dropdown-content w3-bar-block w3-border">
-                              {% for item in itemlist %}
-                                <a hx-post="/main/add_field" 
-                                   hx-vals='{"additem": "{{item}}"}' 
-                                   hx-target="#mainform" hx-swap="innerhtml"
-                                   class="w3-bar-item w3-button fieldlist" id="{{item}}">
-                                   {% csrf_token %}
-                                   {{item}}
-                                </a>
-                              {% endfor %}
-                          </div>
-                      </div>
-                      <div class="w3-cell" style="width:20%">
-                      <button class="addcolumn w3-cell-row w3-button w3-blue" >+</button>
-                      </div>
-                  </div>
+{% endblock %}
+{% block modal %}
+            <section id="modalView" class="w3-modal"> 
+                <!-- modals -->
             </section>
-        </main>
-        <footer>
-            <address>
-
-            </address>
-        </footer>
 {% endblock %}

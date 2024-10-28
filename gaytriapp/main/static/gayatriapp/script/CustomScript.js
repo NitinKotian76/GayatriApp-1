@@ -16,17 +16,9 @@ $(document).ready(function() {
 		}
 		return "";
 	}
-
-    /** the count is not updated immideately it updates after two requests */
+	/** the count is not updated immideately it updates after two requests */
 	console.log(getCSRFToken());
-
-    //document.getElementByClassName("fieldlist").addEventListener("click", function(){
-    //    count++;
-    //    console.log(count);
-    //});
-
 	document.body.addEventListener('htmx:configRequest', (event) => {
 		event.detail.headers['X-CSRFToken'] = getCSRFToken();
 	}); 
-
 });

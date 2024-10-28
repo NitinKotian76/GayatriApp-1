@@ -46,7 +46,8 @@ class formFieldData:
     def addField(self,field,label,attr,var,FieldNo,child):
         """
         addfield to a dictionary and save the file using json
-
+        the function is called every time user click on add button 
+   
         Parameters
         ----------
         field : field name
@@ -71,7 +72,7 @@ class formFieldData:
                 if callable(method):
                     basemethod = {
                             "method":field,
-                            "label":label,
+                            "label":label+FieldNo,
                             "attr":attr,
                             "variable":var,
                             "children":child
@@ -79,6 +80,13 @@ class formFieldData:
                 data={FieldNo: basemethod}
                 self.AddDatatoDraft(data)
 
+    def edit_field(self,):
+        """
+        edit the field configuration when user click on field settings button
+        get the fieldno from 
+        then set the field variables
+        """
+        pass
     def SearchArray(self,field):
         containerlist = ['Container','columnContainer','modalContainer','fieldsetContainer']
         for i in containerlist:

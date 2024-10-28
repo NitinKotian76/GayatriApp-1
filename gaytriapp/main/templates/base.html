@@ -12,7 +12,16 @@
         <script src="{% static 'gayatriapp/script/CustomScript.js'%}"></script>
     </head>
     <body>
-        {% block nav %}{% endblock %}
-        {% block content %}{% endblock %}
+	{% block nav %}{% endblock %}
+	<main>
+		{% block modal %}{% endblock %}
+		{% block content %}{% endblock %}
+		{% block formEditor %}{% endblock %}
+	</main>
+        <footer>
+            <address>
+
+            </address>
+        </footer>
     </body>
 </html>
