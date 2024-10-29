@@ -90,9 +90,8 @@ class form():
                 formName = request.POST.get("formname")
                 permissions = request.POST.get("permission")
                 tables = request.POST.get("tables")
-                # create formfield object
                 ff=formFieldData(formname,permissions,tables)
-                return HttpResponse("success")
+                return HttpResponse('<p>success</p>')
 
     def save_form(request):
         if request.method == "POST":

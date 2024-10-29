@@ -36,7 +36,7 @@ def formSetup():
                                 BF.list(label="user name",children=childlist)+BF.container(children=
                                 BF.checkbox(label="read")+BF.checkbox(label="write"))+
                                 BF.textInput(label="Description",attr="")+
-                                BF.button(label="Submit",attr='hx-post="/main/form_setup" hx-target="#modalView" hx-swap="innerhtml"')+
+                                BF.button(label="Submit",attr='hx-post="/main/form_setup"')+
                                 BF.button(label="Cancel",attr='onclick=document.getElementById("modalView").style.display="none"')),
                                 label="Form Setup",attr=''),attr='style="display:block"')
            )

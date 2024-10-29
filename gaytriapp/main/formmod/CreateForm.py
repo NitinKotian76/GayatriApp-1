@@ -10,7 +10,7 @@ import json
 import os
 # crud
 
-class formFieldData:
+class formFieldData(forms.Field):
     """ 
     processes the field selections from user input
 
@@ -29,20 +29,13 @@ class formFieldData:
                 "fields" : {} 
         }
         self.count = 0
+        self.formName= formName
         self.filename= f"form_{formName}.json"
-        # self.draftfilename = f"draftForm_{formName}.json"
-
-    def removeField(self,fieldno):
-        self.FieldDataDict["fields"].pop(fieldno)
-        # after poping field update the fieldnos for every field after the poped field
-        tempdatadict = self.FieldDataDict
-        fieldStart = list(self.FieldDataDict["fields"].keys())[0]
-        fields = len(self.FieldDataDict["fields"].keys())
-        for  i in range(fieldno+1,fields+fieldStart):
-            tempdatadict.update(str(i-1),list(self.FieldDataDict["fields"].values())[i])
-        self.FieldDataDict = tempdatadict
+    
 
 
+    # crud for form fields #
+    #______________________#
     def addField(self,field,label,attr,var,FieldNo,child):
         """
         addfield to a dictionary and save the file using json
@@ -78,7 +71,17 @@ class formFieldData:
                             "children":child
                     }
                 data={FieldNo: basemethod}
-                self.AddDatatoDraft(data)
+                self.saveChange(data)
+
+    def removeField(self,fieldno):
+        self.FieldDataDict["fields"].pop(fieldno)
+        # after poping field update the fieldnos for every field after the poped field
+        tempdatadict = self.FieldDataDict
+        fieldStart = list(self.FieldDataDict["fields"].keys())[0]
+        fields = len(self.FieldDataDict["fields"].keys())
+        for  i in range(fieldno+1,fields+fieldStart):
+            tempdatadict.update(str(i-1),list(self.FieldDataDict["fields"].values())[i])
+        self.FieldDataDict = tempdatadict
 
     def edit_field(self,):
         """
@@ -103,8 +106,13 @@ class formFieldData:
         if os.path.exists(filename):
             os.remove(filename)
 
+    def saveFormto_db(self,formdata):
+        pass
 
-    def AddDatatoDraft(self,data):
+    def deleteForm_db(self,filename):
+        pass
+
+    def saveChange(self,data):
         """
         this function will add to the dictionary in the json file
 
