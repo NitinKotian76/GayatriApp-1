@@ -1,0 +1,283 @@
+{
+    "form_name": "demo1",
+    "access_rights": [
+        [
+            "user1",
+            "r",
+            "w",
+            "x"
+        ]
+    ],
+    "tables": [
+        "table1",
+        "table2"
+    ],
+    "fields": {
+        "225": {
+            "method": "button",
+            "label": "hello",
+            "attr": "hide",
+            "variable": "form1",
+            "children": "no children"
+        },
+        "226": {
+            "method": "checkbox",
+            "label": "hello",
+            "attr": "hide",
+            "variable": "form1",
+            "children": "no children"
+        },
+        "227": {
+            "method": "button",
+            "label": "hello",
+            "attr": "hide",
+            "variable": "form1",
+            "children": "no children"
+        },
+        "228": {
+            "method": "columnContainer",
+            "label": "hello",
+            "attr": "hide",
+            "variable": "form1",
+            "children": "no children"
+        },
+        "229": {
+            "method": "container",
+            "label": "hello",
+            "attr": "hide",
+            "variable": "form1",
+            "children": "no children"
+        },
+        "230": {
+            "method": "button",
+            "label": "hello",
+            "attr": "hide",
+            "variable": "form1",
+            "children": "no children"
+        },
+        "231": {
+            "method": "button",
+            "label": "hello",
+            "attr": "hide",
+            "variable": "form1",
+            "children": "no children"
+        },
+        "232": {
+            "method": "button",
+            "label": "hello",
+            "attr": "hide",
+            "variable": "form1",
+            "children": "no children"
+        },
+        "233": {
+            "method": "button",
+            "label": "hello",
+            "attr": "hide",
+            "variable": "form1",
+            "children": "no children"
+        },
+        "234": {
+            "method": "button",
+            "label": "hello",
+            "attr": "hide",
+            "variable": "form1",
+            "children": "no children"
+        },
+        "235": {
+            "method": "button",
+            "label": "hello",
+            "attr": "hide",
+            "variable": "form1",
+            "children": "no children"
+        },
+        "236": {
+            "method": "button",
+            "label": "hello",
+            "attr": "hide",
+            "variable": "form1",
+            "children": "no children"
+        },
+        "237": {
+            "method": "button",
+            "label": "hello",
+            "attr": "hide",
+            "variable": "form1",
+            "children": "no children"
+        },
+        "238": {
+            "method": "button",
+            "label": "hello",
+            "attr": "hide",
+            "variable": "form1",
+            "children": "no children"
+        },
+        "239": {
+            "method": "button",
+            "label": "hello",
+            "attr": "hide",
+            "variable": "form1",
+            "children": "no children"
+        },
+        "240": {
+            "method": "button",
+            "label": "hello",
+            "attr": "hide",
+            "variable": "form1",
+            "children": "no children"
+        },
+        "241": {
+            "method": "button",
+            "label": "hello",
+            "attr": "hide",
+            "variable": "form1",
+            "children": "no children"
+        },
+        "242": {
+            "method": "button",
+            "label": "hello",
+            "attr": "hide",
+            "variable": "form1",
+            "children": "no children"
+        },
+        "243": {
+            "method": "button",
+            "label": "hello",
+            "attr": "hide",
+            "variable": "form1",
+            "children": "no children"
+        },
+        "244": {
+            "method": "button",
+            "label": "hello",
+            "attr": "hide",
+            "variable": "form1",
+            "children": "no children"
+        },
+        "245": {
+            "method": "files",
+            "label": "hello",
+            "attr": "hide",
+            "variable": "form1",
+            "children": "no children"
+        },
+        "246": {
+            "method": "image",
+            "label": "hello",
+            "attr": "hide",
+            "variable": "form1",
+            "children": "no children"
+        },
+        "247": {
+            "method": "fieldsetContainer",
+            "label": "hello",
+            "attr": "hide",
+            "variable": "form1",
+            "children": "no children"
+        },
+        "248": {
+            "method": "date",
+            "label": "hello",
+            "attr": "hide",
+            "variable": "form1",
+            "children": "no children"
+        },
+        "249": {
+            "method": "password",
+            "label": "hello",
+            "attr": "hide",
+            "variable": "form1",
+            "children": "no children"
+        },
+        "250": {
+            "method": "radio",
+            "label": "hello",
+            "attr": "hide",
+            "variable": "form1",
+            "children": "no children"
+        },
+        "251": {
+            "method": "range",
+            "label": "hello",
+            "attr": "hide",
+            "variable": "form1",
+            "children": "no children"
+        },
+        "252": {
+            "method": "reset",
+            "label": "hello",
+            "attr": "hide",
+            "variable": "form1",
+            "children": "no children"
+        },
+        "253": {
+            "method": "search",
+            "label": "hello",
+            "attr": "hide",
+            "variable": "form1",
+            "children": "no children"
+        },
+        "254": {
+            "method": "email",
+            "label": "hello",
+            "attr": "hide",
+            "variable": "form1",
+            "children": "no children"
+        },
+        "255": {
+            "method": "tel",
+            "label": "hello",
+            "attr": "hide",
+            "variable": "form1",
+            "children": "no children"
+        },
+        "256": {
+            "method": "textInput",
+            "label": "hello",
+            "attr": "hide",
+            "variable": "form1",
+            "children": "no children"
+        },
+        "257": {
+            "method": "textInput2",
+            "label": "hello",
+            "attr": "hide",
+            "variable": "form1",
+            "children": "no children"
+        },
+        "258": {
+            "method": "time",
+            "label": "hello",
+            "attr": "hide",
+            "variable": "form1",
+            "children": "no children"
+        },
+        "259": {
+            "method": "url",
+            "label": "hello",
+            "attr": "hide",
+            "variable": "form1",
+            "children": "no children"
+        },
+        "260": {
+            "method": "week",
+            "label": "hello",
+            "attr": "hide",
+            "variable": "form1",
+            "children": "no children"
+        },
+        "261": {
+            "method": "submit",
+            "label": "hello",
+            "attr": "hide",
+            "variable": "form1",
+            "children": "no children"
+        },
+        "262": {
+            "method": "search",
+            "label": "hello",
+            "attr": "hide",
+            "variable": "form1",
+            "children": "no children"
+        }
+    }
+}

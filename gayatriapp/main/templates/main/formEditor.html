@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block formEditor %}
+<section>
+	{{itemlist}}
+	<div class="w3-cell-row w3-margin-top">
+		<div class="w3-dropdown-hover w3-cell" style="width:80%">
+			<button type="button" class="addrow w3-cell-row w3-button w3-blue">+</button>
+			<div class="w3-dropdown-content w3-bar-block w3-border">
+				{% for item in itemlist %}
+				<a hx-post="/main/add_field" hx-vals="{"additem": "{{item}}"}"\
+				 hx-target="#mainform"
+				 hx-swap="innerhtml"
+				 class="w3-bar-item w3-button fieldlist"
+				 id="{{item}}">
+				 {{item}}
+				</a>
+				{% endfor %}
+			</div>
+		</div>
+		<div class="w3-cell" style="width:20%">
+			<button class="addcolumn w3-cell-row w3-button w3-blue" >+</button>
+		</div>
+	</div>
+</section>
+{% endblock %}

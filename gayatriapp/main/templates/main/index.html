@@ -1,0 +1,149 @@
+{% extends 'base.html' %}
+{% block nav %}
+<div class="navigation">
+<nav>
+    <ul class="w3-light-grey" style="padding-left: 0px;">
+	<div class="w3-dropdown-hover">
+	    <a style="text-decoration: none;" 
+		class="w3-button w3-light-grey"  
+		id="forms"
+		hx-post="/main/form" 
+		hx-target="#contentArea" >Forms
+	    </a>
+	    <div class="w3-dropdown-content w3-bar-block w3-card-4">
+		    <a class="w3-bar-item w3-button" 
+		       hx-get="/main/create_form" 
+		       hx-target="#modalView"
+		       hx-swap="innerhtml"
+		       id="createform"
+		       onclick='document.getElementById("modalView").style.display="block"'>
+			    create form
+		    </a>
+		    <a  class="w3-bar-item w3-button" 
+		        id="deleteform"
+			hx-post="/main/delete_form" 
+			hx-target="#contentArea">
+			delete form
+		    </a>
+		    <a  class="w3-bar-item w3-button" 
+		        id="editform"
+			hx-post="/main/edit_form" 
+			hx-target="#contentArea" >
+			edit form
+		    </a>
+	    </div>
+	</div>
+	<div class="w3-dropdown-hover">
+	    <a style="text-decoration: none;" 
+		class="w3-button w3-light-grey"  
+		id="reports"
+		hx-post="/main/report" 
+		hx-target="#contentArea">Reports
+	    </a>
+	    <div class="w3-dropdown-content w3-bar-block w3-card-4">
+		    <a  class="w3-bar-item w3-button" 
+			id="newreport"
+			hx-post="/main/new_report" 
+			hx-target="#contentArea">new report
+		    </a>
+		    <a  class="w3-bar-item w3-button" 
+			id="editreport"
+			hx-post="/main/edit_report" 
+			hx-target="#contentArea">edit report
+		    </a>
+		    <a  class="w3-bar-item w3-button" 
+			id="deletereport"
+			hx-post="/main/delete_report" 
+			hx-target="#contentArea">delete report
+		    </a>
+	    </div>
+	</div>
+	<div class="w3-dropdown-hover">
+	    <a style="text-decoration: none;" 
+		class="w3-button w3-light-grey"  
+		id="users"
+		hx-post="/main/user" 
+		hx-target="#contentArea">Users
+	    </a>
+	    <div class="w3-dropdown-content w3-bar-block w3-card-4">
+		    <a  class="w3-bar-item w3-button" 
+			id="newuser"
+			hx-post="/main/new_user" 
+			hx-target="#contentArea">new user
+		    </a>
+		    <a  class="w3-bar-item w3-button" 
+			id="edituser"
+			hx-post="/main/edit_user" 
+			hx-target="#contentArea">edit user
+		    </a>
+		    <a  class="w3-bar-item w3-button" 
+			id="deleteuser"
+			hx-post="/main/delete_user" 
+			hx-target="#contentArea">delete user
+		    </a>
+		    <a  class="w3-bar-item w3-button" 
+			id="newgroup"
+			hx-post="/main/new_group" 
+			hx-target="#contentArea">new group
+		    </a>
+		    <a  class="w3-bar-item w3-button" 
+			id="editgroup"
+			hx-post="/main/edit_group" 
+			hx-target="#contentArea">edit group
+		    </a>
+		    <a  class="w3-bar-item w3-button" 
+			id="deletegroup"
+			hx-post="/main/delete_group" 
+			hx-target="#contentArea">delete group
+		    </a>
+	    </div>
+	</div>
+	<div class="w3-dropdown-hover">
+	    <a style="text-decoration: none;" 
+		class="w3-button w3-light-grey"  
+		id="database"
+		hx-post="/main/database" 
+		hx-target="#contentArea">database
+	    </a>
+	    <div class="w3-dropdown-content w3-bar-block w3-card-4">
+		    <a  class="w3-bar-item w3-button" 
+			id="createtable"
+			hx-post="/main/createtable_db" 
+			hx-target="#contentArea">create table
+		    </a>
+		    <a  class="w3-bar-item w3-button" 
+			id="edittable"
+			hx-post="/main/edittable_db" 
+			hx-target="#contentArea">edit table
+		    </a>
+		    <a  class="w3-bar-item w3-button" 
+			id="deletetable"
+			hx-post="/main/deletetable_db" 
+			hx-target="#contentArea">delete table
+		    </a>
+		    <a  class="w3-bar-item w3-button" 
+			id="backup"
+			hx-post="/main/backup" 
+			hx-target="#contentArea">backup
+		    </a>
+	    </div>
+	</div>
+    </ul>
+</nav>
+<div>
+    <img class="w3-bar-item w3-circle w3-hide-small"/>
+</div>
+</div>
+{% endblock %}
+{% block content %}
+            <section id="mainform" >
+                <!-- this is a form 
+                When the Admin wants to create and when the user wants to view the form this module
+                will be the root for all other input and view and output modules -->
+            </section>
+{% endblock %}
+{% block modal %}
+            <section id="modalView" class="w3-modal"> 
+                <!-- modals -->
+            </section>
+{% endblock %}
