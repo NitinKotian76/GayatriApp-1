@@ -81,7 +81,7 @@ class form():
         """
         # initialize the form data
         if request.method == "GET":
-            return HttpResponse(df.formSetup())
+            return HttpResponse(df.formConfig())
 
     def form_setup(request):
         # name the form , give permissions , attach tables to the form
@@ -134,7 +134,7 @@ class form():
                 return HttpResponse(Filedata(ff.filename))
 
     def edit_field(request):                
-        return HttpResponse(df.fieldSetup())
+        return HttpResponse(df.fieldConfig())
     
     def save_field_config(request):
         if request.method == "POST":

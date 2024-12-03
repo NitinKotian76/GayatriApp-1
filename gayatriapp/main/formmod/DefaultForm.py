@@ -11,11 +11,11 @@ def addFields():
 def loginForm():
      # ui for form display
      company = ['company1','company2','company3']
-     return (BF.modalContainer(children=BF.textInput(label="Username")+BF.password(label="Password")+
-                               BF.list(company,label="select Company:",attr='style="width:52%;"')+
+     return (BF.modalContainer(children=BF.textInput(label="Username",attr='required')+BF.password(label="Password",attr='required')+
+                               BF.list(children=company,label="select Company:",attr='required style="width:52%;"')+
                                BF.button(label="Login",attr='id="loginbtn"')+
-                               BF.button(label="Forgot password"),
-                               attr='id="forgotbtn" style="display:block;"')
+                               BF.button(label="Forgot password",attr='id="forgotbtn"'),
+                               attr='style="display:block;"')
              )
 def loginSuccess():
     return(BF.modalContainer(children="<p>Login successful</p>",attr='style="display:block;"'))
@@ -29,7 +29,7 @@ def home():
            )
 
 # edit the fieldn
-def formSetup():
+def formConfig():
     # this is the config page for the fields 
     # should contain the label, variable name, default value, 
     childlist = ['user1','user2','user3']
@@ -56,7 +56,7 @@ def formSetup():
                 attr='style="display:block"')
             )
 
-def fieldSetup():
+def fieldConfig():
     return(BF.modalContainer(children=BF.container(
             children=BF.textInput(label="Field Name")+
                 BF.textInput(label="Variable Name")+
@@ -67,3 +67,7 @@ def fieldSetup():
                 BF.button(label="Cancel",attr='onclick=document.getElementById("modalView").style.display="none"')),
                 label="Field Config",attr='style="display:block"')
     )
+
+def validateConfig():
+    pass 
+# custom validation field or a general validation field.

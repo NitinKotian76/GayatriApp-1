@@ -1,21 +1,18 @@
 from django.core import validators
 from django import forms
+import . import BaseForm as bf
 
-class customValidateField(forms.Field)
-    #  custom validate the form value #
-    #__________________________#
+class ValidateCustomField(data)
+    # get custom  definition
+    pass
 
-    def to_python(self,value):
-        if not value:
-            return []
-        return value.split(",")
-
-    def validate(self,value):
-        super().validate(value)
-        for email in value:
-            validators.validate_email(email)
-
-class ValidateFields(fieldName):
+class ValidateFields(data):
+    # if field == email
+    pass
+    # if field == text
+    # if field == phoneno
+    # if field == file
+    # if field == password
     # validate the field based on the fieldname.fieldvalidationtype
     # if valid do nothing 
     # if invalid throw error 

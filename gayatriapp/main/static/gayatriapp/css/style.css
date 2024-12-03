@@ -1,8 +1,30 @@
+@keyframes blinking{
+	0%{border: red;}
+	50%{border: black;}
+	100%{border: red;}
+}
+
 *,::after,::before{
     margin: 0;
     padding: 0;
     border: 0;
 }
+
 html{
     font-size: smaller;    
+}
+
+input:invalid{
+	border: 2px dashed red;
+}
+
+input:invalid:required{
+	border: red;
+	animation-name:blinking;
+	animation-duration:4s;
+	animation-iteration-count:3;
+}
+
+input:valid{
+	border: 2px green;
 }

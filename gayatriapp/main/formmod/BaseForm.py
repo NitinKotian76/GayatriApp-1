@@ -108,7 +108,8 @@ class base(Style):
         label = kwargs.get('label','')
         attr = kwargs.get('attr','')
         children = kwargs.get('children','')
-# itemlist = ["company1","company2","company3"]
+        # itemlist = ["company1","company2","company3"]
+
         option = ""
         if(len(children)!= 0):
           for item in children:
