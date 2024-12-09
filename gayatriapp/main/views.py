@@ -17,7 +17,7 @@ global  count_set
 # ds = DisplayForm()
 count_set = 0
         
-
+# anything that is returned by the rendered template should be validated by the client and then the server
 class home():
     def start(request):
         return render(request,"main/home.html",{
@@ -48,29 +48,13 @@ class user():
         pass
     
     def new_user (request):
-     if request.method == "POST":
-         data = request.POST.get("something") 
-         return JsonResponse({"response":"response"})
-     else:
-         return JsonResponse({"response":"other response"})
+        pass
 
-
-    
     def edit_user (request):
-     if request.method == "POST":
-         data = request.POST.get("something") 
-         return JsonResponse({"response":"response"})
-     else:
-         return JsonResponse({"response":"other response"})
+        pass
 
-
-    
     def delete_user (request):
-     if request.method == "POST":
-         data = request.POST.get("something") 
-         return JsonResponse({"response":"response"})
-     else:
-         return JsonResponse({"response":"other response"})
+        pass
 
 @login_required
 class form():
@@ -97,11 +81,9 @@ class form():
             ## can add edit acceess
             description= request.POST.get("Description")
             Access_rights = {userName:[read,write]} ## username as key to the access rights 
-            tables = {"tables":[TableNames[0],TableNames[1]]}
-
+            tables = {"tables":TableNames}
             ff=formFieldData(formName,Access_rights,tables) #### this variable is present in the class
-            response= JsonResponse({"message": "success"}) ## this i am doing to display success from the server
-            response['HX-Trigger'] ={"message": "success"} 
+            response = redirect("/main/edit_field") ## this i am doing to display success from the server
             return response
 
     def save_form(request):
@@ -162,93 +144,53 @@ class form():
         # this should be resolved by throwing error to the user and showing which forms link source is 
         # responsible for the error which  means the vartable has to store the varname and the formname of the varname.
         pass
+    def cancel():
+        return HttpResponse("")
 
 
 class report():
     
     def new_report (request):
-         if request.method == "POST":
-             data = request.POST.get("something") 
-             return JsonResponse({"response":"response"})
-         else:
-             return JsonResponse({"response":"other response"})
+        pass
     
     def edit_report (request):
-         if request.method == "POST":
-             data = request.POST.get("something") 
-             return JsonResponse({"response":"response"})
-         else:
-             return JsonResponse({"response":"other response"})
+        pass
+
     def summary_view_report():
         pass
+
     def detail_view_report():
         pass
     
     def delete_report (request):
-         if request.method == "POST":
-             data = request.POST.get("something") 
-             return JsonResponse({"response":"response"})
-         else:
-             return JsonResponse({"response":"other response"})
+        pass
 
 
 class group():
     
     def new_group (request):
-     if request.method == "POST":
-         data = request.POST.get("something") 
-         return JsonResponse({"response":"response"})
-     else:
-         return JsonResponse({"response":"other response"})
+        pass
     
     def edit_group (request):
-     if request.method == "POST":
-         data = request.POST.get("something") 
-         return JsonResponse({"response":"response"})
-     else:
-         return JsonResponse({"response":"other response"})
+        pass
     
     def delete_group (request):
-     if request.method == "POST":
-         data = request.POST.get("something") 
-         return JsonResponse({"response":"response"})
-     else:
-         return JsonResponse({"response":"other response"})
+        pass
 
 class db():
     
     def create_db (request):
-     if request.method == "POST":
-         data = request.POST.get("something") 
-         return JsonResponse({"response":"response"})
-     else:
-      return JsonResponse({"response":"other response"})
+        pass
     
     def createtable_db (request):
-     if request.method == "POST":
-      data = request.POST.get("something") 
-      return JsonResponse({"response":"response"})
-     else:
-      return JsonResponse({"response":"other response"})
+        pass
     
     def edittable_db (request):
-     if request.method == "POST":
-      data = request.POST.get("something") 
-      return JsonResponse({"response":"response"})
-     else:
-      return JsonResponse({"response":"other response"})
+        pass
     
     def deletetable_db (request):
-     if request.method == "POST":
-      data = request.POST.get("something") 
-      return JsonResponse({"response":"response"})
-     else:
-      return JsonResponse({"response":"other response"})
+        pass
     
     def backup (request):
-     if request.method == "POST":
-      data = request.POST.get("something") 
-      return JsonResponse({"response":"response"})
-     else:
-      return JsonResponse({"response":"other response"})
+        pass
 

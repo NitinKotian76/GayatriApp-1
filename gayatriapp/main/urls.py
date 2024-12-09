@@ -30,4 +30,5 @@ urlpatterns = [
 	path('edittable_db',views.db.edittable_db,name="edittable_db"),
 	path('deletetable_db',views.db.deletetable_db,name="deletetable_db"),
 	path('backup',views.db.backup,name="backup"),
+    path('cancel',views.form.cancel,name="cancel"),
 ]

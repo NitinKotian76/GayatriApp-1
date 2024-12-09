@@ -33,41 +33,31 @@ def formConfig():
     # this is the config page for the fields 
     # should contain the label, variable name, default value, 
     childlist = ['user1','user2','user3']
+    tablelist = ['user1','user2','user3']
     return(
-            BF.modalContainer(
-                children=BF.container(
+            BF.container(
                     children=BF.form(
                         children=
-                        BF.textInput(label="Form Name")+
-                        BF.list(label="User Name",children=childlist)+
-                        BF.container(
-                            children=
-                            BF.checkbox(label="Read",attr='value="1"')+
-                            BF.checkbox(label="Write",attr='value="1"'))+
-                        BF.textInput(label="Description",attr="")+
-                        BF.button(
-                            label="Submit",
-                            attr='hx-post="/main/form_setup" hx-target="this" hx-swap="none"')+
-                        BF.button(
-                            label="Cancel",
-                            attr='onclick=document.getElementById("modalView").style.display="none"')
+                        BF.textInput(label="Form Name",attr='required')+
+                        BF.list(label="User Name",attr='required',children=childlist)+
+                        BF.fieldsetContainer(children=BF.checkbox(label="Read")+BF.checkbox(label="Write"))+
+                        BF.list(label="Tables",attr='multiple',children=tablelist)+
+                        BF.textInput(label="Description",attr='')+
+                        BF.button(label="Submit",attr='hx-post="/main/form_setup" hx-target="#formConfig" hx-swap="outerHTML"')+
+                        BF.button(label="Cancel",attr='hx-post="/main/cancel" hx-target="#formConfig" hx-swap="outerHTML"')
                         ),
-                    label="Form Setup",attr=''),
-                attr='style="display:block"')
+                    label="Form Setup", attr='id="formConfig"')
             )
 
 def fieldConfig():
-    return(BF.modalContainer(children=BF.container(
-            children=BF.textInput(label="Field Name")+
+    return(BF.container(children=BF.container(
+            children=BF.textInput(label="Field Name",attr='required')+
                 BF.textInput(label="Variable Name")+
                 BF.checkbox(label="Disabled")+
                 BF.list(label="Table Row")+
                 BF.list(label="Table Column")+
-                BF.button(label="Submit",attr='hx-post="/main/edit_field" ')+
+                BF.button(label="Submit",attr='hx-post="/main/edit_field"')+
                 BF.button(label="Cancel",attr='onclick=document.getElementById("modalView").style.display="none"')),
                 label="Field Config",attr='style="display:block"')
     )
 
-def validateConfig():
-    pass 
-# custom validation field or a general validation field.
