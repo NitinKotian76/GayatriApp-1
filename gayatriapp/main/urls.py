@@ -5,9 +5,9 @@ from . import views
 app_name="main"
 
 urlpatterns = [
-    path('', views.home.start, name="start"),
+    path('',views.intro.login,name="login"),
     path('index',views.home.index, name="index"),
-    path('login',views.home.login,name="login"),
+    path('logout',views.user.logout_user, name="logout"),
 	path('new_user',views.user.new_user,name="new_user"),
 	path('edit_user',views.user.edit_user,name="edit_user"),
 	path('delete_user',views.user.delete_user,name="delete_user"),

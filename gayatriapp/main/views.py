@@ -3,50 +3,55 @@ from django.http import JsonResponse,HttpResponse
 from django.views.decorators.csrf import ensure_csrf_cookie, csrf_protect
 from .models import UserProfile, Forms
 from django.contrib.auth.decorators import login_required, permission_required
-from django.contrib.auth import authenticate
+from django.contrib.auth import authenticate, login
 import json
 from django.core.cache import cache
+import logging
 
 from .formmod.Displayform import DisplayForm as ds
 from .formmod  import DefaultForm as df
 from .formmod.CreateForm import formFieldData
 from .formmod.LoadForm import Filedata
+from .formmod.ValidateForm import ValidatorInstances as vld
 
 # Create your views here.
-global  count_set
 # ds = DisplayForm()
-count_set = 0
         
 # anything that is returned by the rendered template should be validated by the client and then the server
-class home():
-    def start(request):
-        return render(request,"main/home.html",{
-                "home":df.home()
-            })
-
+logger = logging.getLogger(__name__)
+class intro():
     def login(request):
         if request.method == "POST":
             username = request.POST["Username"]
             password = request.POST["Password"]
             user = authenticate(request, username=username, password=password)
             if user is not None:
+                logger.debug("login success")
+                login(request,user)
                 return redirect("main:index")
             else:
+                logger.debug("login failed")
                 return render(request,"main/login.html",{"login":df.loginFail()})
         else:
+            logger.debug("login page requested")
             return render(request,"main/login.html",{
                 "login":df.loginForm()
                 }
             )
 
+@login_required
+class home():
     def index(request):
+        logger.debug("index page requested")
         return render(request,"main/index.html",{"itemlist":df.addFields()})
 
+@login_required
 class user():
 
-    def logout(self):
-        pass
-    
+    def logout_user(request):
+        logout(request)
+        return render(request,"main/login.html",{"login":df.logedout()})
+
     def new_user (request):
         pass
 
@@ -64,6 +69,7 @@ class form():
         this def displays an form info editor
         """
         # initialize the form data
+        logger.debug("form config page requested")
         if request.method == "GET":
             return HttpResponse(df.formConfig())
 
@@ -73,46 +79,47 @@ class form():
         this def gets the input from the form info page and sets up the form data in json
         """
         if request.method == "POST":
+            logger.debug("data sent to form setup ")
             formName = request.POST.get("Form Name")
             userName = request.POST.get("User Name")
             read= request.POST.get("Read")
             write= request.POST.get("Write")
             TableNames = request.POST.get("Tables")
-            ## can add edit acceess
             description= request.POST.get("Description")
             Access_rights = {userName:[read,write]} ## username as key to the access rights 
             tables = {"tables":TableNames}
+            # if vld.text(userName,100)==None and vld.text(description,400) == None:
+            #     logger.debug("validated formconfig ")
             ff=formFieldData(formName,Access_rights,tables) #### this variable is present in the class
-            response = redirect("/main/edit_field") ## this i am doing to display success from the server
+            logger.debug("redirect to field config page")
+                # response = redirect("main:edit_form") ## this i am doing to display success from the server
+            response = redirect("main:edit_form")
+            # else:
+            #     response = HttpResponseBadRequest("form input error")
             return response
 
     def save_form(request):
         if request.method == "POST":
             ff.saveForm(ff.FieldDataDict)
-            return("success")
+            logger.debug("form saved")
+            return JsonResponse({"success":True,"message":"form saved successfully"})
     
     def delete_form (request):
          if request.method == "POST":
              return(ff.deleteForm(ff.filename))
     
     def edit_form(request):
-         if request.method == "POST":
-             return render(request,"main/formEditor.html",{"itemlist":df.addFields()})
+         logger.debug(df.addFields())
+         return HttpResponse(df.addFields())
+
 
     def add_field(request):
         if request.method == "POST":
-             data = request.POST.get("additem")
-             if request.POST.get("additem") != None:# choose field
-                label = request.POST.get(label)
-
-                tableRow = request.POST.get("Table row")
-                tableColumn = request.POST.get("Table column")
-                if count_set == 0 :
-                    ff.addField(data,label,attr,"form1",0,child="no children")
-                    count_set = 1
-                else:
-                    ff.filename
-                    ff.addField(data,label,attr,"form1",1,child="no children")
+                label = request.POST.get("Field Name")
+                disabled = request.POST.get("Disabled")
+                tableRow = request.POST.get("Table Row")
+                tableColumn = request.POST.get("Table Column")
+                ff.addField(data,label,attr,"form1",0,child="no children")
                 return HttpResponse(Filedata(ff.filename))
 
     def edit_field(request):                
@@ -148,6 +155,7 @@ class form():
         return HttpResponse("")
 
 
+@login_required
 class report():
     
     def new_report (request):
@@ -166,6 +174,7 @@ class report():
         pass
 
 
+@login_required
 class group():
     
     def new_group (request):
@@ -177,6 +186,7 @@ class group():
     def delete_group (request):
         pass
 
+@login_required
 class db():
     
     def create_db (request):
@@ -193,4 +203,3 @@ class db():
     
     def backup (request):
         pass
-

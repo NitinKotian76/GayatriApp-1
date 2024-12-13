@@ -12,7 +12,7 @@ class TestBaseForm(TestCase):
         for method_name in methodlist:
             method = getattr(BF.base,method_name,None)
             if callable(method):
-                out = method("<i>demo</i>",label="label",attr="demo")
+                out = method("<i>demo</i>",label="label",attr="demo",valid="true")
                 typecheck=type(out)
                 if type(out) == safestring.SafeString:
                     print(f"{method_name} is okay {typecheck}")

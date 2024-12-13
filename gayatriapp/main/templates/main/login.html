@@ -1,4 +1,6 @@
 {% extends "base.html" %}
+{% block nav %}
+{% endblock %}
 {% block content %}
 <form method="post" action={% url 'main:login'%}>
     {% csrf_token%}

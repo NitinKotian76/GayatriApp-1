@@ -1,38 +1,39 @@
 from django.core import validators
 from django.core.exceptions import ValidationError
 from django import forms
-import . import BaseForm as bf
 
-class ValidateCustomField(data)
+class ValidateCustomField():
     # get custom  definition
     pass
 
-class ValidatorInstances(field): 
+class ValidatorInstances():
 
-    if(field == email):
-        emailval=validators.validateEmail("not an email")
+    def email(field):
+        emailval=validators.EmailValidator("not an email")
         emailval(field)
 
-    if(field == text):
-        textval=validators.validateSlug("can only enter text")
-        textcal(field)
+    def text(field,maxlen):
+        textval=validators.RegexValidator("[A-z][a-z]","can only enter text")
+        lengthmax=validators.MaxLengthValidator(maxlen,"should only have 14 char")
+        textval(field)
+        lengthmax(field)
 
-    if(field == phoneno):
+    def phoneno(field):
         message = "not 10 nos"
         minno=validators.MinLengthValidator(10,message)
         maxno=validators.MaxLengthValidator(10,message)
         minno(field)
         maxno(field)
 
-    if (field == file):
+    def file(field):
         fileval=validators.FileExtensionValidator("not the correct file extension")
         fileval(field)
 
-    if (field == password):
-        specialchar=validators.RegexValidator(regex=,"password should contain")
+    def password(field):
+        specialchar=validators.RegexValidator("[! @#\(\)%^&]","password should contain")
         lengthmin=validators.MinLengthValidator(8,"should contain at least 8 char")
         lengthmax=validators.MaxLengthValidator(14,"should only have 14 char")
-        Asciigroups=validators.RegexValidator(regex=,"should contain a capital letter and number")
+        Asciigroups=validators.RegexValidator("[A-Z][0-9]","should contain a capital letter and number")
         specialChar(field)
         lengthmin(field)
         lengthmax(field)
