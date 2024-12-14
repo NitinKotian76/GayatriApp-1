@@ -15,16 +15,16 @@
 	{% block nav %}
 	<div class="navigation">
 	<nav>
-	    <ul class="w3-light-grey" style="padding-left: 0px;">
-		<div class="w3-dropdown-hover">
+	    <ul class="w3-light-grey w3-bar w3-padding">
+		<div class="w3-dropdown-hover w3-round-large">
 		    <a style="text-decoration: none;" 
-			class="w3-button w3-light-grey"  
+			class="w3-button w3-ripple w3-round-large w3-light-grey w3-hover-dark-grey"  
 			id="forms"
 			hx-post="/main/form" 
 			hx-target="#contentArea" >Forms
 		    </a>
 		    <div class="w3-dropdown-content w3-bar-block w3-card-4">
-			    <a class="w3-bar-item w3-button" 
+			    <a class="w3-bar-item w3-button w3-ripple" 
 			       hx-get="/main/create_form" 
 			       hx-target="#modalView"
 			       hx-swap="innerhtml"
@@ -32,13 +32,13 @@
 			       onclick='document.getElementById("modalView").style.display="block"'>
 				    create form
 			    </a>
-			    <a  class="w3-bar-item w3-button" 
+			    <a  class="w3-bar-item w3-button w3-ripple" 
 				id="deleteform"
 				hx-post="/main/delete_form" 
 				hx-target="#contentArea">
 				delete form
 			    </a>
-			    <a  class="w3-bar-item w3-button" 
+			    <a  class="w3-bar-item w3-button w3-ripple" 
 				id="editform"
 				hx-post="/main/edit_form" 
 				hx-target="#contentArea" >
@@ -46,107 +46,107 @@
 			    </a>
 		    </div>
 		</div>
-		<div class="w3-dropdown-hover">
+		<div class="w3-dropdown-hover w3-round-large">
 		    <a style="text-decoration: none;" 
-			class="w3-button w3-light-grey"  
+			class="w3-button w3-ripple w3-round-large w3-light-grey w3-hover-dark-grey"  
 			id="reports"
 			hx-post="/main/report" 
 			hx-target="#contentArea">Reports
 		    </a>
 		    <div class="w3-dropdown-content w3-bar-block w3-card-4">
-			    <a  class="w3-bar-item w3-button" 
+			    <a  class="w3-bar-item w3-button w3-ripple" 
 				id="newreport"
 				hx-post="/main/new_report" 
 				hx-target="#contentArea">new report
 			    </a>
-			    <a  class="w3-bar-item w3-button" 
+			    <a  class="w3-bar-item w3-button w3-ripple" 
 				id="editreport"
 				hx-post="/main/edit_report" 
 				hx-target="#contentArea">edit report
 			    </a>
-			    <a  class="w3-bar-item w3-button" 
+			    <a  class="w3-bar-item w3-button w3-ripple" 
 				id="deletereport"
 				hx-post="/main/delete_report" 
 				hx-target="#contentArea">delete report
 			    </a>
 		    </div>
 		</div>
-		<div class="w3-dropdown-hover">
+		<div class="w3-dropdown-hover w3-round-large">
 		    <a style="text-decoration: none;" 
-			class="w3-button w3-light-grey"  
+			class="w3-button w3-ripple w3-round-large w3-light-grey w3-hover-dark-grey"  
 			id="users"
 			hx-post="/main/user" 
 			hx-target="#contentArea">Users
 		    </a>
 		    <div class="w3-dropdown-content w3-bar-block w3-card-4">
-			    <a  class="w3-bar-item w3-button" 
+			    <a  class="w3-bar-item w3-button w3-ripple" 
 				id="newuser"
 				hx-post="/main/new_user" 
 				hx-target="#contentArea">new user
 			    </a>
-			    <a  class="w3-bar-item w3-button" 
+			    <a  class="w3-bar-item w3-button w3-ripple" 
 				id="edituser"
 				hx-post="/main/edit_user" 
 				hx-target="#contentArea">edit user
 			    </a>
-			    <a  class="w3-bar-item w3-button" 
+			    <a  class="w3-bar-item w3-button w3-ripple" 
 				id="deleteuser"
 				hx-post="/main/delete_user" 
 				hx-target="#contentArea">delete user
 			    </a>
-			    <a  class="w3-bar-item w3-button" 
+			    <a  class="w3-bar-item w3-button w3-ripple" 
 				id="newgroup"
 				hx-post="/main/new_group" 
 				hx-target="#contentArea">new group
 			    </a>
-			    <a  class="w3-bar-item w3-button" 
+			    <a  class="w3-bar-item w3-button w3-ripple" 
 				id="editgroup"
 				hx-post="/main/edit_group" 
 				hx-target="#contentArea">edit group
 			    </a>
-			    <a  class="w3-bar-item w3-button" 
+			    <a  class="w3-bar-item w3-button w3-ripple" 
 				id="deletegroup"
 				hx-post="/main/delete_group" 
 				hx-target="#contentArea">delete group
 			    </a>
 		    </div>
 		</div>
-		<div class="w3-dropdown-hover">
+		<div class="w3-dropdown-hover w3-round-large">
 		    <a style="text-decoration: none;" 
-			class="w3-button w3-light-grey"  
+			class="w3-button w3-ripple w3-round-large w3-light-grey w3-hover-dark-grey"  
 			id="database"
 			hx-post="/main/database" 
 			hx-target="#contentArea">database
 		    </a>
 		    <div class="w3-dropdown-content w3-bar-block w3-card-4">
-			    <a  class="w3-bar-item w3-button" 
+			    <a  class="w3-bar-item w3-button w3-ripple" 
 				id="createtable"
 				hx-post="/main/createtable_db" 
 				hx-target="#contentArea">create table
 			    </a>
-			    <a  class="w3-bar-item w3-button" 
+			    <a  class="w3-bar-item w3-button w3-ripple" 
 				id="edittable"
 				hx-post="/main/edittable_db" 
 				hx-target="#contentArea">edit table
 			    </a>
-			    <a  class="w3-bar-item w3-button" 
+			    <a  class="w3-bar-item w3-button w3-ripple" 
 				id="deletetable"
 				hx-post="/main/deletetable_db" 
 				hx-target="#contentArea">delete table
 			    </a>
-			    <a  class="w3-bar-item w3-button" 
+			    <a  class="w3-bar-item w3-button w3-ripple" 
 				id="backup"
 				hx-post="/main/backup" 
 				hx-target="#contentArea">backup
 			    </a>
 		    </div>
 		</div>
+		<div class="w3-right w3-round-large w3-green">
+			<a class="w3-button w3-ripple w3-round-large" src="#">Profile</a>
+		</div>
 	    </ul>
 	</nav>
 	{% endblock %}
-<div>
-    <img class="w3-bar-item w3-circle w3-hide-small"/>
-</div>
 </div>
 	<main>
 		{% block modal %}{% endblock %}

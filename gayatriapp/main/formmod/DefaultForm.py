@@ -57,20 +57,20 @@ def formConfig():
     childlist = ['user1','user2','user3']
     tablelist = ['user1','user2','user3']
     return(
-          BF.container(
+          BF.modalContainer(
               children=BF.form(children=
                     BF.textInput(label="Form Name",attr='required')+
                     BF.list(label="User Name",attr='',children=childlist)+
                     BF.fieldsetContainer(label="Permissions",children=BF.checkbox(label="Read")+BF.checkbox(label="Write"))+
                     BF.list(label="Tables",attr='multiple',children=tablelist)+
                     BF.textInput(label="Description",attr='')+
-                    BF.button(label="Submit",attr='hx-post="/main/form_setup" hx-target="#mainform" hx-swap="innerHTML"')+
-                    BF.button(label="Cancel",attr='onclick=document.getElementById("modal").style.display="none";')
+                    BF.button(label="Submit",attr='hx-post="/main/form_setup" hx-target="#mainform" hx-swap="innerHTML" onclick=document.getElementById("modalView").style.display="none";')+
+                    BF.button(label="Cancel",attr='onclick=document.getElementById("modalView").style.display="none";')
                     ),attr='style="display:block;"',cssclass="w3-third w3-display-middle")
          )
 
 def fieldConfig():
-    return(BF.container(children=BF.form(
+    return(BF.modalContainer(children=BF.form(
             children=BF.textInput(label="Field Name",attr='required')+
                 BF.textInput(label="Variable Name")+
                 BF.checkbox(label="Disabled")+
