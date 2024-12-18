@@ -105,12 +105,8 @@ class formFieldData():
     def deleteForm(self,filename):
         if os.path.exists(filename):
             os.remove(filename)
-
-    def saveFormto_db(self,formdata):
-        pass
-
-    def deleteForm_db(self,filename):
-        pass
+            if os.path.exists(filename):
+                return "success"
 
     def saveChange(self,data):
         """

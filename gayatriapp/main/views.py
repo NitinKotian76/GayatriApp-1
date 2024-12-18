@@ -93,7 +93,8 @@ class form():
             ff=formFieldData(formName,Access_rights,tables) #### this variable is present in the class
             logger.debug("redirect to field config page")
                 # response = redirect("main:edit_form") ## this i am doing to display success from the server
-            response = redirect("main:edit_form")
+            response = HttpResponse(status=204)
+            redirect("main:edit_form")
             # else:
             #     response = HttpResponseBadRequest("form input error")
             return response
@@ -105,8 +106,14 @@ class form():
             return JsonResponse({"success":True,"message":"form saved successfully"})
     
     def delete_form (request):
-         if request.method == "POST":
-             return(ff.deleteForm(ff.filename))
+        if request.method == "POST":
+            response = ff.deleteForm(ff.filename)
+            if response =="success":
+                response = JsonResponse({"success":True})
+            else:
+                response = JsonResponse()
+        return response
+
     
     def edit_form(request):
          logger.debug(df.addFields())

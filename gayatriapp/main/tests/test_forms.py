@@ -1,15 +1,17 @@
-from django.test import TestCase
+from django.test import TestCase, Client
 from django.utils import safestring
-from ..formmod.Displayform import displayDefaultForms as df
+from ..formmod import DefaultForm as df
 # Create your tests here.
 
 class TestdisplayForm(TestCase):
 
     def setUp(self):
         pass
+
     def test_loginform(self): 
-        self.assertEqual(df.loginForm(),safestring.SafeString())
+        response= self.client.get("main:login")
+        self.assertEqual(response.status_code, 200)
+
     def test_Addfield(self):
         pass
         
-    

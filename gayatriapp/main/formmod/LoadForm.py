@@ -2,10 +2,10 @@ import os
 import json 
 from .BaseForm import base
 
-
 def Filedata(filename):
-    """the purpose of this function should be to get the json data form file and 
-    create a list of input fields with htmx attributes 
+    """ 
+        the purpose of this function should be to get the json data form file and 
+        create a list of input fields with htmx attributes 
     """
     with open(filename,"r") as file:
         data = json.load(file)
