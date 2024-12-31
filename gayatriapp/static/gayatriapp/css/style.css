@@ -1,0 +1,12 @@
+@keyframes blinking{
+	0%{border: red;}
+	50%{border: black;}
+	100%{border: red;}
+}
+
+*,::after,::before{
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+

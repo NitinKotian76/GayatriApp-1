@@ -25,6 +25,7 @@ class base(Style):
        label = kwargs.get('label','')
        attr = kwargs.get('attr','')
        valid = kwargs.get('valid','')
+       children = kwargs.get('children','')
        cssclass = kwargs.get('cssclass','')
        if valid == True:
                  color = "w3-border-green"
@@ -35,6 +36,7 @@ class base(Style):
        t=format_html(f'<div class="{cssclass} {globalSpacing}"> \
                      <label class="{cssclass} w3-cell" for="{label}">{label}</label> \
         <input class="{cssclass} w3-input w3-border w3-round-large {color}" name="{label}" type="text" {attr}>\
+        {children}\
                  </div>')
        return t
 
@@ -42,6 +44,7 @@ class base(Style):
        label = kwargs.get('label','')
        attr = kwargs.get('attr','')
        valid = kwargs.get('valid','')
+       children = kwargs.get('children','')
        cssclass = kwargs.get('cssclass','')
        if valid == True:
            color = "w3-border-green"
@@ -52,6 +55,7 @@ class base(Style):
        t=format_html(f'<div class="{cssclass} w3-cell-row {globalSpacing}"> \
                      <label class="{cssclass} w3-cell" for="{label}">{label}</label>\
                      <input class="{cssclass} w3-cell w3-input w3-border w3-round-large" name="{label}" type="text" {attr}>\
+                     {children}\
                  </div>')
        return t
 

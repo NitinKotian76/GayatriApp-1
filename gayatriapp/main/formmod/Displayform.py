@@ -1,5 +1,5 @@
 from . import DefaultForm as df
-from . import CreateForm as cf
+from . import CrudForm as cf
 # DisplayForm returns html strings
 
 class DisplayForm():

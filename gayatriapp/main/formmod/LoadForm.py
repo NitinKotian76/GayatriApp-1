@@ -1,5 +1,6 @@
 import os 
 import json 
+import logging
 from .BaseForm import base
 
 def Filedata(filename):
@@ -7,9 +8,11 @@ def Filedata(filename):
         the purpose of this function should be to get the json data form file and 
         create a list of input fields with htmx attributes 
     """
+    
+    logger = logging.getLogger(__name__)
     with open(filename,"r") as file:
         data = json.load(file)
-        print(data)
+        logger.debug(data)
         htmllist = []
         html = ""
         for i in range(len(data["fields"].keys())):
