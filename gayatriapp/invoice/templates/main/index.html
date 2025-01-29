@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+<div>
+    <img class="w3-bar-item w3-circle w3-hide-small"/>
+</div>
+{% block content %}
+<form>
+		{% csrf_token %}
+<section id="mainform">
+                <!-- this is a form 
+                When the Admin wants to create and when the user wants to view the form this module
+                will be the root for all other input and view and output modules -->
+</section>
+</form>
+{% endblock %}
+{% block modal %}
+<form>
+	{% csrf_token %}
+	<section id="modalView"> 
+
+	<!-- modals -->
+	</section>
+</form>
+{% endblock %}
