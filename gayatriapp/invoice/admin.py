@@ -1,29 +1,86 @@
+from .forms import *
+from .models import CustomUser, Form, Table
+from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib import admin
-from django.contrib.auth.admin import UserAdmin
-from .models import UserProfile, Form  # , Table
+
 # Register your models here.
 
-# @admin.action(description= "this is an action ")
-# def someaction(ModelAdmin,request,queryset):
-#     pass
+# Extending default User model
 
-@admin.register(UserProfile,UserAdmin)
-class UserProfile(UserAdmin):
-    list_display = ["userName", "userAccess", "userLog"]
+
+class UserAdmin(BaseUserAdmin):
+    form = UserChangeForm
+    add_form = UserCreationForm
+
+    def group_name(self, obj):
+        name = ""
+        for group in obj.group.all():
+            name += group.name + ","
+        return name
+
+    list_display = [
+        "user_emp_code",
+        "email",
+        "user_name",
+        "user_company",
+        "is_admin",
+        "is_staff",
+        "is_active",
+        "group_name",
+    ]
+    list_filter = ["user_name", "user_company"]
+
+    fieldsets = [
+        (
+            None,
+            {"fields": ["user_emp_code", "user_company", "email", "password", "group"]},
+        ),
+        ("Personal info", {"fields": ["user_name"]}),
+        ("Permissions", {"fields": ["is_admin", "is_staff", "is_active"]}),
+    ]
+    # add_fieldsets is not a standard ModelAdmin attribute. UserAdmin
+    # overrides get_fieldsets to use this attribute when creating a user.
+    add_fieldsets = [
+        (
+            None,
+            {
+                "classes": ["wide"],
+                "fields": [
+                    "email",
+                    "user_name",
+                    "user_company",
+                    "password1",
+                    "password2",
+                    "group",
+                ],
+            },
+        ),
+    ]
+    search_fields = ["user_name", "user_emp_code"]
+    ordering = ["user_name", "user_emp_code", "user_company"]
+    filter_horizontal = []
+
+
+admin.site.register(CustomUser, UserAdmin)
+# admin.site.unregister(Group)
 
 
 @admin.register(Form)
 class FormAdmin(admin.ModelAdmin):
-    list_display = ["formName", "id", "formData"]
+    form = FormForm
+
+    def group_name(self, obj):
+        name = ""
+        for group in obj.group.all():
+            name += group.name + ","
+        return name
+
+    list_display = [
+        "form_name",
+        "group_name",
+    ]
 
 
-# @admin.register(Table)
-# class TableAdmin(admin.ModelAdmin):
-#     list_display = ["TableName","TableData","TablePermission"]
-
-
-@admin.register(MyAdminSite, name="myadmin")
-class MyAdminSite(admin.AdminSite):
-    site_header = "Admin Page"
-    site_title = "My Admin Portal"
-    index_title = "Welcome to My Admin"
+@admin.register(Table)
+class TableAdmin(admin.ModelAdmin):
+    list_display = ["table_name"]
