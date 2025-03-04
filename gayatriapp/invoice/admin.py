@@ -22,18 +22,18 @@ class UserAdmin(BaseUserAdmin):
         "user_emp_code",
         "email",
         "user_name",
-        "user_company",
+        "company",
         "is_admin",
         "is_staff",
         "is_active",
         "group_name",
     ]
-    list_filter = ["user_name", "user_company"]
+    list_filter = ["user_name", "company"]
 
     fieldsets = [
         (
             None,
-            {"fields": ["user_emp_code", "user_company", "email", "password", "group"]},
+            {"fields": ["user_emp_code", "company", "email", "password", "group"]},
         ),
         ("Personal info", {"fields": ["user_name"]}),
         ("Permissions", {"fields": ["is_admin", "is_staff", "is_active"]}),
@@ -48,7 +48,7 @@ class UserAdmin(BaseUserAdmin):
                 "fields": [
                     "email",
                     "user_name",
-                    "user_company",
+                    "company",
                     "password1",
                     "password2",
                     "group",
@@ -57,7 +57,7 @@ class UserAdmin(BaseUserAdmin):
         ),
     ]
     search_fields = ["user_name", "user_emp_code"]
-    ordering = ["user_name", "user_emp_code", "user_company"]
+    ordering = ["user_name", "user_emp_code", "company"]
     filter_horizontal = []
 
 
@@ -78,7 +78,29 @@ class FormAdmin(admin.ModelAdmin):
     list_display = [
         "form_name",
         "group_name",
+        "company",
     ]
+
+
+@admin.register(Report)
+class ReportAdmin(admin.ModelAdmin):
+
+    def group_name(self, obj):
+        name = ""
+        for group in obj.group.all():
+            name += group.name + ","
+        return name
+
+    list_display = [
+        "report_name",
+        "group_name",
+        "company",
+    ]
+
+
+@admin.register(Company)
+class CompanyAdmin(admin.ModelAdmin):
+    list_display = ["company_name"]
 
 
 @admin.register(Table)

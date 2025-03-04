@@ -8,78 +8,78 @@ import logging
 from .cachestore import cachestore as cache
 from django.views import View
 from .models import *
+from .forms import *
 from .formmod.Displayform import DisplayForm as ds
 from .formmod import DefaultForm as df
-from .viewclasses.form_views import form_config
+from .formmod.form_views import form_config
 from django.contrib.auth.models import User
 
 # anything that is returned by the rendered template should be validated
 # by the client and then the server
 logger = logging.getLogger(__name__)
 
-decorator = [login_required, permission_required]
+# decorator = [login_required, permission_required]
 
 
 class login_user(View):
 
     def get(self, request):
         logger.debug("login page requested")
-        return render(request, "invoice/login.html", {"login": df.loginFormhtml()})
+
+        return render(
+            request,
+            "invoice/login.html",
+            {"login": df.loginFormhtml(Company.objects.all(), 0)},
+            # {"login": loginForm},
+        )
 
     def post(self, request):
-        username = request.POST.get("Username")
+        emp_id = request.POST.get("Emp Id")
         password = request.POST.get("Password")
-        company = request.POST.get("Select Company:")
-        user = authenticate(request, username=username, password=password)
-        logger.debug(company)
-        # if modelContains.company  = username :
-        #     then login start cookie
-        # if usernamme.attempts is not >3
+        compname = request.POST.get("Select Company:")
+        user = authenticate(
+            request, user_emp_code=emp_id, password=password, company=compname
+        )
         if user is not None:
             logger.debug("login success")
+            if user.company.company_name != compname:
+                logger.debug("login not from %s ", user.company.company_name)
+                return render(
+                    request,
+                    "invoice/login.html",
+                    {"login": df.loginFormhtml(Company.objects.all(), 2)},
+                )
             login(request, user)
             return redirect("invoice:index")
         else:
-            logger.debug("login failed")
-            return render(request, "invoice/login.html", {"login": df.loginFailhtml()})
+            logger.debug("login password or username failed")
+            return render(
+                request,
+                "invoice/login.html",
+                {"login": df.loginFormhtml(Company.objects.all(), 1)},
+            )
 
 
 class profile_user(View):
 
     def get(self, request):
-        return HttpResponse(df.profilehtml())
+        return HttpResponse(df.profilehtml(user.objects.all()))
 
     def post(self, request):
         logout(request)
         return render(request, "invoice/login.html", {"login": df.logouthtml()})
 
 
-class index(View):
-
-    def get(self, request):
-        logger.debug("index page requested")
-        return render(request, "invoice/index.html", {"itemlist": df.addFieldshtml()})
+def index(request):
+    logger.debug("index page requested")
+    return render(
+        request,
+        "invoice/index.html",
+        {"itemlist": df.addFieldshtml()},
+    )
 
 
 class form_setup(View):
-
-    def get(self, request):
-
-        if request.GET.get("view") == "formdelete":
-            # show the formconfig
-            logger.debug("form delete page requested")
-            return HttpResponse(df.formDeletehtml())
-
-        if request.GET.get("view") == "formconfig":
-            # show the formconfig
-            logger.debug("form config page requested")
-            return HttpResponse(df.formConfightml())
-
-        if request.GET.get("view") == "formedit":
-            # show the formconfig
-            # TODO: check if any form is available and give and option to choose a form show a form list view
-            logger.debug("form config page requested for editing")
-            return HttpResponse(df.formEdithtml())
 
     def post(self, request):
         # get the config
@@ -100,6 +100,18 @@ class form_setup(View):
         return HttpResponse(df.addFieldshtml())
 
 
+def form_config(request):
+    return HttpResponse(df.formConfightml(Group.objects.all(), Table.objects.all()))
+
+
+def form_delete(request):
+    return HttpResponse(df.formDeletehtml())
+
+
+def form_edit(request):
+    return HttpResponse(df.formEdithtml())
+
+
 class field_setup(View):
     def get(self, request):
         return HttpResponse(df.fieldConfightml())
@@ -108,6 +120,7 @@ class field_setup(View):
         fieldtype = request.POST.get("field type")
         label = request.POST.get("Field Name")
         disabled = request.POST.get("Disabled")
+
         tableRow = request.POST.get("Table Row")
         tableColumn = request.POST.get("Table Column")
         fieldno = cache.get("fieldno")
@@ -116,38 +129,5 @@ class field_setup(View):
             cache.set("fieldno", fieldno + 1)
 
 
-class user(View):
-    def get(self, request):
-        pass
-
-    def post(self, request):
-        if request.POST.get("view") == "createuser":
-            username = request.POST.get("Username")
-            password = request.POST.get("Password")
-            company = request.POST.get("Select Company")
-            User.objects.create(username, password, company, userAccess=None)
-        if request.POST.get("view") == "inactiveuser":
-            pass
-        if request.POST.get("view") == "deleteuser":
-            pass
-
-
 class report(View):
     pass
-
-
-class db(View):
-    pass
-
-
-# class group():
-#
-#     def new_group (request):
-#         pass
-#
-#     def edit_group (request):
-#         pass
-#
-#     def delete_group (request):
-#         pass
-#

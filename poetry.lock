@@ -535,33 +535,6 @@ django = ">=4.2.9"
 sqlparse = ">=0.2"
 
 [[package]]
-name = "django-dynamic-model"
-version = "0.3.0"
-description = "Allow dynamic creation and updates to database schema at runtime."
-optional = false
-python-versions = "*"
-groups = ["main"]
-markers = "python_version == \"3.11\" or python_version >= \"3.12\""
-files = [
-    {file = "django-dynamic-model-0.3.0.tar.gz", hash = "sha256:9843ceda424a4d9566c729dd304ce87494e262b7792ca551ade37dda6647dba9"},
-]
-
-[package.dependencies]
-Django = ">=2.1"
-
-[[package]]
-name = "django-dynamic-models"
-version = "0.0.5"
-description = "A Django app that enable change model fields if other other apps models"
-optional = false
-python-versions = "*"
-groups = ["main"]
-markers = "python_version == \"3.11\" or python_version >= \"3.12\""
-files = [
-    {file = "django-dynamic-models-0.0.5.zip", hash = "sha256:9777cbe1e44d5b27f783f2e0ccfd56b5ada42ebb5d0513350a3fb057c662b7d7"},
-]
-
-[[package]]
 name = "django-extensions"
 version = "3.2.3"
 description = "Extensions for Django"
@@ -2413,4 +2386,4 @@ files = [
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.11"
-content-hash = "393b3378c0f7f186b02d91ed8fd748396a3ffe1f339571337f3ef17c57d7d0fb"
+content-hash = "6d47082a958bb21239e365f5b975d870a941a8896713c77c6329dea895f7e821"

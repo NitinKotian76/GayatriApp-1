@@ -3,11 +3,14 @@
     {% load static %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{% static 'gayatriapp/css/w3.css' %}">
-    <link rel="stylesheet" href="{% static 'gayatriapp/css/style.css' %}">
-    <script src="{% static 'gayatriapp/script/htmx.min.js'%}" defer></script>
-    <script src="{% static 'gayatriapp/script/json-enc.js'%}" defer></script>
-    <script src="{% static 'gayatriapp/script/CustomScript.js'%}" defer></script>
+    <link rel="icon"
+          type="image/x-icon"
+          href="{% static 'invoice/images/favicon.ico' %}">
+    <link rel="stylesheet" href="{% static 'invoice/css/w3.css' %}">
+    <link rel="stylesheet" href="{% static 'invoice/css/style.css' %}">
+    <script src="{% static 'invoice/script/htmx.min.js'%}" defer></script>
+    <script src="{% static 'invoice/script/json-enc.js'%}" defer></script>
+    <script src="{% static 'invoice/script/CustomScript.js'%}" defer></script>
     <link rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 </head>
@@ -24,23 +27,20 @@
                         <div class="w3-dropdown-content w3-bar-block w3-card-4">
                             <a href="#"
                                class="w3-bar-item w3-button w3-ripple"
-                               hx-get="/invoice/form_setup"
-                               hx-vals='{"view": "formconfig"}'
+                               hx-get="/invoice/form_config"
                                hx-target="#modalView"
                                hx-swap="innerhtml"
                                id="createform">create form</a>
                             <a href="#"
                                class="w3-bar-item w3-button w3-ripple"
                                id="deleteform"
-                               hx-get="/invoice/form_setup"
-                               hx-vals='{"view": "formdelete"}'
+                               hx-get="/invoice/form_delete"
                                hx-target="#modalView"
                                hx-swap="innerhtml">delete form</a>
                             <a href="#"
                                class="w3-bar-item w3-button w3-ripple"
                                id="editform"
-                               hx-get="/invoice/form_setup"
-                               hx-vals='{"view": "formedit"}'
+                               hx-get="/invoice/form_edit"
                                hx-target="#modalView"
                                hx-swap="innerhtml">edit form</a>
                         </div>
@@ -150,25 +150,22 @@
                     <div class="w3-right">
                         <a href="#"
                            class="w3-button w3-ripple w3-round-large w3-green"
-                           onclick="visible('mysidebar')">Profile</a>
-                        <!--<div class="w3-sidebar w3-bar-block w3-collapse w3-card w3-round-large"-->
-                        <!--     id="mysidebar"-->
-                        <!--     style="width:25%;-->
-                        <!--            display:none">-->
-                        <!--    <i class="fa-solid fa-gear w3-large"></i>-->
+                           onclick='document.getElementById("modalView").style.display="block"'
+                           hx-get="/invoice/profile_user"
+                           hx-target="#modalView"
+                           hx-swap="innerhtml">Profile</a>
                     </div>
-                </div>
-            </ul>
-        </nav>
-    {% endblock %}
-</div>
-<invoice>
-{% block modal %}{% endblock %}
-{% block content %}{% endblock %}
-</invoice>
-<footer>
-    <address>
-    </address>
-</footer>
+                </ul>
+            </nav>
+        {% endblock %}
+    </div>
+    <invoice>
+    {% block modal %}{% endblock %}
+    {% block content %}{% endblock %}
+    </invoice>
+    <footer>
+        <address>
+        </address>
+    </footer>
 </body>
 </html>

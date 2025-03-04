@@ -40,4 +40,4 @@ function visible(id) {
     x.style.display = "none";
   }
 }
-htmx.logAll();
+//htmx.logAll();

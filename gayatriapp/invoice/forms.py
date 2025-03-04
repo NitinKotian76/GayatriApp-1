@@ -13,12 +13,14 @@ class UserCreationForm(forms.ModelForm):
         label="Password confirmation", widget=forms.PasswordInput
     )
     user_name = forms.CharField(label="User Name", widget=forms.TextInput)
-    user_company = forms.CharField(label="User Company", widget=forms.TextInput)
+    company = forms.ModelChoiceField(
+        Company.objects.all(), to_field_name="company_name"
+    )
     group = forms.ModelMultipleChoiceField(Group.objects.all())
 
     class Meta:
         model = CustomUser
-        fields = ["email", "user_emp_code", "user_company", "user_name", "group"]
+        fields = ["email", "user_emp_code", "company", "user_name", "group"]
 
     def clean_password2(self):
         # Check that the two password entries match
@@ -41,6 +43,9 @@ class UserChangeForm(forms.ModelForm):
 
     password = ReadOnlyPasswordHashField()
     group = forms.ModelMultipleChoiceField(Group.objects.all())
+    company = forms.ModelChoiceField(
+        Company.objects.all(), to_field_name="company_name"
+    )
 
     class Meta:
         model = CustomUser
@@ -49,7 +54,7 @@ class UserChangeForm(forms.ModelForm):
             "password",
             "user_emp_code",
             "user_name",
-            "user_company",
+            "company",
             "group",
             "is_active",
             "is_admin",
@@ -63,3 +68,11 @@ class FormForm(forms.ModelForm):
         model = Form
         list_display = ["form_name", "group", "form_data"]
         fields = ("form_name", "group", "form_data")
+
+
+class loginForm(forms.ModelForm):
+    emp_id = forms.CharField()
+    password = forms.CharField()
+    company = forms.ModelChoiceField(
+        Company.objects.all(), to_field_name="company_name"
+    )

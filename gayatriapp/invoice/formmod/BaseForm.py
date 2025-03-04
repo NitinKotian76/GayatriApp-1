@@ -153,7 +153,7 @@ class base(Style):
         else:
             color = ""
         t = format_html(
-            f'<button class="{cssclass}{ButtonStyle}{globalSpacing}" type="{label}" value="{label}" name="{label}" {attr}>{label}</button>'
+            f'<button class="{cssclass}{ButtonStyle}{globalSpacing}" type="{type}" value="{value}" name="{label}" {attr}>{label}</button>'
         )
         return t
 

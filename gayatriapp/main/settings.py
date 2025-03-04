@@ -30,6 +30,7 @@ ALLOWED_HOSTS = []
 
 AUTH_USER_MODEL = "invoice.CustomUser"
 # Application definition
+LOGIN_URL = "/invoice"
 
 INSTALLED_APPS = [
     "invoice.apps.MainConfig",
@@ -55,6 +56,9 @@ MIDDLEWARE = [
     # end of cache middleware
     "django.middleware.cache.FetchFromCacheMiddleware",
 ]
+
+SESSION_ENGINE = "django.contrib.sessions.backends.db"
+
 
 ROOT_URLCONF = "main.urls"
 

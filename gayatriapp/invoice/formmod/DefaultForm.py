@@ -14,37 +14,38 @@ def addFieldshtml():
     )
 
 
-def loginFormhtml():
+def loginFormhtml(company, error):
     # ui for form display
-    company = ["company1", "company2", "company3"]
+    attr1, attr2 = "", ""
+    if error == 1:
+        attr1 = ""
+        attr2 = 'style="display:none"'
+
+    elif error == 2:
+        attr2 = ""
+        attr1 = 'style="display:none"'
+
+    else:
+        attr1 = attr2 = 'style="display:none"'
+
     return BF.modalContainer(
         children=BF.container(
-            children=BF.textInput(label="Username", attr="required", valid=True)
+            children=BF.textInput(label="Emp Id", attr="required", valid=True)
             + BF.password(
                 label="Password", attr='required class=" w3-border"', valid=False
             )
+            + BF.label(label="User name or password wrong", attr=attr1)
             + BF.list(
                 children=company,
                 label="Select Company:",
                 attr='required style="width:auto;"',
             )
+            + BF.label(label="User is not from this company", attr=attr2)
             + BF.button(label="Login", attr='id="loginbtn"')
             + BF.button(label="Forgot password", attr='id="forgotbtn"')
         ),
         attr='style="display:block;"',
         cssclass="w3-display-middle w3-half",
-    )
-
-
-def loginSuccesshtml():
-    return BF.modalContainer(
-        children="<p>Login successful</p>", attr='style="display:block;"'
-    )
-
-
-def loginFailhtml():
-    return BF.modalContainer(
-        children="<p>Login failed</p>", attr='style="display:block;"'
     )
 
 
@@ -56,40 +57,41 @@ def logouthtml():
     )
 
 
-def profilehtml():
-    return BF.container(
-        label="User Profile",
+def profilehtml(user):
+    return BF.modalContainer(
         attr='style="display:block;"',
         children=BF.button(
             label="x",
-            attr='onclick=document.getElementById("profile").style.display="none"',
+            attr='onclick=this.style.display="none"',
             cssclass="w3-display-topright",
         )
-        + BF.textInput(label="Name", attr="disabled", cssclass="w3-border-0")
-        + BF.textInput(label="groups", attr="disabled", cssclass="w3-border-0"),
+        + BF.label(label="Name")
+        + BF.label(label="groups"),
     )
 
 
 # edit the fields
 
 
-def formConfightml():
+def formConfightml(user, table):
     # this is the config page for the fields
     # should contain the label, variable name, default value,
-    childlist = ["user1", "user2", "user3"]
-    tablelist = ["user1", "user2", "user3"]
+    logger.debug("this is entered %s %s", user, table)
     return (
         BF.textInput(label="Form Name", attr="required")
-        + BF.list(label="User Name", attr="", children=childlist)
+        + BF.list(label="User Name", attr="", children=user)
         + BF.fieldsetContainer(
             label="Permissions",
             children=BF.checkbox(label="Read") + BF.checkbox(label="Write"),
         )
-        + BF.list(label="Tables", attr="multiple", children=tablelist)
+        + BF.list(label="Tables", attr="multiple", children=table)
         + BF.textInput(label="Description", attr="")
         + BF.button(
             label="Submit",
-            attr='hx-post="/invoice/form_setup" hx-target="#mainform" hx-swap="innerHTML" onclick=document.getElementById("modalView").style.display="none"',
+            attr='hx-post="/invoice/form_setup" \
+            hx-target="#mainform" \
+            hx-swap="innerHTML" \
+            onclick=document.getElementById("modalView").style.display="none"',
         )
         + BF.button(
             label="Cancel",
@@ -99,9 +101,7 @@ def formConfightml():
 
 
 def fieldConfightml():
-
     itemlist = AP.getInputFields()
-
     return (
         BF.modalContainer(
             children=BF.list(children=itemlist, label="Field Name")
