@@ -1,0 +1,41 @@
+pipeline {
+    agent { docker { image 'python:3.13.2-alpine3.21' } }
+    environment{
+
+	    }
+    stages {
+        stage('build') {
+            steps {
+                sh 'python --version'
+            }
+        }
+	stage('test') {
+		steps{
+			}
+
+		}
+	stage('Deploy - staging ') {
+		steps {
+			timeout(){}
+			retry(){}
+			}
+		}
+	stage('sanity check'){
+		input "proceed with deployment to production"
+		}
+	stage('Deploy - production'){
+		}
+	post {
+		always{
+			}
+		success{
+			}
+		failure{
+			}
+		unstable{
+			}
+		changed{
+			}
+		}
+    }
+}
