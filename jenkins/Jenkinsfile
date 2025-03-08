@@ -1,8 +1,8 @@
 pipeline {
     agent { docker { image 'python:3.13.2-alpine3.21' } }
-    environment{
+    environment {
 
-	    }
+	}
     stages {
         stage('build') {
             steps {
@@ -17,15 +17,14 @@ pipeline {
 		}
 	stage('Deploy - staging ') {
 		steps {
-			timeout(){}
 			retry(3){
 				sh 'echo "retry exec"'
 				}
 			}
 		}
-	stage('sanity check'){
-		input "proceed with deployment to production"
-		}
+	stage('sanity check') {
+				input 'proceed with deployment to production'
+	}
 	stage('Deploy - production'){
 			sh 'echo "deployed to production server"'
 		}
