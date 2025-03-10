@@ -1,51 +1,9 @@
 pipeline {
     agent { docker { image 'python:3.13.2-alpine3.21' } }
-    environment {
-
-	}
     stages {
         stage('build') {
             steps {
                 sh 'python --version'
             }
         }
-	stage('test') {
-		steps{
-			sh 'echo "testing "'
-			}
-
-		}
-	stage('Deploy - staging ') {
-		steps {
-			retry(3){
-				sh 'echo "retry exec"'
-				}
-			}
-		}
-	stage('sanity check') {
-				input 'proceed with deployment to production'
-	}
-	stage('Deploy - production') {
-		steps {
-			sh 'echo "deployed to production server"'
-		}
-	}
-	post {
-		always{
-			sh 'echo "always executes"'
-			}
-		success{
-			sh 'echo "executes on success"'
-			}
-		failure{
-			sh 'echo "executes on failure"'
-			}
-		unstable{
-			sh 'echo "executes when unstable"'
-			}
-		changed{
-			sh 'echo "executes on changes"'
-			}
-		}
-    }
 }
