@@ -25,9 +25,11 @@ pipeline {
 	stage('sanity check') {
 				input 'proceed with deployment to production'
 	}
-	stage('Deploy - production'){
+	stage('Deploy - production') {
+		steps {
 			sh 'echo "deployed to production server"'
 		}
+	}
 	post {
 		always{
 			sh 'echo "always executes"'
