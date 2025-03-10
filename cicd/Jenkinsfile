@@ -8,7 +8,7 @@ pipeline {
 		stage('build') {
 			steps {
 				sh 'pwd'
-				sh 'pip3 install -r cicd/requirements.txt'
+				sh 'pip3 install -r cicd/requirements.txt --user'
 			}
 		}
 	}
