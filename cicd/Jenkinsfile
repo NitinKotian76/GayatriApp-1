@@ -7,8 +7,9 @@ pipeline {
 	stages {
 		stage('build') {
 			steps {
-				sh 'pwd'
-				sh 'pip3 install -r cicd/requirements.txt --user'
+				sh 'python3 -m pip install --user pipx'
+				sh 'python3 -m pipx ensurepath'
+				sh 'pipx install -r cicd/requirements.txt'
 			}
 		}
 	}
