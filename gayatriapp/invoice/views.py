@@ -101,7 +101,8 @@ class form_setup(View):
 
 
 def form_config(request):
-    return HttpResponse(df.formConfig())
+    form = df.formConfig()
+    return render(request, "partials/forms.html", {"form": form})
 
 
 def form_delete(request):
@@ -124,8 +125,8 @@ class field_setup(View):
         tableRow = request.POST.get("Table Row")
         tableColumn = request.POST.get("Table Column")
         fieldno = cache.get("fieldno")
-        add_field(fieldtype, label, attr, form, fieldno, child)
-        if field == 0:
+        # add_field(fieldtype, label, attr, form, fieldno, child)
+        if fieldno == 0:
             cache.set("fieldno", fieldno + 1)
 
 

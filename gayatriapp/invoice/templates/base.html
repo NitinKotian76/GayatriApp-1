@@ -28,21 +28,21 @@
                             <a href="#"
                                class="w3-bar-item w3-button w3-ripple"
                                hx-get="/invoice/form_config"
-                               hx-target="#modalView"
-                               hx-swap="innerhtml"
+                               hx-target="#modal"
+                               hx-swap="outerHTML"
                                id="createform">create form</a>
                             <a href="#"
                                class="w3-bar-item w3-button w3-ripple"
                                id="deleteform"
                                hx-get="/invoice/form_delete"
                                hx-target="#modalView"
-                               hx-swap="innerhtml">delete form</a>
+                               hx-swap="innerHTML">delete form</a>
                             <a href="#"
                                class="w3-bar-item w3-button w3-ripple"
                                id="editform"
                                hx-get="/invoice/form_edit"
                                hx-target="#modalView"
-                               hx-swap="innerhtml">edit form</a>
+                               hx-swap="innerHTML">edit form</a>
                         </div>
                     </div>
                     <div class="w3-dropdown-hover w3-round-large w3-light-blue">
@@ -153,7 +153,7 @@
                            onclick='document.getElementById("modalView").style.display="block"'
                            hx-get="/invoice/profile_user"
                            hx-target="#modalView"
-                           hx-swap="innerhtml">Profile</a>
+                           hx-swap="innerHTML">Profile</a>
                     </div>
                 </ul>
             </nav>

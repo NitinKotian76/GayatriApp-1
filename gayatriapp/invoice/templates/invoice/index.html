@@ -9,6 +9,7 @@
 {% block modal %}
     <form id="modalView">
         {% csrf_token %}
+        <div id='modal'>{% include 'partials/forms.html' %}</div>
         <input class='w3-button w3-padding w3-margin' type='submit' value='Submit'>
         <input class='w3-button w3-padding w3-margin' type='button' value='Cancel'>
     </form>
