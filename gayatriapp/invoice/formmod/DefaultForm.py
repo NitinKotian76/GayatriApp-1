@@ -1,5 +1,7 @@
 from . import BaseForm as bf
+from django import forms
 import logging
+from ..models import *
 
 global BF, AP, inputDict, varNo
 BF = bf.base
@@ -7,46 +9,15 @@ AP = bf.appControls
 logger = logging.getLogger(__name__)
 
 
-def addFieldshtml():
-    # ui for form creation
-    return BF.container(
-        children='<a href="#" class="w3-btn w3-ripple w3-cell w3-blue" hx-get="/invoice/field_setup" hx-target="#modalView" hx-swap="innerHTML" onclick=document.getElementById("modalView").style.display="block">add field</a><a href="#" class="w3-btn w3-ripple w3-cell w3-blue" hx-get="/invoice/field_setup" hx-target="#modalView" hx-swap="innerHTML">add Column</a>'
+class loginForm(forms.Form):
+    template_name = "form_snippet.html"
+    empid = forms.IntegerField(required=True)
+    password = forms.CharField(widget=forms.PasswordInput, required=True)
+    cmpname = forms.ChoiceField(
+        widget=forms.Select, choices=Company.objects.values_list(), required=True
     )
-
-
-def loginFormhtml(company, error):
-    # ui for form display
-    attr1, attr2 = "", ""
-    if error == 1:
-        attr1 = ""
-        attr2 = 'style="display:none"'
-
-    elif error == 2:
-        attr2 = ""
-        attr1 = 'style="display:none"'
-
-    else:
-        attr1 = attr2 = 'style="display:none"'
-
-    return BF.modalContainer(
-        children=BF.container(
-            children=BF.textInput(label="Emp Id", attr="required", valid=True)
-            + BF.password(
-                label="Password", attr='required class=" w3-border"', valid=False
-            )
-            + BF.label(label="User name or password wrong", attr=attr1)
-            + BF.list(
-                children=company,
-                label="Select Company:",
-                attr='required style="width:auto;"',
-            )
-            + BF.label(label="User is not from this company", attr=attr2)
-            + BF.button(label="Login", attr='id="loginbtn"')
-            + BF.button(label="Forgot password", attr='id="forgotbtn"')
-        ),
-        attr='style="display:block;"',
-        cssclass="w3-display-middle w3-half",
-    )
+    # attr='style="display:block;"',
+    # cssclass="w3-display-middle w3-half",
 
 
 def logouthtml():
@@ -73,31 +44,17 @@ def profilehtml(user):
 # edit the fields
 
 
-def formConfightml(user, table):
-    # this is the config page for the fields
-    # should contain the label, variable name, default value,
-    logger.debug("this is entered %s %s", user, table)
-    return (
-        BF.textInput(label="Form Name", attr="required")
-        + BF.list(label="User Name", attr="", children=user)
-        + BF.fieldsetContainer(
-            label="Permissions",
-            children=BF.checkbox(label="Read") + BF.checkbox(label="Write"),
-        )
-        + BF.list(label="Tables", attr="multiple", children=table)
-        + BF.textInput(label="Description", attr="")
-        + BF.button(
-            label="Submit",
-            attr='hx-post="/invoice/form_setup" \
-            hx-target="#mainform" \
-            hx-swap="innerHTML" \
-            onclick=document.getElementById("modalView").style.display="none"',
-        )
-        + BF.button(
-            label="Cancel",
-            attr='onclick=document.getElementById("modalView").style.display="none"',
-        )
+class formConfig(forms.Form):
+    # Group.objects.all(), Table.objects.all()
+    template_name = "form_snippet.html"
+    form_name = forms.CharField()
+    group_name = forms.MultipleChoiceField(
+        widget=forms.SelectMultiple, choices=Group.objects.values_list()
     )
+    table_names = forms.MultipleChoiceField(
+        widget=forms.SelectMultiple, choices=Table.objects.values_list()
+    )
+    description = forms.CharField()
 
 
 def fieldConfightml():

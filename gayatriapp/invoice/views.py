@@ -13,6 +13,7 @@ from .formmod.Displayform import DisplayForm as ds
 from .formmod import DefaultForm as df
 from .formmod.form_views import form_config
 from django.contrib.auth.models import User
+from django import forms
 
 # anything that is returned by the rendered template should be validated
 # by the client and then the server
@@ -21,43 +22,42 @@ logger = logging.getLogger(__name__)
 # decorator = [login_required, permission_required]
 
 
-class login_user(View):
-
-    def get(self, request):
+def login_user(request):
+    form = df.loginForm()
+    if request.method == "GET":
         logger.debug("login page requested")
-
         return render(
             request,
             "invoice/login.html",
-            {"login": df.loginFormhtml(Company.objects.all(), 0)},
-            # {"login": loginForm},
+            {"login": form},
         )
 
-    def post(self, request):
-        emp_id = request.POST.get("Emp Id")
-        password = request.POST.get("Password")
-        compname = request.POST.get("Select Company:")
-        user = authenticate(
-            request, user_emp_code=emp_id, password=password, company=compname
-        )
-        if user is not None:
-            logger.debug("login success")
-            if user.company.company_name != compname:
-                logger.debug("login not from %s ", user.company.company_name)
+    if request.method == "POST":
+        if form.is_valid():
+            empid = form.cleaned_data("empid")
+            password = form.cleaned_data("password")
+            compname = form.clean_data("cmpname")
+            user = authenticate(
+                request, user_emp_code=empid, password=password, company=company_name
+            )
+            if user is not None:
+                # logger.debug("login success")
+                # if user.company.company_name != compname:
+                #     logger.debug("login not from %s ", user.company.company_name)
+                #     return render(
+                #         request,
+                #         "invoice/login.html",
+                #         {"login": df.loginFormhtml(Company.objects.all(), 2)},
+                #     )
+                login(request, user)
+                return redirect("invoice:index")
+            else:
+                logger.debug("login password or username failed")
                 return render(
                     request,
                     "invoice/login.html",
-                    {"login": df.loginFormhtml(Company.objects.all(), 2)},
+                    {"login": form},
                 )
-            login(request, user)
-            return redirect("invoice:index")
-        else:
-            logger.debug("login password or username failed")
-            return render(
-                request,
-                "invoice/login.html",
-                {"login": df.loginFormhtml(Company.objects.all(), 1)},
-            )
 
 
 class profile_user(View):
@@ -75,7 +75,7 @@ def index(request):
     return render(
         request,
         "invoice/index.html",
-        {"itemlist": df.addFieldshtml()},
+        {"itemlist": ""},
     )
 
 
@@ -101,7 +101,7 @@ class form_setup(View):
 
 
 def form_config(request):
-    return HttpResponse(df.formConfightml(Group.objects.all(), Table.objects.all()))
+    return HttpResponse(df.formConfig())
 
 
 def form_delete(request):

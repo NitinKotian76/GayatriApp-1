@@ -5,7 +5,7 @@ from . import views
 app_name = "invoice"
 
 urlpatterns = [
-    path("", views.login_user.as_view(), name="login"),
+    path("", views.login_user, name="login"),
     path("index", views.index, name="index"),
     path("profile_user", views.profile_user.as_view(), name="profile_user"),
     path("form_setup", views.form_setup.as_view(), name="form_setup"),
