@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block content %}
+    <form>
+        {% csrf_token %}
+        <section id="mainform">
+        </section>
+    </form>
+{% endblock %}
+{% block modal %}
+    <form id="modalView">
+        {% csrf_token %}
+        <div id="formpart">{% include 'partials/forms.html' %}</div>
+    </form>
+{% endblock %}

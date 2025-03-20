@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block nav %}{% endblock %}
+{% block modal %}
+    <form class='w3-container' method="post" action="{% url 'invoice:index' %}">
+        {% csrf_token %}
+        {{ login }}
+        <input class='w3-button w3-padding w3-margin' type='submit' value='login'>
+        <input class='w3-button w3-padding w3-margin'
+               type='button'
+               value='forgot password'>
+    </form>
+{% endblock %}
