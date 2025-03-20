@@ -1,4 +1,5 @@
-<div id="form">
+<div id="form" hx-trigger="load" hx-target="#formpart" hx-swap="outerHTML">
   {{form}}
-  <div></div>
+  <input class="w3-button w3-padding w3-margin" type="submit" value="Submit" />
+  <input class="w3-button w3-padding w3-margin" type="button" value="Cancel" />
 </div>

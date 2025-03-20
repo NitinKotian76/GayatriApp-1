@@ -75,7 +75,7 @@ def index(request):
     return render(
         request,
         "invoice/index.html",
-        {"itemlist": ""},
+        {"": ""},
     )
 
 
@@ -85,7 +85,7 @@ class form_setup(View):
         # get the config
         logger.debug("data sent to form setup ")
 
-        formname = request.POST.get("Form Name")
+        formname = "Form Name"
         username = request.POST.get("User Name")
         read = request.POST.get("Read")
         write = request.POST.get("Write")
@@ -101,16 +101,18 @@ class form_setup(View):
 
 
 def form_config(request):
-    form = df.formConfig()
+    form = formCreate()
     return render(request, "partials/forms.html", {"form": form})
 
 
 def form_delete(request):
-    return HttpResponse(df.formDeletehtml())
+    form = formDelete()
+    return render(request, "partials/forms.html", {"form": form})
 
 
 def form_edit(request):
-    return HttpResponse(df.formEdithtml())
+    form = formEdit()
+    return render(request, "partials/forms.html", {"form": form})
 
 
 class field_setup(View):
@@ -121,7 +123,6 @@ class field_setup(View):
         fieldtype = request.POST.get("field type")
         label = request.POST.get("Field Name")
         disabled = request.POST.get("Disabled")
-
         tableRow = request.POST.get("Table Row")
         tableColumn = request.POST.get("Table Column")
         fieldno = cache.get("fieldno")

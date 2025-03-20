@@ -28,8 +28,8 @@
                             <a href="#"
                                class="w3-bar-item w3-button w3-ripple"
                                hx-get="/invoice/form_config"
-                               hx-target="#modal"
-                               hx-swap="outerHTML"
+                               hx-target="this"
+                               hx-swap="none"
                                id="createform">create form</a>
                             <a href="#"
                                class="w3-bar-item w3-button w3-ripple"
@@ -69,50 +69,6 @@
                                hx-post="/invoice/delete_report"
                                hx-target="#modalView"
                                onclick='document.getElementById("modalView").style.display="block"'>delete report</a>
-                        </div>
-                    </div>
-                    <div class="w3-dropdown-hover w3-round-large w3-light-blue">
-                        <a href="#"
-                           style="text-decoration: none"
-                           class="w3-button w3-ripple  w3-margin-right w3-round-large w3-light-grey w3-hover-dark-grey"
-                           id="users">Users</a>
-                        <div class="w3-dropdown-content w3-bar-block w3-card-4">
-                            <a href="#"
-                               class="w3-bar-item w3-button w3-ripple"
-                               id="newuser"
-                               hx-post="/invoice/new_user"
-                               hx-target="#modalView"
-                               onclick='document.getElementById("modalView").style.display="block"'>new user</a>
-                            <a href="#"
-                               class="w3-bar-item w3-button w3-ripple"
-                               id="edituser"
-                               hx-post="/invoice/edit_user"
-                               hx-target="#modalView"
-                               onclick='document.getElementById("modalView").style.display="block"'>edit user</a>
-                            <a href="#"
-                               class="w3-bar-item w3-button w3-ripple"
-                               id="deleteuser"
-                               hx-post="/invoice/delete_user"
-                               hx-target="#modalView"
-                               onclick='document.getElementById("modalView").style.display="block"'>delete user</a>
-                            <a href="#"
-                               class="w3-bar-item w3-button w3-ripple"
-                               id="newgroup"
-                               hx-post="/invoice/new_group"
-                               hx-target="#modalView"
-                               onclick='document.getElementById("modalView").style.display="block"'>new group</a>
-                            <a href="#"
-                               class="w3-bar-item w3-button w3-ripple"
-                               id="editgroup"
-                               hx-post="/invoice/edit_group"
-                               hx-target="#modalView"
-                               onclick='document.getElementById("modalView").style.display="block"'>edit group</a>
-                            <a href="#"
-                               class="w3-bar-item w3-button w3-ripple"
-                               id="deletegroup"
-                               hx-post="/invoice/delete_group"
-                               hx-target="#modalView"
-                               onclick='document.getElementById("modalView").style.display="block"'>group</a>
                         </div>
                     </div>
                     <div class="w3-dropdown-hover w3-round-large w3-light-blue">
