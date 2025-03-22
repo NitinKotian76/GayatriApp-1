@@ -11,12 +11,16 @@ from .models import *
 from .forms import *
 from .formmod.Displayform import DisplayForm as ds
 from .formmod import DefaultForm as df
-from .formmod.form_views import form_config
+from .formmod import BaseForm as bf
+
+# from .formmod.form_setup import form_config
 from django.contrib.auth.models import User
 from django import forms
 
+from .formmod.CrudForm import form_store_json
+
 # anything that is returned by the rendered template should be validated
-# by the client and then the server
+# by the client and then the servern
 logger = logging.getLogger(__name__)
 
 # decorator = [login_required, permission_required]
@@ -101,18 +105,23 @@ class form_setup(View):
 
 
 def form_config(request):
-    form = formCreate()
+    # form = df.formCreate()
+    form = bf.open_bal_prod()
     return render(request, "partials/forms.html", {"form": form})
 
 
 def form_delete(request):
-    form = formDelete()
+    form = df.formDelete()
     return render(request, "partials/forms.html", {"form": form})
 
 
 def form_edit(request):
-    form = formEdit()
+    form = df.formEdit()
     return render(request, "partials/forms.html", {"form": form})
+
+
+def forms_view(request):
+    return render(request, "partials/table.html", {"table": Table})
 
 
 class field_setup(View):
