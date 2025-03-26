@@ -23,8 +23,8 @@ class Company(models.Model):
 class Table(models.Model):
     logger.debug("table added")
     # modified time
-    table_name = models.CharField()
-    table_data = models.JSONField(default=list, null=True)
+    table_name = models.CharField(unique=True)
+    table_data = models.JSONField(default=list)
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
 
     class Meta:
@@ -115,7 +115,6 @@ class Form(models.Model):
             ("edit_form", "can edit form"),
             ("access_form", "can access form"),
         ]
-        indexes = [GinIndex(fields=["form_data"], name="form_data_gin_idx")]
 
 
 class Report(models.Model):
@@ -124,9 +123,6 @@ class Report(models.Model):
     group = models.ManyToManyField(Group)
     table = models.ManyToManyField(Table)
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
-
-    class Meta:
-        indexes = [GinIndex(fields=["report_data"], name="report_data_gin_idx")]
 
     def __str__(self):
         return self.report_name
