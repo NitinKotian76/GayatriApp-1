@@ -1,9 +1,9 @@
 from django.shortcuts import render, redirect
-from django.http import JsonResponse, HttpResponse
+from django.http import HttpResponse
 from django.views.decorators.csrf import ensure_csrf_cookie, csrf_protect
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required, permission_required
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import login
 import logging
 from .cachestore import cachestore as cache
 from django.views import View
@@ -26,42 +26,28 @@ logger = logging.getLogger(__name__)
 # decorator = [login_required, permission_required]
 
 
-def login_user(request):
-    form = df.loginForm()
-    if request.method == "GET":
-        logger.debug("login page requested")
+def login_user(View):
+    def post(self, request):
+        form = df.loginForm(request.POST)
+        if form.is_valid():
+            login(request, form.user())
+            logger.debug("logged in")
+            return redirect("invoice:index")
+        else:
+            logger.debug("login password or username failed")
+            return render(
+                request,
+                "invoice/login.html",
+                {"login": form},
+            )
+
+    def get(self, request):
+        form = df.loginForm()
         return render(
             request,
             "invoice/login.html",
             {"login": form},
         )
-
-    if request.method == "POST":
-        if form.is_valid():
-            empid = form.cleaned_data("empid")
-            password = form.cleaned_data("password")
-            compname = form.clean_data("cmpname")
-            user = authenticate(
-                request, user_emp_code=empid, password=password, company=company_name
-            )
-            if user is not None:
-                # logger.debug("login success")
-                # if user.company.company_name != compname:
-                #     logger.debug("login not from %s ", user.company.company_name)
-                #     return render(
-                #         request,
-                #         "invoice/login.html",
-                #         {"login": df.loginFormhtml(Company.objects.all(), 2)},
-                #     )
-                login(request, user)
-                return redirect("invoice:index")
-            else:
-                logger.debug("login password or username failed")
-                return render(
-                    request,
-                    "invoice/login.html",
-                    {"login": form},
-                )
 
 
 class profile_user(View):
@@ -74,6 +60,7 @@ class profile_user(View):
         return render(request, "invoice/login.html", {"login": df.logouthtml()})
 
 
+@login_required
 def index(request):
     logger.debug("index page requested")
     return render(
