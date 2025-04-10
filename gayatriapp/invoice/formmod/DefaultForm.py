@@ -16,7 +16,7 @@ class loginForm(forms.Form):
     error_css_class = "error"
     required_css_class = "required"
 
-    employee_id = forms.IntegerField(required=True)
+    employee_id = forms.CharField(required=True)
     password = forms.CharField(widget=forms.PasswordInput, required=True)
     company_name = forms.ChoiceField(
         widget=forms.Select,
@@ -25,7 +25,7 @@ class loginForm(forms.Form):
     )
 
     def user(self):
-        logger.debug(self.user)
+        return self.user
 
     def clean(self):
         logger.debug("cleaning data ")
@@ -36,15 +36,16 @@ class loginForm(forms.Form):
         user = authenticate(
             user_emp_code=empid,
             password=password,
-            company=compname
         )
-        if user is None:
-            raise ValidationError("Employee ID or Password is wrong")
-        else:
+        logger.debug("%s, %s, %s, %s", type(empid), password,
+                     type(compname), user.__str__())
+        if user is not None:
+            self.user = user
+            # same user can have accounts in different companies
             if user.company_id != int(compname):
                 raise ValidationError("User is not from this company")
-            self.user = user
-            logger.debug(user)
+        else:
+            raise ValidationError("Employee ID or Password is wrong")
         return cleaned_data
 
 

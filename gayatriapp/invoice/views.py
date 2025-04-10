@@ -26,11 +26,12 @@ logger = logging.getLogger(__name__)
 # decorator = [login_required, permission_required]
 
 
-def login_user(View):
-    def post(self, request):
+def login_user(request):
+    form = df.loginForm()
+    if request.method == 'POST':
         form = df.loginForm(request.POST)
         if form.is_valid():
-            login(request, form.user())
+            login(request, form.user)
             logger.debug("logged in")
             return redirect("invoice:index")
         else:
@@ -40,14 +41,23 @@ def login_user(View):
                 "invoice/login.html",
                 {"login": form},
             )
-
-    def get(self, request):
-        form = df.loginForm()
+    if request.method == "GET":
         return render(
             request,
             "invoice/login.html",
             {"login": form},
         )
+
+
+def index(request):
+    request.session.flush()
+    # request.session[SESSION_KEY] = user.pk
+    logger.debug("index page requested")
+    return render(
+        request,
+        "invoice/index.html",
+        {"": ""},
+    )
 
 
 class profile_user(View):
@@ -58,16 +68,6 @@ class profile_user(View):
     def post(self, request):
         logout(request)
         return render(request, "invoice/login.html", {"login": df.logouthtml()})
-
-
-@login_required
-def index(request):
-    logger.debug("index page requested")
-    return render(
-        request,
-        "invoice/index.html",
-        {"": ""},
-    )
 
 
 class form_setup(View):
