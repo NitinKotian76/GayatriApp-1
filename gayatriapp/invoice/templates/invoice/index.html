@@ -3,12 +3,12 @@
     <form>
         {% csrf_token %}
         <section id="mainform">
+            <div id="formpart">{% include 'partials/forms.html' %}</div>
         </section>
     </form>
 {% endblock %}
 {% block modal %}
     <form id="modalView">
         {% csrf_token %}
-        <div id="formpart">{% include 'partials/forms.html' %}</div>
     </form>
 {% endblock %}

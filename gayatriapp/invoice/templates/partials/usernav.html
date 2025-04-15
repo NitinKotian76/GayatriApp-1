@@ -11,9 +11,10 @@
     <a
       href="#"
       class="w3-bar-item w3-button w3-ripple"
-      hx-get="/invoice/form"
-      hx-target="#modalView"
-      hx-swap="innerHTML"
+      hx-get="/invoice/form_view"
+      hx-target="this"
+      hx-vals='{"form": "Customer"}'
+      hx-swap="none"
       id="createform"
     >
       Customer
@@ -22,8 +23,9 @@
       href="#"
       class="w3-bar-item w3-button w3-ripple"
       id="deleteform"
-      hx-get="/invoice/form"
-      hx-target="#modalView"
+      hx-get="/invoice/form_view"
+      hx-target="#mainform"
+      hx-vals={"form":""}
       hx-swap="innerHTML"
     >
       Supplier Name
@@ -32,8 +34,9 @@
       href="#"
       class="w3-bar-item w3-button w3-ripple"
       id="editform"
-      hx-get="/invoice/form"
-      hx-target="#modalView"
+      hx-get="/invoice/form_view"
+      hx-target="#mainform"
+      hx-vals={"form":""}
       hx-swap="innerHTML"
     >
       Employee
@@ -42,8 +45,9 @@
       href="#"
       class="w3-bar-item w3-button w3-ripple"
       id="editform"
-      hx-get="/invoice/form"
-      hx-target="#modalView"
+      hx-get="/invoice/form_view"
+      hx-target="#mainform"
+      hx-vals={"form":""}
       hx-swap="innerHTML"
     >
       Export Fields
@@ -52,8 +56,9 @@
       href="#"
       class="w3-bar-item w3-button w3-ripple"
       id="editform"
-      hx-get="/invoice/form"
-      hx-target="#modalView"
+      hx-get="/invoice/form_view"
+      hx-target="#mainform"
+      hx-vals={"form":""}
       hx-swap="innerHTML"
     >
       Category
@@ -62,8 +67,9 @@
       href="#"
       class="w3-bar-item w3-button w3-ripple"
       id="editform"
-      hx-get="/invoice/form"
-      hx-target="#modalView"
+      hx-get="/invoice/form_view"
+      hx-target="#mainform"
+      hx-vals={"form":""}
       hx-swap="innerHTML"
     >
       Variety
@@ -72,8 +78,9 @@
       href="#"
       class="w3-bar-item w3-button w3-ripple"
       id="editform"
-      hx-get="/invoice/form"
-      hx-target="#modalView"
+      hx-get="/invoice/form_view"
+      hx-target="#mainform"
+      hx-vals={"form":""}
       hx-swap="innerHTML"
     >
       Item Name
@@ -82,8 +89,9 @@
       href="#"
       class="w3-bar-item w3-button w3-ripple"
       id="editform"
-      hx-get="/invoice/form"
-      hx-target="#modalView"
+      hx-get="/invoice/form_view"
+      hx-target="#mainform"
+      hx-vals={"form":""}
       hx-swap="innerHTML"
     >
       Stock Plus minus head
@@ -92,8 +100,9 @@
       href="#"
       class="w3-bar-item w3-button w3-ripple"
       id="editform"
-      hx-get="/invoice/form"
-      hx-target="#modalView"
+      hx-get="/invoice/form_view"
+      hx-target="#mainform"
+      hx-vals={"form":""}
       hx-swap="innerHTML"
     >
       Unit of Measurement
@@ -102,8 +111,9 @@
       href="#"
       class="w3-bar-item w3-button w3-ripple"
       id="editform"
-      hx-get="/invoice/form"
-      hx-target="#modalView"
+      hx-get="/invoice/form_view"
+      hx-target="#mainform"
+      hx-vals={"form":""}
       hx-swap="innerHTML"
     >
       Location
@@ -112,8 +122,9 @@
       href="#"
       class="w3-bar-item w3-button w3-ripple"
       id="editform"
-      hx-get="/invoice/form"
-      hx-target="#modalView"
+      hx-get="/invoice/form_view"
+      hx-target="#mainform"
+      hx-vals={"form":""}
       hx-swap="innerHTML"
     >
       Stock transfer
@@ -134,8 +145,9 @@
       href="#"
       class="w3-bar-item w3-button w3-ripple"
       id="newreport"
-      hx-post="/invoice/form"
-      hx-target="#modalView"
+      hx-post="/invoice/form_view"
+      hx-target="#mainform"
+      hx-vals={"form":""}
       onclick='document.getElementById("modalView").style.display="block"'
     >
       Opening balance Production
@@ -144,8 +156,9 @@
       href="#"
       class="w3-bar-item w3-button w3-ripple"
       id="editreport"
-      hx-post="/invoice/form"
-      hx-target="#modalView"
+      hx-post="/invoice/form_view"
+      hx-target="#mainform"
+      hx-vals={"form":""}
       onclick='document.getElementById("modalView").style.display="block"'
     >
       Production
@@ -154,8 +167,9 @@
       href="#"
       class="w3-bar-item w3-button w3-ripple"
       id="deletereport"
-      hx-post="/invoice/form"
-      hx-target="#modalView"
+      hx-post="/invoice/form_view"
+      hx-target="#mainform"
+      hx-vals={"form":""}
       onclick='document.getElementById("modalView").style.display="block"'
     >
       Stock Plus/minus
@@ -164,8 +178,9 @@
       href="#"
       class="w3-bar-item w3-button w3-ripple"
       id="deletereport"
-      hx-post="/invoice/form"
-      hx-target="#modalView"
+      hx-post="/invoice/form_view"
+      hx-target="#mainform"
+      hx-vals={"form":""}
       onclick='document.getElementById("modalView").style.display="block"'
     >
       Production Approval
@@ -174,8 +189,9 @@
       href="#"
       class="w3-bar-item w3-button w3-ripple"
       id="deletereport"
-      hx-post="/invoice/form"
-      hx-target="#modalView"
+      hx-post="/invoice/form_view"
+      hx-target="#mainform"
+      hx-vals={"form":""}
       onclick='document.getElementById("modalView").style.display="block"'
     >
       Invoice (DIRECT)
@@ -184,8 +200,9 @@
       href="#"
       class="w3-bar-item w3-button w3-ripple"
       id="deletereport"
-      hx-post="/invoice/form"
-      hx-target="#modalView"
+      hx-post="/invoice/form_view"
+      hx-target="#mainform"
+      hx-vals={"form":""}
       onclick='document.getElementById("modalView").style.display="block"'
     >
       Invoice (EXPORT)
@@ -194,8 +211,9 @@
       href="#"
       class="w3-bar-item w3-button w3-ripple"
       id="deletereport"
-      hx-post="/invoice/form"
-      hx-target="#modalView"
+      hx-post="/invoice/form_view"
+      hx-target="#mainform"
+      hx-vals={"form":""}
       onclick='document.getElementById("modalView").style.display="block"'
     >
       Invoice (LOCAL)
@@ -204,8 +222,9 @@
       href="#"
       class="w3-bar-item w3-button w3-ripple"
       id="deletereport"
-      hx-post="/invoice/form"
-      hx-target="#modalView"
+      hx-post="/invoice/form_view"
+      hx-target="#mainform"
+      hx-vals={"form":""}
       onclick='document.getElementById("modalView").style.display="block"'
     >
       Jumbo Roll QC
@@ -214,8 +233,9 @@
       href="#"
       class="w3-bar-item w3-button w3-ripple"
       id="deletereport"
-      hx-post="/invoice/form"
-      hx-target="#modalView"
+      hx-post="/invoice/form_view"
+      hx-target="#mainform"
+      hx-vals={"form":""}
       onclick='document.getElementById("modalView").style.display="block"'
     >
       LOT no Wise QC
@@ -224,8 +244,9 @@
       href="#"
       class="w3-bar-item w3-button w3-ripple"
       id="deletereport"
-      hx-post="/invoice/form"
-      hx-target="#modalView"
+      hx-post="/invoice/form_view"
+      hx-target="#mainform"
+      hx-vals={"form":""}
       onclick='document.getElementById("modalView").style.display="block"'
     >
       Finishing House
@@ -234,8 +255,9 @@
       href="#"
       class="w3-bar-item w3-button w3-ripple"
       id="deletereport"
-      hx-post="/invoice/form"
-      hx-target="#modalView"
+      hx-post="/invoice/form_view"
+      hx-target="#mainform"
+      hx-vals={"form":""}
       onclick='document.getElementById("modalView").style.display="block"'
       >Proggram planning
     </a>
@@ -255,8 +277,9 @@
       href="#"
       class="w3-bar-item w3-button w3-ripple"
       id="createtable"
-      hx-post="/invoice/form"
-      hx-target="#modalView"
+      hx-post="/invoice/form_view"
+      hx-target="#mainform"
+      hx-vals={"form":""}
       onclick='document.getElementById("modalView").style.display="block"'
     >
       Pending Order
@@ -265,8 +288,9 @@
       href="#"
       class="w3-bar-item w3-button w3-ripple"
       id="edittable"
-      hx-post="/invoice/form"
-      hx-target="#modalView"
+      hx-post="/invoice/form_view"
+      hx-target="#mainform"
+      hx-vals={"form":""}
       onclick='document.getElementById("modalView").style.display="block"'
     >
       Production
@@ -275,8 +299,9 @@
       href="#"
       class="w3-bar-item w3-button w3-ripple"
       id="deletetable"
-      hx-post="/invoice/form"
-      hx-target="#modalView"
+      hx-post="/invoice/form_view"
+      hx-target="#mainform"
+      hx-vals={"form":""}
       onclick='document.getElementById("modalView").style.display="block"'
     >
       Dispatch Details
@@ -285,8 +310,9 @@
       href="#"
       class="w3-bar-item w3-button w3-ripple"
       id="backup"
-      hx-post="/invoice/form"
-      hx-target="#modalView"
+      hx-post="/invoice/form_view"
+      hx-target="#mainform"
+      hx-vals={"form":""}
       onclick='document.getElementById("modalView").style.display="block"'
     >
       Stock
@@ -295,8 +321,9 @@
       href="#"
       class="w3-bar-item w3-button w3-ripple"
       id="deletereport"
-      hx-post="/invoice/form"
-      hx-target="#modalView"
+      hx-post="/invoice/form_view"
+      hx-target="#mainform"
+      hx-vals={"form":""}
       onclick='document.getElementById("modalView").style.display="block"'
     >
       Loader Report
@@ -305,8 +332,9 @@
       href="#"
       class="w3-bar-item w3-button w3-ripple"
       id="deletereport"
-      hx-post="/invoice/form"
-      hx-target="#modalView"
+      hx-post="/invoice/form_view"
+      hx-target="#mainform"
+      hx-vals={"form":""}
       onclick='document.getElementById("modalView").style.display="block"'
     >
       QC Report
@@ -315,8 +343,9 @@
       href="#"
       class="w3-bar-item w3-button w3-ripple"
       id="deletereport"
-      hx-post="/invoice/form"
-      hx-target="#modalView"
+      hx-post="/invoice/form_view"
+      hx-target="#mainform"
+      hx-vals={"form":""}
       onclick='document.getElementById("modalView").style.display="block"'
     >
       Stock Plus/minus
@@ -325,8 +354,9 @@
       href="#"
       class="w3-bar-item w3-button w3-ripple"
       id="deletereport"
-      hx-post="/invoice/form"
-      hx-target="#modalView"
+      hx-post="/invoice/form_view"
+      hx-target="#mainform"
+      hx-vals={"form":""}
       onclick='document.getElementById("modalView").style.display="block"'
     >
       Stock Plus/minus
@@ -347,8 +377,9 @@
       href="#"
       class="w3-bar-item w3-button w3-ripple"
       id="createtable"
-      hx-post="/invoice/form"
-      hx-target="#modalView"
+      hx-post="/invoice/form_view"
+      hx-target="#mainform"
+      hx-vals={"form":""}
       onclick='document.getElementById("modalView").style.display="block"'
     >
       API
@@ -357,8 +388,9 @@
       href="#"
       class="w3-bar-item w3-button w3-ripple"
       id="edittable"
-      hx-post="/invoice/form"
-      hx-target="#modalView"
+      hx-post="/invoice/form_view"
+      hx-target="#mainform"
+      hx-vals={"form":""}
       onclick='document.getElementById("modalView").style.display="block"'
     >
       Multiple Export Packing Slip
@@ -367,8 +399,9 @@
       href="#"
       class="w3-bar-item w3-button w3-ripple"
       id="deletetable"
-      hx-post="/invoice/form"
-      hx-target="#modalView"
+      hx-post="/invoice/form_view"
+      hx-target="#mainform"
+      hx-vals={"form":""}
       onclick='document.getElementById("modalView").style.display="block"'
     >
       MillSoft To Orion
@@ -377,8 +410,9 @@
       href="#"
       class="w3-bar-item w3-button w3-ripple"
       id="backup"
-      hx-post="/invoice/form"
-      hx-target="#modalView"
+      hx-post="/invoice/form_view"
+      hx-target="#mainform"
+      hx-vals={"form":""}
       onclick='document.getElementById("modalView").style.display="block"'
     >
       Backup
@@ -387,8 +421,9 @@
       href="#"
       class="w3-bar-item w3-button w3-ripple"
       id="deletereport"
-      hx-post="/invoice/form"
-      hx-target="#modalView"
+      hx-post="/invoice/form_view"
+      hx-target="#mainform"
+      hx-vals={"form":""}
       onclick='document.getElementById("modalView").style.display="block"'
     >
       Printer Setting
@@ -397,8 +432,9 @@
       href="#"
       class="w3-bar-item w3-button w3-ripple"
       id="deletereport"
-      hx-post="/invoice/form"
-      hx-target="#modalView"
+      hx-post="/invoice/form_view"
+      hx-target="#mainform"
+      hx-vals={"form":""}
       onclick='document.getElementById("modalView").style.display="block"'
     >
       Calculator

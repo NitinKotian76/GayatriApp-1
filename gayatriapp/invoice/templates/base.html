@@ -19,7 +19,7 @@
         <div class="navigation">
             <nav>
                 <ul class="w3-light-blue w3-bar w3-padding">
-                    {% if user.is_superuser %}
+                    {% if CustomUser.is_superuser %}
                         {% include 'partials/adminnav.html' %}
                     {% else %}
                         {% include 'partials/usernav.html' %}
