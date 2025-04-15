@@ -6,6 +6,7 @@ from django.contrib.auth.base_user import (
 from django.contrib.auth.models import PermissionsMixin
 import logging
 from django.contrib.auth.models import Permission, Group
+from django.contrib.postgres.indexes import GinIndex
 
 logger = logging.getLogger(__name__)
 # Create your models here.
@@ -42,9 +43,12 @@ class Company(models.Model):
 class Table(models.Model):
     logger.debug("table added")
     # modified time
-    table_name = models.CharField()
-    table_data = models.JSONField()
+    table_name = models.CharField(unique=True)
+    table_data = models.JSONField(default=list)
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
+
+    class Meta:
+        indexes = [GinIndex(fields=["table_data"], name="table_data_gin_idx")]
 
     def __str__(self):
         return self.table_name

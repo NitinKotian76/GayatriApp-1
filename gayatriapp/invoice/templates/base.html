@@ -19,97 +19,23 @@
         <div class="navigation">
             <nav>
                 <ul class="w3-light-blue w3-bar w3-padding">
-                    <div class="w3-dropdown-hover w3-round-large w3-light-blue">
-                        <a href="#"
-                           style="text-decoration: none"
-                           class="w3-button w3-ripple w3-margin-right w3-round-large w3-light-grey w3-hover-dark-grey"
-                           id="forms">Forms</a>
-                        <div class="w3-dropdown-content w3-bar-block w3-card-4">
-                            <a href="#"
-                               class="w3-bar-item w3-button w3-ripple"
-                               hx-get="/invoice/form_config"
-                               hx-target="this"
-                               hx-swap="none"
-                               id="createform">create form</a>
-                            <a href="#"
-                               class="w3-bar-item w3-button w3-ripple"
-                               id="deleteform"
-                               hx-get="/invoice/form_delete"
-                               hx-target="#modalView"
-                               hx-swap="innerHTML">delete form</a>
-                            <a href="#"
-                               class="w3-bar-item w3-button w3-ripple"
-                               id="editform"
-                               hx-get="/invoice/form_edit"
-                               hx-target="#modalView"
-                               hx-swap="innerHTML">edit form</a>
-                        </div>
-                    </div>
-                    <div class="w3-dropdown-hover w3-round-large w3-light-blue">
-                        <a href="#"
-                           style="text-decoration: none"
-                           class="w3-button w3-ripple w3-margin-right  w3-round-large w3-light-grey w3-hover-dark-grey"
-                           id="reports">Reports</a>
-                        <div class="w3-dropdown-content w3-bar-block w3-card-4">
-                            <a href="#"
-                               class="w3-bar-item w3-button w3-ripple"
-                               id="newreport"
-                               hx-post="/invoice/new_report"
-                               hx-target="#modalView"
-                               onclick='document.getElementById("modalView").style.display="block"'>new report</a>
-                            <a href="#"
-                               class="w3-bar-item w3-button w3-ripple"
-                               id="editreport"
-                               hx-post="/invoice/edit_report"
-                               hx-target="#modalView"
-                               onclick='document.getElementById("modalView").style.display="block"'>edit report</a>
-                            <a href="#"
-                               class="w3-bar-item w3-button w3-ripple"
-                               id="deletereport"
-                               hx-post="/invoice/delete_report"
-                               hx-target="#modalView"
-                               onclick='document.getElementById("modalView").style.display="block"'>delete report</a>
-                        </div>
-                    </div>
-                    <div class="w3-dropdown-hover w3-round-large w3-light-blue">
-                        <a href="#"
-                           style="text-decoration: none"
-                           class="w3-button w3-ripple  w3-margin-right w3-round-large w3-light-grey w3-hover-dark-grey"
-                           id="database">database</a>
-                        <div class="w3-dropdown-content w3-bar-block w3-card-4">
-                            <a href="#"
-                               class="w3-bar-item w3-button w3-ripple"
-                               id="createtable"
-                               hx-post="/invoice/createtable_db"
-                               hx-target="#modalView"
-                               onclick='document.getElementById("modalView").style.display="block"'>create table</a>
-                            <a href="#"
-                               class="w3-bar-item w3-button w3-ripple"
-                               id="edittable"
-                               hx-post="/invoice/edittable_db"
-                               hx-target="#modalView"
-                               onclick='document.getElementById("modalView").style.display="block"'>edit table</a>
-                            <a href="#"
-                               class="w3-bar-item w3-button w3-ripple"
-                               id="deletetable"
-                               hx-post="/invoice/deletetable_db"
-                               hx-target="#modalView"
-                               onclick='document.getElementById("modalView").style.display="block"'>delete table</a>
-                            <a href="#"
-                               class="w3-bar-item w3-button w3-ripple"
-                               id="backup"
-                               hx-post="/invoice/backup"
-                               hx-target="#modalView"
-                               onclick='document.getElementById("modalView").style.display="block"'>backup</a>
-                        </div>
-                    </div>
-                    <div class="w3-right">
+                    {% if CustomUser.is_superuser %}
+                        {% include 'partials/adminnav.html' %}
+                    {% else %}
+                        {% include 'partials/usernav.html' %}
+                    {% endif %}
+                    <div class="w3-right w3-dropdown-hover">
                         <a href="#"
                            class="w3-button w3-ripple w3-round-large w3-green"
                            onclick='document.getElementById("modalView").style.display="block"'
                            hx-get="/invoice/profile_user"
                            hx-target="#modalView"
                            hx-swap="innerHTML">Profile</a>
+                        <div class="w3-dropdown-content w3-bar-block w3-card-4 w3-margin-right">
+                            <div class="w3-bar-item w3-button w3-ripple">
+                                {% block profileView %}{% endblock %}
+                            </div>
+                        </div>
                     </div>
                 </ul>
             </nav>

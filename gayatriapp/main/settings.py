@@ -30,7 +30,6 @@ ALLOWED_HOSTS = []
 
 AUTH_USER_MODEL = "invoice.CustomUser"
 # Application definition
-LOGIN_URL = "/invoice"
 
 INSTALLED_APPS = [
     "invoice.apps.MainConfig",

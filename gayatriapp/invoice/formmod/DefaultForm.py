@@ -1,82 +1,307 @@
 from . import BaseForm as bf
+from . import formsSnippet
 from django import forms
+from django.core.exceptions import ValidationError
 import logging
 from ..models import *
 
 logger = logging.getLogger(__name__)
 
+# Custom Forms#
 
-class loginForm(forms.Form):
+# TODO: all master forms need a search field
+# masters #
+
+
+class customer(forms.Form):
+    customer_name = forms.SlugField()
+    agent_or_customer_name = forms.SlugField()
+    address_details = forms.SlugField()
+    city = forms.SlugField()
+    state = forms.SlugField()
+    pin_code = forms.IntegerField()
+    gst_no = forms.IntegerField()
+    pan_no = forms.SlugField()
+    payment_term = forms.IntegerField()  # payment period in days
+    dispatch_to = forms.SlugField()
+    district = forms.SlugField()
+    invoice_type = forms.SlugField()
+
+
+class supplier(forms.Form):
+    supplier_name = forms.SlugField()
+    agent_or_supplier_name = forms.SlugField()
+    address_details = forms.SlugField()
+    city = forms.SlugField()
+    state = forms.SlugField()
+    pin_code = forms.IntegerField()
+    gst_no = forms.IntegerField()
+    pan_no = forms.SlugField()
+    payment_term = forms.IntegerField()  # payment period in days
+    dispatch_to = forms.SlugField()
+    district = forms.SlugField()
+    invoice_type = forms.SlugField()
+
+
+class signatory(forms.Form):
+    signatory_name = forms.SlugField()
+    designation = forms.SlugField()
+
+
+class export_fields(forms.Form):
+    description_of_goods = forms.SlugField()
+    hsn_code = forms.SlugField()
+    tax_declaration = forms.SlugField()
+    invoice_back_page_heading = forms.SlugField()
+
+
+class item_category(forms.Form):
+    category = forms.SlugField()
+    unit = forms.SlugField()
+    hsn_code = forms.SlugField()
+    remarks = forms.SlugField()
+
+
+class variety(forms.Form):
+    code = forms.SlugField()
+    shade_code = forms.SlugField()
+    # api grouping
+    api_code = forms.IntegerField()
+    api_gsm = forms.IntegerField()
+    # challan report
+    flag_group = forms.IntegerField()
+    batch_group = forms.IntegerField()
+    field_group = forms.SlugField()
+    # stock report grouping
+    group_category = forms.IntegerField()
+    stock_transfer = forms.ChoiceField(choices=("yes", "no"))
+
+
+class items(forms.Form):
+    item_code = forms.SlugField()
+    variety = forms.SlugField()
+    deckle_size = forms.DecimalField()
+    gsm = forms.DecimalField()
+
+
+class stock(forms.Form):
+    category = forms.SlugField()
+    plus_minus = forms.SlugField()
+    api = forms.ChoiceField(choices=("true", "false"))
+    reference = forms.ChoiceField(choices=("with", "without"))
+
+
+class units(forms.Form):
+    unit_of_measurement = forms.CharField()
+
+
+class location(forms.Form):
+    location = forms.CharField()
+
+
+# transaction#
+
+
+class open_bal_prod(forms.Form):
     template_name = "form_snippet.html"
-    empid = forms.IntegerField(required=True)
-    password = forms.CharField(widget=forms.PasswordInput, required=True)
-    cmpname = forms.ChoiceField(
-        widget=forms.Select, choices=Company.objects.values_list(), required=True
-    )
+    date = forms.DateField()
+    plus_minus_head = forms.ChoiceField(choices=("plus", "minus"))
+    local_or_export = forms.ChoiceField(choices=("local", "export"))
+    variety = forms.ChoiceField()
+    type = forms.ChoiceField()
+    item_code = forms.ChoiceField()
+    size = forms.DecimalField()
+    length = forms.DecimalField()
+    gsm = forms.IntegerField()
+    unit = forms.ChoiceField()
+    no_of_bdls = forms.ChoiceField()  # no of bundles
+    excise_no_from = forms.IntegerField()
+    excise_no_to = forms.IntegerField()
+    no_of_sheets = forms.IntegerField()
+    ream_weight = forms.DecimalField()
+    no_of_ream = forms.IntegerField()
+    weight = forms.DecimalField()
+    rate = forms.DecimalField()
+    location = forms.ChoiceField()
+    indent_no = forms.IntegerField()
+    party = forms.ChoiceField()
+    agent = forms.ChoiceField()
+    fsc = forms.ChoiceField(choices=("yes", "no"))
+    lot_no = forms.IntegerField()
+    # tableview()
 
 
-class formCreate(forms.Form):
-    # Group.objects.all(), Table.objects.all()
+class prod_record(forms.Form):
     template_name = "form_snippet.html"
-    form_name = forms.CharField()
-    group_names = forms.MultipleChoiceField(
-        widget=forms.SelectMultiple, choices=Group.objects.values_list()
-    )
-    # table_names = forms.MultipleChoiceField(
-    #     widget=forms.SelectMultiple, choices=Table.objects.all()
-    # )
-    description = forms.CharField()
+    date = forms.DateField()
+    plus_minus_head = forms.ChoiceField(choices=("plus", "minus"))
+    local_or_export = forms.ChoiceField(choices=("local", "export"))
+    variety = forms.ChoiceField()
+    type = forms.ChoiceField()
+    item_code = forms.ChoiceField()
+    size = forms.DecimalField()
+    length = forms.DecimalField()
+    gsm = forms.IntegerField()
+    unit = forms.ChoiceField()
+    no_of_bdls = forms.ChoiceField()  # no of bundles
+    excise_no_from = forms.IntegerField()
+    excise_no_to = forms.IntegerField()
+    no_of_sheets = forms.IntegerField()
+    ream_weight = forms.DecimalField()
+    no_of_ream = forms.IntegerField()
+    weight = forms.DecimalField()
+    rate = forms.DecimalField()
+    location = forms.ChoiceField()
+    indent_no = forms.IntegerField()
+    party = forms.ChoiceField()
+    agent = forms.ChoiceField()
+    fsc = forms.ChoiceField(choices=("yes", "no"))
+    lot_no = forms.IntegerField()
 
 
-class fieldAdd(forms.Form):
+class prod_plus_minus(forms.Form):
     template_name = "form_snippet.html"
-    field_name = forms.ChoiceField(widget=forms.Select, choices=bf.getInputFields())
-    var_name = forms.CharField()
-    disabled = forms.ChoiceField(widget=forms.CheckboxInput)
-    table_row = forms.IntegerField()
-    table_column = forms.IntegerField()
+    date = forms.DateField()
+    plus_minus_head = forms.ChoiceField(choices=("plus", "minus"))
+    local_or_export = forms.ChoiceField(choices=("local", "export"))
+    variety = forms.ChoiceField()
+    type = forms.ChoiceField()
+    item_code = forms.ChoiceField()
+    size = forms.DecimalField()
+    length = forms.DecimalField()
+    gsm = forms.IntegerField()
+    unit = forms.ChoiceField()
+    no_of_bdls = forms.ChoiceField()  # no of bundles
+    excise_no_from = forms.IntegerField()
+    excise_no_to = forms.IntegerField()
+    no_of_sheets = forms.IntegerField()
+    ream_weight = forms.DecimalField()
+    no_of_ream = forms.IntegerField()
+    weight = forms.DecimalField()
+    rate = forms.DecimalField()
+    location = forms.ChoiceField()
+    indent_no = forms.IntegerField()
+    party = forms.ChoiceField()
+    agent = forms.ChoiceField()
+    fsc = forms.ChoiceField(choices=("yes", "no"))
+    lot_no = forms.IntegerField()
 
-    # attr = 'hx-post="/invoice/field_setup" hx-target="#mainform" hx-swap="none"',
-    # attr = 'onclick=document.getElementById("modalView").style.display="none"',
+
+class prod_approval(forms.Form):
+    date = forms.DateField()
+    # tableview
 
 
-class formDelete(forms.Form):
-    # search field
-    template_name = "form_snippet.html"
-    form_name = forms.ChoiceField(widget=forms.Select, choices="")
-    group_name = forms.ChoiceField()
+class invoice_direct(forms.Form):
+    party = forms.SlugField()
+    agent = forms.SlugField()
 
 
-class formEdit(forms.Form):
-    form_name = forms.ChoiceField(widget=forms.Select, choices="")
-    group_name = forms.ChoiceField()
-    # attr=f'hx-get="/invoice/form_setup" hx-vals={jsonvalue} hx-target="none" hx-swap="none"',
-    # attr='onclick=document.getElementById("modalView").style.display="none"',
+chalan_no = forms.IntegerField()
+chalan_date = forms.DateField()
+invoice_no = forms.IntegerField()
+invoice_date = forms.DateField()
+variety = forms.ChoiceField()
+sales_type = forms.ChoiceField()
+pre_time_date = forms.DateTimeField()
+rem_time_date = forms.DateTimeField()
+order_no = forms.IntegerField()
+order_date = forms.DateField()
+transport = forms.ChoiceField()
+vehicle_no = forms.CharField()
+supervisor_name = forms.ChoiceField()
+# table_view
+remark = forms.SlugField()
+delivery_at = forms.SlugField()
+# table_view
+# Exciseno, Quality, Variety, Size, Length, GSM, NO of bundles, No of stream, Stream wt., Weight, Unit, Rate, Amount
+# output table view
+# ass_value
+# insurance
+# cgst
+# sgst
+# igst
+# grand_total
+# buttons
+# add
+# edit
+# delete
+# QCtest
+# GAtePass
+# challan
+# invoice
+# Find
 
 
-class reportCreate(forms.Form):
+class jumbo_roll_qc(forms.Form):
+    date = forms.DateField()
+    shift = forms.ChoiceField()
+    jumbo_roll_no = forms.IntegerField()
+    variety = forms.ChoiceField()
+    # formset
+    # # (in_gsm)
+    gsm = forms.DecimalField()
+    # # (in_microns)
+    caliper = forms.DecimalField()
+    # # (cc/gm)
+    bulk = forms.DecimalField()
+    # (in g/m2)
+    cobb_top = forms.DecimalField()
+    # (in g/m2)
+    cobb_bottom = forms.DecimalField()
+    # (in %)
+    moisture_avg = forms.DecimalField()
+    # (md/cd)(gm-cm)
+    taber_stiffness = forms.DecimalField()
+    ratio = forms.DecimalField()
+    brightness = forms.DecimalField()
+    gloss = forms.DecimalField()
+    # (in_sec)
+    soat = forms.DecimalField()
+    # (microns)
+    pps_roughness = forms.DecimalField()
+    # (mts/sec)
+    igt_dry_pick = forms.DecimalField()
+    # (scott) (ft.lb in thousands)
+    ply_bond = forms.DecimalField()
+    surface_ph = forms.DecimalField()
+    surface_dust = forms.DecimalField()
+    top_formation = forms.DecimalField()
+    varnishability = forms.DecimalField()
+    cracking_creasing = forms.DecimalField()
+    flatness = forms.DecimalField()
+
+
+class lot_no_wise_qc(forms.Form):
+    lot_no = forms.IntegerField()
+    date = forms.DateField()
+    jumbo_roll_no = forms.IntegerField()
+    variety = forms.ChoiceField()
+    gsm = forms.DecimalField()
+    local_or_export = forms.ChoiceField()
+    type_reel_or_sheet = forms.ChoiceField()
+    size = forms.DecimalField()
+    item_code = forms.ChoiceField()
+    unit = forms.CharField()
+    location = forms.ChoiceField()
+    indent_no = forms.CharField()
+    party = forms.ChoiceField()
+    agent = forms.ChoiceField()
+    weight = forms.DecimalField()
+
+
+class finishing_house(forms.Form):
     pass
 
 
-class reportEdit(forms.Form):
-    pass
-
-
-class reportDelete(forms.Form):
-    pass
-
-
-class tableCreate(forms.Form):
-    pass
-
-
-class tableEdit(forms.Form):
-    pass
-
-
-class tableDelete(forms.Form):
-    pass
-
-
-class tableBackup(forms.Form):
-    pass
+class Programme_planing(forms.Form):
+    # all customer planning/ per customer planning
+    planning = forms.ChoiceField()
+    Sr_No = forms.IntegerField()
+    gsm = forms.DecimalField()
+    size_deckle = forms.DecimalField()
+    cutting = forms.DecimalField()
+    qty = forms.IntegerField()
+    ream_wt = forms.DecimalField()
+    customer_name = forms.CharField()
+    indent_no = forms.IntegerField()

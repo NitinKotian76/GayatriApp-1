@@ -4,20 +4,11 @@ from ..formmod.LoadForm import Filedata
 # TODO: do something about the class instance for formfield data
 
 
-class form_config:
+class form_setup:
     def __init__(self):
         self.ff = None
 
     def create_form(self, *args, **kwargs):
-        formName = kwargs.get("formname", "")
-        userName = kwargs.get("username", "")
-        read = kwargs.get("read", "")
-        write = kwargs.get("write", "")
-        TableNames = kwargs.get("tablenames", "")
-        description = kwargs.get("description", "")
-
-        # username as key to the access rights
-        Access_rights = {userName: [read, write]}
         tables = {"tables": TableNames}
         ff = form_store_json(formName, Access_rights, tables)
 
