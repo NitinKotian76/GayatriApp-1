@@ -1,3 +1,8 @@
-<div id="form" hx-trigger="load" hx-target="#formpart" hx-swap="outerHTML">
-  {{form}}
+<div
+  id="form"
+  hx-trigger="load, every 1s "
+  hx-target="#formpart"
+  hx-swap="outerHTML"
+>
+  {{form.as_p}}
 </div>

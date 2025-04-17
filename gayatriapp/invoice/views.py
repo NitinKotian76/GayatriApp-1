@@ -1,15 +1,15 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from django.views.decorators.csrf import ensure_csrf_cookie, csrf_protect
-from django.utils.decorators import method_decorator
-from django.contrib.auth.decorators import login_required, permission_required
+# from django.views.decorators.csrf import ensure_csrf_cookie, csrf_protect
+# from django.utils.decorators import method_decorator
+# from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth import login
 import logging
 from .cachestore import cachestore as cache
 from django.views import View
 from .models import *
 from .forms import *
-from .formmod.Displayform import DisplayForm as ds
+# from .formmod.Displayform import DisplayForm as ds
 from .formmod import DefaultForm as df
 from .formmod import BaseForm as bf
 
@@ -17,10 +17,11 @@ from .formmod import BaseForm as bf
 from django.contrib.auth.models import User
 from django import forms
 
-from .formmod.CrudForm import form_store_json
+# from .formmod.CrudForm import form_store_json
 
-# anything that is returned by the rendered template should be validated
-# by the client and then the servern
+# NOTE: anything that is returned by the rendered template should be validated
+# by the client and then the server
+
 logger = logging.getLogger(__name__)
 
 # decorator = [login_required, permission_required]
@@ -96,101 +97,53 @@ def form_edit(request):
 
 
 def form_view(request):
-    methodlist = bf.getInputFields(df)
+    formdata = None
+    logger.debug(request.GET.get("form"), df.customer)
     if request.method == "GET":
-        if request.GET.get("form") == "Company":
-            # return render(request, "partials/forms.html", {"form": df.Company})
-            return HttpResponse(df.Company)
-
-        if request.GET.get("form") == "CustomUser":
-            return render(request, "partials/forms.html", {"form": df.CustomUser})
-
-        if request.GET.get("form") == "CustomUserManager":
-            return render(request, "partials/forms.html", {"form": df.CustomUserManager})
-
-        if request.GET.get("form") == "Form":
-            return render(request, "partials/forms.html", {"form": df.Form})
-
-        if request.GET.get("form") == "GinIndex":
-            return render(request, "partials/forms.html", {"form": df.GinIndex})
-
-        if request.GET.get("form") == "Group":
-            return render(request, "partials/forms.html", {"form": df.Group})
-
-        if request.GET.get("form") == "Permission":
-            return render(request, "partials/forms.html", {"form": df.Permission})
-
-        if request.GET.get("form") == "PermissionsMixin":
-            return render(request, "partials/forms.html", {"form": df.PermissionsMixin})
-
-        if request.GET.get("form") == "Programme_planing":
-            return render(request, "partials/forms.html", {"form": df.Programme_planing})
-
-        if request.GET.get("form") == "Report":
-            return render(request, "partials/forms.html", {"form": df.Report})
-
-        if request.GET.get("form") == "Table":
-            return render(request, "partials/forms.html", {"form": df.Table})
-
-        if request.GET.get("form") == "ValidationError":
-            return render(request, "partials/forms.html", {"form": df.ValidationError})
-
-        if request.GET.get("form") == "authenticate":
-            return render(request, "partials/forms.html", {"form": df.authenticate})
-
+        logger.debug(request.GET.get("form"), df.customer)
+        # masters
         if request.GET.get("form") == "customer":
-            return render(request, "partials/forms.html", {"form": df.customer})
-
+            formdata = df.customer
+        if request.GET.get("form") == "supplier":
+            formdata = df.supplier
+        if request.GET.get("form") == "signatory":
+            formdata = df.signatory
         if request.GET.get("form") == "export_fields":
-            return render(request, "partials/forms.html", {"form": df.export_fields})
-
-        if request.GET.get("form") == "finishing_house":
-            return render(request, "partials/forms.html", {"form": df.finishing_house})
-
-        if request.GET.get("form") == "invoice_direct":
-            return render(request, "partials/forms.html", {"form": df.invoice_direct})
-
+            formdata = df.export_fields
         if request.GET.get("form") == "item_category":
-            return render(request, "partials/forms.html", {"form": df.item_category})
-
+            formdata = df.item_category
+        if request.GET.get("form") == "variety":
+            formdata = df.item_category
         if request.GET.get("form") == "items":
-            return render(request, "partials/forms.html", {"form": df.items})
-
-        if request.GET.get("form") == "jumbo_roll_qc":
-            return render(request, "partials/forms.html", {"form": df.jumbo_roll_qc})
-
+            formdata = df.items
+        if request.GET.get("form") == "stock":
+            formdata = df.stock
+        if request.GET.get("form") == "units":
+            formdata = df.units
         if request.GET.get("form") == "location":
-            return render(request, "partials/forms.html", {"form": df.location})
-
-        if request.GET.get("form") == "lot_no_wise_qc":
-            return render(request, "partials/forms.html", {"form": df.lot_no_wise_qc})
+            formdata = df.location
+        # transactions
 
         if request.GET.get("form") == "open_bal_prod":
-            return render(request, "partials/forms.html", {"form": df.open_bal_prod})
-
-        if request.GET.get("form") == "prod_approval":
-            return render(request, "partials/forms.html", {"form": df.prod_approval})
-
-        if request.GET.get("form") == "prod_plus_minus":
-            return render(request, "partials/forms.html", {"form": df.prod_plus_minus})
-
+            formdata = df.open_bal_prod
         if request.GET.get("form") == "prod_record":
-            return render(request, "partials/forms.html", {"form": df.prod_record})
+            formdata = df.prod_record
+        if request.GET.get("form") == "prod_plus_minus":
+            formdata = df.prod_plus_minus
+        if request.GET.get("form") == "prod_approval":
+            formdata = df.prod_approval
+        if request.GET.get("form") == "invoice_direct":
+            formdata = df.invoice_direct
+        if request.GET.get("form") == "jumbo_roll_qc":
+            formdata = df.jumbo_roll_qc
+        if request.GET.get("form") == "lot_no_wise_qc":
+            formdata = df.lot_no_wise_qc
+        if request.GET.get("form") == "finishing_house":
+            formdata = df.finishing_house
+        if request.GET.get("form") == "programme_planning":
+            formdata = df.finishing_house
 
-        if request.GET.get("form") == "signatory":
-            return render(request, "partials/forms.html", {"form": df.signatory})
-
-        if request.GET.get("form") == "stock":
-            return render(request, "partials/forms.html", {"form": df.stock})
-
-        if request.GET.get("form") == "supplier":
-            return render(request, "partials/forms.html", {"form": df.supplier})
-
-        if request.GET.get("form") == "units":
-            return render(request, "partials/forms.html", {"form": df.units})
-
-    # if request.GET.get("form") =:
-    #     return HttpResponse(request, ...)
+    return render(request, "partials/forms.html", {"form": formdata})
 
 
 class field_setup(View):

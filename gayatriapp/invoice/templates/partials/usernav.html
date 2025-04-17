@@ -12,9 +12,9 @@
       href="#"
       class="w3-bar-item w3-button w3-ripple"
       hx-get="/invoice/form_view"
-      hx-target="this"
-      hx-vals='{"form": "Customer"}'
-      hx-swap="none"
+      hx-target="#mainform"
+      hx-vals='{"form": "customer"}'
+      hx-swap="innerHTML"
       id="createform"
     >
       Customer
@@ -25,7 +25,7 @@
       id="deleteform"
       hx-get="/invoice/form_view"
       hx-target="#mainform"
-      hx-vals={"form":""}
+      hx-vals={"form":"supplier"}
       hx-swap="innerHTML"
     >
       Supplier Name
@@ -36,18 +36,7 @@
       id="editform"
       hx-get="/invoice/form_view"
       hx-target="#mainform"
-      hx-vals={"form":""}
-      hx-swap="innerHTML"
-    >
-      Employee
-    </a>
-    <a
-      href="#"
-      class="w3-bar-item w3-button w3-ripple"
-      id="editform"
-      hx-get="/invoice/form_view"
-      hx-target="#mainform"
-      hx-vals={"form":""}
+      hx-vals={"form":"export_fields"}
       hx-swap="innerHTML"
     >
       Export Fields
@@ -58,7 +47,7 @@
       id="editform"
       hx-get="/invoice/form_view"
       hx-target="#mainform"
-      hx-vals={"form":""}
+      hx-vals={"form":"item_category"}
       hx-swap="innerHTML"
     >
       Category
@@ -69,7 +58,7 @@
       id="editform"
       hx-get="/invoice/form_view"
       hx-target="#mainform"
-      hx-vals={"form":""}
+      hx-vals={"form":"variety"}
       hx-swap="innerHTML"
     >
       Variety
@@ -80,7 +69,7 @@
       id="editform"
       hx-get="/invoice/form_view"
       hx-target="#mainform"
-      hx-vals={"form":""}
+      hx-vals={"form":"item_name"}
       hx-swap="innerHTML"
     >
       Item Name

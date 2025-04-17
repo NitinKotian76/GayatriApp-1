@@ -195,24 +195,22 @@ class prod_approval(forms.Form):
 class invoice_direct(forms.Form):
     party = forms.SlugField()
     agent = forms.SlugField()
-
-
-chalan_no = forms.IntegerField()
-chalan_date = forms.DateField()
-invoice_no = forms.IntegerField()
-invoice_date = forms.DateField()
-variety = forms.ChoiceField()
-sales_type = forms.ChoiceField()
-pre_time_date = forms.DateTimeField()
-rem_time_date = forms.DateTimeField()
-order_no = forms.IntegerField()
-order_date = forms.DateField()
-transport = forms.ChoiceField()
-vehicle_no = forms.CharField()
-supervisor_name = forms.ChoiceField()
+    chalan_no = forms.IntegerField()
+    chalan_date = forms.DateField()
+    invoice_no = forms.IntegerField()
+    invoice_date = forms.DateField()
+    variety = forms.ChoiceField()
+    sales_type = forms.ChoiceField()
+    pre_time_date = forms.DateTimeField()
+    rem_time_date = forms.DateTimeField()
+    order_no = forms.IntegerField()
+    order_date = forms.DateField()
+    transport = forms.ChoiceField()
+    vehicle_no = forms.CharField()
+    supervisor_name = forms.ChoiceField()
 # table_view
-remark = forms.SlugField()
-delivery_at = forms.SlugField()
+    remark = forms.SlugField()
+    delivery_at = forms.SlugField()
 # table_view
 # Exciseno, Quality, Variety, Size, Length, GSM, NO of bundles, No of stream, Stream wt., Weight, Unit, Rate, Amount
 # output table view
