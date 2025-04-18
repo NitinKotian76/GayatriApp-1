@@ -14,6 +14,10 @@ logger = logging.getLogger(__name__)
 
 
 class customer(forms.Form):
+    template_name = "form_snippet.html"
+    error_css_class = "error"
+    required_css_class = "required"
+
     customer_name = forms.SlugField()
     agent_or_customer_name = forms.SlugField()
     address_details = forms.SlugField()
@@ -27,8 +31,21 @@ class customer(forms.Form):
     district = forms.SlugField()
     invoice_type = forms.SlugField()
 
+    def metadata(self):
+        tables = []
+        return tables
+
+    def buttons(self):
+        return (
+            '<input class="w3-button w3-padding w3-margin" type="submit" value="submit">'
+        )
+
 
 class supplier(forms.Form):
+    template_name = "form_snippet.html"
+    error_css_class = "error"
+    required_css_class = "required"
+
     supplier_name = forms.SlugField()
     agent_or_supplier_name = forms.SlugField()
     address_details = forms.SlugField()
@@ -44,11 +61,17 @@ class supplier(forms.Form):
 
 
 class signatory(forms.Form):
+    template_name = "form_snippet.html"
+    error_css_class = "error"
+    required_css_class = "required"
     signatory_name = forms.SlugField()
     designation = forms.SlugField()
 
 
 class export_fields(forms.Form):
+    template_name = "form_snippet.html"
+    error_css_class = "error"
+    required_css_class = "required"
     description_of_goods = forms.SlugField()
     hsn_code = forms.SlugField()
     tax_declaration = forms.SlugField()
@@ -56,6 +79,9 @@ class export_fields(forms.Form):
 
 
 class item_category(forms.Form):
+    template_name = "form_snippet.html"
+    error_css_class = "error"
+    required_css_class = "required"
     category = forms.SlugField()
     unit = forms.SlugField()
     hsn_code = forms.SlugField()
@@ -63,6 +89,9 @@ class item_category(forms.Form):
 
 
 class variety(forms.Form):
+    template_name = "form_snippet.html"
+    error_css_class = "error"
+    required_css_class = "required"
     code = forms.SlugField()
     shade_code = forms.SlugField()
     # api grouping
@@ -78,6 +107,9 @@ class variety(forms.Form):
 
 
 class items(forms.Form):
+    template_name = "form_snippet.html"
+    error_css_class = "error"
+    required_css_class = "required"
     item_code = forms.SlugField()
     variety = forms.SlugField()
     deckle_size = forms.DecimalField()
@@ -85,6 +117,9 @@ class items(forms.Form):
 
 
 class stock(forms.Form):
+    template_name = "form_snippet.html"
+    error_css_class = "error"
+    required_css_class = "required"
     category = forms.SlugField()
     plus_minus = forms.SlugField()
     api = forms.ChoiceField(choices=("true", "false"))
@@ -92,10 +127,16 @@ class stock(forms.Form):
 
 
 class units(forms.Form):
+    template_name = "form_snippet.html"
+    error_css_class = "error"
+    required_css_class = "required"
     unit_of_measurement = forms.CharField()
 
 
 class location(forms.Form):
+    template_name = "form_snippet.html"
+    error_css_class = "error"
+    required_css_class = "required"
     location = forms.CharField()
 
 
@@ -103,6 +144,9 @@ class location(forms.Form):
 
 
 class open_bal_prod(forms.Form):
+    template_name = "form_snippet.html"
+    error_css_class = "error"
+    required_css_class = "required"
     template_name = "form_snippet.html"
     date = forms.DateField()
     plus_minus_head = forms.ChoiceField(choices=("plus", "minus"))
@@ -133,6 +177,9 @@ class open_bal_prod(forms.Form):
 
 class prod_record(forms.Form):
     template_name = "form_snippet.html"
+    error_css_class = "error"
+    required_css_class = "required"
+    template_name = "form_snippet.html"
     date = forms.DateField()
     plus_minus_head = forms.ChoiceField(choices=("plus", "minus"))
     local_or_export = forms.ChoiceField(choices=("local", "export"))
@@ -161,6 +208,9 @@ class prod_record(forms.Form):
 
 class prod_plus_minus(forms.Form):
     template_name = "form_snippet.html"
+    error_css_class = "error"
+    required_css_class = "required"
+    template_name = "form_snippet.html"
     date = forms.DateField()
     plus_minus_head = forms.ChoiceField(choices=("plus", "minus"))
     local_or_export = forms.ChoiceField(choices=("local", "export"))
@@ -188,11 +238,17 @@ class prod_plus_minus(forms.Form):
 
 
 class prod_approval(forms.Form):
+    template_name = "form_snippet.html"
+    error_css_class = "error"
+    required_css_class = "required"
     date = forms.DateField()
     # tableview
 
 
 class invoice_direct(forms.Form):
+    template_name = "form_snippet.html"
+    error_css_class = "error"
+    required_css_class = "required"
     party = forms.SlugField()
     agent = forms.SlugField()
     chalan_no = forms.IntegerField()
@@ -232,6 +288,9 @@ class invoice_direct(forms.Form):
 
 
 class jumbo_roll_qc(forms.Form):
+    template_name = "form_snippet.html"
+    error_css_class = "error"
+    required_css_class = "required"
     date = forms.DateField()
     shift = forms.ChoiceField()
     jumbo_roll_no = forms.IntegerField()
@@ -271,6 +330,9 @@ class jumbo_roll_qc(forms.Form):
 
 
 class lot_no_wise_qc(forms.Form):
+    template_name = "form_snippet.html"
+    error_css_class = "error"
+    required_css_class = "required"
     lot_no = forms.IntegerField()
     date = forms.DateField()
     jumbo_roll_no = forms.IntegerField()
@@ -289,10 +351,15 @@ class lot_no_wise_qc(forms.Form):
 
 
 class finishing_house(forms.Form):
-    pass
+    template_name = "form_snippet.html"
+    error_css_class = "error"
+    required_css_class = "required"
 
 
 class Programme_planing(forms.Form):
+    template_name = "form_snippet.html"
+    error_css_class = "error"
+    required_css_class = "required"
     # all customer planning/ per customer planning
     planning = forms.ChoiceField()
     Sr_No = forms.IntegerField()

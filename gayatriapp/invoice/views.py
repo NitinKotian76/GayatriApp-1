@@ -104,6 +104,7 @@ def form_view(request):
         # masters
         if request.GET.get("form") == "customer":
             formdata = df.customer
+            buttons = df.customer.buttons
         if request.GET.get("form") == "supplier":
             formdata = df.supplier
         if request.GET.get("form") == "signatory":
@@ -143,7 +144,7 @@ def form_view(request):
         if request.GET.get("form") == "programme_planning":
             formdata = df.finishing_house
 
-    return render(request, "partials/forms.html", {"form": formdata})
+    return render(request, "partials/forms.html", {"form": formdata, "buttons": buttons})
 
 
 class field_setup(View):
