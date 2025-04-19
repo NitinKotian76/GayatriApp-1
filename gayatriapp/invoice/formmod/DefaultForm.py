@@ -31,15 +31,6 @@ class customer(forms.Form):
     district = forms.SlugField()
     invoice_type = forms.SlugField()
 
-    def metadata(self):
-        tables = []
-        return tables
-
-    def buttons(self):
-        return (
-            '<input class="w3-button w3-padding w3-margin" type="submit" value="submit">'
-        )
-
 
 class supplier(forms.Form):
     template_name = "form_snippet.html"

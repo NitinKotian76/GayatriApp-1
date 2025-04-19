@@ -98,13 +98,15 @@ def form_edit(request):
 
 def form_view(request):
     formdata = None
+    buttons = '<input class="w3-button w3-padding w3-margin" type="submit" value="submit"> \
+            <input class="w3-button w3-padding w3-margin" type="submit" value="submit">'
     logger.debug(request.GET.get("form"), df.customer)
     if request.method == "GET":
         logger.debug(request.GET.get("form"), df.customer)
         # masters
         if request.GET.get("form") == "customer":
             formdata = df.customer
-            buttons = df.customer.buttons
+
         if request.GET.get("form") == "supplier":
             formdata = df.supplier
         if request.GET.get("form") == "signatory":
