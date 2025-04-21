@@ -98,15 +98,58 @@ def form_edit(request):
 
 def form_view(request):
     formdata = None
-    buttons = '<input class="w3-button w3-padding w3-margin" type="submit" value="submit"> \
-            <input class="w3-button w3-padding w3-margin" type="submit" value="submit">'
-    logger.debug(request.GET.get("form"), df.customer)
-    if request.method == "GET":
-        logger.debug(request.GET.get("form"), df.customer)
+    buttons = None
+    if request.method == "POST":
+        formdata = request.POST.get("form")
+        if request.POST.get("form") == "customer":
+            formdata = df.customer(request.POST)
+            if formdata.is_valid():
+                logger.debug("data is saved")
+                # TODO: notify the user that data is saved
+        if request.POST.get("form") == "supplier":
+            formdata = df.supplier(request.POST)
+        if request.POST.get("form") == "signatory":
+            formdata = df.signatory(request.POST)
+        if request.POST.get("form") == "export_fields":
+            formdata = df.export_fields(request.POST)
+        if request.POST.get("form") == "item_category":
+            formdata = df.item_category(request.POST)
+        if request.POST.get("form") == "variety":
+            formdata = df.item_category(request.POST)
+        if request.POST.get("form") == "items":
+            formdata = df.items(request.POST)
+        if request.POST.get("form") == "stock":
+            formdata = df.stock(request.POST)
+        if request.POST.get("form") == "units":
+            formdata = df.units(request.POST)
+        if request.POST.get("form") == "location":
+            formdata = df.location(request.POST)
+        # transactions
+
+        if request.POST.get("form") == "open_bal_prod":
+            formdata = df.open_bal_prod(request.POST)
+        if request.POST.get("form") == "prod_record":
+            formdata = df.prod_record(request.POST)
+        if request.POST.get("form") == "prod_plus_minus":
+            formdata = df.prod_plus_minus(request.POST)
+        if request.POST.get("form") == "prod_approval":
+            formdata = df.prod_approval(request.POST)
+        if request.POST.get("form") == "invoice_direct":
+            formdata = df.invoice_direct(request.POST)
+        if request.POST.get("form") == "jumbo_roll_qc":
+            formdata = df.jumbo_roll_qc(request.POST)
+        if request.POST.get("form") == "lot_no_wise_qc":
+            formdata = df.lot_no_wise_qc(request.POST)
+        if request.POST.get("form") == "finishing_house":
+            formdata = df.finishing_house(request.POST)
+        if request.POST.get("form") == "programme_planning":
+            formdata = df.finishing_house(request.POST)
+
+    else:
         # masters
         if request.GET.get("form") == "customer":
             formdata = df.customer
-
+            buttons = df.button("customer")
         if request.GET.get("form") == "supplier":
             formdata = df.supplier
         if request.GET.get("form") == "signatory":

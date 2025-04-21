@@ -4,6 +4,7 @@ from django import forms
 from django.core.exceptions import ValidationError
 import logging
 from ..models import *
+from django.utils.html import *
 
 logger = logging.getLogger(__name__)
 
@@ -11,6 +12,17 @@ logger = logging.getLogger(__name__)
 
 # TODO: all master forms need a search field
 # masters #
+
+
+def button(name):
+    data = f'{{"form": {name}}}'
+    buttons = format_html('<input class="w3-button w3-padding w3-margin"\
+                type="submit" value="submit" \
+                hx-post="form_view" \
+                hx-target="this"\
+                hx-swap="none" \
+                hx-vals={}/>', data)
+    return buttons
 
 
 class customer(forms.Form):
