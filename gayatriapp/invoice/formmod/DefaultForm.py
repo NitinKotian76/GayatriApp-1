@@ -18,9 +18,6 @@ def button(name):
     data = f'{{"form": {name}}}'
     buttons = format_html('<input class="w3-button w3-padding w3-margin"\
                 type="submit" value="submit" \
-                hx-post="form_view" \
-                hx-target="this"\
-                hx-swap="none" \
                 hx-vals={}/>', data)
     return buttons
 

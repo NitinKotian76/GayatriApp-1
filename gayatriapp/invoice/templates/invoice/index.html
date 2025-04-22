@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% block content %}
-    <form>
+    <form action={% url 'invoice:form_view' %}>
         {% csrf_token %}
         <section id="mainform">
             <div id="formpart">{% include 'partials/forms.html' %}</div>

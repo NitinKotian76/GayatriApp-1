@@ -104,6 +104,7 @@ def form_view(request):
         if request.POST.get("form") == "customer":
             formdata = df.customer(request.POST)
             if formdata.is_valid():
+                form.save()
                 logger.debug("data is saved")
                 # TODO: notify the user that data is saved
         if request.POST.get("form") == "supplier":
@@ -210,3 +211,6 @@ class field_setup(View):
 
 class report(View):
     pass
+
+
+def tableView(request)
