@@ -14,4 +14,5 @@ urlpatterns = [
     path("form_edit", views.form_edit, name="form_edit"),
     path("form_view", views.form_view, name="form_view"),
     path("field_setup", views.field_setup.as_view(), name="field_setup"),
+    path("tableview", views.tableview, name="tableview"),
 ]

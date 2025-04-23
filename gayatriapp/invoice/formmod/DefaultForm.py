@@ -1,5 +1,5 @@
 from . import BaseForm as bf
-from . import formsSnippet
+from . import formComponents
 from django import forms
 from django.core.exceptions import ValidationError
 import logging

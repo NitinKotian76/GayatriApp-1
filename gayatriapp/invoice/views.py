@@ -1,23 +1,21 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-# from django.views.decorators.csrf import ensure_csrf_cookie, csrf_protect
-# from django.utils.decorators import method_decorator
-# from django.contrib.auth.decorators import login_required, permission_required
+
+from django.views.decorators.csrf import ensure_csrf_cookie, csrf_protect
+from django.utils.decorators import method_decorator
+from django.contrib.auth.decorators import login_required, permission_required
+
 from django.contrib.auth import login
+from django.views import View
 import logging
 from .cachestore import cachestore as cache
-from django.views import View
 from .models import *
 from .forms import *
-# from .formmod.Displayform import DisplayForm as ds
+from .formmod.Displayform import DisplayForm as ds
 from .formmod import DefaultForm as df
 from .formmod import BaseForm as bf
-
-# from .formmod.form_setup import form_config
-from django.contrib.auth.models import User
-from django import forms
-
 # from .formmod.CrudForm import form_store_json
+
 
 # NOTE: anything that is returned by the rendered template should be validated
 # by the client and then the server
@@ -49,51 +47,16 @@ def index(request):
     )
 
 
-class profile_user(View):
+def tableview(request, table):
 
-    def get(self, request):
-        return HttpResponse(df.profilehtml(user.objects.all()))
-
-    def post(self, request):
-        logout(request)
-        return render(request, "invoice/login.html", {"login": df.logouthtml()})
-
-
-class form_setup(View):
-
-    def post(self, request):
-        # get the config
-        logger.debug("data sent to form setup ")
-
-        formname = "Form Name"
-        username = request.POST.get("User Name")
-        read = request.POST.get("Read")
-        write = request.POST.get("Write")
-        tablenames = request.POST.get("Tables")
-        description = request.POST.get("Description")
-        form_config.create_form(
-            formname, username, read, write, tablenames, description
-        )
-
-        logger.debug("redirect to field config page")
-        # TODO: save in cache
-        return HttpResponse(df.addFieldshtml())
-
-
-def form_config(request):
-    # form = df.formCreate()
-    form = bf.open_bal_prod()
-    return render(request, "partials/forms.html", {"form": form})
-
-
-def form_delete(request):
-    form = df.formDelete()
-    return render(request, "partials/forms.html", {"form": form})
-
-
-def form_edit(request):
-    form = df.formEdit()
-    return render(request, "partials/forms.html", {"form": form})
+    MODEL_HEADERS = [f.name for f in table._meta.get_fields()]
+    query_results = [list(i.values())
+                     for i in list(table.objects.all().values())]
+    # return a response to your template and add query_results to the context
+    return render(request, "/TABLEOFINTEREST.html", {
+        "query_results": query_results,
+        "model_headers": MODEL_HEADERS
+    })
 
 
 def form_view(request):
@@ -193,6 +156,37 @@ def form_view(request):
     return render(request, "partials/forms.html", {"form": formdata, "buttons": buttons})
 
 
+class profile_user(View):
+
+    def get(self, request):
+        return HttpResponse(df.profilehtml(user.objects.all()))
+
+    def post(self, request):
+        logout(request)
+        return render(request, "invoice/login.html", {"login": df.logouthtml()})
+
+
+class form_setup(View):
+
+    def post(self, request):
+        # get the config
+        logger.debug("data sent to form setup ")
+
+        formname = "Form Name"
+        username = request.POST.get("User Name")
+        read = request.POST.get("Read")
+        write = request.POST.get("Write")
+        tablenames = request.POST.get("Tables")
+        description = request.POST.get("Description")
+        form_config.create_form(
+            formname, username, read, write, tablenames, description
+        )
+
+        logger.debug("redirect to field config page")
+        # TODO: save in cache
+        return HttpResponse(df.addFieldshtml())
+
+
 class field_setup(View):
     def get(self, request):
         return HttpResponse(df.fieldConfightml())
@@ -209,8 +203,21 @@ class field_setup(View):
             cache.set("fieldno", fieldno + 1)
 
 
+def form_config(request):
+    # form = df.formCreate()
+    form = bf.open_bal_prod()
+    return render(request, "partials/forms.html", {"form": form})
+
+
+def form_delete(request):
+    form = df.formDelete()
+    return render(request, "partials/forms.html", {"form": form})
+
+
+def form_edit(request):
+    form = df.formEdit()
+    return render(request, "partials/forms.html", {"form": form})
+
+
 class report(View):
     pass
-
-
-def tableView(request)

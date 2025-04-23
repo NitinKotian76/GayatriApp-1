@@ -1,0 +1,14 @@
+<table>
+  <tr>
+    {% for item in model_headers %}
+    <th>{{ item }}</th>
+    {% endfor %}
+  </tr>
+  {% for all_rows in query_results %}
+  <tr>
+    {% for every_column in all_rows %}
+    <td>{{ every_column }}</td>
+    {% endfor %}
+  </tr>
+  {% endfor %}
+</table>

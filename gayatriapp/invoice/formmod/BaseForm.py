@@ -3,7 +3,7 @@ from django.template import Template
 from django.http import JsonResponse
 from django import forms
 from ..models import *
-from . import formsSnippet
+from . import formComponents
 from django.contrib.auth import authenticate
 from django.core.exceptions import ValidationError
 
@@ -80,7 +80,7 @@ class formCreate(forms.Form):
 class fieldAdd(forms.Form):
     template_name = "form_snippet.html"
     field_name = forms.ChoiceField(
-        widget=forms.Select, choices=getInputFields(formsSnippet)
+        widget=forms.Select, choices=getInputFields(formComponents)
     )
     var_name = forms.CharField()
     disabled = forms.ChoiceField(widget=forms.CheckboxInput)
