@@ -1,4 +1,10 @@
-<table>
+<table
+  class="w3-table-all"
+  hx-get="/invoice/tableview"
+  hx-target="#tableview"
+  hx-trigger="loadform"
+  hx-swap="outerHTML"
+>
   <tr>
     {% for item in model_headers %}
     <th>{{ item }}</th>
