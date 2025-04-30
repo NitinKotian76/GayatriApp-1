@@ -47,24 +47,6 @@ def index(request):
     )
 
 
-def tableview(request):
-    # if callable(getattr(table, __str__)):
-    # TODO: this just checks if the table is callable
-    # but need a way to access the table
-    # pass
-    # NOTE:  this doesnt work
-    table = CustomUser
-    MODEL_HEADERS = [f.name for f in table._meta.get_fields()]
-
-    query_results = [list(i.values())
-                     for i in list(table.objects.all().values())]
-    # return a response to your template and add query_results to the context
-    return render(request, "partials/tableview.html", {
-        "query_results": query_results,
-        "model_headers": MODEL_HEADERS
-    })
-
-
 def form_view(request):
     formdata = None
     buttons = None

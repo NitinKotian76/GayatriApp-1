@@ -14,6 +14,27 @@ logger = logging.getLogger(__name__)
 # masters #
 
 
+def tableview(model):
+    # TODO: this just checks if the table is callable
+    # but need a way to access the table
+    table = model
+    MODEL_HEADERS = [f.name for f in table._meta.fields]
+    query_results = [list(i.values())
+                     for i in list(table.objects.all().values())]
+    # return a response to your template and add query_results to the context
+    header, column, row = "", "", ""
+    for item in MODEL_HEADERS:
+        header += f'<th>{item}</th>'
+    for all_rows in query_results:
+        for every_column in all_rows:
+            column += f'<td>{every_column}</td>'
+            row = f'<tr>{column}</tr>'
+
+    table_html = format_html(
+        f'<table class="w3-table-all"><tr>{header}</tr>{row}</table>')
+    return table_html
+
+
 def button(name):
     data = f'{{"form": {name}}}'
     buttons = format_html('<input class="w3-button w3-padding w3-margin"\
