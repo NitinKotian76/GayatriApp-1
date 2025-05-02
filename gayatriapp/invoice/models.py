@@ -7,6 +7,7 @@ from django.contrib.auth.models import PermissionsMixin
 import logging
 from django.contrib.auth.models import Permission, Group
 from django.contrib.postgres.indexes import GinIndex
+from django.contrib.postgres.fields import ArrayField, JSONField
 
 logger = logging.getLogger(__name__)
 # Create your models here.
@@ -24,7 +25,7 @@ class Table(models.Model):
     logger.debug("table added")
     # modified time
     table_name = models.CharField(unique=True)
-    table_data = models.JSONField(default=list)
+    table_data = ArrayField(JSONField(), null=True, blank=True)
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
 
     class Meta:

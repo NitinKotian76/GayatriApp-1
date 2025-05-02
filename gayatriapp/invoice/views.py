@@ -14,6 +14,7 @@ from .forms import *
 from .formmod.Displayform import DisplayForm as ds
 from .formmod import DefaultForm as df
 from .formmod import BaseForm as bf
+from .dbmod import dbfunctions as db
 # from .formmod.CrudForm import form_store_json
 
 
@@ -54,8 +55,13 @@ def form_view(request):
         formdata = request.POST.get("form")
         if request.POST.get("form") == "customer":
             formdata = df.customer(request.POST)
+
             if formdata.is_valid():
-                form.save()
+                table_name = "customer"
+                data = formdata.cleaned_data
+                user_id = request.user.id
+                logger.debug(user_id)
+                db.set_data(table_name, data, user_id)
                 logger.debug("data is saved")
                 # TODO: notify the user that data is saved
         if request.POST.get("form") == "supplier":
@@ -101,6 +107,7 @@ def form_view(request):
         # masters
         if request.GET.get("form") == "customer":
             formdata = df.customer
+            table = df.tableview(customer)
             buttons = df.button("customer")
         if request.GET.get("form") == "supplier":
             formdata = df.supplier

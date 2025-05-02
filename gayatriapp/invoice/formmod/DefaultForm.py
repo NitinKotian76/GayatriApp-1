@@ -25,10 +25,12 @@ def tableview(model):
     header, column, row = "", "", ""
     for item in MODEL_HEADERS:
         header += f'<th>{item}</th>'
+
     for all_rows in query_results:
         for every_column in all_rows:
             column += f'<td>{every_column}</td>'
-            row = f'<tr>{column}</tr>'
+
+        row = f'<tr>{column}</tr>'
 
     table_html = format_html(
         f'<table class="w3-table-all"><tr>{header}</tr>{row}</table>')
