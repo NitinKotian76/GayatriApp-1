@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 class Company(models.Model):
     # user based
-    company_name = models.CharField(null=True, default="company default")
+    company_name = models.CharField(null=True)
 
     def __str__(self):
         return self.company_name
@@ -25,7 +25,7 @@ class Table(models.Model):
     logger.debug("table added")
     # modified time
     table_name = models.CharField(unique=True)
-    table_data = ArrayField(JSONField(), null=True, blank=True)
+    table_data = models.JSONField(null=True, blank=True, default=dict)
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
 
     class Meta:

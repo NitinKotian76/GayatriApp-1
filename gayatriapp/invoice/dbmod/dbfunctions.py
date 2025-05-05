@@ -14,8 +14,8 @@ def set_data(table_name, data, user_id):
     # NOTE: get the table data as a row of values in json
     # expect json values as data
     row_limit = 1000
-    user = CustomUser.objects.get(user_emp_code=user_id)
-    company = Company.objects.get(id=user.company_id)
+    # user = CustomUser.objects.get(user_emp_code=user_id)
+    company = Company.objects.get(id=user_id.company_id)
 
     try:
         json.loads(data)

@@ -5,7 +5,7 @@ from django.views.decorators.csrf import ensure_csrf_cookie, csrf_protect
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required, permission_required
 
-from django.contrib.auth import login
+from django.contrib.auth import login, logout
 from django.views import View
 import logging
 from .cachestore import cachestore as cache
@@ -23,7 +23,7 @@ from .dbmod import dbfunctions as db
 
 logger = logging.getLogger(__name__)
 
-# decorator = [login_required, permission_required]
+login_decorator = [login_required, permission_required]
 
 
 def login_user(request):
@@ -39,6 +39,11 @@ def login_user(request):
     return render(request, "invoice/login.html", {"login": form})
 
 
+def logout_user(request):
+    logout(request)
+
+
+@login_required
 def index(request):
     logger.debug(request.user.is_active)
     return render(
@@ -151,14 +156,13 @@ def form_view(request):
     return render(request, "partials/forms.html", {"form": formdata, "buttons": buttons})
 
 
-class profile_user(View):
+def profile_user(request):
 
-    def get(self, request):
-        return HttpResponse(df.profilehtml(user.objects.all()))
-
-    def post(self, request):
-        logout(request)
-        return render(request, "invoice/login.html", {"login": df.logouthtml()})
+    if request.method == 'GET':
+        logger.debug(request.user)
+        # a = CustomUser.objects.get(user_emp_code=request.user_id)
+        # user =
+        return render(request, "partials/profile.html", {"user": "user"})
 
 
 class form_setup(View):

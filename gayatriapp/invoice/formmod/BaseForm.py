@@ -71,9 +71,9 @@ class formCreate(forms.Form):
     group_names = forms.MultipleChoiceField(
         widget=forms.SelectMultiple, choices=Group.objects.values_list()
     )
-    # table_names = forms.MultipleChoiceField(
-    #     widget=forms.SelectMultiple, choices=Table.objects.all()
-    # )
+    table_names = forms.MultipleChoiceField(
+        widget=forms.SelectMultiple, choices=Table.objects.all()
+    )
     description = forms.CharField()
 
 

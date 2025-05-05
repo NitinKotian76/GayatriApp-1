@@ -30,7 +30,6 @@ ALLOWED_HOSTS = []
 
 AUTH_USER_MODEL = "invoice.CustomUser"
 # Application definition
-
 INSTALLED_APPS = [
     "invoice.apps.MainConfig",
     "django.contrib.admin",
@@ -59,6 +58,8 @@ SESSION_ENGINE = "django.contrib.sessions.backends.db"
 
 
 ROOT_URLCONF = "main.urls"
+LOGIN_URL = "/invoice"
+LOGIN_REDIRECT_URL = "/invoice/index"
 
 TEMPLATES = [
     {
