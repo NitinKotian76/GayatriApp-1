@@ -60,6 +60,7 @@ SESSION_ENGINE = "django.contrib.sessions.backends.db"
 ROOT_URLCONF = "main.urls"
 LOGIN_URL = "/invoice"
 LOGIN_REDIRECT_URL = "/invoice/index"
+LOGOUT_REDIRECT_URL = "/invoice"
 
 TEMPLATES = [
     {

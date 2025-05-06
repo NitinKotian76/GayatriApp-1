@@ -159,10 +159,9 @@ def form_view(request):
 def profile_user(request):
 
     if request.method == 'GET':
-        logger.debug(request.user)
-        # a = CustomUser.objects.get(user_emp_code=request.user_id)
-        # user =
-        return render(request, "partials/profile.html", {"user": "user"})
+        logger.debug(request)
+        user = CustomUser.objects.get(user_emp_code=request.user)
+        return render(request, "partials/profile.html", {"user": user})
 
 
 class form_setup(View):

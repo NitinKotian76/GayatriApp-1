@@ -1,15 +1,19 @@
 <div hx-trigger="load" hx-target="#profile" hx-swap="innerHTML">
   <!--this will be substituted-->
+  <button class="w3-button w3-ripple w3-round w3-red" onclick="w3_close()">
+    X
+  </button>
+
   <table class="w3-table">
     <tr>
-      <th>First Name</th>
-      <th>Last Name</th>
+      <th>Name</th>
+      <th>id</th>
+      <th>company</th>
     </tr>
     <tr>
-      <td>Jill</td>
-      <td>Smith</td>
+      <td>{{user.user_name}}</td>
+      <td>{{user.user_emp_code}}</td>
+      <td>{{user.company.company_name}}</td>
     </tr>
   </table>
-
-  <button hx-post="/invoice/logout">logout</button>
 </div>
