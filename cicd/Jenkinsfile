@@ -11,8 +11,6 @@ pipeline {
 		stage('build') {
 			steps {
 				sh 'export HOME=$WORKSPACE'
-				sh 'python3 -m venv venv'
-				sh 'source venv/bin/activate'
 				sh 'pip install --user pipx'
 				sh 'pipx ensurepath'
 				sh 'pipx install -r cicd/requirements.txt'
