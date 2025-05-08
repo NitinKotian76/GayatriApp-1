@@ -39,8 +39,11 @@ def login_user(request):
     return render(request, "invoice/login.html", {"login": form})
 
 
+@login_required
 def logout_user(request):
+    logger.debug("logout")
     logout(request)
+    return redirect("/invoice")
 
 
 @login_required
@@ -53,6 +56,7 @@ def index(request):
     )
 
 
+@login_required
 def form_view(request):
     formdata = None
     buttons = None
@@ -112,7 +116,7 @@ def form_view(request):
         # masters
         if request.GET.get("form") == "customer":
             formdata = df.customer
-            table = df.tableview(customer)
+            # table = df.tableview(db.customer)
             buttons = df.button("customer")
         if request.GET.get("form") == "supplier":
             formdata = df.supplier
@@ -156,6 +160,7 @@ def form_view(request):
     return render(request, "partials/forms.html", {"form": formdata, "buttons": buttons})
 
 
+@login_required
 def profile_user(request):
 
     if request.method == 'GET':
@@ -164,9 +169,10 @@ def profile_user(request):
         return render(request, "partials/profile.html", {"user": user})
 
 
-class form_setup(View):
+@login_required
+def form_setup(request):
 
-    def post(self, request):
+    if request.method == 'POST':
         # get the config
         logger.debug("data sent to form setup ")
 
@@ -185,11 +191,12 @@ class form_setup(View):
         return HttpResponse(df.addFieldshtml())
 
 
-class field_setup(View):
-    def get(self, request):
+@login_required
+def field_setup(View):
+    if request.method == 'GET':
         return HttpResponse(df.fieldConfightml())
 
-    def post(self, request):
+    if request.method == 'POST':
         fieldtype = request.POST.get("field type")
         label = request.POST.get("Field Name")
         disabled = request.POST.get("Disabled")
@@ -201,21 +208,25 @@ class field_setup(View):
             cache.set("fieldno", fieldno + 1)
 
 
+@login_required
 def form_config(request):
     # form = df.formCreate()
     form = bf.open_bal_prod()
     return render(request, "partials/forms.html", {"form": form})
 
 
+@login_required
 def form_delete(request):
     form = df.formDelete()
     return render(request, "partials/forms.html", {"form": form})
 
 
+@login_required
 def form_edit(request):
     form = df.formEdit()
     return render(request, "partials/forms.html", {"form": form})
 
 
-class report(View):
+@login_required
+def report(View):
     pass

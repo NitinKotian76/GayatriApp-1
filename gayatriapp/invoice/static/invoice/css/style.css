@@ -1,6 +1,8 @@
-*,:before,:after{
-	margin: 0px;
-	padding: 0px;
-	box-sizing: none;
-	border: 0px;
+*,
+:before,
+:after {
+  margin: 0px;
+  padding: 0px;
+  box-sizing: none;
+  border: 0px;
 }
