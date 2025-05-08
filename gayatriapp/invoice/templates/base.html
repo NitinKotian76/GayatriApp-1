@@ -24,23 +24,23 @@
                     {% else %}
                         {% include 'partials/usernav.html' %}
                     {% endif %}
-                    <div class="w3-right w3-dropdown-hover">
-                        <a href="#"
-                           class="w3-button w3-ripple w3-round-large w3-green"
-                           onclick='document.getElementById("modalView").style.display="block"'
-                           hx-get="/invoice/profile_user"
-                           hx-target="#modalView"
-                           hx-swap="innerHTML">Profile</a>
-                        <div class="w3-dropdown-content w3-bar-block w3-card-4 w3-margin-right">
-                            <div class="w3-bar-item w3-button w3-ripple">
-                                {% block profileView %}{% endblock %}
-                            </div>
-                        </div>
-                    </div>
+                    <a hx-get="/invoice/profile_user"
+                       hx-target="#profile"
+                       hx-swap="innerHTML"
+                       class="w3-right w3-button w3-bar-item w3-ripple w3-round-large w3-green"
+                       onclick="w3_open()">Profile</a>
                 </ul>
             </nav>
-        {% endblock %}
-    </div>
+        </div>
+        <div class="w3-sidebar w3-bar-block"
+             style="position:absolute;
+                    width:25%;
+                    right:0px;
+                    display:none"
+             id="mySidebar">
+            <div id="profile">{% include 'partials/profile.html' %}</div>
+        </div>
+    {% endblock %}
     <main>
         {% block modal %}{% endblock %}
         {% block content %}{% endblock %}

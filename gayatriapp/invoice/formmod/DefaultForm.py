@@ -1,9 +1,10 @@
 from . import BaseForm as bf
-from . import formsSnippet
+from . import formComponents
 from django import forms
 from django.core.exceptions import ValidationError
 import logging
 from ..models import *
+from django.utils.html import *
 
 logger = logging.getLogger(__name__)
 
@@ -13,7 +14,42 @@ logger = logging.getLogger(__name__)
 # masters #
 
 
+def tableview(model):
+    # TODO: this just checks if the table is callable
+    # but need a way to access the table
+    table = model
+    MODEL_HEADERS = [f.name for f in table._meta.fields]
+    query_results = [list(i.values())
+                     for i in list(table.objects.all().values())]
+    # return a response to your template and add query_results to the context
+    header, column, row = "", "", ""
+    for item in MODEL_HEADERS:
+        header += f'<th>{item}</th>'
+
+    for all_rows in query_results:
+        for every_column in all_rows:
+            column += f'<td>{every_column}</td>'
+
+        row = f'<tr>{column}</tr>'
+
+    table_html = format_html(
+        f'<table class="w3-table-all"><tr>{header}</tr>{row}</table>')
+    return table_html
+
+
+def button(name):
+    data = f'{{"form": {name}}}'
+    buttons = format_html('<input class="w3-button w3-padding w3-margin"\
+                type="submit" value="submit" \
+                hx-vals={}/>', data)
+    return buttons
+
+
 class customer(forms.Form):
+    template_name = "form_snippet.html"
+    error_css_class = "error"
+    required_css_class = "required"
+
     customer_name = forms.SlugField()
     agent_or_customer_name = forms.SlugField()
     address_details = forms.SlugField()
@@ -29,6 +65,10 @@ class customer(forms.Form):
 
 
 class supplier(forms.Form):
+    template_name = "form_snippet.html"
+    error_css_class = "error"
+    required_css_class = "required"
+
     supplier_name = forms.SlugField()
     agent_or_supplier_name = forms.SlugField()
     address_details = forms.SlugField()
@@ -44,11 +84,17 @@ class supplier(forms.Form):
 
 
 class signatory(forms.Form):
+    template_name = "form_snippet.html"
+    error_css_class = "error"
+    required_css_class = "required"
     signatory_name = forms.SlugField()
     designation = forms.SlugField()
 
 
 class export_fields(forms.Form):
+    template_name = "form_snippet.html"
+    error_css_class = "error"
+    required_css_class = "required"
     description_of_goods = forms.SlugField()
     hsn_code = forms.SlugField()
     tax_declaration = forms.SlugField()
@@ -56,6 +102,9 @@ class export_fields(forms.Form):
 
 
 class item_category(forms.Form):
+    template_name = "form_snippet.html"
+    error_css_class = "error"
+    required_css_class = "required"
     category = forms.SlugField()
     unit = forms.SlugField()
     hsn_code = forms.SlugField()
@@ -63,6 +112,9 @@ class item_category(forms.Form):
 
 
 class variety(forms.Form):
+    template_name = "form_snippet.html"
+    error_css_class = "error"
+    required_css_class = "required"
     code = forms.SlugField()
     shade_code = forms.SlugField()
     # api grouping
@@ -78,6 +130,9 @@ class variety(forms.Form):
 
 
 class items(forms.Form):
+    template_name = "form_snippet.html"
+    error_css_class = "error"
+    required_css_class = "required"
     item_code = forms.SlugField()
     variety = forms.SlugField()
     deckle_size = forms.DecimalField()
@@ -85,6 +140,9 @@ class items(forms.Form):
 
 
 class stock(forms.Form):
+    template_name = "form_snippet.html"
+    error_css_class = "error"
+    required_css_class = "required"
     category = forms.SlugField()
     plus_minus = forms.SlugField()
     api = forms.ChoiceField(choices=("true", "false"))
@@ -92,10 +150,16 @@ class stock(forms.Form):
 
 
 class units(forms.Form):
+    template_name = "form_snippet.html"
+    error_css_class = "error"
+    required_css_class = "required"
     unit_of_measurement = forms.CharField()
 
 
 class location(forms.Form):
+    template_name = "form_snippet.html"
+    error_css_class = "error"
+    required_css_class = "required"
     location = forms.CharField()
 
 
@@ -103,6 +167,9 @@ class location(forms.Form):
 
 
 class open_bal_prod(forms.Form):
+    template_name = "form_snippet.html"
+    error_css_class = "error"
+    required_css_class = "required"
     template_name = "form_snippet.html"
     date = forms.DateField()
     plus_minus_head = forms.ChoiceField(choices=("plus", "minus"))
@@ -133,6 +200,9 @@ class open_bal_prod(forms.Form):
 
 class prod_record(forms.Form):
     template_name = "form_snippet.html"
+    error_css_class = "error"
+    required_css_class = "required"
+    template_name = "form_snippet.html"
     date = forms.DateField()
     plus_minus_head = forms.ChoiceField(choices=("plus", "minus"))
     local_or_export = forms.ChoiceField(choices=("local", "export"))
@@ -161,6 +231,9 @@ class prod_record(forms.Form):
 
 class prod_plus_minus(forms.Form):
     template_name = "form_snippet.html"
+    error_css_class = "error"
+    required_css_class = "required"
+    template_name = "form_snippet.html"
     date = forms.DateField()
     plus_minus_head = forms.ChoiceField(choices=("plus", "minus"))
     local_or_export = forms.ChoiceField(choices=("local", "export"))
@@ -188,31 +261,35 @@ class prod_plus_minus(forms.Form):
 
 
 class prod_approval(forms.Form):
+    template_name = "form_snippet.html"
+    error_css_class = "error"
+    required_css_class = "required"
     date = forms.DateField()
     # tableview
 
 
 class invoice_direct(forms.Form):
+    template_name = "form_snippet.html"
+    error_css_class = "error"
+    required_css_class = "required"
     party = forms.SlugField()
     agent = forms.SlugField()
-
-
-chalan_no = forms.IntegerField()
-chalan_date = forms.DateField()
-invoice_no = forms.IntegerField()
-invoice_date = forms.DateField()
-variety = forms.ChoiceField()
-sales_type = forms.ChoiceField()
-pre_time_date = forms.DateTimeField()
-rem_time_date = forms.DateTimeField()
-order_no = forms.IntegerField()
-order_date = forms.DateField()
-transport = forms.ChoiceField()
-vehicle_no = forms.CharField()
-supervisor_name = forms.ChoiceField()
+    chalan_no = forms.IntegerField()
+    chalan_date = forms.DateField()
+    invoice_no = forms.IntegerField()
+    invoice_date = forms.DateField()
+    variety = forms.ChoiceField()
+    sales_type = forms.ChoiceField()
+    pre_time_date = forms.DateTimeField()
+    rem_time_date = forms.DateTimeField()
+    order_no = forms.IntegerField()
+    order_date = forms.DateField()
+    transport = forms.ChoiceField()
+    vehicle_no = forms.CharField()
+    supervisor_name = forms.ChoiceField()
 # table_view
-remark = forms.SlugField()
-delivery_at = forms.SlugField()
+    remark = forms.SlugField()
+    delivery_at = forms.SlugField()
 # table_view
 # Exciseno, Quality, Variety, Size, Length, GSM, NO of bundles, No of stream, Stream wt., Weight, Unit, Rate, Amount
 # output table view
@@ -234,6 +311,9 @@ delivery_at = forms.SlugField()
 
 
 class jumbo_roll_qc(forms.Form):
+    template_name = "form_snippet.html"
+    error_css_class = "error"
+    required_css_class = "required"
     date = forms.DateField()
     shift = forms.ChoiceField()
     jumbo_roll_no = forms.IntegerField()
@@ -273,6 +353,9 @@ class jumbo_roll_qc(forms.Form):
 
 
 class lot_no_wise_qc(forms.Form):
+    template_name = "form_snippet.html"
+    error_css_class = "error"
+    required_css_class = "required"
     lot_no = forms.IntegerField()
     date = forms.DateField()
     jumbo_roll_no = forms.IntegerField()
@@ -291,10 +374,15 @@ class lot_no_wise_qc(forms.Form):
 
 
 class finishing_house(forms.Form):
-    pass
+    template_name = "form_snippet.html"
+    error_css_class = "error"
+    required_css_class = "required"
 
 
 class Programme_planing(forms.Form):
+    template_name = "form_snippet.html"
+    error_css_class = "error"
+    required_css_class = "required"
     # all customer planning/ per customer planning
     planning = forms.ChoiceField()
     Sr_No = forms.IntegerField()
