@@ -1,0 +1,30 @@
+services:
+  gayatriapp:
+    volumes:
+      - static:/static
+      - django_logs:/logs
+    build:
+      context: ./gayatri_invoice
+    expose:
+      - 8000
+    restart: always
+  nginx:
+    build: ./nginx
+    volumes:
+      - static:/static #this is to make sure /static requests are routed to the shared volume on host machine where django static files are stored
+    ports:
+      - "8000:80"
+    depends_on:
+      - gayatriapp
+    restart: always
+  postgres:
+    volumes:
+      - postgres_db:/gayatri_db
+    build: ./postgres
+    depends_on:
+      - gayatriapp
+    restart: always
+volumes:
+  static:
+  postgres_db:
+  django_logs:
