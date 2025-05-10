@@ -1,10 +1,26 @@
+FROM python:3-slim as builder
+WORKDIR /gayatri
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+
+
+
+
+
+
+
+
+
+
+
 FROM python:3-slim
 WORKDIR /gayatri
+
 COPY gayatriapp/ /gayatri/
 COPY poetry.lock /gayatri/
 COPY pyproject.toml /gayatri/
 COPY entrypoint.sh /gayatri/
-COPY deploy_settings.py /gayatri/
+COPY settings.py /gayatri/gayatriapp/main/
 RUN pip install --upgrade pip \
 	&& pip install pipx \
 	&& pipx ensurepath

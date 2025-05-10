@@ -5,6 +5,9 @@ services:
       - django_logs:/logs
     build:
       context: ./gayatri_invoice
+    environment:
+    env:
+      - .env
     expose:
       - 8000
     restart: always
