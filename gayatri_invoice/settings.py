@@ -21,12 +21,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY =
+SECRET_KEY = os.environ["DJANGO_SECRET_KEY"]
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = os.environ["DEBUG"]
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = os.environ["DJANGO_ALLOWED_HOSTS"]
 
 AUTH_USER_MODEL = "invoice.CustomUser"
 # Application definition
@@ -87,11 +87,11 @@ WSGI_APPLICATION = "main.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": "gayatri",
-        "USER": "postgres",
-        "PASSWORD": "gayatri",
-        "HOST": "127.0.0.1",
-        "PORT": "5432",
+        "NAME": os.environ["DATABASE_NAME"],
+        "USER": os.environ["DATABASE_USERNAME"],
+        "PASSWORD": os.environ["DATABASE_PASSWORD"],
+        "HOST": os.environ["DATABASE_HOST"],
+        "PORT": os.environ["DATABASE_PORT"],
     }
 }
 
@@ -167,7 +167,7 @@ LOGGING = {
     "loggers": {
         "django": {
             "handlers": ["console"],
-            "level": os.getenv("DJANGO_LOG_LEVEL", "INFO"),
+            "level": os.environ["DJANGO_LOG_LEVEL"],
             "propagate": False,
         },
     },

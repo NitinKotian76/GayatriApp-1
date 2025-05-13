@@ -1404,31 +1404,6 @@ files = [
 ]
 
 [[package]]
-name = "psycopg"
-version = "3.2.4"
-description = "PostgreSQL database adapter for Python"
-optional = false
-python-versions = ">=3.8"
-groups = ["main"]
-markers = "python_version == \"3.11\" or python_version >= \"3.12\""
-files = [
-    {file = "psycopg-3.2.4-py3-none-any.whl", hash = "sha256:43665368ccd48180744cab26b74332f46b63b7e06e8ce0775547a3533883d381"},
-    {file = "psycopg-3.2.4.tar.gz", hash = "sha256:f26f1346d6bf1ef5f5ef1714dd405c67fb365cfd1c6cea07de1792747b167b92"},
-]
-
-[package.dependencies]
-typing-extensions = {version = ">=4.6", markers = "python_version < \"3.13\""}
-tzdata = {version = "*", markers = "sys_platform == \"win32\""}
-
-[package.extras]
-binary = ["psycopg-binary (==3.2.4)"]
-c = ["psycopg-c (==3.2.4)"]
-dev = ["ast-comments (>=1.1.2)", "black (>=24.1.0)", "codespell (>=2.2)", "dnspython (>=2.1)", "flake8 (>=4.0)", "mypy (>=1.14)", "pre-commit (>=4.0.1)", "types-setuptools (>=57.4)", "wheel (>=0.37)"]
-docs = ["Sphinx (>=5.0)", "furo (==2022.6.21)", "sphinx-autobuild (>=2021.3.14)", "sphinx-autodoc-typehints (>=1.12)"]
-pool = ["psycopg-pool"]
-test = ["anyio (>=4.0)", "mypy (>=1.14)", "pproxy (>=2.7)", "pytest (>=6.2.5)", "pytest-cov (>=3.0)", "pytest-randomly (>=3.5)"]
-
-[[package]]
 name = "psycopg2-binary"
 version = "2.9.10"
 description = "psycopg2 - Python-PostgreSQL Database Adapter"
@@ -2313,12 +2288,12 @@ version = "4.12.2"
 description = "Backported and Experimental Type Hints for Python 3.8+"
 optional = false
 python-versions = ">=3.8"
-groups = ["main", "test"]
+groups = ["test"]
+markers = "python_version == \"3.11\" or python_version >= \"3.12\""
 files = [
     {file = "typing_extensions-4.12.2-py3-none-any.whl", hash = "sha256:04e5ca0351e0f3f85c6853954072df659d0d13fac324d0072316b67d7794700d"},
     {file = "typing_extensions-4.12.2.tar.gz", hash = "sha256:1a7ead55c7e559dd4dee8856e3a88b41225abfe1ce8df57b7c13915fe121ffb8"},
 ]
-markers = {main = "python_version == \"3.11\" or python_version >= \"3.12\" and python_version < \"3.13\"", test = "python_version == \"3.11\" or python_version >= \"3.12\""}
 
 [[package]]
 name = "tzdata"
@@ -2481,4 +2456,4 @@ files = [
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.11"
-content-hash = "cf88d3199231b3e229ecc4ca5a7c6dca98b138a2d29148777df105557105a26f"
+content-hash = "4d0ab34424704be3576b987c4ab6fda345f2ce304113a82cb7d1cc67458dd7c4"
