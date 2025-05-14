@@ -42,7 +42,7 @@ services:
     volumes:
       - static:/static #this is to make sure /static requests are routed to the shared volume on host machine where django static files are stored
     ports:
-      - "8000:80"
+      - "8000:8000"
     depends_on:
       - gayatriapp
     restart: always
