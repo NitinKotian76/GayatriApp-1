@@ -62,17 +62,27 @@ def form_view(request):
     buttons = None
     if request.method == "POST":
         formdata = request.POST.get("form")
+        logger.debug(formdata)
         if request.POST.get("form") == "customer":
             formdata = df.customer(request.POST)
+            logger.debug("data received")
 
             if formdata.is_valid():
+                logger.debug("data validated")
                 table_name = "customer"
                 data = formdata.cleaned_data
                 user_id = request.user.id
                 logger.debug(user_id)
                 db.set_data(table_name, data, user_id)
                 logger.debug("data is saved")
+                logger.debug(user_id)
+
                 # TODO: notify the user that data is saved
+            else:
+                logger.debug("data invalid")
+                logger.debug(formdata.errors)
+                buttons = df.button("customer")
+
         if request.POST.get("form") == "supplier":
             formdata = df.supplier(request.POST)
         if request.POST.get("form") == "signatory":

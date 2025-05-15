@@ -3,6 +3,7 @@ from . import formComponents
 from django import forms
 from django.core.exceptions import ValidationError
 import logging
+import json
 from ..models import *
 from django.utils.html import *
 
@@ -38,10 +39,13 @@ def tableview(model):
 
 
 def button(name):
-    data = f'{{"form": {name}}}'
+    data = json.dumps({"form": name})
     buttons = format_html('<input class="w3-button w3-padding w3-margin"\
                 type="submit" value="submit" \
-                hx-vals={}/>', data)
+                hx-post="/invoice/form_view"\
+                hx-target="#mainform" \
+                hx-swap="innerHTML" \
+                hx-vals=\'{}\'/>', data)
     return buttons
 
 
@@ -52,12 +56,12 @@ class customer(forms.Form):
 
     customer_name = forms.SlugField()
     agent_or_customer_name = forms.SlugField()
-    address_details = forms.SlugField()
+    address_details = forms.CharField(max_length=1000)
     city = forms.SlugField()
     state = forms.SlugField()
-    pin_code = forms.IntegerField()
-    gst_no = forms.IntegerField()
-    pan_no = forms.SlugField()
+    pin_code = forms.IntegerField(max_value=999999)
+    gst_no = forms.CharField(min_length=15, max_length=15)
+    pan_no = forms.CharField(min_length=10, max_length=10)
     payment_term = forms.IntegerField()  # payment period in days
     dispatch_to = forms.SlugField()
     district = forms.SlugField()
