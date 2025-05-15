@@ -10,6 +10,7 @@ pipeline {
 	stages {
 		stage('build') {
 			steps {
+				sh 'export HOME=$WORKSPACE'
 				sh 'pip install --user pipx'
 				sh 'pipx ensurepath'
 				sh 'pipx install -r cicd/requirements.txt'

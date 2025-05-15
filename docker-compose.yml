@@ -1,0 +1,52 @@
+services:
+  postgres:
+    shm_size: 128mb
+    volumes:
+      - postgres_db:/var/lib/postgresql/data
+    build: ./postgres
+    environment:
+      - PGDATA:/var/lib/postgresql/data/pgdata
+      - POSTGRES_DB:${DATABASE_NAME}
+      - POSTGRES_USER:${DATABASE_USERNAME}
+      - POSTGRES_PASSWORD:${DATABASE_PASSWORD}
+    env_file:
+      - .env
+    ports:
+      - "5241:5241"
+    restart: always
+  gayatriapp:
+    volumes:
+      - static:/static
+      - django_logs:/logs
+    build:
+      context: ./gayatri_invoice
+    environment:
+      - DJANGO_SECRET_KEY:${DJANGO_SECRET_KEY}
+      - DEBUG:${DEBUG}
+      - DJANGO_LOG_LEVEL:${DJANGO_LOG_LEVEL}
+      - DJANGO_ALLOWED_HOSTS:${DJANGO_ALLOWED_HOSTS}
+      - DATABASE_NAME:${DATABASE_NAME}
+      - DATABASE_USERNAME:${DATABASE_USERNAME}
+      - DATABASE_PASSWORD:${DATABASE_PASSWORD}
+      - DATABASE_HOST:${DATABASE_HOST}
+      - DATABASE_PORT:${DATABASE_PORT}
+    env_file:
+      - .env
+    expose:
+      - 8000
+    depends_on:
+      - postgres
+    restart: always
+  nginx:
+    build: ./nginx
+    volumes:
+      - static:/static #this is to make sure /static requests are routed to the shared volume on host machine where django static files are stored
+    ports:
+      - "8000:8000"
+    depends_on:
+      - gayatriapp
+    restart: always
+volumes:
+  static:
+  postgres_db:
+  django_logs:
