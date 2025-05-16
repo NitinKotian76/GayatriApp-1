@@ -13,7 +13,6 @@ logger = logging.getLogger(__name__)
 # Create your models here.
 
 
-<<<<<<< HEAD
 class UserProfile(AbstractBaseUser):
     logger.debug("entry added")
     username = models.CharField()
@@ -24,15 +23,16 @@ class UserProfile(AbstractBaseUser):
     USERNAME_FIELD = "email"
     EMAIL_FIELD = "email"
     REQUIRED_FIELDS = ["username", "userCompany"]
-    
+
     class Meta:
         permissions = [
-                ("can create user"),
-                ("can edit user"),
-                ("can delete user"),
-                ("can set is_active"),
-                ]
-=======
+            ("can create user"),
+            ("can edit user"),
+            ("can delete user"),
+            ("can set is_active"),
+        ]
+
+
 class Company(models.Model):
     # user based
     company_name = models.CharField(null=True)
@@ -60,7 +60,6 @@ class CustomUserManager(BaseUserManager):
 
         if not user_emp_code:
             raise ValueError("user must have emp code")
->>>>>>> develop
 
         user = self.model(
             # email=self.normalize_email(email),
