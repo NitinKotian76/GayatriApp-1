@@ -56,6 +56,32 @@ def set_data(table_name, data, user_id):
         return 0
 
 
-def get_data(table_name):
-    table_query = Table.objects.get(table_name=table_name)
+def get_data(table_name, search):
+    table_head = table_name + "_" + str(num)
+    table_query = Table.objects.get(table_name=table_head)
     return table_query.table_data
+
+
+# helper functions
+
+def hasher(data, table_name):
+    # TODO: create hashes for each key and make a dict of arrays for each table num and make a search index
+    node_dict = {}
+    data_array = []
+    dict
+    hash_data = blake3.blake3(data).hexdigest()
+    node_dict.
+    data_array.append(hash_data)
+    node_dict.update(data_array)
+
+    Table.objects.create
+
+
+# table_name +
+    # | entryhash +
+    #             | keyhash|#|...
+    # |...
+    # |...
+
+def search():
+    # TODO: search the hash in the search index and output related table num and entry no

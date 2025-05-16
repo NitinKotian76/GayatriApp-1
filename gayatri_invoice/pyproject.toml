@@ -17,6 +17,7 @@ xhtml2pdf = "^0.2.16"
 xlsxwriter = "^3.2.0"
 argcomplete = "^3.5.3"
 psycopg2-binary = "^2.9.10"
+blake3 = "^1.0.4"
 
 [tool.poetry.group.dev.dependencies]
 django-sonar = "^0.1.8"

@@ -26,10 +26,10 @@ class UserProfile(AbstractBaseUser):
 
     class Meta:
         permissions = [
-            ("can create user"),
-            ("can edit user"),
-            ("can delete user"),
-            ("can set is_active"),
+            ("create user", "can create user"),
+            ("edit user", "can edit user"),
+            ("delete user", "can delete user"),
+            ("set is_active", "can set is_active")
         ]
 
 
