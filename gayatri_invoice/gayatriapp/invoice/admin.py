@@ -1,5 +1,5 @@
 from .forms import *
-from .models import CustomUser, Form, Table
+from .models import CustomUser, Form, TableName
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib import admin
 
@@ -104,6 +104,11 @@ class CompanyAdmin(admin.ModelAdmin):
     list_display = ["company_name"]
 
 
-@admin.register(Table)
+@admin.register(TableName)
 class TableAdmin(admin.ModelAdmin):
-    list_display = ["table_name"]
+    list_display = ["table_name", "company"]
+
+
+@admin.register(TableData)
+class TableAdmin(admin.ModelAdmin):
+    list_display = ["table_data", "table_name"]

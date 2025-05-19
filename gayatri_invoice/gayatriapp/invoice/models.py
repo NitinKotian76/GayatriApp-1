@@ -41,18 +41,20 @@ class Company(models.Model):
         return self.company_name
 
 
-class Table(models.Model):
-    logger.debug("table added")
-    # modified time
-    table_name = models.CharField(unique=True)
-    table_data = models.JSONField(null=True, blank=True, default=dict)
+class TableName(models.Model):
+    table_name = models.CharField(unique=True, null=True, blank=True)
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
-
-    class Meta:
-        indexes = [GinIndex(fields=["table_data"], name="table_data_gin_idx")]
 
     def __str__(self):
         return self.table_name
+
+
+class TableData(models.Model):
+    table_data = models.JSONField(null=True, blank=True, default=dict)
+    table_name = models.ForeignKey(TableName, on_delete=models.CASCADE)
+
+    class Meta:
+        indexes = [GinIndex(fields=["table_data"], name="table_data_gin_idx")]
 
 
 class CustomUserManager(BaseUserManager):
@@ -125,7 +127,7 @@ class Form(models.Model):
     logger.debug("form added")
     form_name = models.CharField()
     group = models.ManyToManyField(Group)
-    table = models.ManyToManyField(Table)
+    table = models.ManyToManyField(TableName)
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
 
     form_data = models.JSONField(null=True)
@@ -142,7 +144,7 @@ class Report(models.Model):
     report_name = models.CharField()
     report_data = models.JSONField(null=True)
     group = models.ManyToManyField(Group)
-    table = models.ManyToManyField(Table)
+    table = models.ManyToManyField(TableName)
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
 
     def __str__(self):

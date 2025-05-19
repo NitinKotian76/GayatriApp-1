@@ -72,7 +72,7 @@ class formCreate(forms.Form):
         widget=forms.SelectMultiple, choices=Group.objects.values_list()
     )
     table_names = forms.MultipleChoiceField(
-        widget=forms.SelectMultiple, choices=Table.objects.all()
+        widget=forms.SelectMultiple, choices=TableName.objects.all()
     )
     description = forms.CharField()
 
