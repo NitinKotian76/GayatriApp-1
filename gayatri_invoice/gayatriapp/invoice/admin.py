@@ -105,10 +105,10 @@ class CompanyAdmin(admin.ModelAdmin):
 
 
 @admin.register(TableName)
-class TableAdmin(admin.ModelAdmin):
-    list_display = ["table_name", "company"]
+class TableNameAdmin(admin.ModelAdmin):
+    list_display = ["table_name", "company", "created_at", "updated_at"]
 
 
 @admin.register(TableData)
-class TableAdmin(admin.ModelAdmin):
-    list_display = ["table_data", "table_name"]
+class TableDataAdmin(admin.ModelAdmin):
+    list_display = ["table_data", "table_name", "created_at", "updated_at"]

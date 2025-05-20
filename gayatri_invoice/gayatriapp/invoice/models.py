@@ -13,29 +13,31 @@ logger = logging.getLogger(__name__)
 # Create your models here.
 
 
-class UserProfile(AbstractBaseUser):
-    logger.debug("entry added")
-    username = models.CharField()
-    email = models.EmailField("email address")
-    userCompany = models.CharField()
-    userLog = models.JSONField(null=True)
-    userAccess = models.JSONField(null=True)
-    USERNAME_FIELD = "email"
-    EMAIL_FIELD = "email"
-    REQUIRED_FIELDS = ["username", "userCompany"]
-
-    class Meta:
-        permissions = [
-            ("create user", "can create user"),
-            ("edit user", "can edit user"),
-            ("delete user", "can delete user"),
-            ("set is_active", "can set is_active")
-        ]
-
+# class UserProfile(AbstractBaseUser):
+#     logger.debug("entry added")
+#     username = models.CharField()
+#     email = models.EmailField("email address")
+#     userCompany = models.CharField()
+#     userLog = models.JSONField(null=True)
+#     userAccess = models.JSONField(null=True)
+#     USERNAME_FIELD = "email"
+#     EMAIL_FIELD = "email"
+#     REQUIRED_FIELDS = ["username", "userCompany"]
+#
+#     class Meta:
+#         permissions = [
+#             ("create user", "can create user"),
+#             ("edit user", "can edit user"),
+#             ("delete user", "can delete user"),
+#             ("set is_active", "can set is_active")
+#         ]
+#
 
 class Company(models.Model):
     # user based
     company_name = models.CharField(null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.company_name
@@ -44,6 +46,8 @@ class Company(models.Model):
 class TableName(models.Model):
     table_name = models.CharField(unique=True, null=True, blank=True)
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.table_name
@@ -52,6 +56,8 @@ class TableName(models.Model):
 class TableData(models.Model):
     table_data = models.JSONField(null=True, blank=True, default=dict)
     table_name = models.ForeignKey(TableName, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         indexes = [GinIndex(fields=["table_data"], name="table_data_gin_idx")]
@@ -94,6 +100,8 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     user_emp_code = models.CharField(unique=True)
     company = models.ForeignKey(Company, on_delete=models.CASCADE, null=True)
     group = models.ManyToManyField(Group)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     USERNAME_FIELD = "user_emp_code"
     REQUIRED_FIELD = []
 
@@ -131,7 +139,8 @@ class Form(models.Model):
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
 
     form_data = models.JSONField(null=True)
-    # modified time
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         permissions = [
@@ -146,6 +155,8 @@ class Report(models.Model):
     group = models.ManyToManyField(Group)
     table = models.ManyToManyField(TableName)
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.report_name

@@ -34,9 +34,10 @@ class loginForm(forms.Form):
 
     employee_id = forms.CharField(required=True)
     password = forms.CharField(widget=forms.PasswordInput, required=True)
+    # TODO: this statement interferes with migrations
     company_name = forms.ChoiceField(
         widget=forms.Select,
-        choices=Company.objects.values_list(),
+        choices=Company.objects.values_list("id", "company_name"),
         required=True
     )
 
@@ -68,6 +69,7 @@ class formCreate(forms.Form):
     # Group.objects.all(), Table.objects.all()
     template_name = "form_snippet.html"
     form_name = forms.CharField()
+    # TODO: this statement interferes with migrations
     group_names = forms.MultipleChoiceField(
         widget=forms.SelectMultiple, choices=Group.objects.values_list()
     )

@@ -2,6 +2,7 @@
 # divide the list by the field limit and store the data in
 # numbered unique keys.
 from django.core.paginator import Paginator
+from django.contrib.postgres.search import SearchQuery
 from ..models import *
 import logging
 import json
@@ -41,6 +42,9 @@ def get_data(table_name, data):
     return table_query.table_data
 
 
-def search():
+def search(data, table_name):
     # TODO: search the hash in the search index and output related table num and entry no
-    pass
+    namequery = TableName.objects.filter(table_name__contains=table_name)
+    if namequery.exists():
+        dataquery = TableData.objects.filter(
+            table_data__contains=data, table_name=namequery)
