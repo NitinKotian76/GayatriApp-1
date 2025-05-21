@@ -1,14 +1,10 @@
-# get the database table for the user 
+# get the database table for the user
 import pandas as pd
-import xhtml2pdf
+import numpy as np
 
-def csv():
-    pandas.Dataframe.to_csv()
-def excel():
-
-    workbook = pd.data()
-    workbook = xlsxwriter.Workbook('Expenses01.xlsx')
-    worksheet1 = workbook.add_worksheet('Data')  # Data.
-    workbook.close()
-
-
+# get the report template
+packing = pd.read_excel("ExportInvoiceB.xls", sheet_name='PCK')
+results = (packing == "{{data}}")
+location = list(zip(*results.to_numpy().nonzero()))
+for row, column in location:
+    packing.at[row, column] = "data added"

@@ -13,26 +13,6 @@ logger = logging.getLogger(__name__)
 # Create your models here.
 
 
-# class UserProfile(AbstractBaseUser):
-#     logger.debug("entry added")
-#     username = models.CharField()
-#     email = models.EmailField("email address")
-#     userCompany = models.CharField()
-#     userLog = models.JSONField(null=True)
-#     userAccess = models.JSONField(null=True)
-#     USERNAME_FIELD = "email"
-#     EMAIL_FIELD = "email"
-#     REQUIRED_FIELDS = ["username", "userCompany"]
-#
-#     class Meta:
-#         permissions = [
-#             ("create user", "can create user"),
-#             ("edit user", "can edit user"),
-#             ("delete user", "can delete user"),
-#             ("set is_active", "can set is_active")
-#         ]
-#
-
 class Company(models.Model):
     # user based
     company_name = models.CharField(null=True)
