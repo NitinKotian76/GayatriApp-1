@@ -47,6 +47,7 @@ class UserAdmin(BaseUserAdmin):
             {
                 "classes": ["wide"],
                 "fields": [
+                    "user_emp_code",
                     "email",
                     "user_name",
                     "company",
