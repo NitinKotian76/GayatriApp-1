@@ -1,1 +1,27 @@
-
+<div
+  id="form"
+  hx-trigger="load"
+  hx-target="#tableview"
+  hx-vals='{"table_name":"customer"}'
+  hx-swap="innerHTML"
+  class="w3-bar"
+>
+  <div>
+    {% for obj in page_obj %}
+    <p>{{obj}}</p>
+    {% endfor %}
+  </div>
+  {% if page_obj.has_previous %}
+  <a href="?page=1" class="w3-button">&laquo; first </a>
+  <a href="?page={{page_obj.previous_page_number}}" class="w3-button">
+    previous
+  </a>
+  {% endif %}
+  <span>Page {{page_obj.number}} of {{page_obj.paginator.num_pages}}</span>
+  {% if page_obj.has_next %}
+  <a href="?page={{page_obj.next_page_number}}" class="w3-button"> next </a>
+  <a href="?page={{page_obj.paginator.num_pages}}" class="w3-button">
+    last &raquo;
+  </a>
+  {% endif %}
+</div>

@@ -2,12 +2,14 @@
 {% block content %}
     <form>
         {% csrf_token %}
-        <section id="mainform" class="w3-row">
-            <div class="w3-container w3-half">
+        <section id="mainform" class="w3-row w3-container w3-half">
+            <div>
                 <div id="formpart">{% include 'partials/forms.html' %}</div>
             </div>
-            <div class="w3-container w3-half w3-green">
-                <div id="tableview">{% include 'partials/tableview.html' %}</div>
+        </section>
+        <section class="w3-row w3-container w3-half">
+            <div>
+                <div id="tableview" hx-get="/invoice/table_view">{% include 'partials/tableview.html' %}</div>
             </div>
         </section>
     </form>
