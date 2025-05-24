@@ -173,8 +173,8 @@ def form_view(request):
 def table_view(request):
     table_name = request.GET.get("table_name")
     logger.debug(table_name)
-    model = TableData.objects.filter(table_name=TableName.objects.get(
-        table_name=table_name)).values("table_data")
+    tableinst = TableName.objects.get(table_name=table_name)
+    model = TableData.objects.filter(table_name=tableinst).values("table_data")
     paginator = Paginator(list(model), 2)
     page_number = request.GET.get("page")
     page_obj = paginator.get_page(page_number)

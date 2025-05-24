@@ -34,13 +34,17 @@ class TableName(models.Model):
 
 
 class TableData(models.Model):
-    table_data = models.JSONField(null=True, blank=True, default=dict)
+    table_data = models.JSONField(
+        null=True, blank=True, default=dict, unique=True)
     table_name = models.ForeignKey(TableName, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         indexes = [GinIndex(fields=["table_data"], name="table_data_gin_idx")]
+        # constraints = [
+        #         UniqueConstraints(fields=['table_data'], name="")
+        #         ]
 
 
 class CustomUserManager(BaseUserManager):

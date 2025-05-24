@@ -17,6 +17,13 @@
       hx-swap="innerHTML"
       id="createform"
     >
+    <div
+	hx-get="/invoice/table_view" 
+	hx-trigger="click from:closest (a)"
+	hx-target="#tableview" 
+	hx-swap="innerHTML" 
+	>
+    </div>
       Customer
     </a>
     <a

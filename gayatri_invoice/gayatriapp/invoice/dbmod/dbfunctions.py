@@ -6,7 +6,7 @@ from django.contrib.postgres.search import SearchQuery
 from ..models import *
 import logging
 import json
-
+from django.db import IntegrityError
 logger = logging.getLogger(__name__)
 # TODO: get company instance from a global constant
 
@@ -25,9 +25,14 @@ def set_data(table_name, data, user_id):
     if obj.exists():
         logger.debug("table_name exists")
         table = TableName.objects.get(table_name=table_name)
-        table_query = TableData.objects.create(
-            table_data=data, table_name=table)
-        table_query.save()
+        try:
+            table_query = TableData.objects.create(
+                table_data=data, table_name=table)
+            table_query.save()
+        except IntegrityError as e:
+            # TODO: send message to user the data is duplicate
+            logger.debug("data duplicate")
+            return 0
     else:  # create new table
         obj = TableName.objects.create(
             table_name=table_name, company=company)
