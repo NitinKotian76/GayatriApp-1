@@ -16,6 +16,7 @@ from .formmod import DefaultForm as df
 from .formmod import BaseForm as bf
 from .dbmod import dbfunctions as db
 from django.core.paginator import Paginator
+from django.contrib import messages
 # from .formmod.CrudForm import form_store_json
 
 
@@ -36,24 +37,29 @@ def login_user(request):
             return redirect("invoice:index")
     else:
         form = bf.loginForm()
-        logger.debug("login password or username failed")
-    return render(request, "invoice/login.html", {"login": form})
+        if not request.user.is_authenticated:
+            logger.debug("login password or username failed")
+            messages.error(request, "login failed")
+    return render(request, "invoice/login.html", {"login": form, "messages": messages.get_messages(request)})
 
 
 @login_required
 def logout_user(request):
     logger.debug("logout")
     logout(request)
+    messages.error(request, "logged out")
     return redirect("/invoice")
 
 
 @login_required
 def index(request):
     logger.debug(request.user.is_active)
+    if request.user.is_authenticated:
+        messages.error(request, "logged in")
     return render(
         request,
         "invoice/index.html",
-        {"user": request.user},
+        {"user": request.user, "messages": messages.get_messages(request)},
     )
 
 
@@ -76,6 +82,7 @@ def form_view(request):
                 logger.debug(user_id)
                 if db.set_data(table_name, data, user_id):
                     logger.debug("data is saved")
+                    messages.info(request, "data saved")
                 # TODO: notify the user that data is saved
             else:
                 logger.debug("data invalid")
@@ -166,7 +173,7 @@ def form_view(request):
         if request.GET.get("form") == "programme_planning":
             formdata = df.finishing_house
 
-    return render(request, "partials/forms.html", {"form": formdata, "buttons": buttons})
+    return render(request, "partials/forms.html", {"form": formdata, "buttons": buttons, "messages": messages.get_messages(request)})
 
 
 @login_required

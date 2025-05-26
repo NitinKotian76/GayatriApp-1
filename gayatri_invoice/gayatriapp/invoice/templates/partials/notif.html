@@ -1,0 +1,39 @@
+<div
+  class="notif w3-display-container"
+  hx-trigger="click[event.target.matches('button')] from:body ,submit"
+  hx-swap="innerHTML"
+  hx-target="#notif"
+>
+  {% if messages %}
+  <ul class="w3-display-topmiddle">
+    {% for message in messages %}
+    <li
+      {%
+      if
+      message.tags="error"
+      %}
+      class="w3-panel w3-red"
+      {%
+      endif
+      %}
+      {%
+      if
+      message.tags="success"
+      %}class="w3-panel w3-green"
+      {%
+      endif
+      %}
+      {%
+      if
+      message.tags="info"
+      %}class="w3-panel w3-blue"
+      {%
+      endif
+      %}
+    >
+      {{ message }}
+    </li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+</div>

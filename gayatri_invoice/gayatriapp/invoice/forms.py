@@ -74,5 +74,4 @@ class loginForm(forms.ModelForm):
     emp_id = forms.CharField()
     password = forms.CharField()
     company = forms.ModelChoiceField(
-        Company.objects.all(), to_field_name="company_name"
-    )
+        Company.objects.all(), to_field_name="company_name")
