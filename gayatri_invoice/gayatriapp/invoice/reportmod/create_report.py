@@ -11,6 +11,7 @@ def get_template():
 
 
 def get_data():
+    # get dict of tag and data pairs from the
     pass
 
 
@@ -20,8 +21,10 @@ def tag_search():
     for row, column in location:
         packing.at[row, column] = "data added"
     # search tags for dataframe
+    # add it in a list
 
 
 def process_data():
+    # use the list to match and replace with user data
     packing = pd.read_excel("ExportInvoiceB.xls", sheet_name='PCK')
     # copy modified dataframe and make excel sheet

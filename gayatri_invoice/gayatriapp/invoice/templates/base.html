@@ -14,13 +14,13 @@
     <link rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 </head>
-<body>
+<body class="w3-display-container">
     {% include 'partials/notif.html' with messages=messages %}
     {% block nav %}
         <div class="navigation">
             <nav>
                 <ul class="w3-light-blue w3-bar w3-padding">
-                    {% if CustomUser.is_superuser %}
+                    {% if user.is_admin %}
                         {% include 'partials/adminnav.html' %}
                     {% else %}
                         {% include 'partials/usernav.html' %}

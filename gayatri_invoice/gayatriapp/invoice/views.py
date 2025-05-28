@@ -39,7 +39,6 @@ def login_user(request):
         form = bf.loginForm()
         if not request.user.is_authenticated:
             logger.debug("login password or username failed")
-            messages.error(request, "login failed")
     return render(request, "invoice/login.html", {"login": form, "messages": messages.get_messages(request)})
 
 
@@ -47,19 +46,20 @@ def login_user(request):
 def logout_user(request):
     logger.debug("logout")
     logout(request)
-    messages.error(request, "logged out")
+    messages.info(request, "logged out")
     return redirect("/invoice")
 
 
 @login_required
 def index(request):
+    user = CustomUser.objects.get(id=request.user.id)
     logger.debug(request.user.is_active)
     if request.user.is_authenticated:
-        messages.error(request, "logged in")
+        messages.success(request, "logged in")
     return render(
         request,
         "invoice/index.html",
-        {"user": request.user, "messages": messages.get_messages(request)},
+        {"user": user, "messages": messages.get_messages(request)},
     )
 
 
@@ -67,13 +67,13 @@ def index(request):
 def form_view(request):
     formdata = None
     buttons = None
+    hx_req = 'hx-post="/invoice/form_view"'
     if request.method == "POST":
         formdata = request.POST.get("form")
         logger.debug(formdata)
         if request.POST.get("form") == "customer":
             formdata = df.customer(request.POST)
             logger.debug("data received")
-
             if formdata.is_valid():
                 logger.debug("data validated")
                 table_name = "customer"
@@ -82,7 +82,7 @@ def form_view(request):
                 logger.debug(user_id)
                 if db.set_data(table_name, data, user_id):
                     logger.debug("data is saved")
-                    messages.info(request, "data saved")
+                    messages.success(request, "data saved")
                 # TODO: notify the user that data is saved
             else:
                 logger.debug("data invalid")
@@ -132,7 +132,6 @@ def form_view(request):
         # masters
         if request.GET.get("form") == "customer":
             formdata = df.customer
-            # table = df.tableview(db.customer)
             buttons = df.button("customer")
         if request.GET.get("form") == "supplier":
             formdata = df.supplier
@@ -173,7 +172,7 @@ def form_view(request):
         if request.GET.get("form") == "programme_planning":
             formdata = df.finishing_house
 
-    return render(request, "partials/forms.html", {"form": formdata, "buttons": buttons, "messages": messages.get_messages(request)})
+    return render(request, "partials/forms.html", {"form": formdata, "hx_req": hx_req, "buttons": buttons, "messages": messages.get_messages(request)})
 
 
 @login_required
@@ -256,5 +255,32 @@ def form_edit(request):
 
 
 @login_required
-def report(View):
-    pass
+def report_view(request):
+    formdata = None
+    buttons = None
+    hx_req = 'hx-post="/invoice/report_view"'
+    if request.method == "POST":
+        formdata = request.POST.get("form")
+        logger.debug(formdata)
+        if request.POST.get("form") == "pendingorder":
+            formdata = df.pending_order(request.POST)
+            if formdata.is_valid():
+                logger.debug("data validated")
+                table_name = "pending_order"
+                data = formdata.cleaned_data
+                user_id = request.user.id
+                logger.debug(user_id)
+                if db.set_data(table_name, data, user_id):
+                    logger.debug("data is saved")
+                    messages.info(request, "data saved")
+                # TODO: notify the user that data is saved
+            else:
+                logger.debug("data invalid")
+                logger.debug(formdata.errors)
+            buttons = df.button("pending_order")
+    else:
+        # masters
+        if request.GET.get("form") == "pendingorder":
+            formdata = df.pending_order
+            buttons = df.button("pendingorder")
+    return render(request, "partials/forms.html", {"form": formdata, "hx_req": hx_req, "buttons": buttons, "messages": messages.get_messages(request)})

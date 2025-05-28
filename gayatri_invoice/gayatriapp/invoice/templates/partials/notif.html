@@ -1,39 +1,15 @@
-<div
-  class="notif w3-display-container"
-  hx-trigger="click[event.target.matches('button')] from:body ,submit"
-  hx-swap="innerHTML"
-  hx-target="#notif"
->
-  {% if messages %}
-  <ul class="w3-display-topmiddle">
-    {% for message in messages %}
-    <li
-      {%
-      if
-      message.tags="error"
-      %}
-      class="w3-panel w3-red"
-      {%
-      endif
-      %}
-      {%
-      if
-      message.tags="success"
-      %}class="w3-panel w3-green"
-      {%
-      endif
-      %}
-      {%
-      if
-      message.tags="info"
-      %}class="w3-panel w3-blue"
-      {%
-      endif
-      %}
-    >
-      {{ message }}
-    </li>
-    {% endfor %}
-  </ul>
-  {% endif %}
+<div id="notif"
+     class="w3-card-4 w3-display-topmiddle w3-animate-top"
+     hx-trigger="click[event.target.matches('button')] from:body ,submit"
+     hx-swap="innerHTML"
+     hx-target="#notif">
+    {% if messages %}
+        <div class="w3-bar-block ">
+            {% for message in messages %}
+                <div {% if message.tags == "error" %} class="w3-red w3-bar-item" {% elif message.tags == "success" %} class="w3-green w3-bar-item" {% elif message.tags == "info" %} class="w3-blue w3-bar-item" {% endif %}>
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
 </div>

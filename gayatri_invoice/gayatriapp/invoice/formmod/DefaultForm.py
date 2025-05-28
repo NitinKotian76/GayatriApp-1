@@ -19,7 +19,7 @@ def button(name):
     data = json.dumps({"form": name})
     buttons = format_html('<input class="w3-button w3-padding w3-margin"\
                 type="submit" value="submit" \
-                hx-post="/invoice/form_view"\
+                hx-trigger="click" \
                 hx-target="#mainform" \
                 hx-swap="innerHTML" \
                 hx-vals=\'{}\'/>', data)
@@ -374,3 +374,15 @@ class Programme_planing(forms.Form):
     ream_wt = forms.DecimalField()
     customer_name = forms.CharField()
     indent_no = forms.IntegerField()
+
+# report
+
+
+class pending_order(forms.Form):
+    template_name = "form_snippet.html"
+    error_css_class = "error"
+    required_css_class = "required"
+
+    from_date = forms.DateField()
+    to_date = forms.DateField()
+    party = forms.ChoiceField()

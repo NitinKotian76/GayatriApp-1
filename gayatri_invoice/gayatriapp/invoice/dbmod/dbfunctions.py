@@ -40,11 +40,9 @@ def set_data(table_name, data, user_id):
     return 1
 
 
-def get_data(table_name, data):
+def get_data(table_name):  # TODO: need more granularity on the data sent
     obj = TableName.objects.get(table_name=table_name)
-    table_query = TableData.objects.filter(
-        table_data__contains=data, table_name=obj)
-    return table_query.table_data
+    return obj.table_data
 
 
 def search(data, table_name):
