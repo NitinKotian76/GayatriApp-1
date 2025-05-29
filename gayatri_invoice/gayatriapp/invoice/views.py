@@ -283,4 +283,12 @@ def report_view(request):
         if request.GET.get("form") == "pendingorder":
             formdata = df.pending_order
             buttons = df.button("pendingorder")
-    return render(request, "partials/forms.html", {"form": formdata, "hx_req": hx_req, "buttons": buttons, "messages": messages.get_messages(request)})
+    context = {"form": formdata, "hx_req": hx_req, "buttons": buttons, "messages": messages.get_messages(request)}
+    return render(request, "partials/forms.html",context)
+
+@login_required
+def form_list(request):
+    #TODO: form list 
+    hx_req = 'hx-post="/invoice/report_view"'
+    context = {"table":data, "hx_req": hx_req, "buttons": buttons, "messages": messages.get_messages(request)}
+    return render(request, "partials/forms.html", context)
