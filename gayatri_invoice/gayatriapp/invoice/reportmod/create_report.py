@@ -1,30 +1,30 @@
 # get the database table for the user
 import pandas as pd
 import numpy as np
+from invoice.models import TableData, TableName
 
-# get the report template
+
+def set_report_format():
+    # TODO: store the received dict in tableData with the report name
+    # and template name added in
+    # store template in the server filesystem
 
 
 def get_template():
-    pass
-    # return dataframe
+    # TODO: check if the template exists in the server filesystem
 
 
 def get_data():
-    # get dict of tag and data pairs from the
-    pass
+    tag_list = TableData.objects.get(table_name=).values("table_data")
 
 
-def tag_search():
-    results = (packing == "{{data}}")
-    location = list(zip(*results.to_numpy().nonzero()))
-    for row, column in location:
-        packing.at[row, column] = "data added"
-    # search tags for dataframe
-    # add it in a list
-
-
-def process_data():
-    # use the list to match and replace with user data
-    packing = pd.read_excel("ExportInvoiceB.xls", sheet_name='PCK')
+def process_report(template: str, sheet_name: str, data_list: list):
+    sheet = pd.read_excel(
+        template, sheet_name=sheet_name, header=None)
+    for tag, data in data_list:
+        results = (sheet == "{{"+tag+"}}")
+        location = list(zip(*results.to_numpy().nonzero()))
+        for row, column in location:
+            packing.at[row, column] = data
+    # use the list to match and replace with user data retrieved from TableData
     # copy modified dataframe and make excel sheet

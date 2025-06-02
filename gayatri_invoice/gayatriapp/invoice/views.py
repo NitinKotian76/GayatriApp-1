@@ -1,17 +1,14 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-
 from django.views.decorators.csrf import ensure_csrf_cookie, csrf_protect
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required, permission_required
-
 from django.contrib.auth import login, logout
 from django.views import View
 import logging
 from .cachestore import cachestore as cache
 from .models import *
 from .forms import *
-from .formmod.Displayform import DisplayForm as ds
 from .formmod import DefaultForm as df
 from .formmod import BaseForm as bf
 from .dbmod import dbfunctions as db
@@ -68,109 +65,107 @@ def form_view(request):
     formdata = None
     buttons = None
     hx_req = 'hx-post="/invoice/form_view"'
+    FORMHANDLER = {
+        "customer": {
+            "form_class": df.customer,
+            "table_name": "customer"
+        },
+        "supplier": {
+            "form_class": df.customer,
+            "table_name": "supplier"
+        },
+        "signatory": {
+            "form_class": df.signatory,
+            "table_name": "signatory"
+        },
+        "export_fields": {
+            "form_class": df.export_fields,
+            "table_name": "export_fields"
+        },
+        "item_category": {
+            "form_class": df.item_category,
+            "table_name": "item_category"
+        },
+        "variety": {
+            "form_class": df.variety,
+            "table_name": "variety"
+        },
+        "items": {
+            "form_class": df.items,
+            "table_name": "items"
+        },
+        "stock": {
+            "form_class": df.stock,
+            "table_name": "stock"
+        },
+        "units": {
+            "form_class": df.units,
+            "table_name": "units"
+        },
+        "location": {
+            "form_class": df.location,
+            "table_name": "location"
+        },
+        "open_bal_prod": {
+            "form_class": df.open_bal_prod,
+            "table_name": "open_bal_prod"
+        },
+        "prod_record": {
+            "form_class": df.prod_record,
+            "table_name": "prod_record"},
+        "prod_plus_minus": {
+            "form_class": df.prod_plus_minus,
+            "table_name": "prod_plus_minus"
+        },
+        "prod_approval": {
+            "form_class": df.prod_approval,
+            "table_name": "prod_approval"
+        },
+        "invoice_direct": {
+            "form_class": df.invoice_direct,
+            "table_name": "invoice_direct"
+        },
+        "jumbo_roll_qc": {
+            "form_class": df.jumbo_roll_qc,
+            "table_name": "jumbo_roll_qc"
+        },
+        "lot_no_wise_qc": {
+            "form_class": df.lot_no_wise_qc,
+            "table_name": "lot_no_wise_qc",
+        },
+        "finishing_house": {
+            "form_class": df.finishing_house,
+            "table_name": "finishing_house"
+        },
+        "program_planning": {
+            "form_class": df.program_planning,
+            "table_name": "program_planning"
+        },
+    }
     if request.method == "POST":
-        formdata = request.POST.get("form")
+        formtype = request.POST.get("form")
         logger.debug(formdata)
-        if request.POST.get("form") == "customer":
-            formdata = df.customer(request.POST)
-            logger.debug("data received")
+        if formtype in FORMHANDLER:
+            handler = FORMHANDLER[formtype]
+            formdata = handler["form_class"](request.POST)
+            buttons = df.button(formtype)
             if formdata.is_valid():
                 logger.debug("data validated")
-                table_name = "customer"
                 data = formdata.cleaned_data
                 user_id = request.user.id
                 logger.debug(user_id)
-                if db.set_data(table_name, data, user_id):
+                if db.set_data(handler["able_name"], data, user_id):
                     logger.debug("data is saved")
                     messages.success(request, "data saved")
-                # TODO: notify the user that data is saved
             else:
                 logger.debug("data invalid")
                 logger.debug(formdata.errors)
-            buttons = df.button("customer")
-
-        if request.POST.get("form") == "supplier":
-            formdata = df.supplier(request.POST)
-        if request.POST.get("form") == "signatory":
-            formdata = df.signatory(request.POST)
-        if request.POST.get("form") == "export_fields":
-            formdata = df.export_fields(request.POST)
-        if request.POST.get("form") == "item_category":
-            formdata = df.item_category(request.POST)
-        if request.POST.get("form") == "variety":
-            formdata = df.item_category(request.POST)
-        if request.POST.get("form") == "items":
-            formdata = df.items(request.POST)
-        if request.POST.get("form") == "stock":
-            formdata = df.stock(request.POST)
-        if request.POST.get("form") == "units":
-            formdata = df.units(request.POST)
-        if request.POST.get("form") == "location":
-            formdata = df.location(request.POST)
-        # transactions
-
-        if request.POST.get("form") == "open_bal_prod":
-            formdata = df.open_bal_prod(request.POST)
-        if request.POST.get("form") == "prod_record":
-            formdata = df.prod_record(request.POST)
-        if request.POST.get("form") == "prod_plus_minus":
-            formdata = df.prod_plus_minus(request.POST)
-        if request.POST.get("form") == "prod_approval":
-            formdata = df.prod_approval(request.POST)
-        if request.POST.get("form") == "invoice_direct":
-            formdata = df.invoice_direct(request.POST)
-        if request.POST.get("form") == "jumbo_roll_qc":
-            formdata = df.jumbo_roll_qc(request.POST)
-        if request.POST.get("form") == "lot_no_wise_qc":
-            formdata = df.lot_no_wise_qc(request.POST)
-        if request.POST.get("form") == "finishing_house":
-            formdata = df.finishing_house(request.POST)
-        if request.POST.get("form") == "programme_planning":
-            formdata = df.finishing_house(request.POST)
-
     else:
-        # masters
-        if request.GET.get("form") == "customer":
-            formdata = df.customer
-            buttons = df.button("customer")
-        if request.GET.get("form") == "supplier":
-            formdata = df.supplier
-        if request.GET.get("form") == "signatory":
-            formdata = df.signatory
-        if request.GET.get("form") == "export_fields":
-            formdata = df.export_fields
-        if request.GET.get("form") == "item_category":
-            formdata = df.item_category
-        if request.GET.get("form") == "variety":
-            formdata = df.item_category
-        if request.GET.get("form") == "items":
-            formdata = df.items
-        if request.GET.get("form") == "stock":
-            formdata = df.stock
-        if request.GET.get("form") == "units":
-            formdata = df.units
-        if request.GET.get("form") == "location":
-            formdata = df.location
-        # transactions
-
-        if request.GET.get("form") == "open_bal_prod":
-            formdata = df.open_bal_prod
-        if request.GET.get("form") == "prod_record":
-            formdata = df.prod_record
-        if request.GET.get("form") == "prod_plus_minus":
-            formdata = df.prod_plus_minus
-        if request.GET.get("form") == "prod_approval":
-            formdata = df.prod_approval
-        if request.GET.get("form") == "invoice_direct":
-            formdata = df.invoice_direct
-        if request.GET.get("form") == "jumbo_roll_qc":
-            formdata = df.jumbo_roll_qc
-        if request.GET.get("form") == "lot_no_wise_qc":
-            formdata = df.lot_no_wise_qc
-        if request.GET.get("form") == "finishing_house":
-            formdata = df.finishing_house
-        if request.GET.get("form") == "programme_planning":
-            formdata = df.finishing_house
+        formtype = request.GET.get("form")
+        if formtype in FORMHANDLER:
+            handler = FORMHANDLER[formtype]
+            formdata = handler["form_class"]
+            buttons = df.button(formtype)
 
     return render(request, "partials/forms.html", {"form": formdata, "hx_req": hx_req, "buttons": buttons, "messages": messages.get_messages(request)})
 
@@ -283,12 +278,33 @@ def report_view(request):
         if request.GET.get("form") == "pendingorder":
             formdata = df.pending_order
             buttons = df.button("pendingorder")
-    context = {"form": formdata, "hx_req": hx_req, "buttons": buttons, "messages": messages.get_messages(request)}
-    return render(request, "partials/forms.html",context)
+    context = {"form": formdata, "hx_req": hx_req,
+               "buttons": buttons, "messages": messages.get_messages(request)}
+    return render(request, "partials/forms.html", context)
+
 
 @login_required
 def form_list(request):
-    #TODO: form list 
+    # TODO: form list
     hx_req = 'hx-post="/invoice/report_view"'
-    context = {"table":data, "hx_req": hx_req, "buttons": buttons, "messages": messages.get_messages(request)}
+    context = {"table": data, "hx_req": hx_req, "buttons": buttons,
+               "messages": messages.get_messages(request)}
+    return render(request, "partials/forms.html", context)
+
+
+@login_required
+def table_list(request):
+    # TODO: form list
+    hx_req = 'hx-post="/invoice/report_view"'
+    context = {"table": data, "hx_req": hx_req, "buttons": buttons,
+               "messages": messages.get_messages(request)}
+    return render(request, "partials/forms.html", context)
+
+
+@login_required
+def report_list(request):
+    # TODO: form list
+    hx_req = 'hx-post="/invoice/report_view"'
+    context = {"table": data, "hx_req": hx_req, "buttons": buttons,
+               "messages": messages.get_messages(request)}
     return render(request, "partials/forms.html", context)

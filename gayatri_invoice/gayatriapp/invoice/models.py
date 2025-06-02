@@ -7,7 +7,6 @@ from django.contrib.auth.models import PermissionsMixin
 import logging
 from django.contrib.auth.models import Permission, Group
 from django.contrib.postgres.indexes import GinIndex
-from django.contrib.postgres.fields import ArrayField, JSONField
 
 logger = logging.getLogger(__name__)
 # Create your models here.
@@ -42,9 +41,6 @@ class TableData(models.Model):
 
     class Meta:
         indexes = [GinIndex(fields=["table_data"], name="table_data_gin_idx")]
-        # constraints = [
-        #         UniqueConstraints(fields=['table_data'], name="")
-        #         ]
 
 
 class CustomUserManager(BaseUserManager):

@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 # TODO: get company instance from a global constant
 
 
-def set_data(table_name, data, user_id):
+def set_data(table_name: str, data, user_id):
     # NOTE: the table name table and the table data table is different
 
     user = CustomUser.objects.get(id=user_id)
@@ -40,12 +40,12 @@ def set_data(table_name, data, user_id):
     return 1
 
 
-def get_data(table_name):  # TODO: need more granularity on the data sent
+def get_data(table_name: str):  # TODO: need more granularity on the data sent
     obj = TableName.objects.get(table_name=table_name)
     return obj.table_data
 
 
-def search(data, table_name):
+def search(data, table_name: str):
     # TODO: search the hash in the search index and output related table num and entry no
     namequery = TableName.objects.filter(table_name__contains=table_name)
     if namequery.exists():

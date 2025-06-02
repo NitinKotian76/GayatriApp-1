@@ -260,7 +260,7 @@ class invoice_direct(forms.Form):
     invoice_no = forms.IntegerField()
     invoice_date = forms.DateField()
     variety = forms.ChoiceField()
-    sales_type = forms.ChoiceField()
+    sales_type = forms.ChoiceField()  # local, export, direct
     pre_time_date = forms.DateTimeField()
     rem_time_date = forms.DateTimeField()
     order_no = forms.IntegerField()
@@ -383,6 +383,7 @@ class pending_order(forms.Form):
     error_css_class = "error"
     required_css_class = "required"
 
-    from_date = forms.DateField()
-    to_date = forms.DateField()
+    from_date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
+    to_date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
     party = forms.ChoiceField()
+    export_to = forms.FileField()

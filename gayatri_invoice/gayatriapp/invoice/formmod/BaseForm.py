@@ -107,8 +107,19 @@ class formEdit(forms.Form):
     # attr='onclick=document.getElementById("modalView").style.display="none"',
 
 
-class reportCreate(forms.Form):
+class reportView(forms.Form):
     pass
+
+
+class reportCreate(forms.Form):
+    excel_file = forms.FileField()
+    single_entry = forms.CharField()
+    subgroup_entry = forms.ChoiceField()
+
+
+class var_columnEntry(forms.Form):
+    var = forms.CharField()
+    column = forms.CharField()
 
 
 class reportEdit(forms.Form):
