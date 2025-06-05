@@ -62,9 +62,6 @@ def index(request):
 
 @login_required
 def form_view(request):
-    formdata = None
-    buttons = None
-    hx_req = 'hx-post="/invoice/form_view"'
     FORMHANDLER = {
         "customer": {
             "form_class": df.customer,
@@ -112,7 +109,8 @@ def form_view(request):
         },
         "prod_record": {
             "form_class": df.prod_record,
-            "table_name": "prod_record"},
+            "table_name": "prod_record"
+        },
         "prod_plus_minus": {
             "form_class": df.prod_plus_minus,
             "table_name": "prod_plus_minus"
@@ -138,13 +136,16 @@ def form_view(request):
             "table_name": "finishing_house"
         },
         "program_planning": {
-            "form_class": df.program_planning,
+            "form_class": df.program_planing,
             "table_name": "program_planning"
         },
     }
+    formdata = None
+    buttons = None
+    hx_req = 'hx-post="/invoice/form_view"'
     if request.method == "POST":
         formtype = request.POST.get("form")
-        logger.debug(formdata)
+        logger.debug(formtype)
         if formtype in FORMHANDLER:
             handler = FORMHANDLER[formtype]
             formdata = handler["form_class"](request.POST)
@@ -154,7 +155,7 @@ def form_view(request):
                 data = formdata.cleaned_data
                 user_id = request.user.id
                 logger.debug(user_id)
-                if db.set_data(handler["able_name"], data, user_id):
+                if db.set_data(handler["Table_name"], data, user_id):
                     logger.debug("data is saved")
                     messages.success(request, "data saved")
             else:
@@ -166,8 +167,14 @@ def form_view(request):
             handler = FORMHANDLER[formtype]
             formdata = handler["form_class"]
             buttons = df.button(formtype)
+    context = {
+        "form": formdata,
+        "hx_req": hx_req,
+        "buttons": buttons,
+        "messages": messages.get_messages(request)
+    }
 
-    return render(request, "partials/forms.html", {"form": formdata, "hx_req": hx_req, "buttons": buttons, "messages": messages.get_messages(request)})
+    return render(request, "partials/forms.html", context)
 
 
 @login_required
@@ -175,11 +182,14 @@ def table_view(request):
     table_name = request.GET.get("table_name")
     logger.debug(table_name)
     tableinst = TableName.objects.get(table_name=table_name)
-    model = TableData.objects.filter(table_name=tableinst).values("table_data")
-    paginator = Paginator(list(model), 2)
+    data = TableData.objects.filter(table_name=tableinst).values("table_data")
+    paginator = Paginator(list(data), 2)
     page_number = request.GET.get("page")
+    logger.debug(page_number)
     page_obj = paginator.get_page(page_number)
-    return render(request, "partials/tableview.html", {"page_obj": page_obj})
+    rows = [obj.get("table_data") for obj in page_obj]
+    context = {"rows": rows, "page_obj": page_obj, "table_name": table_name}
+    return render(request, "partials/tableview.html", context)
 
 
 @login_required
@@ -254,33 +264,6 @@ def report_view(request):
     formdata = None
     buttons = None
     hx_req = 'hx-post="/invoice/report_view"'
-    if request.method == "POST":
-        formdata = request.POST.get("form")
-        logger.debug(formdata)
-        if request.POST.get("form") == "pendingorder":
-            formdata = df.pending_order(request.POST)
-            if formdata.is_valid():
-                logger.debug("data validated")
-                table_name = "pending_order"
-                data = formdata.cleaned_data
-                user_id = request.user.id
-                logger.debug(user_id)
-                if db.set_data(table_name, data, user_id):
-                    logger.debug("data is saved")
-                    messages.info(request, "data saved")
-                # TODO: notify the user that data is saved
-            else:
-                logger.debug("data invalid")
-                logger.debug(formdata.errors)
-            buttons = df.button("pending_order")
-    else:
-        # masters
-        if request.GET.get("form") == "pendingorder":
-            formdata = df.pending_order
-            buttons = df.button("pendingorder")
-    context = {"form": formdata, "hx_req": hx_req,
-               "buttons": buttons, "messages": messages.get_messages(request)}
-    return render(request, "partials/forms.html", context)
 
 
 @login_required
@@ -308,3 +291,38 @@ def report_list(request):
     context = {"table": data, "hx_req": hx_req, "buttons": buttons,
                "messages": messages.get_messages(request)}
     return render(request, "partials/forms.html", context)
+
+
+@login_required
+def create_report(request):
+    if request.method == "POST":
+        if request.POST.get("form") == "new_report":
+            form = df.new_report(request.POST)
+            buttons = df.button("new_report")
+            if form.is_valid():
+                logger.debug("data validated")
+                table_name = "report_list"
+                data = formdata.cleaned_data
+                user_id = request.user.id
+                logger.debug(user_id)
+                if db.set_data(table_name, data, user_id):
+                    logger.debug("report created")
+                    messages.info(request, "report created")
+    else:
+        # masters
+        if request.GET.get("form") == "pendingorder":
+            formdata = df.pending_order
+            buttons = df.button("pendingorder")
+            context = {"form": formdata, "hx_req": hx_req,
+                       "buttons": buttons, "messages": messages.get_messages(request)}
+    return render(request, "partials/forms.html", context)
+
+
+@login_required
+def edit_report(request):
+    pass
+
+
+@login_required
+def del_report(request):
+    pass

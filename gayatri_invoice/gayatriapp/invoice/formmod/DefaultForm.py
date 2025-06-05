@@ -360,7 +360,7 @@ class finishing_house(forms.Form):
     required_css_class = "required"
 
 
-class Programme_planing(forms.Form):
+class program_planing(forms.Form):
     template_name = "form_snippet.html"
     error_css_class = "error"
     required_css_class = "required"
@@ -387,3 +387,24 @@ class pending_order(forms.Form):
     to_date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
     party = forms.ChoiceField()
     export_to = forms.FileField()
+
+
+class new_report(forms.Form):
+    template_name = "form_snippet.html"
+    error_css_class = "error"
+    required_css_class = "required"
+
+    report_name = forms.SlugField()
+    template_name = forms.SlugField()
+    report_template = forms.FileField()
+    data_list = forms.JSONField()
+
+
+class view_report(forms.Form):
+    template_name = "form_snippet.html"
+    error_css_class = "error"
+    required_css_class = "required"
+
+    report_name = forms.SlugField()
+    template_name = forms.FileField()
+    by_company = forms.BooleanField()

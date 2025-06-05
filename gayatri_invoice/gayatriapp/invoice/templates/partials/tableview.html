@@ -1,18 +1,47 @@
-<div>
+<div id="tableshow">
     <div>
-        {% for obj in page_obj %}<p>{{ obj }}</p>{% endfor %}
+        <table class="w3-table">
+            <thead>
+                <tr>
+                    {% for key in rows.0.keys %}<th>{{ key|title }}</th>{% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in rows %}
+                    <tr>
+                        {% for value in row.values %}<td>{{ value }}</td>{% endfor %}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
     {% if page_obj.has_previous %}
-        <a href=# hx-get="?page=1" class="w3-button">&laquo; first</a>
-        <a href
-           hx-get="?page={{ page_obj.previous_page_number }}"
+        <a href="#"
+           hx-get="/invoice/table_view"
+           hx-vals='{"table_name":"{{ table_name }}","page":"1"}'
+           hx-swap="innerHTML"
+           hx-target="#tableshow"
+           class="w3-button">&laquo; first</a>
+        <a href="#"
+           hx-get="/invoice/table_view"
+           hx-vals='{"table_name":"{{ table_name }}","page":"{{ page_obj.previous_page_number }}"}'
+           hx-swap="innerHTML"
+           hx-target="#tableshow"
            class="w3-button">previous</a>
     {% endif %}
-    <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+    <span class="w3-center w3-margin">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
     {% if page_obj.has_next %}
-        <a href hx-get="?page={{ page_obj.next_page_number }}" class="w3-button">next</a>
-        <a href
-           hx-get="?page={{ page_obj.paginator.num_pages }}"
+        <a href="#"
+           hx-get="/invoice/table_view"
+           hx-vals='{"table_name":"{{ table_name }}","page":"{{ page_obj.next_page_number }}"}'
+           hx-swap="innerHTML"
+           hx-target="#tableshow"
+           class="w3-button">next</a>
+        <a href="#"
+           hx-get="/invoice/table_view"
+           hx-vals='{"table_name":"{{ table_name }}","page":"{{ page_obj.paginator.num_pages }}"}'
+           hx-swap="innerHTML"
+           hx-target="#tableshow"
            class="w3-button">last &raquo;</a>
     {% endif %}
 </div>

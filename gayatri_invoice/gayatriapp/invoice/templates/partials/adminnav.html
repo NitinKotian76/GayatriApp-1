@@ -2,7 +2,6 @@
   <a
     href="#"
     class="w3-button w3-ripple w3-margin-right w3-round-large w3-light-grey w3-hover-dark-grey"
-    id="forms"
     >Masters
   </a>
   <div class="w3-dropdown-content w3-bar-block w3-card-4">
@@ -13,7 +12,7 @@
       hx-target="#mainform"
       hx-vals='{"form": "customer"}'
       hx-swap="innerHTML"
-      id="createform"
+      
     >
       <div
         hx-get="/invoice/table_view"
@@ -27,7 +26,7 @@
     <a
       href="#"
       class="w3-bar-item w3-button w3-ripple"
-      id="deleteform"
+      
       hx-get="/invoice/form_view"
       hx-target="#mainform"
       hx-vals='{"form":"supplier"}'
@@ -45,7 +44,7 @@
     <a
       href="#"
       class="w3-bar-item w3-button w3-ripple"
-      id="editform"
+      
       hx-get="/invoice/form_view"
       hx-target="#mainform"
       hx-vals='{"form":"export_fields"}'
@@ -63,7 +62,7 @@
     <a
       href="#"
       class="w3-bar-item w3-button w3-ripple"
-      id="editform"
+      
       hx-get="/invoice/form_view"
       hx-target="#mainform"
       hx-vals='{"form":"item_category"}'
@@ -81,7 +80,7 @@
     <a
       href="#"
       class="w3-bar-item w3-button w3-ripple"
-      id="editform"
+      
       hx-get="/invoice/form_view"
       hx-target="#mainform"
       hx-vals='{"form":"variety}'
@@ -99,7 +98,7 @@
     <a
       href="#"
       class="w3-bar-item w3-button w3-ripple"
-      id="editform"
+      
       hx-get="/invoice/form_view"
       hx-target="#mainform"
       hx-vals='{"form":"item_name}'
@@ -117,7 +116,7 @@
     <a
       href="#"
       class="w3-bar-item w3-button w3-ripple"
-      id="editform"
+      
       hx-get="/invoice/form_view"
       hx-target="#mainform"
       hx-vals='{"form":"stock_plusminus"}'
@@ -135,7 +134,7 @@
     <a
       href="#"
       class="w3-bar-item w3-button w3-ripple"
-      id="editform"
+      
       hx-get="/invoice/form_view"
       hx-target="#mainform"
       hx-vals='{"form":"}'
@@ -146,7 +145,7 @@
     <a
       href="#"
       class="w3-bar-item w3-button w3-ripple"
-      id="editform"
+      
       hx-get="/invoice/form_view"
       hx-target="#mainform"
       hx-vals='{"form":"}'
@@ -160,7 +159,7 @@
   <a
     href="#"
     class="w3-button w3-ripple w3-margin-right w3-round-large w3-light-grey w3-hover-dark-grey"
-    id="forms"
+    
   >
     Forms
   </a>
@@ -171,7 +170,7 @@
       hx-get="/invoice/form_list"
       hx-target="#modalView"
       hx-swap="innerHTML"
-      id="listforms"
+      
     >
       view forms
     </a>
@@ -181,14 +180,14 @@
       hx-get="/invoice/form_config"
       hx-target="#modalView"
       hx-swap="innerHTML"
-      id="createform"
+      
     >
       create form
     </a>
     <a
       href="#"
       class="w3-bar-item w3-button w3-ripple"
-      id="deleteform"
+      
       hx-get="/invoice/form_delete"
       hx-target="#modalView"
       hx-swap="innerHTML"
@@ -198,7 +197,7 @@
     <a
       href="#"
       class="w3-bar-item w3-button w3-ripple"
-      id="editform"
+      
       hx-get="/invoice/form_edit"
       hx-target="#modalView"
       hx-swap="innerHTML"
@@ -211,7 +210,7 @@
   <a
     href="#"
     class="w3-button w3-ripple w3-margin-right w3-round-large w3-light-grey w3-hover-dark-grey"
-    id="reports"
+    
   >
     Reports
   </a>
@@ -219,7 +218,7 @@
     <a
       href="#"
       class="w3-bar-item w3-button w3-ripple"
-      id="listreport"
+      
       hx-post="/invoice/report_list"
       hx-target="#modalView"
     >
@@ -228,7 +227,7 @@
     <a
       href="#"
       class="w3-bar-item w3-button w3-ripple"
-      id="newreport"
+      
       hx-post="/invoice/new_report"
       hx-target="#modalView"
     >
@@ -237,7 +236,7 @@
     <a
       href="#"
       class="w3-bar-item w3-button w3-ripple"
-      id="editreport"
+      
       hx-post="/invoice/edit_report"
       hx-target="#modalView"
     >
@@ -246,8 +245,8 @@
     <a
       href="#"
       class="w3-bar-item w3-button w3-ripple"
-      id="deletereport"
-      hx-post="/invoice/delete_report"
+      
+      hx-post="/invoice/del_report"
       hx-target="#modalView"
     >
       delete report
@@ -258,7 +257,7 @@
   <a
     href="#"
     class="w3-button w3-ripple w3-margin-right w3-round-large w3-light-grey w3-hover-dark-grey"
-    id="database"
+    
   >
     database
   </a>
@@ -266,7 +265,7 @@
     <a
       href="#"
       class="w3-bar-item w3-button w3-ripple"
-      id="listtable"
+      
       hx-post="/invoice/table_list"
       hx-target="#modalView"
     >
@@ -275,7 +274,7 @@
     <a
       href="#"
       class="w3-bar-item w3-button w3-ripple"
-      id="createtable"
+      
       hx-post="/invoice/createtable_db"
       hx-target="#modalView"
     >
@@ -284,7 +283,7 @@
     <a
       href="#"
       class="w3-bar-item w3-button w3-ripple"
-      id="edittable"
+      
       hx-post="/invoice/edittable_db"
       hx-target="#modalView"
     >
@@ -293,7 +292,7 @@
     <a
       href="#"
       class="w3-bar-item w3-button w3-ripple"
-      id="deletetable"
+      
       hx-post="/invoice/deletetable_db"
       hx-target="#modalView"
     >
@@ -302,7 +301,7 @@
     <a
       href="#"
       class="w3-bar-item w3-button w3-ripple"
-      id="backup"
+      
       hx-post="/invoice/backup"
       hx-target="#modalView"
     >
@@ -315,7 +314,7 @@
 		href="#"
 		style="text-decoration: none"
 		class="w3-button w3-ripple w3-margin-right w3-round-large w3-light-grey w3-hover-dark-grey"
-		id="database"
+		
 		>
     Utility
   </a>
@@ -323,7 +322,7 @@
     <a
 		href="#"
 		class="w3-bar-item w3-button w3-ripple"
-		id="createtable"
+		
 		hx-get="/invoice/form_view"
 		hx-target="#mainform"
 		hx-vals'{"form":"}'
@@ -334,7 +333,7 @@
     <a
 		href="#"
 		class="w3-bar-item w3-button w3-ripple"
-		id="edittable"
+		
 		hx-get="/invoice/form_view"
 		hx-target="#mainform"
 		hx-vals'{"form":"}'
@@ -345,7 +344,7 @@
     <a
 		href="#"
 		class="w3-bar-item w3-button w3-ripple"
-		id="deletetable"
+		
 		hx-get="/invoice/form_view"
 		hx-target="#mainform"
 		hx-vals'{"form":"}'
@@ -356,7 +355,7 @@
     <a
 		href="#"
 		class="w3-bar-item w3-button w3-ripple"
-		id="backup"
+		
 		hx-get="/invoice/form_view"
 		hx-target="#mainform"
 		hx-vals'{"form":"}'
@@ -367,7 +366,7 @@
     <a
       href="#"
       class="w3-bar-item w3-button w3-ripple"
-      id="editform"
+      
       hx-get="/invoice/form_view"
       hx-target="#mainform"
       hx-vals='{"form":"config"}'
@@ -378,7 +377,6 @@
     <a
 		href="#"
 		class="w3-bar-item w3-button w3-ripple"
-		id="deletereport"
 		hx-get="/invoice/form_view"
 		hx-target="#mainform"
 		hx-vals'{"form":"}'
@@ -389,7 +387,7 @@
     <a
 		href="#"
 		class="w3-bar-item w3-button w3-ripple"
-		id="deletereport"
+		
 		hx-get="/invoice/form_view"
 		hx-target="#mainform"
 		hx-vals'{"form":"}'
