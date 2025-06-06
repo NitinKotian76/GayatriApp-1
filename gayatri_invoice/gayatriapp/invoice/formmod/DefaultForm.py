@@ -15,15 +15,16 @@ logger = logging.getLogger(__name__)
 # masters #
 
 
-def button(name):
+def button(name, hx_req):
     data = json.dumps({"form": name})
-    buttons = format_html('<input class="w3-button w3-padding w3-margin"\
-                type="submit" value="submit" \
+    html = format_html('<input class="w3-button w3-ripple w3-green w3-padding w3-margin"\
+                type="button" value="submit" \
+                hx-post=\'{}\' \
                 hx-trigger="click" \
                 hx-target="#mainform" \
-                hx-swap="innerHTML" \
-                hx-vals=\'{}\'/>', data)
-    return buttons
+                hx-swap="outerHTML" \
+                hx-vals=\'{}\'/>', hx_req, data)
+    return html
 
 
 class customer(forms.Form):

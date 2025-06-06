@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% block content %}
-    <form>
+    <form autocomplete="on">
         {% csrf_token %}
         <section id="mainform" class="w3-row w3-container w3-half">
             <div>
@@ -15,7 +15,7 @@
     </form>
 {% endblock %}
 {% block modal %}
-    <form>
+    <form autocomplete="on">
         {% csrf_token %}
         <div id="modalview"></div>
     </form>

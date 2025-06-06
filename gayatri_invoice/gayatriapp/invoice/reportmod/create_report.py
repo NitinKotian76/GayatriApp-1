@@ -5,22 +5,33 @@ from invoice.models import TableData, TableName
 
 
 def set_report_format():
+
     # TODO: store the received dict in tableData with the report name
     # and template name added in
     # store template in the server filesystem
+    pass
 
 
 def get_template():
     # TODO: check if the template exists in the server filesystem
+    sheet = pd.read_excel(
+        template, sheet_name=sheet_name, header=None)
 
 
-def get_data():
-    tag_list = TableData.objects.get(table_name=).values("table_data")
+class get_data():
+
+    # TODO: get the data from the database as a queryset and filter the elements needed
+    # or use the n no of querysets as a table
+    # tag_list = TableData.objects.get(table_name=report_name).values("table_data")
+
+    def get_oneItem(column_name, identifier):
+        pass
+
+    def get_queryset():
+        pass
 
 
 def process_report(template: str, sheet_name: str, data_list: list):
-    sheet = pd.read_excel(
-        template, sheet_name=sheet_name, header=None)
     for tag, data in data_list:
         results = (sheet == "{{"+tag+"}}")
         location = list(zip(*results.to_numpy().nonzero()))

@@ -12,6 +12,7 @@ from .forms import *
 from .formmod import DefaultForm as df
 from .formmod import BaseForm as bf
 from .dbmod import dbfunctions as db
+from .reportmod import create_report as cr
 from django.core.paginator import Paginator
 from django.contrib import messages
 # from .formmod.CrudForm import form_store_json
@@ -142,20 +143,20 @@ def form_view(request):
     }
     formdata = None
     buttons = None
-    hx_req = 'hx-post="/invoice/form_view"'
+    hx_req = "/invoice/form_view"
     if request.method == "POST":
         formtype = request.POST.get("form")
         logger.debug(formtype)
         if formtype in FORMHANDLER:
             handler = FORMHANDLER[formtype]
             formdata = handler["form_class"](request.POST)
-            buttons = df.button(formtype)
+            buttons = df.button(formtype, hx_req)
             if formdata.is_valid():
                 logger.debug("data validated")
                 data = formdata.cleaned_data
                 user_id = request.user.id
                 logger.debug(user_id)
-                if db.set_data(handler["Table_name"], data, user_id):
+                if db.set_data(handler["table_name"], data, user_id):
                     logger.debug("data is saved")
                     messages.success(request, "data saved")
             else:
@@ -165,11 +166,10 @@ def form_view(request):
         formtype = request.GET.get("form")
         if formtype in FORMHANDLER:
             handler = FORMHANDLER[formtype]
-            formdata = handler["form_class"]
-            buttons = df.button(formtype)
+            formdata = handler["form_class"]()
+            buttons = df.button(formtype, hx_req)
     context = {
         "form": formdata,
-        "hx_req": hx_req,
         "buttons": buttons,
         "messages": messages.get_messages(request)
     }
@@ -181,9 +181,11 @@ def form_view(request):
 def table_view(request):
     table_name = request.GET.get("table_name")
     logger.debug(table_name)
-    tableinst = TableName.objects.get(table_name=table_name)
+    tableinst = db.get_data(table_name)
+    if tableinst == 0:
+        messages.error("Table does not exist")
     data = TableData.objects.filter(table_name=tableinst).values("table_data")
-    paginator = Paginator(list(data), 2)
+    paginator = Paginator(list(data), 10)
     page_number = request.GET.get("page")
     logger.debug(page_number)
     page_obj = paginator.get_page(page_number)
@@ -301,20 +303,11 @@ def create_report(request):
             buttons = df.button("new_report")
             if form.is_valid():
                 logger.debug("data validated")
-                table_name = "report_list"
-                data = formdata.cleaned_data
-                user_id = request.user.id
-                logger.debug(user_id)
-                if db.set_data(table_name, data, user_id):
-                    logger.debug("report created")
-                    messages.info(request, "report created")
+                # TODO: use create report
     else:
-        # masters
         if request.GET.get("form") == "pendingorder":
-            formdata = df.pending_order
-            buttons = df.button("pendingorder")
-            context = {"form": formdata, "hx_req": hx_req,
-                       "buttons": buttons, "messages": messages.get_messages(request)}
+            context = {"form": formdata, "buttons": buttons,
+                       "messages": messages.get_messages(request)}
     return render(request, "partials/forms.html", context)
 
 

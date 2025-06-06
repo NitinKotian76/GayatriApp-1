@@ -13,7 +13,6 @@ logger = logging.getLogger(__name__)
 
 def set_data(table_name: str, data, user_id):
     # NOTE: the table name table and the table data table is different
-
     user = CustomUser.objects.get(id=user_id)
     company = Company.objects.get(id=user.company_id)
     try:
@@ -41,8 +40,12 @@ def set_data(table_name: str, data, user_id):
 
 
 def get_data(table_name: str):  # TODO: need more granularity on the data sent
-    obj = TableName.objects.get(table_name=table_name)
-    return obj.table_data
+    try:
+        obj = TableName.objects.get(table_name=table_name)
+        return obj
+    except:
+        logger.debug("Table does not exists")
+        return 0
 
 
 def search(data, table_name: str):
