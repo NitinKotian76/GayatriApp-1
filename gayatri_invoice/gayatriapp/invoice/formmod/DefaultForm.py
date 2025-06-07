@@ -1,7 +1,4 @@
-from . import BaseForm as bf
-from . import formComponents
 from django import forms
-from django.core.exceptions import ValidationError
 import logging
 import json
 from ..models import *
@@ -21,7 +18,7 @@ def button(name, hx_req):
                 type="button" value="submit" \
                 hx-post=\'{}\' \
                 hx-trigger="click" \
-                hx-target="#mainform" \
+                hx-target="#dynform" \
                 hx-swap="outerHTML" \
                 hx-vals=\'{}\'/>', hx_req, data)
     return html
@@ -399,13 +396,3 @@ class new_report(forms.Form):
     template_name = forms.SlugField()
     report_template = forms.FileField()
     data_list = forms.JSONField()
-
-
-class view_report(forms.Form):
-    template_name = "form_snippet.html"
-    error_css_class = "error"
-    required_css_class = "required"
-
-    report_name = forms.SlugField()
-    template_name = forms.FileField()
-    by_company = forms.BooleanField()

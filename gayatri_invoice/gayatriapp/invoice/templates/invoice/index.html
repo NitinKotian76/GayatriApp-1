@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% block content %}
-    <form autocomplete="on">
+    <form>
         {% csrf_token %}
         <section id="mainform" class="w3-row w3-container w3-half">
             <div>
@@ -8,6 +8,10 @@
             </div>
         </section>
         <section class="w3-row w3-container w3-half">
+            <div id="searchbar">
+                {% include 'partials/searchbar.html' %}
+                <input type="search" id="search" class="w3-input">
+            </div>
             <div>
                 <div id="tableview">{% include 'partials/tableview.html' %}</div>
             </div>

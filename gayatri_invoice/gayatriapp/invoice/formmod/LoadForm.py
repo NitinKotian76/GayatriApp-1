@@ -2,6 +2,10 @@ import logging
 from ..models import TableData
 
 
+# NOTE: can use type to create forms dynamically
+# dyn_form = type(form_name,(forms.Form,),{baseFields:fields})
+#
+
 def Filedata(filename):
     """
     the purpose of this function should be to get the json data form file and

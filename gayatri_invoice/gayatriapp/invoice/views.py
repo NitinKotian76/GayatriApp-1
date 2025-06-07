@@ -25,6 +25,8 @@ logger = logging.getLogger(__name__)
 
 login_decorator = [login_required, permission_required]
 
+## COMMON ##
+
 
 def login_user(request):
     if request.method == 'POST':
@@ -59,6 +61,17 @@ def index(request):
         "invoice/index.html",
         {"user": user, "messages": messages.get_messages(request)},
     )
+
+
+@login_required
+def profile_user(request):
+
+    if request.method == 'GET':
+        logger.debug(request)
+        user = CustomUser.objects.get(user_emp_code=request.user)
+        return render(request, "partials/profile.html", {"user": user})
+
+## USER ##
 
 
 @login_required
@@ -159,6 +172,7 @@ def form_view(request):
                 if db.set_data(handler["table_name"], data, user_id):
                     logger.debug("data is saved")
                     messages.success(request, "data saved")
+                formdata = handler["form_class"]()
             else:
                 logger.debug("data invalid")
                 logger.debug(formdata.errors)
@@ -191,16 +205,22 @@ def table_view(request):
     page_obj = paginator.get_page(page_number)
     rows = [obj.get("table_data") for obj in page_obj]
     context = {"rows": rows, "page_obj": page_obj, "table_name": table_name}
-    return render(request, "partials/tableview.html", context)
+    response = render(request, "partials/tableview.html", context)
+    response['Cache-Control'] = 'no-cache, must-revalidate'
+    return response
 
 
 @login_required
-def profile_user(request):
+def report_view(request):
+    if request.method == "POST":
+        # create report
+        # tableView with list of tag and data
+        pass
+    else:
+        # show the same report form
+        pass
 
-    if request.method == 'GET':
-        logger.debug(request)
-        user = CustomUser.objects.get(user_emp_code=request.user)
-        return render(request, "partials/profile.html", {"user": user})
+## ADMIN ##
 
 
 @login_required
@@ -259,13 +279,6 @@ def form_delete(request):
 def form_edit(request):
     form = df.formEdit()
     return render(request, "partials/forms.html", {"form": form})
-
-
-@login_required
-def report_view(request):
-    formdata = None
-    buttons = None
-    hx_req = 'hx-post="/invoice/report_view"'
 
 
 @login_required
