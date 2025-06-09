@@ -24,10 +24,18 @@ def button(name, hx_req):
     return html
 
 
+def get_choices(table_name, column):
+
+
 class customer(forms.Form):
     template_name = "form_snippet.html"
     error_css_class = "error"
     required_css_class = "required"
+
+    order_types = [("local", "Local"),
+                   ("direct", "Direct"),
+                   ("export", "Export"),
+                   ]
 
     customer_name = forms.SlugField()
     agent_or_customer_name = forms.SlugField()
@@ -40,7 +48,7 @@ class customer(forms.Form):
     payment_term = forms.IntegerField()  # payment period in days
     dispatch_to = forms.SlugField()
     district = forms.SlugField()
-    invoice_type = forms.SlugField()
+    invoice_type = forms.ChoiceField(choices=order_types)
 
 
 class supplier(forms.Form):
@@ -48,6 +56,10 @@ class supplier(forms.Form):
     error_css_class = "error"
     required_css_class = "required"
 
+    order_types = [("local", "Local"),
+                   ("direct", "Direct"),
+                   ("export", "Export"),
+                   ]
     supplier_name = forms.SlugField()
     agent_or_supplier_name = forms.SlugField()
     address_details = forms.SlugField()
@@ -59,7 +71,7 @@ class supplier(forms.Form):
     payment_term = forms.IntegerField()  # payment period in days
     dispatch_to = forms.SlugField()
     district = forms.SlugField()
-    invoice_type = forms.SlugField()
+    invoice_type = forms.ChoiceField(choices=order_types)
 
 
 class signatory(forms.Form):
@@ -105,7 +117,7 @@ class variety(forms.Form):
     field_group = forms.SlugField()
     # stock report grouping
     group_category = forms.IntegerField()
-    stock_transfer = forms.ChoiceField(choices=("yes", "no"))
+    stock_transfer = forms.ChoiceField(choices=[(True, "yes"), (False, "no")])
 
 
 class items(forms.Form):
@@ -124,8 +136,8 @@ class stock(forms.Form):
     required_css_class = "required"
     category = forms.SlugField()
     plus_minus = forms.SlugField()
-    api = forms.ChoiceField(choices=("true", "false"))
-    reference = forms.ChoiceField(choices=("with", "without"))
+    api = forms.ChoiceField(choices=[(True, "yes"), (False, "no")])
+    reference = forms.ChoiceField(choices=[(True, "with"), (False, "without")])
 
 
 class units(forms.Form):
@@ -150,9 +162,14 @@ class open_bal_prod(forms.Form):
     error_css_class = "error"
     required_css_class = "required"
     template_name = "form_snippet.html"
-    date = forms.DateField()
-    plus_minus_head = forms.ChoiceField(choices=("plus", "minus"))
-    local_or_export = forms.ChoiceField(choices=("local", "export"))
+    order_types = [("local", "Local"),
+                   ("export", "Export"),
+                   ]
+
+    date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
+    plus_minus_head = forms.ChoiceField(
+        choices=[(True, "plus"), (False, "minus")])
+    local_or_export = forms.ChoiceField(choices=invoice_types)
     variety = forms.ChoiceField()
     type = forms.ChoiceField()
     item_code = forms.ChoiceField()
@@ -172,7 +189,7 @@ class open_bal_prod(forms.Form):
     indent_no = forms.IntegerField()
     party = forms.ChoiceField()
     agent = forms.ChoiceField()
-    fsc = forms.ChoiceField(choices=("yes", "no"))
+    fsc = forms.ChoiceField(choices=[(True, "yes"), (False, "no")])
     lot_no = forms.IntegerField()
     # tableview()
 
@@ -182,11 +199,17 @@ class prod_record(forms.Form):
     error_css_class = "error"
     required_css_class = "required"
     template_name = "form_snippet.html"
-    date = forms.DateField()
-    plus_minus_head = forms.ChoiceField(choices=("plus", "minus"))
-    local_or_export = forms.ChoiceField(choices=("local", "export"))
+
+    order_types = [("local", "Local"),
+                   ("export", "Export"),
+                   ]
+
+    date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
+    plus_minus_head = forms.ChoiceField(
+        choices=[(True, "plus"), (False, "minus")])
+    local_or_export = forms.ChoiceField(choices=order_types)
     variety = forms.ChoiceField()
-    type = forms.ChoiceField()
+    item_type = forms.ChoiceField()
     item_code = forms.ChoiceField()
     size = forms.DecimalField()
     length = forms.DecimalField()
@@ -204,7 +227,7 @@ class prod_record(forms.Form):
     indent_no = forms.IntegerField()
     party = forms.ChoiceField()
     agent = forms.ChoiceField()
-    fsc = forms.ChoiceField(choices=("yes", "no"))
+    fsc = forms.ChoiceField(choices=[(True, "yes"), (False, "no")])
     lot_no = forms.IntegerField()
 
 
@@ -213,11 +236,15 @@ class prod_plus_minus(forms.Form):
     error_css_class = "error"
     required_css_class = "required"
     template_name = "form_snippet.html"
-    date = forms.DateField()
-    plus_minus_head = forms.ChoiceField(choices=("plus", "minus"))
-    local_or_export = forms.ChoiceField(choices=("local", "export"))
+    order_types = [("local", "Local"),
+                   ("export", "Export"),
+                   ]
+    date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
+    plus_minus_head = forms.ChoiceField(
+        choices=[(True, "plus"), (False, "minus")])
+    local_or_export = forms.ChoiceField(choices=order_types)
     variety = forms.ChoiceField()
-    type = forms.ChoiceField()
+    item_type = forms.ChoiceField()
     item_code = forms.ChoiceField()
     size = forms.DecimalField()
     length = forms.DecimalField()
@@ -235,7 +262,7 @@ class prod_plus_minus(forms.Form):
     indent_no = forms.IntegerField()
     party = forms.ChoiceField()
     agent = forms.ChoiceField()
-    fsc = forms.ChoiceField(choices=("yes", "no"))
+    fsc = forms.ChoiceField(choices=[(True, "yes"), (False, "no")])
     lot_no = forms.IntegerField()
 
 
@@ -243,7 +270,7 @@ class prod_approval(forms.Form):
     template_name = "form_snippet.html"
     error_css_class = "error"
     required_css_class = "required"
-    date = forms.DateField()
+    date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
     # tableview
 
 
@@ -254,15 +281,18 @@ class invoice_direct(forms.Form):
     party = forms.SlugField()
     agent = forms.SlugField()
     chalan_no = forms.IntegerField()
-    chalan_date = forms.DateField()
+    chalan_date = forms.DateField(
+        widget=forms.DateInput(attrs={'type': 'date'}))
     invoice_no = forms.IntegerField()
-    invoice_date = forms.DateField()
+    invoice_date = forms.DateField(
+        widget=forms.DateInput(attrs={'type': 'date'}))
     variety = forms.ChoiceField()
     sales_type = forms.ChoiceField()  # local, export, direct
     pre_time_date = forms.DateTimeField()
     rem_time_date = forms.DateTimeField()
     order_no = forms.IntegerField()
-    order_date = forms.DateField()
+    order_date = forms.DateField(
+        widget=forms.DateInput(attrs={'type': 'date'}))
     transport = forms.ChoiceField()
     vehicle_no = forms.CharField()
     supervisor_name = forms.ChoiceField()
@@ -293,7 +323,7 @@ class jumbo_roll_qc(forms.Form):
     template_name = "form_snippet.html"
     error_css_class = "error"
     required_css_class = "required"
-    date = forms.DateField()
+    date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
     shift = forms.ChoiceField()
     jumbo_roll_no = forms.IntegerField()
     variety = forms.ChoiceField()
@@ -336,7 +366,7 @@ class lot_no_wise_qc(forms.Form):
     error_css_class = "error"
     required_css_class = "required"
     lot_no = forms.IntegerField()
-    date = forms.DateField()
+    date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
     jumbo_roll_no = forms.IntegerField()
     variety = forms.ChoiceField()
     gsm = forms.DecimalField()
@@ -394,5 +424,8 @@ class new_report(forms.Form):
 
     report_name = forms.SlugField()
     template_name = forms.SlugField()
-    report_template = forms.FileField()
     data_list = forms.JSONField()
+
+    def __init__(self):
+        super().__init__(*args, **kwargs)
+        self.fields['template_name'].choices = get_template_name()

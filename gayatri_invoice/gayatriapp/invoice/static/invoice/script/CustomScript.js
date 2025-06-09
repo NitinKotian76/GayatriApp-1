@@ -16,7 +16,7 @@ function getCSRFToken() {
   return "";
 }
 
-function filterfunction(inputid, filterDiv) {
+function filter(inputid, filterDiv) {
   var input, filter, ul, li, a, i;
   input = document.getElementById("inputid");
   filter = input.value.toUpperCase();
