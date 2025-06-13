@@ -12,19 +12,21 @@ logger = logging.getLogger(__name__)
 # masters #
 
 
-def button(name, hx_req):
-    data = json.dumps({"form": name})
+def button(name, hx_vals, hx_req):
+    data = json.dumps(hx_vals)
     html = format_html('<input class="w3-button w3-ripple w3-green w3-padding w3-margin"\
-                type="button" value="submit" \
-                hx-post=\'{}\' \
+                type="button" value="{}" \
+                hx-post={} \
                 hx-trigger="click" \
                 hx-target="#dynform" \
                 hx-swap="outerHTML" \
-                hx-vals=\'{}\'/>', hx_req, data)
+                hx-vals=\'{}\'/>', name, hx_req, data)
     return html
 
 
 def get_choices(table_name, column):
+    table = TableName.objects.get(table_name=table_name)
+    dataquery = TableData.objects.all()
 
 
 class customer(forms.Form):
@@ -169,7 +171,7 @@ class open_bal_prod(forms.Form):
     date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
     plus_minus_head = forms.ChoiceField(
         choices=[(True, "plus"), (False, "minus")])
-    local_or_export = forms.ChoiceField(choices=invoice_types)
+    local_or_export = forms.ChoiceField(choices=order_types)
     variety = forms.ChoiceField()
     type = forms.ChoiceField()
     item_code = forms.ChoiceField()
@@ -191,7 +193,6 @@ class open_bal_prod(forms.Form):
     agent = forms.ChoiceField()
     fsc = forms.ChoiceField(choices=[(True, "yes"), (False, "no")])
     lot_no = forms.IntegerField()
-    # tableview()
 
 
 class prod_record(forms.Form):
@@ -296,7 +297,6 @@ class invoice_direct(forms.Form):
     transport = forms.ChoiceField()
     vehicle_no = forms.CharField()
     supervisor_name = forms.ChoiceField()
-# table_view
     remark = forms.SlugField()
     delivery_at = forms.SlugField()
 # table_view

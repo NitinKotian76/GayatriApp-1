@@ -98,7 +98,6 @@
     <a
       href="#"
       class="w3-bar-item w3-button w3-ripple"
-      
       hx-get="/invoice/form_view"
       hx-target="#mainform"
       hx-vals='{"form":"item_name}'
@@ -158,8 +157,7 @@
 <div class="w3-dropdown-hover w3-round-large w3-light-blue">
   <a
     href="#"
-    class="w3-button w3-ripple w3-margin-right w3-round-large w3-light-grey w3-hover-dark-grey"
-    
+    class="w3-button w3ripple w3-margin-right w3-round-large w3-light-grey w3-hover-dark-grey"
   >
     Forms
   </a>
@@ -168,7 +166,7 @@
       href="#"
       class="w3-bar-item w3-button w3-ripple"
       hx-get="/invoice/form_list"
-      hx-target="#modalView"
+      hx-target="#mainform"
       hx-swap="innerHTML"
       
     >
@@ -178,7 +176,7 @@
       href="#"
       class="w3-bar-item w3-button w3-ripple"
       hx-get="/invoice/form_config"
-      hx-target="#modalView"
+      hx-target="#mainform"
       hx-swap="innerHTML"
       
     >
@@ -189,7 +187,7 @@
       class="w3-bar-item w3-button w3-ripple"
       
       hx-get="/invoice/form_delete"
-      hx-target="#modalView"
+      hx-target="#mainform"
       hx-swap="innerHTML"
     >
       delete form
@@ -199,7 +197,7 @@
       class="w3-bar-item w3-button w3-ripple"
       
       hx-get="/invoice/form_edit"
-      hx-target="#modalView"
+      hx-target="#mainform"
       hx-swap="innerHTML"
     >
       edit form
@@ -218,9 +216,8 @@
     <a
       href="#"
       class="w3-bar-item w3-button w3-ripple"
-      
       hx-post="/invoice/report_list"
-      hx-target="#modalView"
+      hx-target="#mainform"
     >
       view report
     </a>
@@ -228,7 +225,7 @@
       href="#"
       class="w3-bar-item w3-button w3-ripple"
       hx-post="/invoice/new_report"
-      hx-target="#modalView"
+      hx-target="#mainform"
     >
       new report
     </a>
@@ -237,7 +234,7 @@
       class="w3-bar-item w3-button w3-ripple"
       
       hx-post="/invoice/edit_report"
-      hx-target="#modalView"
+      hx-target="#mainform"
     >
       edit report
     </a>
@@ -246,7 +243,7 @@
       class="w3-bar-item w3-button w3-ripple"
       
       hx-post="/invoice/del_report"
-      hx-target="#modalView"
+      hx-target="#mainform"
     >
       delete report
     </a>
@@ -264,27 +261,25 @@
     <a
       href="#"
       class="w3-bar-item w3-button w3-ripple"
-      
       hx-post="/invoice/table_list"
-      hx-target="#modalView"
+      hx-target="#mainform"
     >
       view tables
     </a>
     <a
       href="#"
       class="w3-bar-item w3-button w3-ripple"
-      
-      hx-post="/invoice/createtable_db"
-      hx-target="#modalView"
+      hx-post="/invoice/create_table"
+      hx-target="#mainform"
+      hx-swap="innerHTML"
     >
       create table
     </a>
     <a
       href="#"
       class="w3-bar-item w3-button w3-ripple"
-      
       hx-post="/invoice/edittable_db"
-      hx-target="#modalView"
+      hx-target="#mainform"
     >
       edit table
     </a>
@@ -293,7 +288,7 @@
       class="w3-bar-item w3-button w3-ripple"
       
       hx-post="/invoice/deletetable_db"
-      hx-target="#modalView"
+      hx-target="#mainform"
     >
       delete table
     </a>
@@ -302,7 +297,7 @@
       class="w3-bar-item w3-button w3-ripple"
       
       hx-post="/invoice/backup"
-      hx-target="#modalView"
+      hx-target="#mainform"
     >
       backup
     </a>
@@ -325,7 +320,7 @@
 		hx-get="/invoice/form_view"
 		hx-target="#mainform"
 		hx-vals'{"form":"}'
-		onclick='document.getElementById("modalView").style.display="block"'
+		onclick='document.getElementById("mainform").style.display="block"'
 		>
       API
     </a>
@@ -336,7 +331,7 @@
 		hx-get="/invoice/form_view"
 		hx-target="#mainform"
 		hx-vals'{"form":"}'
-		onclick='document.getElementById("modalView").style.display="block"'
+		onclick='document.getElementById("mainform").style.display="block"'
 		>
       Multiple Export Packing Slip
     </a>
@@ -347,7 +342,7 @@
 		hx-get="/invoice/form_view"
 		hx-target="#mainform"
 		hx-vals'{"form":"}'
-		onclick='document.getElementById("modalView").style.display="block"'
+		onclick='document.getElementById("mainform").style.display="block"'
 		>
       MillSoft To Orion
     </a>
@@ -358,7 +353,7 @@
 		hx-get="/invoice/form_view"
 		hx-target="#mainform"
 		hx-vals'{"form":"}'
-		onclick='document.getElementById("modalView").style.display="block"'
+		onclick='document.getElementById("mainform").style.display="block"'
 		>
       Backup
     </a>
@@ -379,7 +374,7 @@
 		hx-get="/invoice/form_view"
 		hx-target="#mainform"
 		hx-vals'{"form":"}'
-		onclick='document.getElementById("modalView").style.display="block"'
+		onclick='document.getElementById("mainform").style.display="block"'
 		>
       Printer Setting
     </a>
@@ -390,7 +385,7 @@
 		hx-get="/invoice/form_view"
 		hx-target="#mainform"
 		hx-vals'{"form":"}'
-		onclick='document.getElementById("modalView").style.display="block"'
+		onclick='document.getElementById("mainform").style.display="block"'
 		>
       Calculator
     </a>

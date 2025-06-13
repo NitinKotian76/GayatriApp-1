@@ -36,6 +36,7 @@ class TableData(models.Model):
     table_data = models.JSONField(
         null=True, blank=True, default=dict, unique=True)
     table_name = models.ForeignKey(TableName, on_delete=models.CASCADE)
+    company = models.ForeignKey(Company, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -79,7 +80,6 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     )
     user_emp_code = models.CharField(unique=True)
     company = models.ForeignKey(Company, on_delete=models.CASCADE, null=True)
-    group = models.ManyToManyField(Group)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     USERNAME_FIELD = "user_emp_code"
@@ -93,22 +93,6 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.user_emp_code
-
-    def has_perm(self, perm, obj=None):
-        return True
-
-    def has_perms(self, perm, obj=None):
-        if self.is_superuser == True and self.is_active == True:
-            return True
-
-    def has_module_perms(self, app_label):
-        return True
-
-    def get_group_permission(self, obj=None):
-        return Permission.objects.filter(name="user_emp_code")
-
-    def get_all_permissions(sel, obj=None):
-        return Permission.objects.all()
 
 
 class Form(models.Model):
@@ -137,6 +121,3 @@ class Report(models.Model):
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-
-    def __str__(self):
-        return self.report_name

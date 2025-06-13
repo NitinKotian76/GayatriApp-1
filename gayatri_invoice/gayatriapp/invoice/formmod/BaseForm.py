@@ -130,17 +130,32 @@ class reportDelete(forms.Form):
     pass
 
 
-class tableCreate(forms.Form):
+class table_view(forms.Form):
+    template_name = "form_snippet.html"
+    error_css_class = "error"
+    required_css_class = "required"
+
+    table_list = forms.ChoiceField()
+
+
+class table_create(forms.Form):
+    template_name = "form_snippet.html"
+    error_css_class = "error"
+    required_css_class = "required"
+
+    table_name = forms.CharField(max_length=100)
+    # NOTE: add this when dynamic form is done
+    # form_name = forms.CharField(max_length=100)
+    company = forms.ChoiceField(choices=Company.objects.all())
+
+
+class table_edit(forms.Form):
     pass
 
 
-class tableEdit(forms.Form):
+class table_delete(forms.Form):
     pass
 
 
-class tableDelete(forms.Form):
-    pass
-
-
-class tableBackup(forms.Form):
+class table_backup(forms.Form):
     pass

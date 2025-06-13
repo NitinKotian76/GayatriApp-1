@@ -14,7 +14,7 @@ class UserAdmin(BaseUserAdmin):
 
     def group_name(self, obj):
         name = ""
-        for group in obj.group.all():
+        for group in obj.groups.all():
             name += group.name + ","
         return name
 
@@ -34,10 +34,11 @@ class UserAdmin(BaseUserAdmin):
         (
             None,
             {"fields": ["user_emp_code", "company",
-                        "email", "password", "group"]},
+                        "email", "password", "groups"]},
         ),
         ("Personal info", {"fields": ["user_name"]}),
-        ("Permissions", {"fields": ["is_admin", "is_staff", "is_active"]}),
+        ("Permissions", {"fields": ["is_admin",
+         "is_staff", "is_active", "is_superuser"]}),
     ]
     # add_fieldsets is not a standard ModelAdmin attribute. UserAdmin
     # overrides get_fieldsets to use this attribute when creating a user.
@@ -53,14 +54,14 @@ class UserAdmin(BaseUserAdmin):
                     "company",
                     "password1",
                     "password2",
-                    "group",
+                    "groups",
                 ],
             },
         ),
     ]
     search_fields = ["user_name", "user_emp_code"]
     ordering = ["user_name", "user_emp_code", "company"]
-    filter_horizontal = []
+    filter_horizontal = ('groups', 'user_permissions',)
 
 
 admin.site.register(CustomUser, UserAdmin)

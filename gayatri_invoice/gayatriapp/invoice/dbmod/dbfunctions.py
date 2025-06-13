@@ -33,16 +33,48 @@ def set_data(table_name: str, data, user_id):
             logger.debug("data duplicate")
             return 0
     else:  # create new table
-        obj = TableName.objects.create(
-            table_name=table_name, company=company)
-        TableData.objects.create(table_data=data, table_name=obj)
+        logger.debug("table does not exist")
+        return 0
     return 1
 
 
-def get_data(table_name: str):  # TODO: need more granularity on the data sent
+def new_table(table_name: str, user_id, data=None):
+    user = CustomUser.objects.get(id=user_id)
+    company = Company.objects.get(id=user.company_id)
+    obj = TableName.objects.create(
+        table_name=table_name, company=company)
+    TableData.objects.create(table_data=data, table_name=obj)
+    return 1
+
+
+def get_datarow_q(table_name: str, user_id: str):
+    # NOTE: this is only being used for getting TableData json column
     try:
-        obj = TableName.objects.get(table_name=table_name)
-        return obj
+        user = CustomUser.objects.get(id=user_id)
+        logger.debug(user)
+        company_id = Company.objects.get(id=user.company_id).id
+        logger.debug(company_id)
+        table = TableName.objects.get(table_name=table_name).id
+        logger.debug(table)
+        data = TableData.objects.filter(
+            table_name=table, company=company_id).values("table_data")
+
+        return data
+    except:
+        logger.debug("Table does not exists")
+        return 0
+
+
+def get_datacolumn(table_name: str, column_name: str, user_id: str):
+    try:
+        user = CustomUser.objects.get(id=user_id)
+        company_id = Company.objects.get(id=user.company_id).id
+        table = TableName.objects.get(table_name=table_name)
+        query = TableData.objects.filter(
+            table_name=table, company=company_id).values("table_data")
+        data = pd.json_normalize(query)[column_name]
+
+        return data
     except:
         logger.debug("Table does not exists")
         return 0

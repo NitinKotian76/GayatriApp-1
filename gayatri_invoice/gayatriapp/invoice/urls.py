@@ -20,4 +20,6 @@ urlpatterns = [
     path("table_list", views.table_list, name="table_list"),
     path("form_list", views.form_list, name="form_list"),
     path("report_list", views.report_list, name="report_list"),
+    path("create_table", views.create_table, name="create_table"),
+
 ]

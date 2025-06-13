@@ -22,9 +22,6 @@ from django.contrib import messages
 # by the client and then the server
 
 logger = logging.getLogger(__name__)
-
-login_decorator = [login_required, permission_required]
-
 ## COMMON ##
 
 
@@ -34,6 +31,8 @@ def login_user(request):
         if form.is_valid():
             login(request, form.user)
             logger.debug("logged in")
+            print(request.user.get_all_permissions())
+            print(request.user.groups.all())
             return redirect("invoice:index")
     else:
         form = bf.loginForm()
@@ -71,135 +70,17 @@ def profile_user(request):
         user = CustomUser.objects.get(user_emp_code=request.user)
         return render(request, "partials/profile.html", {"user": user})
 
-## USER ##
-
-
-@login_required
-def form_view(request):
-    FORMHANDLER = {
-        "customer": {
-            "form_class": df.customer,
-            "table_name": "customer"
-        },
-        "supplier": {
-            "form_class": df.customer,
-            "table_name": "supplier"
-        },
-        "signatory": {
-            "form_class": df.signatory,
-            "table_name": "signatory"
-        },
-        "export_fields": {
-            "form_class": df.export_fields,
-            "table_name": "export_fields"
-        },
-        "item_category": {
-            "form_class": df.item_category,
-            "table_name": "item_category"
-        },
-        "variety": {
-            "form_class": df.variety,
-            "table_name": "variety"
-        },
-        "items": {
-            "form_class": df.items,
-            "table_name": "items"
-        },
-        "stock": {
-            "form_class": df.stock,
-            "table_name": "stock"
-        },
-        "units": {
-            "form_class": df.units,
-            "table_name": "units"
-        },
-        "location": {
-            "form_class": df.location,
-            "table_name": "location"
-        },
-        "open_bal_prod": {
-            "form_class": df.open_bal_prod,
-            "table_name": "open_bal_prod"
-        },
-        "prod_record": {
-            "form_class": df.prod_record,
-            "table_name": "prod_record"
-        },
-        "prod_plus_minus": {
-            "form_class": df.prod_plus_minus,
-            "table_name": "prod_plus_minus"
-        },
-        "prod_approval": {
-            "form_class": df.prod_approval,
-            "table_name": "prod_approval"
-        },
-        "invoice_direct": {
-            "form_class": df.invoice_direct,
-            "table_name": "invoice_direct"
-        },
-        "jumbo_roll_qc": {
-            "form_class": df.jumbo_roll_qc,
-            "table_name": "jumbo_roll_qc"
-        },
-        "lot_no_wise_qc": {
-            "form_class": df.lot_no_wise_qc,
-            "table_name": "lot_no_wise_qc",
-        },
-        "finishing_house": {
-            "form_class": df.finishing_house,
-            "table_name": "finishing_house"
-        },
-        "program_planning": {
-            "form_class": df.program_planing,
-            "table_name": "program_planning"
-        },
-    }
-    formdata = None
-    buttons = None
-    hx_req = "/invoice/form_view"
-    if request.method == "POST":
-        formtype = request.POST.get("form")
-        logger.debug(formtype)
-        if formtype in FORMHANDLER:
-            handler = FORMHANDLER[formtype]
-            formdata = handler["form_class"](request.POST)
-            buttons = df.button(formtype, hx_req)
-            if formdata.is_valid():
-                logger.debug("data validated")
-                data = formdata.cleaned_data
-                user_id = request.user.id
-                logger.debug(user_id)
-                if db.set_data(handler["table_name"], data, user_id):
-                    logger.debug("data is saved")
-                    messages.success(request, "data saved")
-                formdata = handler["form_class"]()
-            else:
-                logger.debug("data invalid")
-                logger.debug(formdata.errors)
-    else:
-        formtype = request.GET.get("form")
-        if formtype in FORMHANDLER:
-            handler = FORMHANDLER[formtype]
-            formdata = handler["form_class"]()
-            buttons = df.button(formtype, hx_req)
-    context = {
-        "form": formdata,
-        "buttons": buttons,
-        "messages": messages.get_messages(request)
-    }
-
-    return render(request, "partials/forms.html", context)
-
 
 @login_required
 def table_view(request):
     table_name = request.GET.get("table_name")
     logger.debug(table_name)
-    tableinst = db.get_data(table_name)
-    if tableinst == 0:
-        messages.error("Table does not exist")
-    data = TableData.objects.filter(table_name=tableinst).values("table_data")
-    paginator = Paginator(list(data), 10)
+    user_id = request.user.id
+    data = db.get_datarow_q(table_name, user_id)
+    if not data:
+        # Initialize table
+        redirect("invoice:create_table")
+    paginator = Paginator(data, 10)
     page_number = request.GET.get("page")
     logger.debug(page_number)
     page_obj = paginator.get_page(page_number)
@@ -209,16 +90,264 @@ def table_view(request):
     response['Cache-Control'] = 'no-cache, must-revalidate'
     return response
 
+## USER ##
+
 
 @login_required
-def report_view(request):
+@permission_required('invoice.view_form', raise_exception=True)
+def form_view(request):
+    FORMHANDLER = {
+        "customer": {
+            "form_class": df.customer,
+            "table_name": "customer",
+            "buttons": {
+                "submit": {
+                    "hx_vals": {"form": "customer"},
+                    "hx_req": "/invoice/form_view"
+                },
+                "reset": {
+                    "hx_vals": {"form": "customer"},
+                    "hx_req": "/invoice/form_view"
+                },
+            }
+        },
+        "supplier": {
+            "form_class": df.supplier,
+            "table_name": "supplier",
+            "buttons": {
+                "submit": {
+                    "hx_vals": {"form": "supplier"},
+                    "hx_req": "/invoice/form_view"
+                },
+            }
+        },
+        "signatory": {
+            "form_class": df.signatory,
+            "table_name": "signatory",
+            "buttons": {
+                "submit": {
+                    "hx_vals": {"form": "signatory"},
+                    "hx_req": "/invoice/form_view"
+                },
+            }
+        },
+        "export_fields": {
+            "form_class": df.export_fields,
+            "table_name": "export_fields",
+            "buttons": {
+                "submit": {
+                    "hx_vals": {"form": "export_fields"},
+                    "hx_req": "/invoice/form_view"
+                },
+            }
+        },
+        "item_category": {
+            "form_class": df.item_category,
+            "table_name": "item_category",
+            "buttons": {
+                "submit": {
+                    "hx_vals": {"form": "item_category"},
+                    "hx_req": "/invoice/form_view"
+                },
+            }
+        },
+        "variety": {
+            "form_class": df.variety,
+            "table_name": "variety",
+            "buttons": {
+                "submit": {
+                    "hx_vals": {"form": "variety"},
+                    "hx_req": "/invoice/form_view"
+                },
+            }
+        },
+        "items": {
+            "form_class": df.items,
+            "table_name": "items",
+            "buttons": {
+                "submit": {
+                    "hx_vals": {"form": "items"},
+                    "hx_req": "/invoice/form_view"
+                },
+            }
+        },
+        "stock": {
+            "form_class": df.stock,
+            "table_name": "stock",
+            "buttons": {
+                "submit": {
+                    "hx_vals": {"form": "stock"},
+                    "hx_req": "/invoice/form_view"
+                },
+            }
+        },
+        "units": {
+            "form_class": df.units,
+            "table_name": "units",
+            "buttons": {
+                "submit": {
+                    "hx_vals": {"form": "units"},
+                    "hx_req": "/invoice/form_view"
+                },
+            }
+        },
+        "location": {
+            "form_class": df.location,
+            "table_name": "location",
+            "buttons": {
+                "submit": {
+                    "hx_vals": {"form": "location"},
+                    "hx_req": "/invoice/form_view"
+                },
+            }
+        },
+        "open_bal_prod": {
+            "form_class": df.open_bal_prod,
+            "table_name": "open_bal_prod",
+            "buttons": {
+                "submit": {
+                    "hx_vals": {"form": "open_bal_prod"},
+                    "hx_req": "/invoice/form_view"
+                },
+            }
+        },
+        "prod_record": {
+            "form_class": df.prod_record,
+            "table_name": "prod_record",
+            "buttons": {
+                "submit": {
+                    "hx_vals": {"form": "prod_record"},
+                    "hx_req": "/invoice/form_view"
+                },
+            }
+        },
+        "prod_plus_minus": {
+            "form_class": df.prod_plus_minus,
+            "table_name": "prod_plus_minus",
+            "buttons": {
+                "submit": {
+                    "hx_vals": {"form": "prod_plus_minus"},
+                    "hx_req": "/invoice/form_view"
+                },
+            }
+        },
+        "prod_approval": {
+            "form_class": df.prod_approval,
+            "table_name": "prod_approval",
+            "buttons": {
+                "submit": {
+                    "hx_vals": {"form": "prod_approval"},
+                    "hx_req": "/invoice/form_view"
+                },
+            }
+        },
+        "invoice_direct": {
+            "form_class": df.invoice_direct,
+            "table_name": "invoice_direct",
+            "buttons": {
+                "submit": {
+                    "hx_vals": {"form": "invoice_direct"},
+                    "hx_req": "/invoice/form_view"
+                },
+            }
+        },
+        "jumbo_roll_qc": {
+            "form_class": df.jumbo_roll_qc,
+            "table_name": "jumbo_roll_qc",
+            "buttons": {
+                "submit": {
+                    "hx_vals": {"form": "jumbo_roll_qc"},
+                    "hx_req": "/invoice/form_view"
+                },
+            }
+        },
+        "lot_no_wise_qc": {
+            "form_class": df.lot_no_wise_qc,
+            "table_name": "lot_no_wise_qc",
+            "buttons": {
+                "submit": {
+                    "hx_vals": {"form": "lot_no_wise_qc"},
+                    "hx_req": "/invoice/form_view"
+                },
+            }
+        },
+        "finishing_house": {
+            "form_class": df.finishing_house,
+            "table_name": "finishing_house",
+            "buttons": {
+                "submit": {
+                    "hx_vals": {"form": "finishing_house"},
+                    "hx_req": "/invoice/form_view"
+                },
+            }
+        },
+        "program_planning": {
+            "form_class": df.program_planing,
+            "table_name": "program_planning",
+            "buttons": {
+                "submit": {
+                    "hx_vals": {"form": "program_planning"},
+                    "hx_req": "/invoice/form_view"
+                },
+            }
+        },
+        "view_table": {
+            "form_class": bf.table_view,
+            "table_name": "table_view",
+            "buttons": {
+                "submit": {
+                    "hx_vals": {"form": "table_view"},
+                    "hx_req": "/invoice/form_view"
+                },
+            }
+        }
+    }
+    formdata = None
+    buttons = []
+    hx_req = "/invoice/form_view"
     if request.method == "POST":
-        # create report
-        # tableView with list of tag and data
-        pass
+        formtype = request.POST.get("form")
+        logger.debug(formtype)
+        if formtype in FORMHANDLER:
+            handler = FORMHANDLER[formtype]
+            formdata = handler["form_class"](request.POST)
+            for key in handler["buttons"]:
+                hx_vals = handler["buttons"][key]["hx_vals"]
+                hx_req = handler["buttons"][key]["hx_req"]
+                button = df.button(key, hx_vals, hx_req)
+                buttons.append(button)
+            if formdata.is_valid():
+                logger.debug("data validated")
+                data = formdata.cleaned_data
+                user_id = request.user.id
+                logger.debug(user_id)
+                if db.set_data(handler["table_name"], data, user_id):
+                    logger.debug("data is saved")
+                    messages.success(request, "data saved")
+                else:
+                    redirect("invoice:create_table")
+                formdata = handler["form_class"]()
+            else:
+                logger.debug("data invalid")
+                logger.debug(formdata.errors)
     else:
-        # show the same report form
-        pass
+        formtype = request.GET.get("form")
+        if formtype in FORMHANDLER:
+            handler = FORMHANDLER[formtype]
+            formdata = handler["form_class"]()
+            for key in handler["buttons"]:
+                hx_vals = handler["buttons"][key]["hx_vals"]
+                hx_req = handler["buttons"][key]["hx_req"]
+                button = df.button(key, hx_vals, hx_req)
+                buttons.append(button)
+    context = {
+        "form": formdata,
+        "buttons": buttons,
+        "messages": messages.get_messages(request)
+    }
+
+    return render(request, "partials/forms.html", context)
+
 
 ## ADMIN ##
 
@@ -229,7 +358,6 @@ def form_setup(request):
     if request.method == 'POST':
         # get the config
         logger.debug("data sent to form setup ")
-
         formname = "Form Name"
         username = request.POST.get("User Name")
         read = request.POST.get("Read")
@@ -293,10 +421,25 @@ def form_list(request):
 @login_required
 def table_list(request):
     # TODO: form list
-    hx_req = 'hx-post="/invoice/report_view"'
-    context = {"table": data, "hx_req": hx_req, "buttons": buttons,
+    hx_req = 'hx-post="/invoice/table_view"'
+    data = TableName.objects.values("table_name")
+    form = df.table_view()
+    hx_vals = {"": ""}
+    buttons = df.buttons(hx_vals, hx_req)
+    context = {"form": form, "hx_req": hx_req, "buttons": buttons,
                "messages": messages.get_messages(request)}
     return render(request, "partials/forms.html", context)
+
+
+@login_required
+def report_view(request):
+    if request.method == "POST":
+        # create report
+        # tableView with list of tag and data
+        pass
+    else:
+        # show the same report form
+        pass
 
 
 @login_required
@@ -332,3 +475,18 @@ def edit_report(request):
 @login_required
 def del_report(request):
     pass
+
+
+@login_required
+def create_table(request):
+    if request.method == "POST":
+        form = bf.table_create(request.POST)
+        buttons = df.button(
+            "submit", {"form": "table_create"}, "/invoice/create_table")
+        if form.is_valid():
+            data = form.cleaned_data
+            if db.new_table(data.table_name, request.user.id):
+                messages.info(request, "table added")
+    context = {"form": formdata, "buttons": buttons,
+               "messages": messages.get_messages(request)}
+    return render(request, "partials/forms.html", context)

@@ -1,4 +1,4 @@
 <div id="dynform" hx-trigger="load" hx-target="#formpart" hx-swap="innerHTML">
   {{form}}
-  <div>{{buttons}}</div>
+  <div>{% for button in buttons %} {{button}} {% endfor %}</div>
 </div>

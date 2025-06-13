@@ -8,15 +8,20 @@
     Transaction
   </a>
   <div class="w3-dropdown-content w3-bar-block w3-card-4">
-    <a
-		href="#"
-		class="w3-bar-item w3-button w3-ripple"
-		id="newreport"
-		hx-get="/invoice/form_view"
-		hx-target="#mainform"
-		hx-vals'{"form":"open_bal_prod"}'
-
-		>
+    <a href="#"
+       class="w3-bar-item w3-button w3-ripple"
+       id="newreport"
+       hx-get="/invoice/form_view"
+       hx-target="#mainform"
+       hx-vals'{"form":"open_bal_prod"}'
+       >
+      <div
+        hx-get="/invoice/table_view"
+        hx-trigger="click from:closest (a)"
+        hx-target="#tableview"
+        hx-vals='{"table_name":"open_bal_prod"}'
+        hx-swap="innerHTML"
+      ></div>
       Opening balance Production
     </a>
     <a
