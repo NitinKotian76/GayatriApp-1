@@ -1,9 +1,14 @@
 from django.shortcuts import render, redirect
-from django.http import HttpResponse
+from django.http import HttpResponse, FileResponse
 from django.views.decorators.csrf import ensure_csrf_cookie, csrf_protect
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth import login, logout
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth.hashers import check_password
+from django.contrib.auth.password_validation import validate_password
+from django.urls import reverse_lazy
 from django.views import View
 import logging
 from .cachestore import cachestore as cache
@@ -13,9 +18,9 @@ from .formmod import DefaultForm as df
 from .formmod import BaseForm as bf
 from .dbmod import dbfunctions as db
 from .reportmod import create_report as cr
+from . import mappings as mp
 from django.core.paginator import Paginator
 from django.contrib import messages
-# from .formmod.CrudForm import form_store_json
 
 
 # NOTE: anything that is returned by the rendered template should be validated
@@ -39,6 +44,50 @@ def login_user(request):
         if not request.user.is_authenticated:
             logger.debug("login password or username failed")
     return render(request, "invoice/login.html", {"login": form, "messages": messages.get_messages(request)})
+
+
+@login_required
+def change_password(request):
+    if request.method == 'POST':
+        FORMHANDLER = mp.COMMON
+        buttons = []
+        form = ChangePasswordForm(request.POST)
+        if form.is_valid():
+            old_password = form.cleaned_data['old_password']
+            new_password = form.cleaned_data['new_password']
+            confirm_password = form.cleaned_data['confirm_password']
+
+            # Check old password is correct
+            if not check_password(old_password, request.user.password):
+                form.add_error('old_password', 'Old password is incorrect.')
+                # Check new passwords match
+            elif new_password != confirm_password:
+                form.add_error('confirm_password',
+                               'New passwords do not match.')
+            else:
+                # Validate the new password with Django's validators
+                try:
+                    validate_password(new_password, user=request.user)
+                except Exception as e:
+                    form.add_error('new password invalid', e)
+                else:
+                    # Set the new passwords
+                    request.user.set_password(new_password)
+                    request.user.save()
+                    # Keeps user logged in
+                    update_session_auth_hash(request, request.user)
+                    messages.success(
+                        request, 'Your password was changed successfully.')
+                    return redirect(reverse_lazy('index'))
+    else:
+        form = ChangePasswordForm()
+        for key in handler["buttons"]:
+            hx_vals = handler["buttons"][key]["hx_vals"]
+            hx_req = handler["buttons"][key]["hx_req"]
+            button = df.button(key, hx_vals, hx_req)
+            buttons.append(button)
+    context = {'form': form, "buttons": buttons}
+    return render(request, 'change_password.html', context)
 
 
 @login_required
@@ -96,212 +145,7 @@ def table_view(request):
 @login_required
 @permission_required('invoice.view_form', raise_exception=True)
 def form_view(request):
-    FORMHANDLER = {
-        "customer": {
-            "form_class": df.customer,
-            "table_name": "customer",
-            "buttons": {
-                "submit": {
-                    "hx_vals": {"form": "customer"},
-                    "hx_req": "/invoice/form_view"
-                },
-                "reset": {
-                    "hx_vals": {"form": "customer"},
-                    "hx_req": "/invoice/form_view"
-                },
-            }
-        },
-        "supplier": {
-            "form_class": df.supplier,
-            "table_name": "supplier",
-            "buttons": {
-                "submit": {
-                    "hx_vals": {"form": "supplier"},
-                    "hx_req": "/invoice/form_view"
-                },
-            }
-        },
-        "signatory": {
-            "form_class": df.signatory,
-            "table_name": "signatory",
-            "buttons": {
-                "submit": {
-                    "hx_vals": {"form": "signatory"},
-                    "hx_req": "/invoice/form_view"
-                },
-            }
-        },
-        "export_fields": {
-            "form_class": df.export_fields,
-            "table_name": "export_fields",
-            "buttons": {
-                "submit": {
-                    "hx_vals": {"form": "export_fields"},
-                    "hx_req": "/invoice/form_view"
-                },
-            }
-        },
-        "item_category": {
-            "form_class": df.item_category,
-            "table_name": "item_category",
-            "buttons": {
-                "submit": {
-                    "hx_vals": {"form": "item_category"},
-                    "hx_req": "/invoice/form_view"
-                },
-            }
-        },
-        "variety": {
-            "form_class": df.variety,
-            "table_name": "variety",
-            "buttons": {
-                "submit": {
-                    "hx_vals": {"form": "variety"},
-                    "hx_req": "/invoice/form_view"
-                },
-            }
-        },
-        "items": {
-            "form_class": df.items,
-            "table_name": "items",
-            "buttons": {
-                "submit": {
-                    "hx_vals": {"form": "items"},
-                    "hx_req": "/invoice/form_view"
-                },
-            }
-        },
-        "stock": {
-            "form_class": df.stock,
-            "table_name": "stock",
-            "buttons": {
-                "submit": {
-                    "hx_vals": {"form": "stock"},
-                    "hx_req": "/invoice/form_view"
-                },
-            }
-        },
-        "units": {
-            "form_class": df.units,
-            "table_name": "units",
-            "buttons": {
-                "submit": {
-                    "hx_vals": {"form": "units"},
-                    "hx_req": "/invoice/form_view"
-                },
-            }
-        },
-        "location": {
-            "form_class": df.location,
-            "table_name": "location",
-            "buttons": {
-                "submit": {
-                    "hx_vals": {"form": "location"},
-                    "hx_req": "/invoice/form_view"
-                },
-            }
-        },
-        "open_bal_prod": {
-            "form_class": df.open_bal_prod,
-            "table_name": "open_bal_prod",
-            "buttons": {
-                "submit": {
-                    "hx_vals": {"form": "open_bal_prod"},
-                    "hx_req": "/invoice/form_view"
-                },
-            }
-        },
-        "prod_record": {
-            "form_class": df.prod_record,
-            "table_name": "prod_record",
-            "buttons": {
-                "submit": {
-                    "hx_vals": {"form": "prod_record"},
-                    "hx_req": "/invoice/form_view"
-                },
-            }
-        },
-        "prod_plus_minus": {
-            "form_class": df.prod_plus_minus,
-            "table_name": "prod_plus_minus",
-            "buttons": {
-                "submit": {
-                    "hx_vals": {"form": "prod_plus_minus"},
-                    "hx_req": "/invoice/form_view"
-                },
-            }
-        },
-        "prod_approval": {
-            "form_class": df.prod_approval,
-            "table_name": "prod_approval",
-            "buttons": {
-                "submit": {
-                    "hx_vals": {"form": "prod_approval"},
-                    "hx_req": "/invoice/form_view"
-                },
-            }
-        },
-        "invoice_direct": {
-            "form_class": df.invoice_direct,
-            "table_name": "invoice_direct",
-            "buttons": {
-                "submit": {
-                    "hx_vals": {"form": "invoice_direct"},
-                    "hx_req": "/invoice/form_view"
-                },
-            }
-        },
-        "jumbo_roll_qc": {
-            "form_class": df.jumbo_roll_qc,
-            "table_name": "jumbo_roll_qc",
-            "buttons": {
-                "submit": {
-                    "hx_vals": {"form": "jumbo_roll_qc"},
-                    "hx_req": "/invoice/form_view"
-                },
-            }
-        },
-        "lot_no_wise_qc": {
-            "form_class": df.lot_no_wise_qc,
-            "table_name": "lot_no_wise_qc",
-            "buttons": {
-                "submit": {
-                    "hx_vals": {"form": "lot_no_wise_qc"},
-                    "hx_req": "/invoice/form_view"
-                },
-            }
-        },
-        "finishing_house": {
-            "form_class": df.finishing_house,
-            "table_name": "finishing_house",
-            "buttons": {
-                "submit": {
-                    "hx_vals": {"form": "finishing_house"},
-                    "hx_req": "/invoice/form_view"
-                },
-            }
-        },
-        "program_planning": {
-            "form_class": df.program_planing,
-            "table_name": "program_planning",
-            "buttons": {
-                "submit": {
-                    "hx_vals": {"form": "program_planning"},
-                    "hx_req": "/invoice/form_view"
-                },
-            }
-        },
-        "view_table": {
-            "form_class": bf.table_view,
-            "table_name": "table_view",
-            "buttons": {
-                "submit": {
-                    "hx_vals": {"form": "table_view"},
-                    "hx_req": "/invoice/form_view"
-                },
-            }
-        }
-    }
+    FORMHANDLER = mp.FORMHANDLER
     formdata = None
     buttons = []
     hx_req = "/invoice/form_view"

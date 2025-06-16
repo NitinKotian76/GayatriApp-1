@@ -159,3 +159,13 @@ class table_delete(forms.Form):
 
 class table_backup(forms.Form):
     pass
+
+
+class change_password(forms.Form):
+    template_name = "form_snippet.html"
+    error_css_class = "error"
+    required_css_class = "required"
+
+    old_password = forms.CharField(widget=forms.PasswordInput())
+    new_password = forms.CharField(widget=forms.PasswordInput())
+    confirm_password = forms.CharField(widget=forms.PasswordInput())

@@ -2,6 +2,7 @@ from django import forms
 from .models import *
 from django.contrib.auth.models import Group
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
+from datetime import datetime
 
 
 class UserCreationForm(forms.ModelForm):
@@ -60,6 +61,9 @@ class UserChangeForm(forms.ModelForm):
             "is_active",
             "is_admin",
         ]
+
+    def clean_password(self):
+        return self.initial["password"]
 
 
 class FormForm(forms.ModelForm):

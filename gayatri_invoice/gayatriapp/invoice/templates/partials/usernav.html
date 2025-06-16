@@ -1,20 +1,21 @@
 <div class="w3-dropdown-hover w3-round-large w3-light-blue">
   <a
-	href="#"
-	style="text-decoration: none"
-	class="w3-button w3-ripple w3-margin-right w3-round-large w3-light-grey w3-hover-dark-grey"
-	id="reports"
-	>
+    href="#"
+    style="text-decoration: none"
+    class="w3-button w3-ripple w3-margin-right w3-round-large w3-light-grey w3-hover-dark-grey"
+    id="reports"
+  >
     Transaction
   </a>
   <div class="w3-dropdown-content w3-bar-block w3-card-4">
-    <a href="#"
-       class="w3-bar-item w3-button w3-ripple"
-       id="newreport"
-       hx-get="/invoice/form_view"
-       hx-target="#mainform"
-       hx-vals'{"form":"open_bal_prod"}'
-       >
+    <a
+      href="#"
+      class="w3-bar-item w3-button w3-ripple"
+      id="newreport"
+      hx-get="/invoice/form_view"
+      hx-target="#mainform"
+      hx-vals='{"form":"open_bal_prod"}'
+    >
       <div
         hx-get="/invoice/table_view"
         hx-trigger="click from:closest (a)"
@@ -25,273 +26,246 @@
       Opening balance Production
     </a>
     <a
-		href="#"
-		class="w3-bar-item w3-button w3-ripple"
-		id="editreport"
-		hx-get="/invoice/form_view"
-		hx-target="#mainform"
-		hx-vals'{"form":"prod_record"}'
-
-		>
+      href="#"
+      class="w3-bar-item w3-button w3-ripple"
+      id="editreport"
+      hx-get="/invoice/form_view"
+      hx-target="#mainform"
+      hx-vals='{"form":"prod_record"}'
+    >
       Production
     </a>
     <a
-		href="#"
-		class="w3-bar-item w3-button w3-ripple"
-		id="deletereport"
-		hx-get="/invoice/form_view"
-		hx-target="#mainform"
-		hx-vals'{"form":"prod_plus_minus"}'
-
-		>
+      href="#"
+      class="w3-bar-item w3-button w3-ripple"
+      id="deletereport"
+      hx-get="/invoice/form_view"
+      hx-target="#mainform"
+      hx-vals='{"form":"prod_plus_minus"}'
+    >
       Stock Plus/minus
     </a>
     <a
-		href="#"
-		class="w3-bar-item w3-button w3-ripple"
-		id="deletereport"
-		hx-get="/invoice/form_view"
-		hx-target="#mainform"
-		hx-vals'{"form":"prod_approval"}'
-
-		>
+      href="#"
+      class="w3-bar-item w3-button w3-ripple"
+      id="deletereport"
+      hx-get="/invoice/form_view"
+      hx-target="#mainform"
+      hx-vals='{"form":"prod_approval"}'
+    >
       Production Approval
     </a>
     <a
-		href="#"
-		class="w3-bar-item w3-button w3-ripple"
-		id="deletereport"
-		hx-get="/invoice/form_view"
-		hx-target="#mainform"
-		hx-vals'{"form":"invoice"}'
-
-		>
+      href="#"
+      class="w3-bar-item w3-button w3-ripple"
+      id="deletereport"
+      hx-get="/invoice/form_view"
+      hx-target="#mainform"
+      hx-vals='{"form":"invoice"}'
+    >
       Invoice
     </a>
     <a
-		href="#"
-		class="w3-bar-item w3-button w3-ripple"
-		id="deletereport"
-		hx-get="/invoice/form_view"
-		hx-target="#mainform"
-		hx-vals'{"form":"jumbo_roll_qc"}'
-
-		>
+      href="#"
+      class="w3-bar-item w3-button w3-ripple"
+      id="deletereport"
+      hx-get="/invoice/form_view"
+      hx-target="#mainform"
+      hx-vals='{"form":"jumbo_roll_qc"}'
+    >
       Jumbo Roll QC
     </a>
     <a
-		href="#"
-		class="w3-bar-item w3-button w3-ripple"
-		id="deletereport"
-		hx-get="/invoice/form_view"
-		hx-target="#mainform"
-		hx-vals'{"form":"lot_no_wise_qc"}'
-		>
+      href="#"
+      class="w3-bar-item w3-button w3-ripple"
+      id="deletereport"
+      hx-get="/invoice/form_view"
+      hx-target="#mainform"
+      hx-vals='{"form":"lot_no_wise_qc"}'
+    >
       LOT no Wise QC
     </a>
     <a
-		href="#"
-		class="w3-bar-item w3-button w3-ripple"
-		id="deletereport"
-		hx-get="/invoice/form_view"
-		hx-target="#mainform"
-		hx-vals'{"form":"finishing_house"}'
-		>
+      href="#"
+      class="w3-bar-item w3-button w3-ripple"
+      id="deletereport"
+      hx-get="/invoice/form_view"
+      hx-target="#mainform"
+      hx-vals='{"form":"finishing_house"}'
+    >
       Finishing House
     </a>
     <a
-		href="#"
-		class="w3-bar-item w3-button w3-ripple"
-		id="deletereport"
-		hx-get="/invoice/form_view"
-		hx-target="#mainform"
-		hx-vals'{"form":"program_planning"}'
-		>
+      href="#"
+      class="w3-bar-item w3-button w3-ripple"
+      id="deletereport"
+      hx-get="/invoice/form_view"
+      hx-target="#mainform"
+      hx-vals='{"form":"program_planning"}'
+    >
       Proggram planning
     </a>
   </div>
 </div>
 <div class="w3-dropdown-hover w3-round-large w3-light-blue">
   <a
-	href="#"
-	style="text-decoration: none"
-	class="w3-button w3-ripple w3-margin-right w3-round-large w3-light-grey w3-hover-dark-grey"
-	id="database"
-	>
+    href="#"
+    style="text-decoration: none"
+    class="w3-button w3-ripple w3-margin-right w3-round-large w3-light-grey w3-hover-dark-grey"
+    id="database"
+  >
     Report
   </a>
   <div class="w3-dropdown-content w3-bar-block w3-card-4">
     <a
-		href="#"
-		class="w3-bar-item w3-button w3-ripple"
-		hx-get="/invoice/report_view"
-		hx-target="#mainform"
-		hx-vals='{"form":"pendingorder"}'
-		id="createtable"
-		>
+      href="#"
+      class="w3-bar-item w3-button w3-ripple"
+      hx-get="/invoice/report_view"
+      hx-target="#mainform"
+      hx-vals='{"form":"pendingorder"}'
+      id="createtable"
+    >
       <div
-		hx-get="/invoice/table_view" 
-		hx-trigger="click from:closest (a)"
-		hx-vals='{"table_name":"pending_order"}'
-		hx-target="#tableview" 
-		hx-swap="innerHTML" 
-		>
-      </div>
+        hx-get="/invoice/table_view"
+        hx-trigger="click from:closest (a)"
+        hx-vals='{"table_name":"pending_order"}'
+        hx-target="#tableview"
+        hx-swap="innerHTML"
+      ></div>
       Pending Order
     </a>
     <a
-		href="#"
-		class="w3-bar-item w3-button w3-ripple"
-		id="edittable"
-		hx-get="/invoice/form_view"
-		hx-target="#mainform"
-		hx-vals'{"form":"production"}'
-		>
+      href="#"
+      class="w3-bar-item w3-button w3-ripple"
+      id="edittable"
+      hx-get="/invoice/form_view"
+      hx-target="#mainform"
+      hx-vals='{"form":"production"}'
+    >
       Production
     </a>
     <a
-		href="#"
-		class="w3-bar-item w3-button w3-ripple"
-		id="deletetable"
-		hx-get="/invoice/form_view"
-		hx-target="#mainform"
-		hx-vals'{"form":"}'
-
-		>
+      href="#"
+      class="w3-bar-item w3-button w3-ripple"
+      id="deletetable"
+      hx-get="/invoice/form_view"
+      hx-target="#mainform"
+      hx-vals='{"form":"dispatch_details"}'
+    >
       Dispatch Details
     </a>
     <a
-		href="#"
-		class="w3-bar-item w3-button w3-ripple"
-		id="backup"
-		hx-get="/invoice/form_view"
-		hx-target="#mainform"
-		hx-vals'{"form":"}'
-
-		>
+      href="#"
+      class="w3-bar-item w3-button w3-ripple"
+      id="backup"
+      hx-get="/invoice/form_view"
+      hx-target="#mainform"
+      hx-vals='{"form":"}'
+    >
       Stock
     </a>
     <a
-		href="#"
-		class="w3-bar-item w3-button w3-ripple"
-		id="deletereport"
-		hx-get="/invoice/form_view"
-		hx-target="#mainform"
-		hx-vals'{"form":"}'
-
-		>
+      href="#"
+      class="w3-bar-item w3-button w3-ripple"
+      id="deletereport"
+      hx-get="/invoice/form_view"
+      hx-target="#mainform"
+      hx-vals='{"form":"}'
+    >
       Loader Report
     </a>
     <a
-		href="#"
-		class="w3-bar-item w3-button w3-ripple"
-		id="deletereport"
-		hx-get="/invoice/form_view"
-		hx-target="#mainform"
-		hx-vals'{"form":"}'
-
-		>
+      href="#"
+      class="w3-bar-item w3-button w3-ripple"
+      id="deletereport"
+      hx-get="/invoice/form_view"
+      hx-target="#mainform"
+      hx-vals='{"form":"}'
+    >
       QC Report
     </a>
     <a
-		href="#"
-		class="w3-bar-item w3-button w3-ripple"
-		id="deletereport"
-		hx-get="/invoice/form_view"
-		hx-target="#mainform"
-		hx-vals'{"form":"}'
-
-		>
-      Stock Plus/minus
-    </a>
-    <a
-		href="#"
-		class="w3-bar-item w3-button w3-ripple"
-		id="deletereport"
-		hx-get="/invoice/form_view"
-		hx-target="#mainform"
-		hx-vals'{"form":"}'
-
-		>
+      href="#"
+      class="w3-bar-item w3-button w3-ripple"
+      id="deletereport"
+      hx-get="/invoice/form_view"
+      hx-target="#mainform"
+      hx-vals='{"form":"}'
+    >
       Stock Plus/minus
     </a>
   </div>
 </div>
 <div class="w3-dropdown-hover w3-round-large w3-light-blue">
   <a
-		href="#"
-		style="text-decoration: none"
-		class="w3-button w3-ripple w3-margin-right w3-round-large w3-light-grey w3-hover-dark-grey"
-		id="database"
-		>
+    href="#"
+    style="text-decoration: none"
+    class="w3-button w3-ripple w3-margin-right w3-round-large w3-light-grey w3-hover-dark-grey"
+    id="database"
+  >
     Utility
   </a>
   <div class="w3-dropdown-content w3-bar-block w3-card-4">
     <a
-		href="#"
-		class="w3-bar-item w3-button w3-ripple"
-		id="createtable"
-		hx-get="/invoice/form_view"
-		hx-target="#mainform"
-		hx-vals'{"form":"}'
-
-		>
+      href="#"
+      class="w3-bar-item w3-button w3-ripple"
+      id="createtable"
+      hx-get="/invoice/form_view"
+      hx-target="#mainform"
+      hx-vals='{"form":"}'
+    >
       API
     </a>
     <a
-		href="#"
-		class="w3-bar-item w3-button w3-ripple"
-		id="edittable"
-		hx-get="/invoice/form_view"
-		hx-target="#mainform"
-		hx-vals'{"form":"}'
-
-		>
+      href="#"
+      class="w3-bar-item w3-button w3-ripple"
+      id="edittable"
+      hx-get="/invoice/form_view"
+      hx-target="#mainform"
+      hx-vals='{"form":"}'
+    >
       Multiple Export Packing Slip
     </a>
     <a
-		href="#"
-		class="w3-bar-item w3-button w3-ripple"
-		id="deletetable"
-		hx-get="/invoice/form_view"
-		hx-target="#mainform"
-		hx-vals'{"form":"}'
-
-		>
+      href="#"
+      class="w3-bar-item w3-button w3-ripple"
+      id="deletetable"
+      hx-get="/invoice/form_view"
+      hx-target="#mainform"
+      hx-vals='{"form":"}'
+    >
       MillSoft To Orion
     </a>
     <a
-		href="#"
-		class="w3-bar-item w3-button w3-ripple"
-		id="backup"
-		hx-get="/invoice/form_view"
-		hx-target="#mainform"
-		hx-vals'{"form":"}'
-
-		>
+      href="#"
+      class="w3-bar-item w3-button w3-ripple"
+      id="backup"
+      hx-get="/invoice/form_view"
+      hx-target="#mainform"
+      hx-vals='{"form":"}'
+    >
       Backup
     </a>
     <a
-		href="#"
-		class="w3-bar-item w3-button w3-ripple"
-		id="deletereport"
-		hx-get="/invoice/form_view"
-		hx-target="#mainform"
-		hx-vals'{"form":"}'
-
-		>
+      href="#"
+      class="w3-bar-item w3-button w3-ripple"
+      id="deletereport"
+      hx-get="/invoice/form_view"
+      hx-target="#mainform"
+      hx-vals='{"form":"}'
+    >
       Printer Setting
     </a>
     <a
-		href="#"
-		class="w3-bar-item w3-button w3-ripple"
-		id="deletereport"
-		hx-get="/invoice/form_view"
-		hx-target="#mainform"
-		hx-vals'{"form":"}'
-
-		>
+      href="#"
+      class="w3-bar-item w3-button w3-ripple"
+      id="deletereport"
+      hx-get="/invoice/form_view"
+      hx-target="#mainform"
+      hx-vals='{"form":"}'
+    >
       Calculator
     </a>
   </div>
 </div>
+

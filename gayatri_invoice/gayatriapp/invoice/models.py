@@ -23,10 +23,14 @@ class Company(models.Model):
 
 
 class TableName(models.Model):
-    table_name = models.CharField(unique=True, null=True, blank=True)
+    table_name = models.CharField(null=True, blank=True)
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        constraints = [models.UniqueConstraint(
+            fields=["table_name", "company"], name="unique_table_name_company")]
 
     def __str__(self):
         return self.table_name
@@ -41,6 +45,8 @@ class TableData(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
+        constraints = [models.UniqueConstraint(
+            fields=["table_data", "table_name", "company"], name="unique_table_data_table_name_company")]
         indexes = [GinIndex(fields=["table_data"], name="table_data_gin_idx")]
 
 

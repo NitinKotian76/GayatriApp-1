@@ -275,10 +275,14 @@ class prod_approval(forms.Form):
     # tableview
 
 
-class invoice_direct(forms.Form):
+class invoice(forms.Form):
     template_name = "form_snippet.html"
     error_css_class = "error"
     required_css_class = "required"
+    order_types = [("local", "Local"),
+                   ("direct", "Direct"),
+                   ("export", "Export"),
+                   ]
     party = forms.SlugField()
     agent = forms.SlugField()
     chalan_no = forms.IntegerField()
@@ -288,7 +292,7 @@ class invoice_direct(forms.Form):
     invoice_date = forms.DateField(
         widget=forms.DateInput(attrs={'type': 'date'}))
     variety = forms.ChoiceField()
-    sales_type = forms.ChoiceField()  # local, export, direct
+    sales_type = forms.ChoiceField(choices=order_types)
     pre_time_date = forms.DateTimeField()
     rem_time_date = forms.DateTimeField()
     order_no = forms.IntegerField()
@@ -429,3 +433,42 @@ class new_report(forms.Form):
     def __init__(self):
         super().__init__(*args, **kwargs)
         self.fields['template_name'].choices = get_template_name()
+
+
+class report_generator(forms.Form):
+    template_name = "form_snippet.html"
+    error_css_class = "error"
+    required_css_class = "required"
+
+    REPORT_TYPES = [
+        ('stock', 'Stock Report'),
+        ('sales', 'Sales Report'),
+        ('summary', 'Summary Report'),
+        ('time_series', 'Time Series Report'),
+    ]
+
+    report_type = forms.ChoiceField(choices=REPORT_TYPES)
+    table_name = forms.ChoiceField()
+    start_date = forms.DateField(widget=forms.DateInput(
+        attrs={'type': 'date'}), required=False)
+    end_date = forms.DateField(widget=forms.DateInput(
+        attrs={'type': 'date'}), required=False)
+    group_by = forms.ChoiceField(required=False)
+    agg_columns = forms.JSONField(required=False)
+    date_column = forms.ChoiceField(required=False)
+    value_column = forms.ChoiceField(required=False)
+    freq = forms.ChoiceField(
+        choices=[('D', 'Daily'), ('W', 'Weekly'),
+                 ('M', 'Monthly'), ('Y', 'Yearly')],
+        required=False
+    )
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
+        super().__init__(*args, **kwargs)
+        if user:
+            # Get available tables for the user
+            from ..models import TableName
+            tables = TableName.objects.filter(company=user.company_id)
+            self.fields['table_name'].choices = [
+                (t.table_name, t.table_name) for t in tables]

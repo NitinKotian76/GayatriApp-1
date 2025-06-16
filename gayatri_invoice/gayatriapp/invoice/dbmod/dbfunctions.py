@@ -5,6 +5,7 @@ from django.core.paginator import Paginator
 from django.contrib.postgres.search import SearchQuery
 from ..models import *
 import logging
+import pandas as pd
 import json
 from django.db import IntegrityError
 logger = logging.getLogger(__name__)
@@ -19,36 +20,37 @@ def set_data(table_name: str, data, user_id):
         json.loads(json.dumps(data))
     except ValueError:
         logger.debug("data is not json compatible")
-        return 0
+        return 1
     obj = TableName.objects.filter(table_name__contains=table_name)
     if obj.exists():
         logger.debug("table_name exists")
         table = TableName.objects.get(table_name=table_name)
         try:
             table_query = TableData.objects.create(
-                table_data=data, table_name=table)
+                table_data=data, table_name=table, company=company)
             table_query.save()
-        except IntegrityError as e:
-            # TODO: send message to user the data is duplicate
-            logger.debug("data duplicate")
-            return 0
+        except Exception as e:
+            logger.debug("data duplicate %s", e)
+            # NOTE: have to choose either the data be similar in json level or the model level
+            return 1
     else:  # create new table
         logger.debug("table does not exist")
-        return 0
-    return 1
+        return 1
+    return 0
 
 
-def new_table(table_name: str, user_id, data=None):
+def new_table(table_name: str, user_id, data={}):
     user = CustomUser.objects.get(id=user_id)
     company = Company.objects.get(id=user.company_id)
     obj = TableName.objects.create(
         table_name=table_name, company=company)
-    TableData.objects.create(table_data=data, table_name=obj)
+    TableData.objects.create(table_data=data, table_name=obj, company=company)
     return 1
 
 
 def get_datarow_q(table_name: str, user_id: str):
     # NOTE: this is only being used for getting TableData json column
+    # all data stored in the application is stored in TableData
     try:
         user = CustomUser.objects.get(id=user_id)
         logger.debug(user)
@@ -59,9 +61,13 @@ def get_datarow_q(table_name: str, user_id: str):
         data = TableData.objects.filter(
             table_name=table, company=company_id).values("table_data")
 
-        return data
-    except:
+        # Convert QuerySet to list of dictionaries
+        return list(data)
+    except TableName.DoesNotExist:
         logger.debug("Table does not exists")
+        return 0
+    except Exception as e:
+        logger.error(f"Error fetching data: {str(e)}")
         return 0
 
 
@@ -80,9 +86,33 @@ def get_datacolumn(table_name: str, column_name: str, user_id: str):
         return 0
 
 
-def search(data, table_name: str):
+def search(data, user_id, table_name=None):
     # TODO: search the hash in the search index and output related table num and entry no
-    namequery = TableName.objects.filter(table_name__contains=table_name)
-    if namequery.exists():
+    pk = []
+    data_dict = {}
+    queryset = []
+    count = None
+    user = CustomUser.objects.get(id=user_id)
+    company_id = Company.objects.get(id=user.company_id).id
+    if table_name:
+        namequery = TableName.objects.filter(
+            table_name__icontains=table_name, company_id=company_id)
+        if namequery.exists():
+            dataquery = TableData.objects.filter(
+                table_data__icontains=data, table_name=namequery, company_id=company_id).values_list()
+    else:
         dataquery = TableData.objects.filter(
-            table_data__contains=data, table_name=namequery)
+            table_data__icontains=data, company_id=company_id).values_list()
+
+    if dataquery.exists():
+        count = len(dataquery)
+        for i in 0, count:
+            pk.append(dataquery[i][0])
+
+        for i in 0, count:
+            queryset.append(dataquery[i][1])
+
+    data_dict["count"] = count
+    data_dict["pk"] = pk
+    data_dict["queryset"] = queryset
+    return data_dict
