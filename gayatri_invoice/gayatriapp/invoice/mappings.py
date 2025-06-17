@@ -210,11 +210,11 @@ FORMHANDLER = {
 
 COMMON = {
     "pass_change": {
-        "form_class": bf.change_password,
+        "form_class": bf.changePassword,
         "buttons": {
             "submit": {
-                "hx_vals": {"form": "table_view"},
-                "hx_req": "/invoice/form_view"
+                "hx_vals": {"form": "pass_change"},
+                "hx_req": "/invoice/change_password"
             },
         }
     }

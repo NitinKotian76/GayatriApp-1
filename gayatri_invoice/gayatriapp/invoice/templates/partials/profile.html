@@ -1,23 +1,18 @@
 <div hx-trigger="load" hx-target="#profile" hx-swap="innerHTML">
     <!--this will be substituted-->
-    <form method="POST" action="/invoice/logout_user">
+    <form>
         {% csrf_token %}
         <a href="#"
-           class="w3-button  w3-padding w3-margin w3-ripple w3-round w3-red"
-           onclick="w3_close()">X</a>
-        <table class="w3-table">
-            <tr>
-                <th>Name</th>
-                <th>id</th>
-                <th>company</th>
-            </tr>
-            <tr>
-                <td>{{ user.user_name }}</td>
-                <td>{{ user.user_emp_code }}</td>
-                <td>{{ user.company.company_name }}</td>
-            </tr>
-        </table>
-        <button class="w3-middle w3-padding w3-margin w3-button w3-ripple w3-round w3-orange"
-                onclick="w3_close()">logout</button>
+           class=" fa fa-times w3-button w3-margin w3-ripple w3-round w3-red w3-right"
+           onclick="w3_close()"></a>
+        <div class="w3-container w3-left-align w3-row">
+                Name : {{ user.user_name }}<br>
+                id : {{ user.user_emp_code }}<br>
+                company : {{ user.company.company_name }}<br>
+        </div>
+        <div class="w3-row w3-margin-top">
+                <a href="{% url 'invoice:change_password' %}" class='w3-button w3-blue w3-round w3-ripple'>Change Password</a>
+                <a href="{% url 'invoice:logout_user' %}" class="w3-button w3-ripple w3-round w3-orange" onclick="w3_close()">logout</a>
+        </div>
     </form>
 </div>
