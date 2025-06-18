@@ -12,13 +12,12 @@
       hx-target="#mainform"
       hx-vals='{"form": "customer"}'
       hx-swap="innerHTML"
-      
     >
       <div
         hx-get="/invoice/table_view"
         hx-trigger="click from:closest (a)"
         hx-target="#tableview"
-        hx-vals='{"table_name":"customer"}'
+        hx-vals='{"form": "customer"}'
         hx-swap="innerHTML"
       ></div>
       customer
@@ -26,7 +25,6 @@
     <a
       href="#"
       class="w3-bar-item w3-button w3-ripple"
-      
       hx-get="/invoice/form_view"
       hx-target="#mainform"
       hx-vals='{"form":"supplier"}'
@@ -44,7 +42,6 @@
     <a
       href="#"
       class="w3-bar-item w3-button w3-ripple"
-      
       hx-get="/invoice/form_view"
       hx-target="#mainform"
       hx-vals='{"form":"export_fields"}'
@@ -62,7 +59,6 @@
     <a
       href="#"
       class="w3-bar-item w3-button w3-ripple"
-      
       hx-get="/invoice/form_view"
       hx-target="#mainform"
       hx-vals='{"form":"item_category"}'
@@ -80,7 +76,6 @@
     <a
       href="#"
       class="w3-bar-item w3-button w3-ripple"
-      
       hx-get="/invoice/form_view"
       hx-target="#mainform"
       hx-vals='{"form":"variety}'
@@ -115,7 +110,6 @@
     <a
       href="#"
       class="w3-bar-item w3-button w3-ripple"
-      
       hx-get="/invoice/form_view"
       hx-target="#mainform"
       hx-vals='{"form":"stock_plusminus"}'
@@ -133,7 +127,6 @@
     <a
       href="#"
       class="w3-bar-item w3-button w3-ripple"
-      
       hx-get="/invoice/form_view"
       hx-target="#mainform"
       hx-vals='{"form":"location"}'
@@ -144,7 +137,6 @@
     <a
       href="#"
       class="w3-bar-item w3-button w3-ripple"
-      
       hx-get="/invoice/form_view"
       hx-target="#mainform"
       hx-vals='{"form":"stock_transfer"}'
@@ -168,7 +160,6 @@
       hx-get="/invoice/form_list"
       hx-target="#mainform"
       hx-swap="innerHTML"
-      
     >
       view forms
     </a>
@@ -178,14 +169,12 @@
       hx-get="/invoice/form_config"
       hx-target="#mainform"
       hx-swap="innerHTML"
-      
     >
       create form
     </a>
     <a
       href="#"
       class="w3-bar-item w3-button w3-ripple"
-      
       hx-get="/invoice/form_delete"
       hx-target="#mainform"
       hx-swap="innerHTML"
@@ -195,7 +184,6 @@
     <a
       href="#"
       class="w3-bar-item w3-button w3-ripple"
-      
       hx-get="/invoice/form_edit"
       hx-target="#mainform"
       hx-swap="innerHTML"
@@ -208,7 +196,6 @@
   <a
     href="#"
     class="w3-button w3-ripple w3-margin-right w3-round-large w3-light-grey w3-hover-dark-grey"
-    
   >
     Reports
   </a>
@@ -216,7 +203,7 @@
     <a
       href="#"
       class="w3-bar-item w3-button w3-ripple"
-      hx-post="/invoice/report_list"
+      hx-get="/invoice/report_list"
       hx-target="#mainform"
     >
       view report
@@ -224,7 +211,7 @@
     <a
       href="#"
       class="w3-bar-item w3-button w3-ripple"
-      hx-post="/invoice/new_report"
+      hx-get="/invoice/new_report"
       hx-target="#mainform"
     >
       new report
@@ -232,8 +219,7 @@
     <a
       href="#"
       class="w3-bar-item w3-button w3-ripple"
-      
-      hx-post="/invoice/edit_report"
+      hx-get="/invoice/edit_report"
       hx-target="#mainform"
     >
       edit report
@@ -241,8 +227,7 @@
     <a
       href="#"
       class="w3-bar-item w3-button w3-ripple"
-      
-      hx-post="/invoice/del_report"
+      hx-get="/invoice/del_report"
       hx-target="#mainform"
     >
       delete report
@@ -253,7 +238,6 @@
   <a
     href="#"
     class="w3-button w3-ripple w3-margin-right w3-round-large w3-light-grey w3-hover-dark-grey"
-    
   >
     database
   </a>
@@ -261,7 +245,7 @@
     <a
       href="#"
       class="w3-bar-item w3-button w3-ripple"
-      hx-post="/invoice/table_list"
+      hx-get="/invoice/table_list"
       hx-target="#mainform"
     >
       view tables
@@ -269,7 +253,7 @@
     <a
       href="#"
       class="w3-bar-item w3-button w3-ripple"
-      hx-post="/invoice/create_table"
+      hx-get="/invoice/create_table"
       hx-target="#mainform"
       hx-swap="innerHTML"
     >
@@ -278,7 +262,7 @@
     <a
       href="#"
       class="w3-bar-item w3-button w3-ripple"
-      hx-post="/invoice/edittable_db"
+      hx-get="/invoice/edittable_db"
       hx-target="#mainform"
     >
       edit table
@@ -286,8 +270,7 @@
     <a
       href="#"
       class="w3-bar-item w3-button w3-ripple"
-      
-      hx-post="/invoice/deletetable_db"
+      hx-get="/invoice/deletetable_db"
       hx-target="#mainform"
     >
       delete table
@@ -295,8 +278,7 @@
     <a
       href="#"
       class="w3-bar-item w3-button w3-ripple"
-      
-      hx-post="/invoice/backup"
+      hx-get="/invoice/backup"
       hx-target="#mainform"
     >
       backup
@@ -305,62 +287,56 @@
 </div>
 <div class="w3-dropdown-hover w3-round-large w3-light-blue">
   <a
-		href="#"
-		style="text-decoration: none"
-		class="w3-button w3-ripple w3-margin-right w3-round-large w3-light-grey w3-hover-dark-grey"
-		
-		>
+    href="#"
+    style="text-decoration: none"
+    class="w3-button w3-ripple w3-margin-right w3-round-large w3-light-grey w3-hover-dark-grey"
+  >
     Utility
   </a>
   <div class="w3-dropdown-content w3-bar-block w3-card-4">
     <a
-		href="#"
-		class="w3-bar-item w3-button w3-ripple"
-		
-		hx-get="/invoice/form_view"
-		hx-target="#mainform"
-		hx-vals='{"form":"api"}'
-		onclick='document.getElementById("mainform").style.display="block"'
-		>
+      href="#"
+      class="w3-bar-item w3-button w3-ripple"
+      hx-get="/invoice/form_view"
+      hx-target="#mainform"
+      hx-vals='{"form":"api"}'
+      onclick='document.getElementById("mainform").style.display="block"'
+    >
       API
     </a>
     <a
-		href="#"
-		class="w3-bar-item w3-button w3-ripple"
-		
-		hx-get="/invoice/form_view"
-		hx-target="#mainform"
-		hx-vals='{"form":"multiple_export_packing_slip"}'
-		onclick='document.getElementById("mainform").style.display="block"'
-		>
+      href="#"
+      class="w3-bar-item w3-button w3-ripple"
+      hx-get="/invoice/form_view"
+      hx-target="#mainform"
+      hx-vals='{"form":"multiple_export_packing_slip"}'
+      onclick='document.getElementById("mainform").style.display="block"'
+    >
       Multiple Export Packing Slip
     </a>
     <a
-		href="#"
-		class="w3-bar-item w3-button w3-ripple"
-		
-		hx-get="/invoice/form_view"
-		hx-target="#mainform"
-		hx-vals='{"form":"millsoft_to_orion"}'
-		onclick='document.getElementById("mainform").style.display="block"'
-		>
+      href="#"
+      class="w3-bar-item w3-button w3-ripple"
+      hx-get="/invoice/form_view"
+      hx-target="#mainform"
+      hx-vals='{"form":"millsoft_to_orion"}'
+      onclick='document.getElementById("mainform").style.display="block"'
+    >
       MillSoft To Orion
     </a>
     <a
-		href="#"
-		class="w3-bar-item w3-button w3-ripple"
-		
-		hx-get="/invoice/form_view"
-		hx-target="#mainform"
-		hx-vals='{"form":"backup"}'
-		onclick='document.getElementById("mainform").style.display="block"'
-		>
+      href="#"
+      class="w3-bar-item w3-button w3-ripple"
+      hx-get="/invoice/form_view"
+      hx-target="#mainform"
+      hx-vals='{"form":"backup"}'
+      onclick='document.getElementById("mainform").style.display="block"'
+    >
       Backup
     </a>
     <a
       href="#"
       class="w3-bar-item w3-button w3-ripple"
-      
       hx-get="/invoice/form_view"
       hx-target="#mainform"
       hx-vals='{"form":"config"}'
@@ -369,24 +345,23 @@
       Config
     </a>
     <a
-		href="#"
-		class="w3-bar-item w3-button w3-ripple"
-		hx-get="/invoice/form_view"
-		hx-target="#mainform"
-		hx-vals='{"form":"printer_setting"}'
-		onclick='document.getElementById("mainform").style.display="block"'
-		>
+      href="#"
+      class="w3-bar-item w3-button w3-ripple"
+      hx-get="/invoice/form_view"
+      hx-target="#mainform"
+      hx-vals='{"form":"printer_setting"}'
+      onclick='document.getElementById("mainform").style.display="block"'
+    >
       Printer Setting
     </a>
     <a
-		href="#"
-		class="w3-bar-item w3-button w3-ripple"
-		
-		hx-get="/invoice/form_view"
-		hx-target="#mainform"
-		hx-vals='{"form":"calculator"}'
-		onclick='document.getElementById("mainform").style.display="block"'
-		>
+      href="#"
+      class="w3-bar-item w3-button w3-ripple"
+      hx-get="/invoice/form_view"
+      hx-target="#mainform"
+      hx-vals='{"form":"calculator"}'
+      onclick='document.getElementById("mainform").style.display="block"'
+    >
       Calculator
     </a>
   </div>

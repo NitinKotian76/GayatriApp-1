@@ -14,6 +14,16 @@ FORMHANDLER = {
                 "hx_vals": {"form": "customer"},
                 "hx_req": "/invoice/form_view"
             },
+        },
+        "table_buttons":{
+            "delete":{
+                "hx_vals": {"form": "customer"},
+                "hx_req": "/invoice/select_row"
+            },
+            "approve":{
+                "hx_vals": {"form": "customer"},
+                "hx_req": "/invoice/select_row"
+            }
         }
     },
     "supplier": {
@@ -140,7 +150,11 @@ FORMHANDLER = {
         "form_class": df.prod_approval,
         "table_name": "prod_approval",
         "buttons": {
-            "submit": {
+            "approve": {
+                "hx_vals": {"form": "prod_approval"},
+                "hx_req": "/invoice/form_view"
+            },
+            "reject": {
                 "hx_vals": {"form": "prod_approval"},
                 "hx_req": "/invoice/form_view"
             },

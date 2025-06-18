@@ -92,7 +92,7 @@ def get_datarow_q(table_name: str, user_id: str):
         table = TableName.objects.get(table_name=table_name).id
         logger.debug(table)
         data = TableData.objects.filter(
-            table_name=table, company=company_id).values("table_data")
+            table_name=table, company=company_id).values("id","table_data").order_by("id")
 
         return list(data)
     except TableName.DoesNotExist:
