@@ -1,18 +1,14 @@
-<div>
-    <!--this will be substituted-->
-    <form>
-        {% csrf_token %}
+<div class="w3-padding">
         <a href="#"
            class=" fa fa-times w3-button w3-margin w3-ripple w3-round w3-red w3-right"
            onclick="w3_close()"></a>
-        <div class="w3-container w3-left-align w3-row">
+        <div class="w3-left-align">
                 Name : {{ user.user_name }}<br>
                 id : {{ user.user_emp_code }}<br>
                 company : {{ user.company.company_name }}<br>
         </div>
-        <div class="w3-row w3-margin-top">
+        <div class="w3-margin-top">
                 <a href="{% url 'invoice:change_password' %}" class='w3-button w3-blue w3-round w3-ripple'>Change Password</a>
                 <a href="{% url 'invoice:logout_user' %}" class="w3-button w3-ripple w3-round w3-orange" onclick="w3_close()">logout</a>
         </div>
-    </form>
 </div>
