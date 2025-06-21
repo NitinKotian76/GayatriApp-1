@@ -1,5 +1,5 @@
 from .forms import *
-from .models import CustomUser, Form, Table
+from .models import CustomUser, Form, TableName
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib import admin
 
@@ -14,7 +14,7 @@ class UserAdmin(BaseUserAdmin):
 
     def group_name(self, obj):
         name = ""
-        for group in obj.group.all():
+        for group in obj.groups.all():
             name += group.name + ","
         return name
 
@@ -34,10 +34,11 @@ class UserAdmin(BaseUserAdmin):
         (
             None,
             {"fields": ["user_emp_code", "company",
-                        "email", "password", "group"]},
+                        "email", "password", "groups"]},
         ),
         ("Personal info", {"fields": ["user_name"]}),
-        ("Permissions", {"fields": ["is_admin", "is_staff", "is_active"]}),
+        ("Permissions", {"fields": ["is_admin",
+         "is_staff", "is_active", "is_superuser"]}),
     ]
     # add_fieldsets is not a standard ModelAdmin attribute. UserAdmin
     # overrides get_fieldsets to use this attribute when creating a user.
@@ -47,19 +48,20 @@ class UserAdmin(BaseUserAdmin):
             {
                 "classes": ["wide"],
                 "fields": [
+                    "user_emp_code",
                     "email",
                     "user_name",
                     "company",
                     "password1",
                     "password2",
-                    "group",
+                    "groups",
                 ],
             },
         ),
     ]
     search_fields = ["user_name", "user_emp_code"]
     ordering = ["user_name", "user_emp_code", "company"]
-    filter_horizontal = []
+    filter_horizontal = ('groups', 'user_permissions',)
 
 
 admin.site.register(CustomUser, UserAdmin)
@@ -104,6 +106,11 @@ class CompanyAdmin(admin.ModelAdmin):
     list_display = ["company_name"]
 
 
-@admin.register(Table)
-class TableAdmin(admin.ModelAdmin):
-    list_display = ["table_name"]
+@admin.register(TableName)
+class TableNameAdmin(admin.ModelAdmin):
+    list_display = ["table_name", "company", "created_at", "updated_at"]
+
+
+@admin.register(TableData)
+class TableDataAdmin(admin.ModelAdmin):
+    list_display = ["table_data", "table_name", "created_at", "updated_at"]

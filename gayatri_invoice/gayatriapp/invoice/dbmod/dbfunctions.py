@@ -1,87 +1,72 @@
-# TODO: create a function for storing the data in lists
-# divide the list by the field limit and store the data in
-# numbered unique keys.
+
+
 from django.core.paginator import Paginator
+from django.contrib.postgres.search import SearchQuery
 from ..models import *
-import json
 import logging
+import pandas as pd
+import json
+from django.db import IntegrityError
 
 logger = logging.getLogger(__name__)
-# TODO: get company instance from a global constant
 
 
-def set_data(table_name, data, user_id):
-    # NOTE: get the table data as a row of values in json
-    # expect json values as data
-    row_limit = 1000
+def get_company_inst(user_id: str) -> Company:
     user = CustomUser.objects.get(id=user_id)
-    company = Company.objects.get(id=user.company_id)
-    data_list = []
+    return Company.objects.get(id=user.company_id)
 
+
+def set_data(table_name: str, data, user_id):
+    company = get_company_inst(user_id)
     try:
-        logger.debug(type(data))
         json.loads(json.dumps(data))
-        obj = Table.objects.filter(table_name__contains=table_name)
-        data_list.append(data)
-        # NOTE: can improve performance here
-        if obj.exists():
-            logger.debug("table_name exists")
-            num = obj.count() - 1
-            table_head = table_name + "_" + str(num)
-            table_obj = Table.objects.filter(table_name__contains=table_head)
-            if table_obj.exists():  # obj exists add data
-                logger.debug("table num exists")
-                table_query = Table.objects.get(
-                    table_name=table_head)  # get table query for the no
-                if len(table_query.table_data) < row_limit:  # add data if space is there
-                    table_query.table_data.append(data)
-                    table_query.save(update_fields=["table_data"])
-                else:
-                    logger.debug("storage full adding table num")
-                    table_head = table_name + "_" + str(num+1)
-                    table_query = Table.objects.create(
-                        table_name=table_head, table_data=data_list, company=company)
-            else:
-                logger.debug(
-                    "table num doesnt exist but the count shows it does")
-                # table_query = Table.objects.create(table_name=table_head, table_data=data_list, company=company)
-
-        else:  # create new table
-            table_head = table_name + "_" + str(0)
-            Table.objects.create(table_name=table_head,
-                                 table_data=data_list, company=company)
-
     except ValueError:
         logger.debug("data is not json compatible")
-        return 0
+        return 1
+    obj = TableName.objects.filter(table_name__contains=table_name)
+    if obj.exists():
+        logger.debug("table_name exists")
+        table = TableName.objects.get(table_name=table_name)
+        try:
+            table_query = TableData.objects.create(
+                table_data=data, table_name=table, company=company)
+            table_query.save()
+        except Exception as e:
+            logger.debug("error storing data %s", e)
+            return 1
+    else:
+        logger.debug("table does not exist")
+        return 1
+    return 0
 
 
-def get_data(table_name, search):
-    table_head = table_name + "_" + str(num)
-    table_query = Table.objects.get(table_name=table_head)
-    return table_query.table_data
+def new_table(table_name: str, user_id: str, data: dict = {}) -> int:
+    company = get_company_inst(user_id)
+    try:
+        obj = TableName.objects.create(
+            table_name=table_name, company=company)
+        TableData.objects.create(
+            table_data=data, table_name=obj, company=company)
+    except Exception as e:
+        logger.debug("issue with table creation %s " % e)
+        return 1
+    return 0
 
 
-# helper functions
+def get_data(table_name: str, user_id: str, search_term: str = None) -> list:
+    try:
+        company_id = get_company_inst(user_id).id
+        table = TableName.objects.get(table_name=table_name).id
+        queryset = TableData.objects.filter(
+            table_name=table, company=company_id)
+        if search_term:
+            queryset = queryset.filter(table_data__icontains=search_term)
 
-def hasher(data, table_name):
-    # TODO: create hashes for each key and make a dict of arrays for each table num and make a search index
-    node_dict = {}
-    data_array = []
-    dict
-    hash_data = blake3.blake3(data).hexdigest()
-    node_dict.
-    data_array.append(hash_data)
-    node_dict.update(data_array)
-
-    Table.objects.create
-
-
-# table_name +
-    # | entryhash +
-    #             | keyhash|#|...
-    # |...
-    # |...
-
-def search():
-    # TODO: search the hash in the search index and output related table num and entry no
+        data = queryset.values_list().order_by("id")
+        return list(data)
+    except TableName.DoesNotExist:
+        logger.debug("Table does not exists")
+        return 1
+    except Exception as e:
+        logger.error(f"Error fetching data: {str(e)}")
+        return 1

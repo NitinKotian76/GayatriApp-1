@@ -16,12 +16,12 @@ function getCSRFToken() {
   return "";
 }
 
-function filterfunction() {
+function filter(inputid, filterDiv) {
   var input, filter, ul, li, a, i;
-  input = document.getElementById("filterInput");
+  input = document.getElementById("inputid");
   filter = input.value.toUpperCase();
-  div = document.getElementById("filterDiv");
-  a = div.getElementsByTagName("a");
+  div = document.getElementById(filterDiv);
+  a = div.getElementsByTagName("td");
   for (i = 0; i < a.length; i++) {
     txtValue = a[i].textContent || a[i].innerText;
     if (txtValue.toUpperCase().indexOf(filter) > -1) {
@@ -31,6 +31,10 @@ function filterfunction() {
     }
   }
 }
+
+setTimeout(() => {
+  document.getElementById("notif")?.remove();
+}, 5000);
 
 function visible(id) {
   var x = document.getElementById(id);
@@ -48,4 +52,4 @@ function w3_open() {
 function w3_close() {
   document.getElementById("mySidebar").style.display = "none";
 }
-//htmx.logAll();
+// htmx.logAll();

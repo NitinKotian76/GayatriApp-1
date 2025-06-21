@@ -1,4 +1,5 @@
-<div id="form" hx-trigger="load" hx-target="#formpart" hx-swap="innerHTML">
+<div id="dynform">
+  {% csrf_token %}
   {{form}}
-  <div>{{buttons}}</div>
+  <div>{% for button in buttons %} {{button}} {% endfor %}</div>
 </div>

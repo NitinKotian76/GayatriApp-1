@@ -14,12 +14,13 @@
     <link rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 </head>
-<body>
+<body class="w3-display-container">
+    {% include 'partials/notif.html' with messages=messages %}
     {% block nav %}
         <div class="navigation">
             <nav>
                 <ul class="w3-light-blue w3-bar w3-padding">
-                    {% if CustomUser.is_superuser %}
+                    {% if user.is_admin %}
                         {% include 'partials/adminnav.html' %}
                     {% else %}
                         {% include 'partials/usernav.html' %}
@@ -32,13 +33,13 @@
                 </ul>
             </nav>
         </div>
-        <div class="w3-sidebar w3-bar-block"
+        <div class="w3-container w3-card-4 w3-light-grey w3-round w3-margin-right"
              style="position:absolute;
-                    width:25%;
+                    width:30%;
                     right:0px;
                     display:none"
              id="mySidebar">
-            <div id="profile">{% include 'partials/profile.html' %}</div>
+            <div class="w3-padding w3-container" id="profile">{% include 'partials/profile.html' %}</div>
         </div>
     {% endblock %}
     <main>
@@ -49,5 +50,10 @@
         <address>
         </address>
     </footer>
+    <script>
+        document.body.addEventListener('htmx:configRequest', function(evt) {
+            evt.detail.headers['X-CSRFToken'] = '{{ csrf_token }}';
+        });
+</script>
 </body>
 </html>

@@ -2,6 +2,7 @@ from django import forms
 from .models import *
 from django.contrib.auth.models import Group
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
+from datetime import datetime
 
 
 class UserCreationForm(forms.ModelForm):
@@ -16,11 +17,11 @@ class UserCreationForm(forms.ModelForm):
     company = forms.ModelChoiceField(
         Company.objects.all(), to_field_name="company_name"
     )
-    group = forms.ModelMultipleChoiceField(Group.objects.all())
+    groups = forms.ModelMultipleChoiceField(Group.objects.all())
 
     class Meta:
         model = CustomUser
-        fields = ["email", "user_emp_code", "company", "user_name", "group"]
+        fields = ["email", "user_emp_code", "company", "user_name", "groups"]
 
     def clean_password2(self):
         # Check that the two password entries match
@@ -36,13 +37,14 @@ class UserCreationForm(forms.ModelForm):
         user.set_password(self.cleaned_data["password1"])
         if commit:
             user.save()
+            self.save_m2m()
         return user
 
 
 class UserChangeForm(forms.ModelForm):
 
     password = ReadOnlyPasswordHashField()
-    group = forms.ModelMultipleChoiceField(Group.objects.all())
+    groups = forms.ModelMultipleChoiceField(Group.objects.all())
     company = forms.ModelChoiceField(
         Company.objects.all(), to_field_name="company_name"
     )
@@ -55,10 +57,13 @@ class UserChangeForm(forms.ModelForm):
             "user_emp_code",
             "user_name",
             "company",
-            "group",
+            "groups",
             "is_active",
             "is_admin",
         ]
+
+    def clean_password(self):
+        return self.initial["password"]
 
 
 class FormForm(forms.ModelForm):
@@ -74,5 +79,4 @@ class loginForm(forms.ModelForm):
     emp_id = forms.CharField()
     password = forms.CharField()
     company = forms.ModelChoiceField(
-        Company.objects.all(), to_field_name="company_name"
-    )
+        Company.objects.all(), to_field_name="company_name")
