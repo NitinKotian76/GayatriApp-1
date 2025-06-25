@@ -3,6 +3,7 @@ import logging
 import json
 from ..models import *
 from django.utils.html import *
+from ..dbmod import dbfunctions as db
 
 logger = logging.getLogger(__name__)
 
@@ -10,24 +11,6 @@ logger = logging.getLogger(__name__)
 
 # TODO: all master forms need a search field
 # masters #
-
-
-def button(name, hx_vals, hx_req):
-    data = json.dumps(hx_vals)
-    html = format_html('<input class="w3-button w3-ripple w3-green w3-padding w3-margin"\
-                type="button" value="{}" \
-                hx-post={} \
-                hx-trigger="click" \
-                hx-target="#dynform" \
-                hx-swap="outerHTML" \
-                hx-vals=\'{}\'/>', name, hx_req, data)
-    return html
-
-
-def get_choices(table_name, column):
-    table = TableName.objects.get(table_name=table_name)
-    dataquery = TableData.objects.all()
-
 
 class customer(forms.Form):
     template_name = "form_snippet.html"
@@ -39,17 +22,17 @@ class customer(forms.Form):
                    ("export", "Export"),
                    ]
 
-    customer_name = forms.SlugField()
-    agent_or_customer_name = forms.SlugField()
+    customer_name = forms.CharField(max_length=50)
+    agent_or_customer_name = forms.CharField(max_length=50)
     address_details = forms.CharField(max_length=1000)
-    city = forms.SlugField()
-    state = forms.SlugField()
+    city = forms.CharField(max_length=50)
+    state = forms.CharField(max_length=50)
     pin_code = forms.IntegerField(max_value=999999)
     gst_no = forms.CharField(min_length=15, max_length=15)
     pan_no = forms.CharField(min_length=10, max_length=10)
     payment_term = forms.IntegerField()  # payment period in days
-    dispatch_to = forms.SlugField()
-    district = forms.SlugField()
+    dispatch_to = forms.CharField(max_length=50)
+    district = forms.CharField(max_length=50)
     invoice_type = forms.ChoiceField(choices=order_types)
 
 
@@ -62,17 +45,17 @@ class supplier(forms.Form):
                    ("direct", "Direct"),
                    ("export", "Export"),
                    ]
-    supplier_name = forms.SlugField()
-    agent_or_supplier_name = forms.SlugField()
-    address_details = forms.SlugField()
-    city = forms.SlugField()
-    state = forms.SlugField()
+    supplier_name = forms.CharField(max_length=50)
+    agent_or_supplier_name = forms.CharField(max_length=50)
+    address_details = forms.CharField(max_length=50)
+    city = forms.CharField(max_length=50)
+    state = forms.CharField(max_length=50)
     pin_code = forms.IntegerField()
     gst_no = forms.IntegerField()
-    pan_no = forms.SlugField()
+    pan_no = forms.CharField(max_length=50)
     payment_term = forms.IntegerField()  # payment period in days
-    dispatch_to = forms.SlugField()
-    district = forms.SlugField()
+    dispatch_to = forms.CharField(max_length=50)
+    district = forms.CharField(max_length=50)
     invoice_type = forms.ChoiceField(choices=order_types)
 
 
@@ -80,43 +63,43 @@ class signatory(forms.Form):
     template_name = "form_snippet.html"
     error_css_class = "error"
     required_css_class = "required"
-    signatory_name = forms.SlugField()
-    designation = forms.SlugField()
+    signatory_name = forms.CharField(max_length=50)
+    designation = forms.CharField(max_length=50)
 
 
 class export_fields(forms.Form):
     template_name = "form_snippet.html"
     error_css_class = "error"
     required_css_class = "required"
-    description_of_goods = forms.SlugField()
-    hsn_code = forms.SlugField()
-    tax_declaration = forms.SlugField()
-    invoice_back_page_heading = forms.SlugField()
+    description_of_goods = forms.CharField(max_length=50)
+    hsn_code = forms.CharField(max_length=50)
+    tax_declaration = forms.CharField(max_length=50)
+    invoice_back_page_heading = forms.CharField(max_length=50)
 
 
 class item_category(forms.Form):
     template_name = "form_snippet.html"
     error_css_class = "error"
     required_css_class = "required"
-    category = forms.SlugField()
-    unit = forms.SlugField()
-    hsn_code = forms.SlugField()
-    remarks = forms.SlugField()
+    category = forms.CharField(max_length=50)
+    unit = forms.CharField(max_length=50)
+    hsn_code = forms.CharField(max_length=50)
+    remarks = forms.CharField(max_length=50)
 
 
 class variety(forms.Form):
     template_name = "form_snippet.html"
     error_css_class = "error"
     required_css_class = "required"
-    code = forms.SlugField()
-    shade_code = forms.SlugField()
+    code = forms.CharField(max_length=50)
+    shade_code = forms.CharField(max_length=50)
     # api grouping
     api_code = forms.IntegerField()
     api_gsm = forms.IntegerField()
     # challan report
     flag_group = forms.IntegerField()
     batch_group = forms.IntegerField()
-    field_group = forms.SlugField()
+    field_group = forms.CharField(max_length=50)
     # stock report grouping
     group_category = forms.IntegerField()
     stock_transfer = forms.ChoiceField(choices=[(True, "yes"), (False, "no")])
@@ -126,8 +109,8 @@ class items(forms.Form):
     template_name = "form_snippet.html"
     error_css_class = "error"
     required_css_class = "required"
-    item_code = forms.SlugField()
-    variety = forms.SlugField()
+    item_code = forms.CharField(max_length=50)
+    variety = forms.CharField(max_length=50)
     deckle_size = forms.DecimalField()
     gsm = forms.DecimalField()
 
@@ -136,8 +119,8 @@ class stock(forms.Form):
     template_name = "form_snippet.html"
     error_css_class = "error"
     required_css_class = "required"
-    category = forms.SlugField()
-    plus_minus = forms.SlugField()
+    category = forms.CharField(max_length=50)
+    plus_minus = forms.CharField(max_length=50)
     api = forms.ChoiceField(choices=[(True, "yes"), (False, "no")])
     reference = forms.ChoiceField(choices=[(True, "with"), (False, "without")])
 
@@ -172,14 +155,14 @@ class open_bal_prod(forms.Form):
     plus_minus_head = forms.ChoiceField(
         choices=[(True, "plus"), (False, "minus")])
     local_or_export = forms.ChoiceField(choices=order_types)
-    variety = forms.ChoiceField()
-    type = forms.ChoiceField()
-    item_code = forms.ChoiceField()
+    variety = forms.ChoiceField(choices=[])
+    type = forms.ChoiceField(choices=[])
+    item_code = forms.ChoiceField(choices=[])
     size = forms.DecimalField()
     length = forms.DecimalField()
     gsm = forms.IntegerField()
-    unit = forms.ChoiceField()
-    no_of_bdls = forms.ChoiceField()  # no of bundles
+    unit = forms.ChoiceField(choices=[])
+    no_of_bdls = forms.IntegerField()  # no of bundles
     excise_no_from = forms.IntegerField()
     excise_no_to = forms.IntegerField()
     no_of_sheets = forms.IntegerField()
@@ -187,15 +170,25 @@ class open_bal_prod(forms.Form):
     no_of_ream = forms.IntegerField()
     weight = forms.DecimalField()
     rate = forms.DecimalField()
-    location = forms.ChoiceField()
+    location = forms.ChoiceField(choices=[])
     indent_no = forms.IntegerField()
-    party = forms.ChoiceField()
-    agent = forms.ChoiceField()
+    party = forms.ChoiceField(choices=[])
+    agent = forms.ChoiceField(choices=[])
     fsc = forms.ChoiceField(choices=[(True, "yes"), (False, "no")])
     lot_no = forms.IntegerField()
+    def __init__(self, *args, user_id=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        if user_id is not None:
+            self.fields['variety'].choices = db.get_choices("variety", "variety", user_id)
+            self.fields['type'].choices = db.get_choices("items", "item_type", user_id)
+            self.fields['item_code'].choices = db.get_choices("items", "item_code", user_id)
+            self.fields['unit'].choices = db.get_choices("units", "unit_of_measurement", user_id)
+            self.fields['location'].choices = db.get_choices("location", "location", user_id)
+            self.fields['party'].choices = db.get_choices("customer", "customer_name", user_id)
+            self.fields['agent'].choices = db.get_choices("agent", "agent_name", user_id)
 
 
-class prod_record(forms.Form):
+class production(forms.Form):
     template_name = "form_snippet.html"
     error_css_class = "error"
     required_css_class = "required"
@@ -209,14 +202,14 @@ class prod_record(forms.Form):
     plus_minus_head = forms.ChoiceField(
         choices=[(True, "plus"), (False, "minus")])
     local_or_export = forms.ChoiceField(choices=order_types)
-    variety = forms.ChoiceField()
-    item_type = forms.ChoiceField()
-    item_code = forms.ChoiceField()
+    variety = forms.ChoiceField(choices=[])
+    item_type = forms.ChoiceField(choices=[])
+    item_code = forms.ChoiceField(choices=[])
     size = forms.DecimalField()
     length = forms.DecimalField()
     gsm = forms.IntegerField()
-    unit = forms.ChoiceField()
-    no_of_bdls = forms.ChoiceField()  # no of bundles
+    unit = forms.ChoiceField(choices=[])
+    no_of_bdls = forms.IntegerField()  # no of bundles
     excise_no_from = forms.IntegerField()
     excise_no_to = forms.IntegerField()
     no_of_sheets = forms.IntegerField()
@@ -224,12 +217,18 @@ class prod_record(forms.Form):
     no_of_ream = forms.IntegerField()
     weight = forms.DecimalField()
     rate = forms.DecimalField()
-    location = forms.ChoiceField()
+    location = forms.ChoiceField(choices=[])
     indent_no = forms.IntegerField()
-    party = forms.ChoiceField()
-    agent = forms.ChoiceField()
+    party = forms.ChoiceField(choices=[])
+    agent = forms.ChoiceField(choices=[])
     fsc = forms.ChoiceField(choices=[(True, "yes"), (False, "no")])
     lot_no = forms.IntegerField()
+    def __init__(self, *args, user_id=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        if user_id is not None:
+            self.fields['variety'].choices = db.get_choices("variety", "variety", user_id)
+            self.fields['item_type'].choices = db.get_choices("items", "item_type", user_id)
+            self.fields['item_code'].choices = db.get_choices("items", "item_code", user_id)
 
 
 class prod_plus_minus(forms.Form):
@@ -244,14 +243,14 @@ class prod_plus_minus(forms.Form):
     plus_minus_head = forms.ChoiceField(
         choices=[(True, "plus"), (False, "minus")])
     local_or_export = forms.ChoiceField(choices=order_types)
-    variety = forms.ChoiceField()
-    item_type = forms.ChoiceField()
-    item_code = forms.ChoiceField()
+    variety = forms.ChoiceField(choices=[])
+    item_type = forms.ChoiceField(choices=[])
+    item_code = forms.ChoiceField(choices=[])
     size = forms.DecimalField()
     length = forms.DecimalField()
     gsm = forms.IntegerField()
-    unit = forms.ChoiceField()
-    no_of_bdls = forms.ChoiceField()  # no of bundles
+    unit = forms.ChoiceField(choices=[])
+    no_of_bdls = forms.IntegerField()  # no of bundles
     excise_no_from = forms.IntegerField()
     excise_no_to = forms.IntegerField()
     no_of_sheets = forms.IntegerField()
@@ -259,13 +258,22 @@ class prod_plus_minus(forms.Form):
     no_of_ream = forms.IntegerField()
     weight = forms.DecimalField()
     rate = forms.DecimalField()
-    location = forms.ChoiceField()
+    location = forms.ChoiceField(choices=[])
     indent_no = forms.IntegerField()
-    party = forms.ChoiceField()
-    agent = forms.ChoiceField()
+    party = forms.ChoiceField(choices=[])
+    agent = forms.ChoiceField(choices=[])
     fsc = forms.ChoiceField(choices=[(True, "yes"), (False, "no")])
     lot_no = forms.IntegerField()
-
+    def __init__(self, *args, user_id=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        if user_id is not None:
+            self.fields['variety'].choices = db.get_choices("variety", "variety", user_id)
+            self.fields['item_type'].choices = db.get_choices("items", "item_type", user_id)
+            self.fields['item_code'].choices = db.get_choices("items", "item_code", user_id)
+            self.fields['unit'].choices = db.get_choices("units", "unit_of_measurement", user_id)
+            self.fields['location'].choices = db.get_choices("location", "location", user_id)
+            self.fields['party'].choices = db.get_choices("customer", "customer_name", user_id)
+            self.fields['agent'].choices = db.get_choices("agent", "agent_name", user_id)
 
 class prod_approval(forms.Form):
     template_name = "form_snippet.html"
@@ -283,26 +291,32 @@ class invoice(forms.Form):
                    ("direct", "Direct"),
                    ("export", "Export"),
                    ]
-    party = forms.SlugField()
-    agent = forms.SlugField()
+    party = forms.CharField(max_length=50)
+    agent = forms.CharField(max_length=50)
     chalan_no = forms.IntegerField()
     chalan_date = forms.DateField(
         widget=forms.DateInput(attrs={'type': 'date'}))
     invoice_no = forms.IntegerField()
     invoice_date = forms.DateField(
         widget=forms.DateInput(attrs={'type': 'date'}))
-    variety = forms.ChoiceField()
+    variety = forms.ChoiceField(choices=[])
     sales_type = forms.ChoiceField(choices=order_types)
     pre_time_date = forms.DateTimeField()
     rem_time_date = forms.DateTimeField()
-    order_no = forms.IntegerField()
+    order_no = forms.IntegerField() 
     order_date = forms.DateField(
         widget=forms.DateInput(attrs={'type': 'date'}))
-    transport = forms.ChoiceField()
+    transport = forms.ChoiceField(choices=[])
     vehicle_no = forms.CharField()
-    supervisor_name = forms.ChoiceField()
-    remark = forms.SlugField()
-    delivery_at = forms.SlugField()
+    supervisor_name = forms.ChoiceField(choices=[])
+    remark = forms.CharField(max_length=50)
+    delivery_at = forms.CharField(max_length=50)
+    def __init__(self, *args, user_id=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        if user_id is not None:
+            self.fields['variety'].choices = db.get_choices("variety", "variety", user_id)
+            self.fields['transport'].choices = db.get_choices("transport", "transport", user_id)
+            self.fields['supervisor_name'].choices = db.get_choices("supervisor", "supervisor_name", user_id)
 # table_view
 # Exciseno, Quality, Variety, Size, Length, GSM, NO of bundles, No of stream, Stream wt., Weight, Unit, Rate, Amount
 # output table view
@@ -330,7 +344,7 @@ class jumbo_roll_qc(forms.Form):
     date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
     shift = forms.ChoiceField()
     jumbo_roll_no = forms.IntegerField()
-    variety = forms.ChoiceField()
+    variety = forms.ChoiceField(choices=[])
     # formset
     # # (in_gsm)
     gsm = forms.DecimalField()
@@ -363,52 +377,99 @@ class jumbo_roll_qc(forms.Form):
     varnishability = forms.DecimalField()
     cracking_creasing = forms.DecimalField()
     flatness = forms.DecimalField()
+    def __init__(self, *args, user_id=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        if user_id is not None:
+            self.fields['variety'].choices = db.get_choices("variety", "variety", user_id)
 
 
 class lot_no_wise_qc(forms.Form):
     template_name = "form_snippet.html"
     error_css_class = "error"
     required_css_class = "required"
+    order_types = [("local", "Local"),
+                   ("export", "Export"),
+                   ]
     lot_no = forms.IntegerField()
     date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
     jumbo_roll_no = forms.IntegerField()
-    variety = forms.ChoiceField()
+    variety = forms.ChoiceField(choices=[])
     gsm = forms.DecimalField()
-    local_or_export = forms.ChoiceField()
+    local_or_export = forms.ChoiceField(choices=order_types)
     type_reel_or_sheet = forms.ChoiceField()
     size = forms.DecimalField()
-    item_code = forms.ChoiceField()
-    unit = forms.CharField()
-    location = forms.ChoiceField()
-    indent_no = forms.CharField()
-    party = forms.ChoiceField()
-    agent = forms.ChoiceField()
+    item_code = forms.ChoiceField(choices=[])
+    unit = forms.ChoiceField(choices=[])
+    location = forms.ChoiceField(choices=[])
+    indent_no = forms.IntegerField()
+    party = forms.ChoiceField(choices=[])
+    agent = forms.ChoiceField(choices=[])
     weight = forms.DecimalField()
+    def __init__(self, *args, user_id=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        if user_id is not None:
+            self.fields['variety'].choices = db.get_choices("variety", "variety", user_id)
+            self.fields['item_code'].choices = db.get_choices("items", "item_code", user_id)
+            self.fields['unit'].choices = db.get_choices("units", "unit_of_measurement", user_id)
+            self.fields['location'].choices = db.get_choices("location", "location", user_id)
+            self.fields['party'].choices = db.get_choices("customer", "customer_name", user_id)
+            self.fields['agent'].choices = db.get_choices("agent", "agent_name", user_id)
 
 
 class finishing_house(forms.Form):
     template_name = "form_snippet.html"
     error_css_class = "error"
     required_css_class = "required"
+    order_types = [("local", "Local"),
+                   ("export", "Export"),
+                   ]
 
+    lot_no = forms.IntegerField()
+    date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
+    jumbo_roll_no = forms.IntegerField()
+    variety = forms.ChoiceField(choices=[])
+    gsm = forms.DecimalField()
+    local_or_export = forms.ChoiceField(choices=order_types)
+    type_reel_or_sheet = forms.ChoiceField()
+    size = forms.DecimalField()
+    item_code = forms.ChoiceField(choices=[])
+    unit = forms.ChoiceField(choices=[])
+    location = forms.ChoiceField(choices=[])
+    indent_no = forms.IntegerField()
+    party = forms.ChoiceField(choices=[])
+    agent = forms.ChoiceField(choices=[])
+    weight = forms.DecimalField()
+    def __init__(self, *args, user_id=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        if user_id is not None:
+            self.fields['variety'].choices = db.get_choices("variety", "variety", user_id)
+            self.fields['item_code'].choices = db.get_choices("items", "item_code", user_id)
+            self.fields['unit'].choices = db.get_choices("units", "unit_of_measurement", user_id)
+            self.fields['location'].choices = db.get_choices("location", "location", user_id)
+            self.fields['party'].choices = db.get_choices("customer", "customer_name", user_id)
+            self.fields['agent'].choices = db.get_choices("agent", "agent_name", user_id)
 
 class program_planing(forms.Form):
     template_name = "form_snippet.html"
     error_css_class = "error"
     required_css_class = "required"
     # all customer planning/ per customer planning
-    planning = forms.ChoiceField()
+    planning = forms.ChoiceField(choices=[])
     Sr_No = forms.IntegerField()
     gsm = forms.DecimalField()
     size_deckle = forms.DecimalField()
     cutting = forms.DecimalField()
     qty = forms.IntegerField()
     ream_wt = forms.DecimalField()
-    customer_name = forms.CharField()
+    customer_name = forms.ChoiceField(choices=[])
     indent_no = forms.IntegerField()
+    def __init__(self, *args, user_id=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        if user_id is not None:
+            self.fields['planning'].choices = db.get_choices("planning", "planning", user_id)
+            self.fields['customer_name'].choices = db.get_choices("customer", "customer_name", user_id)
 
 # report
-
 
 class pending_order(forms.Form):
     template_name = "form_snippet.html"
@@ -417,58 +478,85 @@ class pending_order(forms.Form):
 
     from_date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
     to_date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
-    party = forms.ChoiceField()
+    party = forms.ChoiceField(choices=[])
     export_to = forms.FileField()
+    def __init__(self, *args, user_id=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        if user_id is not None:
+            self.fields['party'].choices = db.get_choices("customer", "customer_name", user_id)
+            # logger.debug(self.fields['party'].choices)
 
 
-class new_report(forms.Form):
+class prod_record(forms.Form):
     template_name = "form_snippet.html"
     error_css_class = "error"
     required_css_class = "required"
 
-    report_name = forms.SlugField()
-    template_name = forms.SlugField()
-    data_list = forms.JSONField()
-
-    def __init__(self):
+    from_date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
+    to_date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
+    party = forms.ChoiceField(choices=[])
+    export_to = forms.FileField()
+    def __init__(self, *args, user_id=None, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['template_name'].choices = get_template_name()
+        if user_id is not None:
+            self.fields['party'].choices = db.get_choices("customer", "customer_name", user_id)
 
 
-class report_generator(forms.Form):
+class dispatch_details(forms.Form):
     template_name = "form_snippet.html"
     error_css_class = "error"
     required_css_class = "required"
 
-    REPORT_TYPES = [
-        ('stock', 'Stock Report'),
-        ('sales', 'Sales Report'),
-        ('summary', 'Summary Report'),
-        ('time_series', 'Time Series Report'),
-    ]
-
-    report_type = forms.ChoiceField(choices=REPORT_TYPES)
-    table_name = forms.ChoiceField()
-    start_date = forms.DateField(widget=forms.DateInput(
-        attrs={'type': 'date'}), required=False)
-    end_date = forms.DateField(widget=forms.DateInput(
-        attrs={'type': 'date'}), required=False)
-    group_by = forms.ChoiceField(required=False)
-    agg_columns = forms.JSONField(required=False)
-    date_column = forms.ChoiceField(required=False)
-    value_column = forms.ChoiceField(required=False)
-    freq = forms.ChoiceField(
-        choices=[('D', 'Daily'), ('W', 'Weekly'),
-                 ('M', 'Monthly'), ('Y', 'Yearly')],
-        required=False
-    )
-
-    def __init__(self, *args, **kwargs):
-        user = kwargs.pop('user', None)
+    from_date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
+    to_date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
+    party = forms.ChoiceField(choices=[])
+    export_to = forms.FileField()
+    def __init__(self, *args, user_id=None, **kwargs):
         super().__init__(*args, **kwargs)
-        if user:
-            # Get available tables for the user
-            from ..models import TableName
-            tables = TableName.objects.filter(company=user.company_id)
-            self.fields['table_name'].choices = [
-                (t.table_name, t.table_name) for t in tables]
+        if user_id is not None:
+            self.fields['party'].choices = db.get_choices("customer", "customer_name", user_id)
+
+
+class stock_report(forms.Form):
+    template_name = "form_snippet.html"
+    error_css_class = "error"
+    required_css_class = "required"
+
+class loader_report(forms.Form):
+    template_name = "form_snippet.html"
+    error_css_class = "error"
+    required_css_class = "required"
+    from_date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
+    to_date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
+    party = forms.ChoiceField(choices=[])
+    export_to = forms.FileField()
+    def __init__(self, *args, user_id=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        if user_id is not None:
+            self.fields['party'].choices = db.get_choices("customer", "customer_name", user_id)
+
+class qc_report(forms.Form):
+    template_name = "form_snippet.html"
+    error_css_class = "error"
+    required_css_class = "required"
+    from_date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
+    to_date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
+    party = forms.ChoiceField(choices=[])
+    export_to = forms.FileField()
+    def __init__(self, *args, user_id=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        if user_id is not None:
+            self.fields['party'].choices = db.get_choices("customer", "customer_name", user_id)
+
+class stock_plus_minus(forms.Form):
+    template_name = "form_snippet.html"
+    error_css_class = "error"
+    required_css_class = "required"
+    from_date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
+    to_date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
+    party = forms.ChoiceField(choices=[])
+    export_to = forms.FileField()
+    def __init__(self, *args, user_id=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        if user_id is not None:
+            self.fields['party'].choices = db.get_choices("customer", "customer_name", user_id)

@@ -8,6 +8,16 @@
     <a
       href="#"
       class="w3-bar-item w3-button w3-ripple"
+      hx-get="/invoice/admin_company"
+      hx-target="#mainform"
+      hx-vals='{"form": "adminCompany"}'
+      hx-swap="innerHTML"
+    >
+    Select Company
+  </a>
+    <a
+      href="#"
+      class="w3-bar-item w3-button w3-ripple"
       hx-get="/invoice/form_view"
       hx-target="#mainform"
       hx-vals='{"form": "customer"}'
@@ -34,7 +44,7 @@
         hx-get="/invoice/table_view"
         hx-trigger="click from:closest (a)"
         hx-target="#tableview"
-        hx-vals='{"table_name":"supplier"}'
+        hx-vals='{"form":"supplier"}'
         hx-swap="innerHTML"
       ></div>
       Supplier
@@ -51,7 +61,7 @@
         hx-get="/invoice/table_view"
         hx-trigger="click from:closest (a)"
         hx-target="#tableview"
-        hx-vals='{"table_name":"export_fields"}'
+        hx-vals='{"form":"export_fields"}'
         hx-swap="innerHTML"
       ></div>
       Export
@@ -68,7 +78,7 @@
         hx-get="/invoice/table_view"
         hx-trigger="click from:closest (a)"
         hx-target="#tableview"
-        hx-vals='{"table_name":"item_category"}'
+        hx-vals='{"form":"item_category"}'
         hx-swap="innerHTML"
       ></div>
       Category
@@ -78,14 +88,14 @@
       class="w3-bar-item w3-button w3-ripple"
       hx-get="/invoice/form_view"
       hx-target="#mainform"
-      hx-vals='{"form":"variety}'
+      hx-vals='{"form":"variety"}'
       hx-swap="innerHTML"
     >
       <div
         hx-get="/invoice/table_view"
         hx-trigger="click from:closest (a)"
         hx-target="#tableview"
-        hx-vals='{"table_name":"variety"}'
+        hx-vals='{"form":"variety"}'
         hx-swap="innerHTML"
       ></div>
       variety
@@ -102,7 +112,7 @@
         hx-get="/invoice/table_view"
         hx-trigger="click from:closest (a)"
         hx-target="#tableview"
-        hx-vals='{"table_name":"item_name"}'
+        hx-vals='{"form":"item_name"}'
         hx-swap="innerHTML"
       ></div>
       Item Name
@@ -119,7 +129,7 @@
         hx-get="/invoice/table_view"
         hx-trigger="click from:closest (a)"
         hx-target="#tableview"
-        hx-vals='{"table_name":"stock_plusminus"}'
+        hx-vals='{"form":"stock_plusminus"}'
         hx-swap="innerHTML"
       ></div>
       Stock Plus minus head

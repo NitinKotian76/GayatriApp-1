@@ -14,6 +14,23 @@ from ..formmod import BaseForm as bf
 from ..dbmod import dbfunctions as db
 from ..reportmod import create_report as cr
 from .. import mappings as mp
+from django.forms import formset_factory
+
+# =====================
+# PRIORITY 2: CRUD Operations for Admin Views
+# These views are placeholders for CRUD operations and will be developed later.
+#
+# Possible approaches for implementation:
+# - Use Django's generic class-based views (ListView, CreateView, UpdateView, DeleteView) for standard CRUD patterns.
+# - Leverage form classes in formmod/BaseForm.py and formmod/DefaultForm.py for custom form handling.
+# - Integrate with the existing caching and dbfunctions modules for optimized data access and business logic.
+# - Ensure proper permission checks using Django's @permission_required decorators.
+# - Use partial templates in templates/partials/ for modular UI rendering.
+# - Add pagination and search/filtering using Django's Paginator and QuerySet APIs.
+# - Implement logging and error handling as per project standards.
+#
+# NOTE: Actual implementation should follow the project's modular structure and reuse existing utilities where possible.
+# =====================
 
 # IMPROVEMENT NEEDED: Add proper docstring for the module
 # IMPROVEMENT NEEDED: Add proper type hints for better code maintainability
@@ -28,6 +45,7 @@ logger = logging.getLogger(__name__)
 
 @login_required
 def form_setup(request):
+    # PRIORITY 2: To be implemented (Create Form CRUD operation)
     if request.method == 'POST':
         # get the config
         formdata = bf.create_form(request.POST)
@@ -57,6 +75,7 @@ def form_setup(request):
 
 @login_required
 def field_setup(View):  # IMPROVEMENT NEEDED: Fix class inheritance
+    # PRIORITY 2: To be implemented (Create Field CRUD operation)
     if request.method == 'GET':
         return HttpResponse(df.fieldConfightml())
 
@@ -77,6 +96,7 @@ def field_setup(View):  # IMPROVEMENT NEEDED: Fix class inheritance
 
 @login_required
 def form_config(request):
+    # PRIORITY 2: To be implemented (Create Form CRUD operation)
     form = bf.open_bal_prod()
     return render(request, "partials/forms.html", {"form": form})
 
@@ -86,24 +106,29 @@ def form_config(request):
 
 @login_required
 def form_delete(request):
+    # PRIORITY 2: To be implemented (Delete Form CRUD operation)
     form = df.formDelete()
     return render(request, "partials/forms.html", {"form": form})
 
 
 @login_required
 def form_edit(request):
+    # PRIORITY 2: To be implemented (Edit Form CRUD operation)
     logger.debug("edit form")
 
 
 @login_required
 def form_list(request):
+    # PRIORITY 2: To be implemented (List Forms CRUD operation)
     logger.debug("list form")
 
 
 # report
+
+
 @login_required
 def report_list(request):
-
+    # PRIORITY 2: To be implemented (List Reports CRUD operation)
     logger.debug("list report")
 # IMPROVEMENT NEEDED: Add proper error handling
 # IMPROVEMENT NEEDED: Add proper logging
@@ -111,7 +136,20 @@ def report_list(request):
 
 @login_required
 def new_report(request):
+    # PRIORITY 2: To be implemented (Create Report CRUD operation)
     logger.debug("create new report")
+    form = bf.reportCreate()
+    keyValueFormset = formset_factory(bf.keyValueForm, extra=1)
+    if request.method == 'POST':
+        form = bf.reportCreate(request.POST)
+        formset = keyValueFormset(request.POST)
+        if form.is_valid() and formset.is_valid():
+            formset.save()
+            return redirect('report_list')
+    else:
+        formset = keyValueFormset()
+
+    return render(request, "partials/forms.html", {"form": form, "formset": formset})
 
 # IMPROVEMENT NEEDED: Add proper error handling
 # IMPROVEMENT NEEDED: Add proper logging
@@ -119,6 +157,7 @@ def new_report(request):
 
 @login_required
 def edit_report(request):
+    # PRIORITY 2: To be implemented (Edit Report CRUD operation)
     logger.debug("edit report")
 
 # IMPROVEMENT NEEDED: Add proper error handling
@@ -127,6 +166,7 @@ def edit_report(request):
 
 @login_required
 def del_report(request):
+    # PRIORITY 2: To be implemented (Delete Report CRUD operation)
     pass
 
 # IMPROVEMENT NEEDED: Add proper error handling
@@ -137,14 +177,56 @@ def del_report(request):
 
 @login_required
 def create_table(request):
-    pass
+    # PRIORITY 2: To be implemented (Create Table CRUD operation)
+    if request.method == 'POST':
+        form = bf.table_create(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('table_list')
+        else:
+            logger.error(f"Form validation failed: {form.errors}")
+            messages.error(request, "Form validation failed")
+    else:
+        form = bf.table_create()
+        buttons = bf.buttons()
+        formset = formset_factory(bf.keyValueForm, extra=1)
+
+    context = {
+        "form": form,
+        "buttons": buttons,
+        "formset": formset
+    }
+
+    return render(request, "partials/createform.html", context)
 
 
 # TODO: Implement table_list view
 @login_required
 def table_list(request):
+    # PRIORITY 2: To be implemented (List Tables CRUD operation)
     # TODO: form list
     pass
 
 # IMPROVEMENT NEEDED: Add proper error handling
 # IMPROVEMENT NEEDED: Add proper logging
+
+
+def admin_company(request):
+    buttons = []
+    if request.method == 'POST':
+        form = bf.adminCompany(request.POST)
+        if form.is_valid():
+            company_id = form.cleaned_data['company_name'].id
+            logger.debug(company_id)
+            request.session['selected_company_id'] = company_id
+
+    else:
+        form = bf.adminCompany()
+    buttons.append(
+        bf.button("select", {"form": "adminCompany"}, "/invoice/admin_company"))
+    context = {
+        "form": form,
+        "buttons": buttons,
+    }
+    return render(request, "partials/forms.html", context)
+

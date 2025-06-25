@@ -1,0 +1,5 @@
+<!-- #TODO: this template is form admin views to create forms and report templates -->
+  {{formset.management_form}}
+  {% for form in formset %}
+    {{form}}<button type="button" hx-get="/invoice/add_key_value" hx-target="#dynform" hx-swap="beforeend">Add</button>
+  {% endfor %}

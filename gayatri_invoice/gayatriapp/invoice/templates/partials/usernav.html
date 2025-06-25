@@ -31,7 +31,7 @@
       id="editreport"
       hx-get="/invoice/form_view"
       hx-target="#mainform"
-      hx-vals='{"form":"prod_record"}'
+      hx-vals='{"form":"production"}'
     >
       Production
     </a>
@@ -112,7 +112,6 @@
     href="#"
     style="text-decoration: none"
     class="w3-button w3-ripple w3-margin-right w3-round-large w3-light-grey w3-hover-dark-grey"
-    id="database"
   >
     Report
   </a>
@@ -122,33 +121,24 @@
       class="w3-bar-item w3-button w3-ripple"
       hx-get="/invoice/report_view"
       hx-target="#mainform"
-      hx-vals='{"form":"pendingorder"}'
-      id="createtable"
+      hx-vals='{"form":"pending_order"}'
     >
-      <div
-        hx-get="/invoice/table_view"
-        hx-trigger="click from:closest (a)"
-        hx-vals='{"table_name":"pending_order"}'
-        hx-target="#tableview"
-        hx-swap="innerHTML"
-      ></div>
       Pending Order
     </a>
     <a
       href="#"
       class="w3-bar-item w3-button w3-ripple"
       id="edittable"
-      hx-get="/invoice/form_view"
+      hx-get="/invoice/report_view"
       hx-target="#mainform"
-      hx-vals='{"form":"production"}'
+      hx-vals='{"form":"prod_record"}'
     >
-      Production
+      Production Record
     </a>
     <a
       href="#"
       class="w3-bar-item w3-button w3-ripple"
-      id="deletetable"
-      hx-get="/invoice/form_view"
+      hx-get="/invoice/report_view"
       hx-target="#mainform"
       hx-vals='{"form":"dispatch_details"}'
     >
@@ -157,8 +147,7 @@
     <a
       href="#"
       class="w3-bar-item w3-button w3-ripple"
-      id="backup"
-      hx-get="/invoice/form_view"
+      hx-get="/invoice/report_view"
       hx-target="#mainform"
       hx-vals='{"form":"stock"}'
     >
@@ -167,8 +156,7 @@
     <a
       href="#"
       class="w3-bar-item w3-button w3-ripple"
-      id="deletereport"
-      hx-get="/invoice/form_view"
+      hx-get="/invoice/report_view"
       hx-target="#mainform"
       hx-vals='{"form":"loader_report"}'
     >
@@ -177,8 +165,7 @@
     <a
       href="#"
       class="w3-bar-item w3-button w3-ripple"
-      id="deletereport"
-      hx-get="/invoice/form_view"
+      hx-get="/invoice/report_view"
       hx-target="#mainform"
       hx-vals='{"form":"qc_report"}'
     >
@@ -187,8 +174,7 @@
     <a
       href="#"
       class="w3-bar-item w3-button w3-ripple"
-      id="deletereport"
-      hx-get="/invoice/form_view"
+      hx-get="/invoice/report_view"
       hx-target="#mainform"
       hx-vals='{"form":"stock_plus_minus"}'
     >

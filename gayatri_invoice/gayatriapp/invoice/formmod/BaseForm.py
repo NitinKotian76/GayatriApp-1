@@ -6,7 +6,9 @@ from ..models import *
 from . import formComponents
 from django.contrib.auth import authenticate
 from django.core.exceptions import ValidationError
-
+import json
+import logging
+logger = logging.getLogger(__name__)
 
 def getInputFields(object):
     methods_list = [
@@ -16,15 +18,35 @@ def getInputFields(object):
     ]
     return methods_list
 
+def button(name, hx_vals, hx_req):
+    data = json.dumps(hx_vals)
+    html = format_html('<input class="w3-button w3-ripple w3-green w3-padding w3-margin"\
+                type="button" value="{}" \
+                hx-post={} \
+                hx-trigger="click" \
+                hx-target="#dynform" \
+                hx-swap="outerHTML" \
+                hx-vals=\'{}\'/>', name, hx_req, data)
+    return html
 
-class base:
-    global ButtonStyle, InputStyle, RowCellStyle, RowStyle, leftSpace, globalSpacing, TextAlignCenter, cellSpacing
-    ButtonStyle = " w3-cell w3-button w3-blue w3-round-large w3-ripple"
-    globalSpacing = " w3-margin"
-    cellSpacing = " w3-padding"
-    leftSpace = " w3-margin-left"
-    TextAlignCenter = " w3-center"
-    InputStyle = " w3-card"
+class adminCompany(forms.Form):
+    template_name = "form_snippet.html"
+    error_css_class = "error"
+    required_css_class = "required"
+
+    company_name = forms.ModelChoiceField(
+        queryset=Company.objects.none(),
+        empty_label="Select Company",
+        widget=forms.Select(attrs={}),
+        to_field_name="id",
+        label="company_name",
+        required=True)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['company_name'].queryset = Company.objects.all()
+
+
 
 
 class loginForm(forms.Form):
@@ -149,19 +171,77 @@ class formEdit(forms.Form):
     # attr='onclick=document.getElementById("modalView").style.display="none"',
 
 
-class reportView(forms.Form):
-    pass
+class new_report(forms.Form):
+    template_name = "form_snippet.html"
+    error_css_class = "error"
+    required_css_class = "required"
+
+    report_name = forms.SlugField()
+    template_name = forms.SlugField()
+    data_list = forms.JSONField()
+
+    def __init__(self):
+        super().__init__(*args, **kwargs)
+        self.fields['template_name'].choices = get_template_name()
+
+
+class report_generator(forms.Form):
+    template_name = "form_snippet.html"
+    error_css_class = "error"
+    required_css_class = "required"
+
+    REPORT_TYPES = [
+        ('stock', 'Stock Report'),
+        ('sales', 'Sales Report'),
+        ('summary', 'Summary Report'),
+        ('time_series', 'Time Series Report'),
+    ]
+
+    report_type = forms.ChoiceField(choices=REPORT_TYPES)
+    table_name = forms.ChoiceField()
+    start_date = forms.DateField(widget=forms.DateInput(
+        attrs={'type': 'date'}), required=False)
+    end_date = forms.DateField(widget=forms.DateInput(
+        attrs={'type': 'date'}), required=False)
+    group_by = forms.ChoiceField(required=False)
+    agg_columns = forms.JSONField(required=False)
+    date_column = forms.ChoiceField(required=False)
+    value_column = forms.ChoiceField(required=False)
+    freq = forms.ChoiceField(
+        choices=[('D', 'Daily'), ('W', 'Weekly'),
+                 ('M', 'Monthly'), ('Y', 'Yearly')],
+        required=False
+    )
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
+        super().__init__(*args, **kwargs)
+        if user:
+            # Get available tables for the user
+            from ..models import TableName
+            tables = TableName.objects.filter(company=user.company_id)
+            self.fields['table_name'].choices = [
+                (t.table_name, t.table_name) for t in tables]
+
 
 
 class reportCreate(forms.Form):
+    template_name = "form_snippet.html"
+    error_css_class = "error"
+    required_css_class = "required"
+
+    report_name = forms.CharField()
+    company = forms.ChoiceField(choices=[])
     excel_file = forms.FileField()
-    single_entry = forms.CharField()
-    subgroup_entry = forms.ChoiceField()
 
 
-class var_columnEntry(forms.Form):
-    var = forms.CharField()
-    column = forms.CharField()
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['company'].choices = Company.objects.all()
+
+class keyValueForm(forms.Form):
+    key = forms.CharField()
+    value = forms.CharField()
 
 
 class reportEdit(forms.Form):
@@ -184,11 +264,12 @@ class table_create(forms.Form):
     template_name = "form_snippet.html"
     error_css_class = "error"
     required_css_class = "required"
-
     table_name = forms.CharField(max_length=100)
-    # NOTE: add this when dynamic form is done
-    # form_name = forms.CharField(max_length=100)
-    company = forms.ChoiceField(choices=Company.objects.all())
+    company = forms.ChoiceField(choices=[])
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['company'].choices = Company.objects.all()
 
 
 class table_edit(forms.Form):
