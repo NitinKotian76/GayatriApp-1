@@ -19,6 +19,7 @@ argcomplete = "^3.5.3"
 psycopg2-binary = "^2.9.10"
 blake3 = "^1.0.4"
 xlrd = "^2.0.1"
+decouple = "^3.8.0"
 
 [tool.poetry.group.dev.dependencies]
 django-sonar = "^0.1.8"
