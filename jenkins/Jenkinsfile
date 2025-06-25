@@ -1,0 +1,50 @@
+pipeline {
+	agent any
+	environment {
+		COMPOSE_FILE = 'docker-compose.yml'
+	}
+	stages {
+		stage('Checkout') {
+			steps {
+				checkout scm
+			}
+		}
+		stage('Install Dependencies with Poetry') {
+			steps {
+				sh 'pip install poetry'
+				sh 'poetry install'
+			}
+		}
+		// Placeholder for future tests
+		// stage('Run Django Tests') {
+		//     steps {
+		//         sh 'docker-compose run --rm gayatriapp poetry run python manage.py test'
+		//     }
+		// }
+		stage('Build Docker Images') {
+			steps {
+				sh 'docker-compose build'
+			}
+		}
+		stage('Collect Static Files') {
+			steps {
+				sh 'docker-compose run --rm gayatriapp python manage.py collectstatic --noinput'
+			}
+		}
+		stage('Migrate Database') {
+			steps {
+				sh 'docker-compose run --rm gayatriapp python manage.py migrate'
+			}
+		}
+		stage('Deploy') {
+			steps {
+				sh 'docker-compose up -d --build'
+			}
+		}
+	}
+	post {
+		always {
+			sh 'docker-compose logs > cicd/deploy.log || true'
+		}
+	}
+}
