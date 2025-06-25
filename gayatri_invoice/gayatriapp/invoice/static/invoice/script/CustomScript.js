@@ -32,9 +32,6 @@ function filter(inputid, filterDiv) {
   }
 }
 
-setTimeout(() => {
-  document.getElementById("notif")?.remove();
-}, 5000);
 
 function visible(id) {
   var x = document.getElementById(id);
@@ -53,3 +50,22 @@ function w3_close() {
   document.getElementById("mySidebar").style.display = "none";
 }
 // htmx.logAll();
+
+document.body.addEventListener('htmx:afterSwap', function(evt) {
+  if (evt.detail.target.id === "mainform" || evt.detail.target.id === "dynform") {
+    htmx.trigger(document.body, "showNotif");
+  }
+  if (evt.detail.target.id === "notif") {
+    hideNotifAfterTimeout();
+  }
+});
+
+function hideNotifAfterTimeout() {
+  const notif = document.getElementById("notif");
+  if (notif) {
+    notif.style.display = "block";
+    setTimeout(() => {
+      notif.style.display = "none";
+    }, 5000);
+  }
+}

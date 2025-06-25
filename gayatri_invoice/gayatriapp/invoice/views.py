@@ -11,7 +11,7 @@ from django.contrib.auth import login, logout, update_session_auth_hash
 from django.contrib.auth.hashers import check_password
 from django.contrib.auth.password_validation import validate_password
 from django.core.paginator import Paginator
-from django.contrib import messages
+from django.contrib import messages as msg
 from django.urls import reverse_lazy
 from django.views import View
 import logging
@@ -63,7 +63,7 @@ def profile_user(request):
 @ensure_csrf_cookie
 @login_required
 def get_notifications(request):
-        messages = messages.get_messages(request)
+        messages = msg.get_messages(request)
         if messages:
-             return HttpResponse(render_to_string("partials/notif.html", {"messages": messages},request=request))
+             return HttpResponse(render_to_string("partials/notif.html", {"messages": messages}))
         return HttpResponse("")

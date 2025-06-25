@@ -219,7 +219,7 @@ def admin_company(request):
             company_id = form.cleaned_data['company_name'].id
             logger.debug(company_id)
             request.session['selected_company_id'] = company_id
-
+            messages.success(request, "Company selected successfully")
     else:
         form = bf.adminCompany()
     buttons.append(

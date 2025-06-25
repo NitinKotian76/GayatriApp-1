@@ -15,7 +15,9 @@
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 </head>
 <body class="w3-display-container">
-    {% include 'partials/notif.html' with messages=messages %}
+    <div id="notif" hx-get="/invoice/get_notifications" hx-trigger="showNotif from:body" hx-target="#notif" hx-swap="innerHTML swap:500ms">
+        {% include 'partials/notif.html' with messages=messages %}
+    </div>
     {% block nav %}
         <div class="navigation">
             <nav>
@@ -54,6 +56,6 @@
         document.body.addEventListener('htmx:configRequest', function(evt) {
             evt.detail.headers['X-CSRFToken'] = '{{ csrf_token }}';
         });
-</script>
+    </script>
 </body>
 </html>
