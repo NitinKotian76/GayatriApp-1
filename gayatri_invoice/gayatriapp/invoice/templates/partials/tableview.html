@@ -1,4 +1,5 @@
 <div id="tableshow">
+    {% if row %}
     <form>
         {% csrf_token %}
         <div style="overflow-x:auto;">
@@ -66,4 +67,5 @@
             <div>{% for button in buttons %} {{button}} {% endfor %}</div>
         </div>
     </form>
+    {% endif %}
 </div>

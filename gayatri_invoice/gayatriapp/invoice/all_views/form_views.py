@@ -10,6 +10,7 @@ from ..cachestore import cachestore as cache
 from ..models import *
 from ..forms import *
 from ..formmod import DefaultForm as df
+from ..formmod import BaseForm as bf
 from ..dbmod import dbfunctions as db
 from .. import mappings as mp
 from django.views.decorators.http import require_POST
@@ -37,14 +38,16 @@ def form_view(request):
             for key in handler["buttons"]:
                 hx_vals = handler["buttons"][key]["hx_vals"]
                 hx_req = handler["buttons"][key]["hx_req"]
-                button = df.button(key, hx_vals, hx_req)
+                button = bf.button(key, hx_vals, hx_req)
                 buttons.append(button)
             if formdata.is_valid():
                 logger.debug("data validated")
                 data = formdata.cleaned_data
+                if request.user.is_admin:
+                    company_id = request.session.get['selected_company_name']
                 user_id = request.user.id
                 logger.debug(user_id)
-                if db.set_data(handler["table_name"], data, user_id):
+                if not db.set_data(handler["table_name"], data, user_id, company_id):
                     logger.debug("data is saved")
                     messages.success(request, "data saved")
                 else:
@@ -61,7 +64,7 @@ def form_view(request):
             for key in handler["buttons"]:
                 hx_vals = handler["buttons"][key]["hx_vals"]
                 hx_req = handler["buttons"][key]["hx_req"]
-                button = df.button(key, hx_vals, hx_req)
+                button = bf.button(key, hx_vals, hx_req)
                 buttons.append(button)
     context = {
         "form": formdata,
@@ -89,19 +92,25 @@ def table_view(request):
             for key in handler["table_buttons"]:
                 hx_vals = handler["table_buttons"][key]["hx_vals"]
                 hx_req = handler["table_buttons"][key]["hx_req"]
-                button = df.button(key, hx_vals, hx_req)
+                button = bf.button(key, hx_vals, hx_req)
                 buttons.append(button)
+    else:
+        messages.error(request, "tablename doesnt exist")
     logger.debug("form_name: " + form_name)
     user_id = request.user.id
     logger.debug("table_name: " + table_name)
-    data = db.get_datarow_q(table_name, user_id)
+    data = db.get_data(table_name, user_id)
     if not data:
         logger.debug("table name doesnt exist")
-    paginator = Paginator(data, 10)
-    page_number = request.GET.get("page")
-    logger.debug(page_number)
-    page_obj = paginator.get_page(page_number)
-    rows = [{"id":obj.get("id"),"table_data":obj.get("table_data")} for obj in page_obj]
+        messages.error(request, "table name doesnt exist")
+    elif data == []:
+        messages.error(request, "table name exists but no data")
+    else:
+        paginator = Paginator(data, 10)
+        page_number = request.GET.get("page")
+        logger.debug(page_number)
+        page_obj = paginator.get_page(page_number)
+        rows = [{"id":obj.get("id"),"table_data":obj.get("table_data")} for obj in page_obj]
     context = {
         "rows": rows,
         "page_obj": page_obj,

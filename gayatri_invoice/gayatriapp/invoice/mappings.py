@@ -126,12 +126,12 @@ FORMHANDLER = {
             },
         }
     },
-    "prod_record": {
-        "form_class": df.prod_record,
-        "table_name": "prod_record",
+    "production": {
+        "form_class": df.production,
+        "table_name": "production",
         "buttons": {
             "submit": {
-                "hx_vals": {"form": "prod_record"},
+                "hx_vals": {"form": "production"},
                 "hx_req": "/invoice/form_view"
             },
         }
@@ -222,14 +222,76 @@ FORMHANDLER = {
     }
 }
 
-COMMON = {
-    "pass_change": {
-        "form_class": bf.changePassword,
+REPORT = {
+    "pending_order": {
+        "form_class": df.pending_order,
+        "table_name": "pending_order",
         "buttons": {
             "submit": {
-                "hx_vals": {"form": "pass_change"},
-                "hx_req": "/invoice/change_password"
+                "hx_vals": {"form": "pending_order"},
+                "hx_req": "/invoice/report_view"
+            },
+
+        }
+    },
+    "prod_record": {
+        "form_class": df.prod_record,
+        "table_name": "prod_record",
+        "buttons": {
+            "submit": {
+                "hx_vals": {"form": "prod_record"},
+                "hx_req": "/invoice/report_view"
             },
         }
-    }
+    },
+    "dispatch_details": {
+        "form_class": df.dispatch_details,
+        "table_name": "dispatch_details",
+        "buttons": {
+            "submit": {
+                "hx_vals": {"form": "dispatch_details"},
+                "hx_req": "/invoice/report_view"
+            },
+        }
+    },
+    "stock": {
+        "form_class": df.stock,
+        "table_name": "stock",
+        "buttons": {
+            "submit": {
+                "hx_vals": {"form": "stock"},
+                "hx_req": "/invoice/report_view"
+            },
+        }
+    },
+    "loader_report": {
+        "form_class": df.loader_report,
+        "table_name": "loader_report",  
+        "buttons": {
+            "submit": {
+                "hx_vals": {"form": "loader_report"},
+                "hx_req": "/invoice/report_view"
+            },
+        }   
+    },
+    "qc_report": {
+        "form_class": df.qc_report,
+        "table_name": "qc_report",
+        "buttons": {
+            "submit": {
+                "hx_vals": {"form": "qc_report"},
+                "hx_req": "/invoice/report_view"
+            },
+        }
+    },
+    "stock_plus_minus": {
+        "form_class": df.stock_plus_minus,
+        "table_name": "stock_plus_minus",
+        "buttons": {
+            "submit": {
+                "hx_vals": {"form": "stock_plus_minus"},
+                "hx_req": "/invoice/report_view",
+            },
+        }
+    },
 }

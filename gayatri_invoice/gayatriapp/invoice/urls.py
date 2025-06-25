@@ -46,6 +46,7 @@ admin_urlpatterns = [
     path("create_table", admin_views.create_table, name="create_table"),
     path("report_list", admin_views.report_list, name="report_list"),
     path("new_report", admin_views.new_report, name="new_report"),
+    path("admin_company", admin_views.admin_company, name="admin_company"),
 ]
 
 # Combine all URL patterns
