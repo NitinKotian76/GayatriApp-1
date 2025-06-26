@@ -13,9 +13,6 @@ gunicorn = "^22.0.0"
 pandas = "^2.2.2"
 pymemcache = "^4.0.0"
 django-extensions = "^3.2.3"
-xhtml2pdf = "^0.2.16"
-xlsxwriter = "^3.2.0"
-argcomplete = "^3.5.3"
 psycopg2-binary = "^2.9.10"
 blake3 = "^1.0.4"
 xlrd = "^2.0.1"
@@ -24,6 +21,7 @@ decouple = "^0.0.7"
 [tool.poetry.group.dev.dependencies]
 django-sonar = "^0.1.8"
 django-debug-toolbar = "^4.4.2"
+argcomplete = "^3.5.3"
 httpie = "^3.2.3"
 
 
