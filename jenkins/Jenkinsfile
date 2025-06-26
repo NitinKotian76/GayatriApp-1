@@ -11,9 +11,8 @@ pipeline {
 		}
 		stage('Copy Environment File') {
 			steps {
-				// Copy the .env file from Jenkins credentials
-				withCredentials([file(credentialsId: 'gayatri_env', variable: 'ENV_FILE')]) {
-					sh 'cp $ENV_FILE .env'
+				withCredentials([file(credentialsId: 'gayatri_env', variable: 'ENV_CONTENTS')]) {
+					sh 'cat $ENV_CONTENTS > .env'
 				}
 				sh 'echo "Environment file copied successfully"'
 			}
