@@ -11,14 +11,22 @@ pipeline {
 		}
 		stage('Install Dependencies with Poetry') {
 			steps {
-				sh 'pip install poetry'
-				sh 'poetry install'
+				dir('gayatri_invoice') {
+					sh '''
+					pipx install poetry
+					pipx ensurepath
+					export PATH="$HOME/.local/bin:$PATH"
+					poetry install
+					'''
+				}
 			}
 		}
 		// Placeholder for future tests
 		// stage('Run Django Tests') {
 		//     steps {
-		//         sh 'docker-compose run --rm gayatriapp poetry run python manage.py test'
+		//         dir('gayatri_invoice') {
+		//             sh 'docker-compose run --rm gayatriapp python manage.py test'
+		//         }
 		//     }
 		// }
 		stage('Build Docker Images') {
@@ -44,7 +52,7 @@ pipeline {
 	}
 	post {
 		always {
-			sh 'docker-compose logs > cicd/deploy.log || true'
+			sh 'mkdir -p cicd && docker-compose logs > cicd/deploy.log || true'
 		}
 	}
 }
