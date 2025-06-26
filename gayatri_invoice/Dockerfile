@@ -16,7 +16,6 @@ RUN poetry config virtualenvs.create false \
 # Copy the rest of the app
 COPY gayatriapp/ /gayatri/gayatriapp/
 COPY entrypoint.sh /gayatri/
-COPY settings.py /gayatri/gayatriapp/main/
 
 FROM python:3.13-slim
 RUN useradd -m -r appuser && \
