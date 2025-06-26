@@ -11,8 +11,8 @@ pipeline {
 		}
 		stage('Copy Environment File') {
 			steps {
-				withCredentials([file(credentialsId: 'gayatri_env', variable: 'ENV_CONTENTS')]) {
-					sh 'cat $ENV_CONTENTS > .env'
+				withCredentials([string(credentialsId: 'gayatri_env', variable: 'ENV_CONTENTS')]) {
+					writeFile file: '.env', text: "${ENV_CONTENTS}"
 				}
 				sh 'echo "Environment file copied successfully"'
 			}
