@@ -1,8 +1,5 @@
 pipeline {
 	agent any
-	environment {
-		COMPOSE_FILE = 'docker-compose.yml'
-	}
 	stages {
 		stage('Checkout') {
 			steps {
@@ -11,8 +8,8 @@ pipeline {
 		}
 		stage('Copy Environment File') {
 			steps {
-				withCredentials([string(credentialsId: 'gayatri_env', variable: 'ENV_CONTENTS')]) {
-					writeFile file: '.env', text: "${ENV_CONTENTS}"
+				withCredentials([file(credentialsId: 'gayatri_env', variable: 'ENV_CONTENTS')]) {
+					sh 'cat ENV_CONTENTS .env'
 				}
 				sh 'echo "Environment file copied successfully"'
 			}

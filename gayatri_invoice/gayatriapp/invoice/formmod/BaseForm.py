@@ -10,6 +10,8 @@ import json
 import logging
 logger = logging.getLogger(__name__)
 
+# helper functions
+
 def getInputFields(object):
     methods_list = [
         method
@@ -29,25 +31,7 @@ def button(name, hx_vals, hx_req):
                 hx-vals=\'{}\'/>', name, hx_req, data)
     return html
 
-class adminCompany(forms.Form):
-    template_name = "form_snippet.html"
-    error_css_class = "error"
-    required_css_class = "required"
-
-    company_name = forms.ModelChoiceField(
-        queryset=Company.objects.none(),
-        empty_label="Select Company",
-        widget=forms.Select(attrs={}),
-        to_field_name="id",
-        label="company_name",
-        required=True)
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['company_name'].queryset = Company.objects.all()
-
-
-
+# auth forms
 
 class loginForm(forms.Form):
     template_name = "form_snippet.html"
@@ -129,29 +113,54 @@ class changePassword(forms.Form):
         required=True)
 
 
+# admin forms
+class adminCompany(forms.Form):
+    template_name = "form_snippet.html"
+    error_css_class = "error"
+    required_css_class = "required"
+
+    company_name = forms.ModelChoiceField(
+        queryset=Company.objects.none(),
+        empty_label="Select Company",
+        widget=forms.Select(attrs={}),
+        to_field_name="id",
+        label="company_name",
+        required=True)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['company_name'].queryset = Company.objects.all()
+
+# crud forms
+
 class formCreate(forms.Form):
     # Group.objects.all(), Table.objects.all()
     template_name = "form_snippet.html"
-    form_name = forms.CharField()
+    error_css_class = "error"
+    required_css_class = "required"
+
+    form_name = forms.CharField(required=True)
     # TODO: this statement interferes with migrations
     group_names = forms.MultipleChoiceField(
-        widget=forms.SelectMultiple, choices=Group.objects.values_list()
+        widget=forms.SelectMultiple, choices=Group.objects.values_list(), required=True
     )
     table_names = forms.MultipleChoiceField(
-        widget=forms.SelectMultiple, choices=TableName.objects.all()
+        widget=forms.SelectMultiple, choices=TableName.objects.all(), required=True
     )
-    description = forms.CharField()
-
+    description = forms.CharField(required=True)
 
 class fieldAdd(forms.Form):
     template_name = "form_snippet.html"
+    error_css_class = "error"
+    required_css_class = "required"
+
     field_name = forms.ChoiceField(
-        widget=forms.Select, choices=getInputFields(formComponents)
+        widget=forms.Select, choices=getInputFields(formComponents), required=True
     )
-    var_name = forms.CharField()
-    disabled = forms.ChoiceField(widget=forms.CheckboxInput)
-    table_row = forms.IntegerField()
-    table_column = forms.IntegerField()
+    var_name = forms.CharField(required=True)
+    disabled = forms.ChoiceField(widget=forms.CheckboxInput, required=True)
+    table_row = forms.IntegerField(required=True)
+    table_column = forms.IntegerField(required=True)
 
     # attr = 'hx-post="/invoice/field_setup" hx-target="#mainform" hx-swap="none"',
     # attr = 'onclick=document.getElementById("modalView").style.display="none"',
@@ -185,46 +194,6 @@ class new_report(forms.Form):
         self.fields['template_name'].choices = get_template_name()
 
 
-class report_generator(forms.Form):
-    template_name = "form_snippet.html"
-    error_css_class = "error"
-    required_css_class = "required"
-
-    REPORT_TYPES = [
-        ('stock', 'Stock Report'),
-        ('sales', 'Sales Report'),
-        ('summary', 'Summary Report'),
-        ('time_series', 'Time Series Report'),
-    ]
-
-    report_type = forms.ChoiceField(choices=REPORT_TYPES)
-    table_name = forms.ChoiceField()
-    start_date = forms.DateField(widget=forms.DateInput(
-        attrs={'type': 'date'}), required=False)
-    end_date = forms.DateField(widget=forms.DateInput(
-        attrs={'type': 'date'}), required=False)
-    group_by = forms.ChoiceField(required=False)
-    agg_columns = forms.JSONField(required=False)
-    date_column = forms.ChoiceField(required=False)
-    value_column = forms.ChoiceField(required=False)
-    freq = forms.ChoiceField(
-        choices=[('D', 'Daily'), ('W', 'Weekly'),
-                 ('M', 'Monthly'), ('Y', 'Yearly')],
-        required=False
-    )
-
-    def __init__(self, *args, **kwargs):
-        user = kwargs.pop('user', None)
-        super().__init__(*args, **kwargs)
-        if user:
-            # Get available tables for the user
-            from ..models import TableName
-            tables = TableName.objects.filter(company=user.company_id)
-            self.fields['table_name'].choices = [
-                (t.table_name, t.table_name) for t in tables]
-
-
-
 class reportCreate(forms.Form):
     template_name = "form_snippet.html"
     error_css_class = "error"
@@ -252,12 +221,16 @@ class reportDelete(forms.Form):
     pass
 
 
-class table_view(forms.Form):
+class table_list(forms.Form):
     template_name = "form_snippet.html"
     error_css_class = "error"
     required_css_class = "required"
 
-    table_list = forms.ChoiceField()
+    company = forms.ChoiceField(choices=[])
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['company'].choices = Company.objects.all()
 
 
 class table_create(forms.Form):

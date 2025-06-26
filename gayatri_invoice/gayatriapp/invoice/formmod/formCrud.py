@@ -1,5 +1,5 @@
-from ..formmod.CrudForm import form_store_json
-from ..formmod.LoadForm import Filedata
+from .CrudForm import form_store_json
+from .LoadForm import Filedata
 
 # TODO: do something about the class instance for formfield data
 

@@ -203,9 +203,23 @@ def create_table(request):
 # TODO: Implement table_list view
 @login_required
 def table_list(request):
-    # PRIORITY 2: To be implemented (List Tables CRUD operation)
-    # TODO: form list
-    pass
+    buttons = []
+    table_name = []
+    if request.method == "POST":
+        form = bf.table_list(request.POST)
+        if form.is_valid():
+            company_id = form.cleaned_data['company']
+            table_name = TableName.objects.filter(company=company_id).values_list('table_name', flat=True)
+            logger.debug(table_name)
+    else:
+        form = bf.table_list()
+        buttons.append(bf.button("submit", {"form": "table_list", "table_name": table_name}, "/invoice/table_list"))
+        context = {
+            "form": form,
+            "buttons": buttons,
+            "messages": messages.get_messages(request)
+        }
+        return render(request, "partials/forms.html", context)
 
 # IMPROVEMENT NEEDED: Add proper error handling
 # IMPROVEMENT NEEDED: Add proper logging

@@ -257,7 +257,16 @@
       class="w3-bar-item w3-button w3-ripple"
       hx-get="/invoice/table_list"
       hx-target="#mainform"
+      hx-vals='{"form": "table_list"}'
+      hx-swap="innerHTML"
     >
+    <div
+        hx-get="/invoice/table_view"
+        hx-trigger="click from:closest (a)"
+        hx-target="#tableview"
+        hx-vals='{"form":"table_list"}'
+        hx-swap="innerHTML"
+      ></div>
       view tables
     </a>
     <a

@@ -32,13 +32,14 @@ def set_data(table_name: str, data:dict, user_id:str, company_id:int=None):
     except ValueError:
         logger.debug("data is not json compatible")
         return 1
-    obj = TableName.objects.filter(table_name__contains=table_name, company=company.id)
+    obj = TableName.objects.filter(table_name__contains=table_name, company=company)
     if obj.exists():
         logger.debug("table_name exists")
-        table = TableName.objects.get(table_name=table_name, company=company.id)
+        table = TableName.objects.get(table_name=table_name, company=company)
         try:
+            #only instances are allowed 
             table_query = TableData.objects.create(
-                table_data=data, table_name=table, company=company.id)
+                table_data=data, table_name=table, company=company)
             table_query.save()
         except Exception as e:
             logger.debug("error storing data %s", e)
@@ -59,16 +60,16 @@ def update_data(table_name: str, data:dict, user_id:str,search_term:str=None, co
     except ValueError:
         logger.debug("data is not json compatible")
         return 1
-    obj = TableName.objects.filter(table_name__contains=table_name, company=company.id)
+    obj = TableName.objects.filter(table_name__contains=table_name, company=company)
     if obj.exists():
         logger.debug("table_name exists")
-        table = TableName.objects.get(table_name=table_name, company=company.id)
+        table = TableName.objects.get(table_name=table_name, company=company)
         try:
             query = get_data(table_name,user_id,search_term)
             query[0]
             if data:
                 table_query = TableData.objects.update(
-                    table_data=data, table_name=table, company=company.id)
+                    table_data=data, table_name=table, company=company)
                 table_query.save()
             else:
                 logger.debug("data not found")
@@ -87,10 +88,10 @@ def update_data(table_name: str, data:dict, user_id:str,search_term:str=None, co
 def new_table(table_name: str, user_id: str, data: dict = {}) -> int:
     company = get_company_inst(user_id)
     try:
-        obj = TableName.objects.create(
-            table_name=table_name, company=company.id)
+        table = TableName.objects.create(
+            table_name=table_name, company=company)
         TableData.objects.create(
-            table_data=data, table_name=obj, company=company.id)
+            table_data=data, table_name=table, company=company)
     except Exception as e:
         logger.debug("issue with table creation %s " % e)
         return 1
@@ -103,7 +104,7 @@ def get_data(table_name: str, user_id: str, search_term: str = None, company_id:
             company = Company.objects.get(id=company_id)
         else:
             company = get_company_inst(user_id)
-        table = TableName.objects.get(table_name=table_name, company=company.id).id
+        table = TableName.objects.get(table_name=table_name, company=company.id)
         queryset = TableData.objects.filter(
             table_name=table, company=company)
         if search_term:

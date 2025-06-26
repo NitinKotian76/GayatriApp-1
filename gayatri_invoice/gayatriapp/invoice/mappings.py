@@ -210,16 +210,6 @@ FORMHANDLER = {
             },
         }
     },
-    "view_table": {
-        "form_class": bf.table_view,
-        "table_name": "table_view",
-        "buttons": {
-            "submit": {
-                "hx_vals": {"form": "table_view"},
-                "hx_req": "/invoice/form_view"
-            },
-        }
-    }
 }
 
 REPORT = {

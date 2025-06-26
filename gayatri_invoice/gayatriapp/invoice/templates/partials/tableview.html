@@ -1,5 +1,5 @@
 <div id="tableshow">
-    {% if row %}
+    {% if rows %}
     <form>
         {% csrf_token %}
         <div style="overflow-x:auto;">
@@ -56,15 +56,15 @@
                hx-target="#tableshow"
                class="w3-button">last &raquo;</a>
         {% endif %}
-        <div id="searchbar" class="w3-margin-top w3-bar">
-            <div class="w3-bar-item">
+        <div id="searchbar" class="w3-margin-top">
+            <div class="w3-bar w3-container">
                 <input type="text"
                        id="search"
                        placeholder="search.."
                        class="w3-bar-item w3-input w3-round w3-border" />
                 <button class="fa fa-arrow-right w3-bar-item w3-button w3-round w3-green w3-ripple"></button>
             </div>
-            <div>{% for button in buttons %} {{button}} {% endfor %}</div>
+            <div class="w3-container">{% for button in buttons %} {{button}} {% endfor %}</div>
         </div>
     </form>
     {% endif %}

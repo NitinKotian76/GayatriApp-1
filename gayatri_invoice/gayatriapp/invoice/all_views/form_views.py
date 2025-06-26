@@ -14,7 +14,7 @@ from ..formmod import BaseForm as bf
 from ..dbmod import dbfunctions as db
 from .. import mappings as mp
 from django.views.decorators.http import require_POST
-
+from django.views.decorators.cache import never_cache
 # IMPROVEMENT NEEDED: Add proper docstring for the module
 # IMPROVEMENT NEEDED: Add proper type hints for better code maintainability
 
@@ -44,14 +44,15 @@ def form_view(request):
                 logger.debug("data validated")
                 data = formdata.cleaned_data
                 if request.user.is_admin:
-                    company_id = request.session.get['selected_company_name']
+                    company_id = request.session.get('selected_company_id')
                 user_id = request.user.id
                 logger.debug(user_id)
                 if not db.set_data(handler["table_name"], data, user_id, company_id):
                     logger.debug("data is saved")
                     messages.success(request, "data saved")
                 else:
-                    redirect("invoice:create_table")
+                    logger.debug("data is not saved")
+                    messages.error(request, "data is not saved")
                 formdata = handler["form_class"]()
             else:
                 logger.debug("data invalid")
@@ -81,11 +82,23 @@ def form_view(request):
 
 @ensure_csrf_cookie
 @login_required
+@never_cache
 def table_view(request):
     buttons = []
-    table_name = None
+    table_name = request.GET.get("table_name")
     form_name = request.GET.get("form")
-    if form_name and form_name in mp.FORMHANDLER:
+    data = None
+    rows = []
+    page_obj = None
+
+    if table_name:
+        try:
+            data = TableName.objects.filter(table_name=table_name).values_list('table_data', flat=True)
+            logger.debug("table_name: " + table_name)
+        except TableName.DoesNotExist:
+            messages.error(request, "table name doesnt exist")
+            logger.debug("table_name: " + table_name)
+    elif form_name and form_name in mp.FORMHANDLER:
         handler = mp.FORMHANDLER[form_name]
         table_name = handler["table_name"]
         if "table_buttons" in handler:
@@ -94,23 +107,27 @@ def table_view(request):
                 hx_req = handler["table_buttons"][key]["hx_req"]
                 button = bf.button(key, hx_vals, hx_req)
                 buttons.append(button)
+        logger.debug("form_name: " + form_name)
+    if request.user.is_admin:
+        company_id = request.session.get('selected_company_id')
+        user_id = request.user.id
     else:
-        messages.error(request, "tablename doesnt exist")
-    logger.debug("form_name: " + form_name)
-    user_id = request.user.id
-    logger.debug("table_name: " + table_name)
-    data = db.get_data(table_name, user_id)
+        user_id = request.user.id
+
+
+    data = db.get_data(table_name, user_id, company_id)
     if not data:
         logger.debug("table name doesnt exist")
         messages.error(request, "table name doesnt exist")
     elif data == []:
         messages.error(request, "table name exists but no data")
     else:
-        paginator = Paginator(data, 10)
+        paginator = Paginator(data, 20)
         page_number = request.GET.get("page")
         logger.debug(page_number)
         page_obj = paginator.get_page(page_number)
         rows = [{"id":obj.get("id"),"table_data":obj.get("table_data")} for obj in page_obj]
+        logger.debug(rows)
     context = {
         "rows": rows,
         "page_obj": page_obj,
@@ -129,23 +146,22 @@ def table_view(request):
 @login_required
 @require_POST
 def select_row(request):
-    row_id = request.POST.get('row_id')
-    
-    # Get or initialize selected rows from session
-    selected_rows = request.session.get('selected_rows', [])
-    
-    # Toggle selection
-    if row_id in selected_rows:
-        selected_rows.remove(row_id)
-    else:
-        selected_rows.append(row_id)
-    
+    if request.method == "POST":
+        row_id = request.POST.get('row_id')
+        selected_rows = request.session.get('selected_rows', [])
+        logger.debug(selected_rows)
+        # Toggle selection
+        if row_id in selected_rows:
+            selected_rows.remove(row_id)
+        else:
+            selected_rows.append(row_id)
+        logger.debug(selected_rows)
+
     # Update session
-    request.session['selected_rows'] = selected_rows
-    request.session.modified = True
+        request.session['selected_rows'] = selected_rows
+        request.session.modified = True
     
     return HttpResponse(status=200)
 
 def get_selected_rows(request):
-    """Helper function to get selected rows from session"""
     return request.session.get('selected_rows', [])
