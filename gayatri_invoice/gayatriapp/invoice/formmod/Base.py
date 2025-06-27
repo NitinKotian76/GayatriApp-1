@@ -3,12 +3,40 @@ from django.template import Template
 from django.http import JsonResponse
 from django import forms
 from ..models import *
-from . import formComponents
 from django.contrib.auth import authenticate
 from django.core.exceptions import ValidationError
 import json
 import logging
 logger = logging.getLogger(__name__)
+
+# Simple base class - minimal change for immediate DRY benefits
+class BaseInvoiceForm(forms.Form):
+    """Base form class with common configuration"""
+    template_name = "form_snippet.html"
+    error_css_class = "error"
+    required_css_class = "required"
+    
+    # Common choice options - eliminate duplication
+    ORDER_TYPES = [
+        ("local", "Local"),
+        ("direct", "Direct"),
+        ("export", "Export"),
+    ]
+    
+    ORDER_TYPES_LOCAL_EXPORT = [
+        ("local", "Local"),
+        ("export", "Export"),
+    ]
+    
+    YES_NO_CHOICES = [
+        (True, "yes"), 
+        (False, "no")
+    ]
+    
+    PLUS_MINUS_CHOICES = [
+        (True, "plus"), 
+        (False, "minus")
+    ]
 
 # helper functions
 
@@ -20,15 +48,15 @@ def getInputFields(object):
     ]
     return methods_list
 
-def button(name, hx_vals, hx_req):
+def button(name:str, hx_vals:dict, hx_req:str, target:str="#dynform"):
     data = json.dumps(hx_vals)
     html = format_html('<input class="w3-button w3-ripple w3-green w3-padding w3-margin"\
                 type="button" value="{}" \
                 hx-post={} \
                 hx-trigger="click" \
-                hx-target="#dynform" \
+                hx-target={} \
                 hx-swap="outerHTML" \
-                hx-vals=\'{}\'/>', name, hx_req, data)
+                hx-vals=\'{}\'/>', name, hx_req, target, data)
     return html
 
 # auth forms
@@ -88,10 +116,7 @@ class loginForm(forms.Form):
             raise ValidationError("An error occurred while logging in")
 
 
-class changePassword(forms.Form):
-    template_name = "form_snippet.html"
-    error_css_class = "error"
-    required_css_class = "required"
+class changePassword(BaseInvoiceForm):
 
     old_password = forms.CharField(widget=forms.PasswordInput(
         attrs={
@@ -131,54 +156,6 @@ class adminCompany(forms.Form):
         super().__init__(*args, **kwargs)
         self.fields['company_name'].queryset = Company.objects.all()
 
-# crud forms
-
-class formCreate(forms.Form):
-    # Group.objects.all(), Table.objects.all()
-    template_name = "form_snippet.html"
-    error_css_class = "error"
-    required_css_class = "required"
-
-    form_name = forms.CharField(required=True)
-    # TODO: this statement interferes with migrations
-    group_names = forms.MultipleChoiceField(
-        widget=forms.SelectMultiple, choices=Group.objects.values_list(), required=True
-    )
-    table_names = forms.MultipleChoiceField(
-        widget=forms.SelectMultiple, choices=TableName.objects.all(), required=True
-    )
-    description = forms.CharField(required=True)
-
-class fieldAdd(forms.Form):
-    template_name = "form_snippet.html"
-    error_css_class = "error"
-    required_css_class = "required"
-
-    field_name = forms.ChoiceField(
-        widget=forms.Select, choices=getInputFields(formComponents), required=True
-    )
-    var_name = forms.CharField(required=True)
-    disabled = forms.ChoiceField(widget=forms.CheckboxInput, required=True)
-    table_row = forms.IntegerField(required=True)
-    table_column = forms.IntegerField(required=True)
-
-    # attr = 'hx-post="/invoice/field_setup" hx-target="#mainform" hx-swap="none"',
-    # attr = 'onclick=document.getElementById("modalView").style.display="none"',
-
-
-class formDelete(forms.Form):
-    # search field
-    template_name = "form_snippet.html"
-    form_name = forms.ChoiceField(widget=forms.Select, choices="")
-    group_name = forms.ChoiceField()
-
-
-class formEdit(forms.Form):
-    form_name = forms.ChoiceField(widget=forms.Select, choices="")
-    group_name = forms.ChoiceField()
-    # attr=f'hx-get="/invoice/form_setup" hx-vals={jsonvalue} hx-target="none" hx-swap="none"',
-    # attr='onclick=document.getElementById("modalView").style.display="none"',
-
 
 class new_report(forms.Form):
     template_name = "form_snippet.html"
@@ -203,10 +180,10 @@ class reportCreate(forms.Form):
     company = forms.ChoiceField(choices=[])
     excel_file = forms.FileField()
 
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['company'].choices = Company.objects.all()
+        self.fields['company'].choices = Company.objects.values_list('id', 'company_name')
+
 
 class keyValueForm(forms.Form):
     key = forms.CharField()
@@ -214,11 +191,13 @@ class keyValueForm(forms.Form):
 
 
 class reportEdit(forms.Form):
-    pass
+    template_name = "form_snippet.html"
+    report_name = forms.ChoiceField(choices=[])
 
 
 class reportDelete(forms.Form):
-    pass
+    template_name = "form_snippet.html"
+    report_name = forms.ChoiceField(choices=[])
 
 
 class table_list(forms.Form):
@@ -230,7 +209,7 @@ class table_list(forms.Form):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['company'].choices = Company.objects.all()
+        self.fields['company'].choices = Company.objects.values_list('id', 'company_name')
 
 
 class table_create(forms.Form):
@@ -242,16 +221,19 @@ class table_create(forms.Form):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['company'].choices = Company.objects.all()
+        self.fields['company'].choices = Company.objects.values_list('id', 'company_name')
 
 
 class table_edit(forms.Form):
-    pass
+    template_name = "form_snippet.html"
+    table_name = forms.ChoiceField(choices=[])
 
 
 class table_delete(forms.Form):
-    pass
+    template_name = "form_snippet.html"
+    table_name = forms.ChoiceField(choices=[])
 
 
 class table_backup(forms.Form):
-    pass
+    template_name = "form_snippet.html"
+    table_name = forms.ChoiceField(choices=[])

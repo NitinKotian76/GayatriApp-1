@@ -18,8 +18,8 @@ import logging
 from invoice.cachestore import cachestore as cache
 from .models import *
 from .forms import *
-from .formmod import DefaultForm as df
-from .formmod import BaseForm as bf
+from .formmod import Static as df
+from .formmod import Base as bf
 from .dbmod import dbfunctions as db
 from .reportmod import create_report as cr
 from . import mappings as mp

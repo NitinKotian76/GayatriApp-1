@@ -1,7 +1,7 @@
 from django.test import TestCase, Client
 from django.test.utils import setup_test_environment
 from django.utils import safestring
-from ..formmod import BaseForm as BF
+from ..formmod import Base as BF
 
 class TestBaseForm(TestCase):
     def setup():

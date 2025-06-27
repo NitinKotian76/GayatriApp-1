@@ -2,15 +2,11 @@
 {% block content %}
     <form>
         {% csrf_token %}
-        <section id="mainform" class="w3-row w3-container w3-half">
-            <div>
+        <section id="mainform" class="w3-container">
                 <div id="formpart">{% include 'partials/forms.html' %}</div>
-            </div>
         </section>
-        <section class="w3-row w3-container w3-half">
-            <div>
+        <section class="w3-container">
                 <div id="tableview">{% include 'partials/tableview.html' %}</div>
-            </div>
         </section>
     </form>
 {% endblock %}

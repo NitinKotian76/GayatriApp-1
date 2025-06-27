@@ -1,5 +1,5 @@
-from .formmod import DefaultForm as df
-from .formmod import BaseForm as bf
+from .formmod import Static as df
+from .formmod import Base as bf
 
 FORMHANDLER = {
     "customer": {

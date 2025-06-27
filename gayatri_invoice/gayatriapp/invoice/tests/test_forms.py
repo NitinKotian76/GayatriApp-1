@@ -1,6 +1,6 @@
 from django.test import TestCase, Client
 from django.utils import safestring
-from ..formmod import DefaultForm as df
+from ..formmod import Static as df
 # Create your tests here.
 
 class TestdisplayForm(TestCase):

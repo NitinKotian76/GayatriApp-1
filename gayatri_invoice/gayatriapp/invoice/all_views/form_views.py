@@ -9,8 +9,8 @@ import logging
 from ..cachestore import cachestore as cache
 from ..models import *
 from ..forms import *
-from ..formmod import DefaultForm as df
-from ..formmod import BaseForm as bf
+from ..formmod import Static as df
+from ..formmod import Base as bf
 from ..dbmod import dbfunctions as db
 from .. import mappings as mp
 from django.views.decorators.http import require_POST
@@ -83,7 +83,7 @@ def form_view(request):
 @ensure_csrf_cookie
 @login_required
 @never_cache
-def table_view(request):
+def table_data_view(request):
     buttons = []
     table_name = request.GET.get("table_name")
     form_name = request.GET.get("form")
@@ -127,8 +127,8 @@ def table_view(request):
         logger.debug(page_number)
         page_obj = paginator.get_page(page_number)
         rows = [{"id":obj.get("id"),"table_data":obj.get("table_data")} for obj in page_obj]
-        logger.debug(rows)
     context = {
+        "listdata": True,
         "rows": rows,
         "page_obj": page_obj,
         "table_name": table_name,

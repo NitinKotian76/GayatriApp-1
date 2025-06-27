@@ -9,8 +9,8 @@ import logging
 from ..cachestore import cachestore as cache
 from ..models import *
 from ..forms import *
-from ..formmod import DefaultForm as df
-from ..formmod import BaseForm as bf
+from ..formmod import Static as df
+from ..formmod import Base as bf
 from ..dbmod import dbfunctions as db
 from ..reportmod import create_report as cr
 from .. import mappings as mp
@@ -209,11 +209,27 @@ def table_list(request):
         form = bf.table_list(request.POST)
         if form.is_valid():
             company_id = form.cleaned_data['company']
-            table_name = TableName.objects.filter(company=company_id).values_list('table_name', flat=True)
+            table_name = TableName.objects.filter(company=company_id).values("id","table_name").order_by("id")
+            logger.debug(company_id)
             logger.debug(table_name)
+            if not table_name:
+                    logger.debug("table name doesnt exist")
+                    messages.error(request, "table name doesnt exist")
+            elif table_name == []:
+                messages.error(request, "table name exists but no data")
+            else:                   
+                paginator = Paginator(table_name, 10)
+                page_number = request.GET.get('page')
+                page_obj = paginator.get_page(page_number)
+                for obj in page_obj:
+                    logger.debug(obj["id"])
+                    logger.debug(obj["table_name"])
+                rows = [{"id":obj["id"],"table_data":obj["table_name"]} for obj in page_obj]
+                logger.debug(rows)
+                return render(request, "partials/tableview.html", {"rows": rows, "page_obj": page_obj})
     else:
         form = bf.table_list()
-        buttons.append(bf.button("submit", {"form": "table_list", "table_name": table_name}, "/invoice/table_list"))
+        buttons.append(bf.button("submit", {"form": "table_list"}, "/invoice/table_list", "#tableshow"))
         context = {
             "form": form,
             "buttons": buttons,

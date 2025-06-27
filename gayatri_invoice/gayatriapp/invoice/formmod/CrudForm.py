@@ -1,7 +1,8 @@
-from . import BaseForm as bf
+from . import Base as bf
 import json
 import os
 import logging
+from django import forms
 
 logger = logging.getLogger(__name__)
 # TODO: have to transform this to set a form using the UI and get form.Form methods
@@ -114,3 +115,50 @@ class form_store_json:
         with open(self.filename, "r") as file:
             filedata = json.load(file)
             return filedata
+
+
+class fieldAdd(forms.Form):
+    template_name = "form_snippet.html"
+    error_css_class = "error"
+    required_css_class = "required"
+
+    field_name = forms.ChoiceField(
+        widget=forms.Select, choices=getInputFields(formComponents), required=True
+    )
+    var_name = forms.CharField(required=True)
+    disabled = forms.ChoiceField(widget=forms.CheckboxInput, required=True)
+    table_row = forms.IntegerField(required=True)
+    table_column = forms.IntegerField(required=True)
+
+
+
+class formCreate(forms.Form):
+    # Group.objects.all(), Table.objects.all()
+    template_name = "form_snippet.html"
+    error_css_class = "error"
+    required_css_class = "required"
+
+    form_name = forms.CharField(required=True)
+    # TODO: this statement interferes with migrations
+    group_names = forms.MultipleChoiceField(
+        widget=forms.SelectMultiple, choices=Group.objects.values_list(), required=True
+    )
+    table_names = forms.MultipleChoiceField(
+        widget=forms.SelectMultiple, choices=TableName.objects.all(), required=True
+    )
+    description = forms.CharField(required=True)
+
+
+class formDelete(forms.Form):
+    # search field
+    template_name = "form_snippet.html"
+    form_name = forms.ChoiceField(widget=forms.Select, choices="")
+    group_name = forms.ChoiceField()
+
+
+class formEdit(forms.Form):
+    template_name = "form_snippet.html"
+    form_name = forms.ChoiceField(widget=forms.Select, choices="")
+    group_name = forms.ChoiceField()
+    # attr=f'hx-get="/invoice/form_setup" hx-vals={jsonvalue} hx-target="none" hx-swap="none"',
+    # attr='onclick=document.getElementById("modalView").style.display="none"',

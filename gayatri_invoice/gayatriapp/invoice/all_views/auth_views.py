@@ -11,7 +11,7 @@ import logging
 from ..cachestore import cachestore as cache
 from ..models import *
 from ..forms import *
-from ..formmod import BaseForm as bf
+from ..formmod import Base as bf
 
 # IMPROVEMENT NEEDED: Add proper docstring for the module
 # IMPROVEMENT NEEDED: Add proper type hints for better code maintainability

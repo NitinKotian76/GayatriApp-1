@@ -24,7 +24,7 @@ auth_urlpatterns = [
 
 # Table URLs
 table_urlpatterns = [
-    path("table_view", form_views.table_view, name="table_view"),
+    path("table_data_view", form_views.table_data_view, name="table_data_view"),
 ]
 
 # Main URLs
