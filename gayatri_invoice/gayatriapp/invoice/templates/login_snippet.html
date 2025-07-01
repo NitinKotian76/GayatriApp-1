@@ -1,0 +1,11 @@
+<div class="w3-grid" style="grid-template-rows:auto auto auto;">
+    {% for field in form %}<div class="w3-padding w3-margin">{{ field.label_tag }} {{ field }}</div>{% endfor %}
+</div>
+<div class="w3-panel w3-red">
+    {% for field, errors in form.errors.items %}
+        <ul style="list-style-type: none">
+            {% for error in errors %}<li>{{ field.label_tag }} : {{ error }}</li>{% endfor %}
+        </ul>
+    {% endfor %}
+</div>
+

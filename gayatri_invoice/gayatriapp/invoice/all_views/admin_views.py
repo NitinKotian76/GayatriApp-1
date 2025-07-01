@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from django.urls import reverse
 from django.http import HttpResponse, FileResponse
 from django.views.decorators.csrf import ensure_csrf_cookie, csrf_protect
 from django.utils.decorators import method_decorator
@@ -15,6 +16,11 @@ from ..dbmod import dbfunctions as db
 from ..reportmod import create_report as cr
 from .. import mappings as mp
 from django.forms import formset_factory
+
+# class based Views
+
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.generic.list import ListView
 
 # =====================
 # PRIORITY 2: CRUD Operations for Admin Views
@@ -40,9 +46,8 @@ from django.forms import formset_factory
 # TODO: Implement report_list view
 logger = logging.getLogger(__name__)
 
+
 # forms
-
-
 @login_required
 def form_setup(request):
     # PRIORITY 2: To be implemented (Create Form CRUD operation)
@@ -196,46 +201,36 @@ def create_table(request):
         "buttons": buttons,
         "formset": formset
     }
-
     return render(request, "partials/createform.html", context)
 
 
-# TODO: Implement table_list view
-@login_required
-def table_list(request):
-    buttons = []
-    table_name = []
-    if request.method == "POST":
-        form = bf.table_list(request.POST)
-        if form.is_valid():
-            company_id = form.cleaned_data['company']
-            table_name = TableName.objects.filter(company=company_id).values("id","table_name").order_by("id")
-            logger.debug(company_id)
-            logger.debug(table_name)
-            if not table_name:
-                    logger.debug("table name doesnt exist")
-                    messages.error(request, "table name doesnt exist")
-            elif table_name == []:
-                messages.error(request, "table name exists but no data")
-            else:                   
-                paginator = Paginator(table_name, 10)
-                page_number = request.GET.get('page')
-                page_obj = paginator.get_page(page_number)
-                for obj in page_obj:
-                    logger.debug(obj["id"])
-                    logger.debug(obj["table_name"])
-                rows = [{"id":obj["id"],"table_data":obj["table_name"]} for obj in page_obj]
-                logger.debug(rows)
-                return render(request, "partials/tableview.html", {"rows": rows, "page_obj": page_obj})
-    else:
-        form = bf.table_list()
-        buttons.append(bf.button("submit", {"form": "table_list"}, "/invoice/table_list", "#tableshow"))
-        context = {
-            "form": form,
-            "buttons": buttons,
-            "messages": messages.get_messages(request)
-        }
-        return render(request, "partials/forms.html", context)
+class Table_list(LoginRequiredMixin, ListView):
+    # NOTE: priority 2
+    model = TableName
+    template_name = "partials/tableview.html"
+    context_object_name = "listdata"
+    paginate_by = 10
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        company_id = self.request.GET.get("company")
+        if company_id:
+            queryset = TableName.objects.filter(
+                company=company_id).values("id", "table_name").order_by("id")
+            logger.debug(queryset)
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data()
+        context["buttons"] = bf.button(
+            "select",
+            {"form": "adminCompany"},
+            "/invoice/admin_company"
+        )
+        logger.debug(context)
+        context["form_name"] = "table_list"
+        return context
+
 
 # IMPROVEMENT NEEDED: Add proper error handling
 # IMPROVEMENT NEEDED: Add proper logging
@@ -259,4 +254,3 @@ def admin_company(request):
         "buttons": buttons,
     }
     return render(request, "partials/forms.html", context)
-

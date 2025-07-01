@@ -1,5 +1,9 @@
 <div id="dynform">
-  {% csrf_token %}
-  {{form}}
-  <div>{% for button in buttons %} {{button}} {% endfor %}</div>
+    {% csrf_token %}
+    {{ form }}
+    {% autoescape off %}
+        <div>
+            {% for button in buttons %}{{ button }}{% endfor %}
+        </div>
+    {% endautoescape %}
 </div>

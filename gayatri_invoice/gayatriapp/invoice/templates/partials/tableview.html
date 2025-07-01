@@ -1,82 +1,118 @@
 <div id="tableshow">
-    {% if listdata %}
     <form>
         {% csrf_token %}
-        <div style="overflow-x:auto;">
-            <table class="w3-table-all w3-tiny w3-responsive">
-                <thead>
-                    <tr>
-                        <th>select</th>
-                        {% for key in rows.0.keys %}<th>{{ key|title }}</th>{% endfor %}
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for row in rows %}
+        {% if listdata %}
+            <div style="overflow-x:auto;">
+                <table class="w3-table-all w3-tiny w3-responsive">
+                    {{ listdata.0 }}
+                    <thead>
                         <tr>
-                            {% for value in row.values %}<td>{{ value }}</td>{% endfor %}
+                            <th>select</th>
+                            {% for key in listdata.0.keys %}<th>{{ key|title }}</th>{% endfor %}
                         </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    </form>
-    {% else %}
-    <form>
-        {% csrf_token %}
-        <div style="overflow-x:auto;">
-            <table class="w3-table-all w3-tiny w3-responsive">
-                <thead>
-                    <tr>
-                        <th>select</th>
-                        {% for key in rows.0.table_data.keys %}<th>{{ key|title }}</th>{% endfor %}
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for row in rows %}
-                        <tr>
-                            <td>
-                                <input type="checkbox"
-                                       class="w3-input"
-                                       name="selected_row"
-                                       hx-post="/invoice/select_row"
-                                       hx-vals='{"row_id": "{{ row.id }}"}'
-                                       hx-swap="none">
-                            </td>
-                            {% for value in row.table_data.values %}<td>{{ value }}</td>{% endfor %}
-                            
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-        {% if page_obj.has_previous %}
-            <a href="#"
-               hx-get="/invoice/table_data_view"
-               hx-vals='{"form":"{{ form_name }}","table_name":"{{ table_name }}","page":"1"}'
-               hx-swap="innerHTML"
-               hx-target="#tableshow"
-               class="w3-button">&laquo; first</a>
-            <a href="#"
-               hx-get="/invoice/table_data_view"
-               hx-vals='{"form":"{{ form_name }}","table_name":"{{ table_name }}","page":"{{ page_obj.previous_page_number }}"}'
-               hx-swap="innerHTML"
-               hx-target="#tableshow"
-               class="w3-button">previous</a>
+                    </thead>
+                    <tbody>
+                        {% for data in listdata %}
+                            <tr>
+                                <td>
+                                    <input type="checkbox"
+                                           class="w3-input"
+                                           name="selected_row"
+                                           hx-post="/invoice/select_row"
+                                           hx-vals='{"listdata_id": "{{ data.id }}"}'
+                                           hx-swap="none">
+                                </td>
+                                {% for value in data.values %}<td>{{ value }}</td>{% endfor %}
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% if page_obj.has_previous %}
+                <a href="#"
+                   hx-get="/invoice/Table_list"
+                   hx-vals='{"form":"{{ form_name }}", "table_name":"{{ table_name }}", "page":"1"}'
+                   hx-swap="innerHTML"
+                   hx-target="#tableshow"
+                   class="w3-button">&laquo; first</a>
+                <a href="#"
+                   hx-get="/invoice/Table_list"
+                   hx-vals='{"form":"{{ form_name }}", "table_name":"{{ table_name }}", "page":"{{ page_obj.previous_page_number }}"}'
+                   hx-swap="innerHTML"
+                   hx-target="#tableshow"
+                   class="w3-button">previous</a>
+            {% endif %}
+            <span class="w3-center w3-margin">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+            {% if page_obj.has_next %}
+                <a href="#"
+                   hx-get="/invoice/Table_list"
+                   hx-vals='{"form":"{{ form_name }}", "table_name":"{{ table_name }}", "page":"{{ page_obj.next_page_number }}"}'
+                   hx-swap="innerHTML"
+                   hx-target="#tableshow"
+                   class="w3-button">next</a>
+                <a href="#"
+                   hx-get="/invoice/Table_list"
+                   hx-vals='{"form":"{{ form_name }}", "table_name":"{{ table_name }}", "page":"{{ page_obj.paginator.num_pages }}"}'
+                   hx-swap="innerHTML"
+                   hx-target="#tableshow"
+                   class="w3-button">last &raquo;</a>
+            {% endif %}
         {% endif %}
-        <span class="w3-center w3-margin">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
-        {% if page_obj.has_next %}
-            <a href="#"
-               hx-get="/invoice/table_data_view"
-               hx-vals='{"form":"{{ form_name }}","table_name":"{{ table_name }}","page":"{{ page_obj.next_page_number }}"}'
-               hx-swap="innerHTML"
-               hx-target="#tableshow"
-               class="w3-button">next</a>
-            <a href="#"
-               hx-get="/invoice/table_data_view"
-               hx-vals='{"form":"{{ form_name }}","table_name":"{{ table_name }}","page":"{{ page_obj.paginator.num_pages }}"}'
-               hx-swap="innerHTML"
-               hx-target="#tableshow"
-               class="w3-button">last &raquo;</a>
+        {% if rows %}
+            <div style="overflow-x:auto;">
+                <table class="w3-table-all w3-tiny w3-responsive">
+                    <thead>
+                        <tr>
+                            <th>select</th>
+                            {% for key in rows.0.table_data.keys %}<th>{{ key|title }}</th>{% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in rows %}
+                            <tr>
+                                <td>
+                                    <input type="checkbox"
+                                           class="w3-input"
+                                           name="selected_row"
+                                           hx-post="/invoice/select_row"
+                                           hx-vals='{"row_id": "{{ row.id }}"}'
+                                           hx-swap="none">
+                                </td>
+                                {% for value in row.0.table_data.values %}<td>{{ value }}</td>{% endfor %}
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% if page_obj.has_previous %}
+                <a href="#"
+                   hx-get="/invoice/table_data_view"
+                   hx-vals='{"form":"{{ form_name }}", "table_name":"{{ table_name }}", "page":"1"}'
+                   hx-swap="innerHTML"
+                   hx-target="#tableshow"
+                   class="w3-button">&laquo; first</a>
+                <a href="#"
+                   hx-get="/invoice/table_data_view"
+                   hx-vals='{"form":"{{ form_name }}", "table_name":"{{ table_name }}", "page":"{{ page_obj.previous_page_number }}"}'
+                   hx-swap="innerHTML"
+                   hx-target="#tableshow"
+                   class="w3-button">previous</a>
+            {% endif %}
+            <span class="w3-center w3-margin">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+            {% if page_obj.has_next %}
+                <a href="#"
+                   hx-get="/invoice/table_data_view"
+                   hx-vals='{"form":"{{ form_name }}", "table_name":"{{ table_name }}", "page":"{{ page_obj.next_page_number }}"}'
+                   hx-swap="innerHTML"
+                   hx-target="#tableshow"
+                   class="w3-button">next</a>
+                <a href="#"
+                   hx-get="/invoice/table_data_view"
+                   hx-vals='{"form":"{{ form_name }}", "table_name":"{{ table_name }}", "page":"{{ page_obj.paginator.num_pages }}"}'
+                   hx-swap="innerHTML"
+                   hx-target="#tableshow"
+                   class="w3-button">last &raquo;</a>
+            {% endif %}
         {% endif %}
         <div id="searchbar" class="w3-margin-top">
             <div class="w3-bar w3-container">
@@ -86,8 +122,11 @@
                        class="w3-bar-item w3-input w3-round w3-border" />
                 <button class="fa fa-arrow-right w3-bar-item w3-button w3-round w3-green w3-ripple"></button>
             </div>
-            <div class="w3-container">{% for button in buttons %} {{button}} {% endfor %}</div>
+            {% autoescape off %}
+                <div class="w3-container">
+                    {% for button in buttons %}{{ button }}{% endfor %}
+                </div>
+            {% endautoescape %}
         </div>
     </form>
-    {% endif %}
 </div>

@@ -21,9 +21,11 @@ from .. import mappings as mp
 
 logger = logging.getLogger(__name__)
 
+
 @login_required
 @permission_required('invoice.view_form', raise_exception=True)
 def report_view(request):
+    # NOTE: this view is specifically for reports
     # IMPROVEMENT NEEDED: Use proper constant naming convention
     form_handler = mp.REPORT
     formdata = None
@@ -34,7 +36,8 @@ def report_view(request):
         logger.debug(formtype)
         if formtype in form_handler:
             handler = form_handler[formtype]
-            formdata = handler["form_class"](request.POST, user_id=request.user.id)
+            formdata = handler["form_class"](
+                request.POST, user_id=request.user.id)
             # buttons
             for key in handler["buttons"]:
                 hx_vals = handler["buttons"][key]["hx_vals"]

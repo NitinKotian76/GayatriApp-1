@@ -11,13 +11,15 @@
     <script src="{% static 'invoice/script/htmx.min.js'%}" defer></script>
     <script src="{% static 'invoice/script/json-enc.js'%}" defer></script>
     <script src="{% static 'invoice/script/CustomScript.js'%}" defer></script>
-    <link rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <script src="{% static 'invoice/script/all.min.js'%}" defer></script>
+    <link rel="stylesheet" href="{% static 'invoice/css/all.min.css' %}">
 </head>
 <body class="w3-display-container">
-    <div id="notif" hx-get="/invoice/get_notifications" hx-trigger="showNotif from:body" hx-target="#notif" hx-swap="innerHTML swap:500ms">
-        {% include 'partials/notif.html' with messages=messages %}
-    </div>
+    <div id="notif"
+         hx-get="/invoice/get_notifications"
+         hx-trigger="showNotif from:body"
+         hx-target="#notif"
+         hx-swap="innerHTML swap:500ms">{% include 'partials/notif.html' with messages=messages %}</div>
     {% block nav %}
         <div class="navigation">
             <nav>

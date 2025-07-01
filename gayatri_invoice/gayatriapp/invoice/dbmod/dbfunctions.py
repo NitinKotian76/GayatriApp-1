@@ -110,7 +110,7 @@ def get_data(table_name: str, user_id: str, search_term: str = None, company_id:
         if search_term:
             queryset = queryset.filter(table_data__icontains=search_term)
         data = queryset.values().order_by("id")
-        return list(data)
+        return data
     except TableName.DoesNotExist:
         logger.debug("Table does not exists")
         return 1

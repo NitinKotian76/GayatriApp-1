@@ -1,6 +1,5 @@
 from django import forms
 import logging
-import json
 from ..models import *
 from django.utils.html import *
 from ..dbmod import dbfunctions as db
@@ -12,6 +11,7 @@ logger = logging.getLogger(__name__)
 # TODO: all master forms need a search field
 # masters #
 
+
 class customer(forms.Form):
     template_name = "form_snippet.html"
     error_css_class = "error"
@@ -22,18 +22,30 @@ class customer(forms.Form):
                    ("export", "Export"),
                    ]
 
-    customer_name = forms.CharField(widget=forms.TextInput(attrs={'class':'w3-input'}),max_length=50)
-    agent_or_customer_name = forms.CharField(widget=forms.TextInput(attrs={'class':'w3-input'}),max_length=50)
-    address_details = forms.CharField(widget=forms.TextInput(attrs={'class':'w3-input'}),max_length=1000)
-    city = forms.CharField(widget=forms.TextInput(attrs={'class':'w3-input'}),max_length=50)
-    state = forms.CharField(widget=forms.TextInput(attrs={'class':'w3-input'}),max_length=50)
-    pin_code = forms.IntegerField(widget=forms.TextInput(attrs={'class':'w3-input'}),max_value=999999)
-    gst_no = forms.CharField(widget=forms.TextInput(attrs={'class':'w3-input'}),min_length=15, max_length=15)
-    pan_no = forms.CharField(widget=forms.TextInput(attrs={'class':'w3-input'}),min_length=10, max_length=10)
-    payment_term = forms.IntegerField(widget=forms.TextInput(attrs={'class':'w3-input'}))  # payment period in days
-    dispatch_to = forms.CharField(widget=forms.TextInput(attrs={'class':'w3-input'}),max_length=50)
-    district = forms.CharField(widget=forms.TextInput(attrs={'class':'w3-input'}),max_length=50)
-    invoice_type = forms.ChoiceField(widget=forms.Select(attrs={'class':'w3-input'}),choices=order_types)
+    customer_name = forms.CharField(widget=forms.TextInput(
+        attrs={'class': 'w3-input'}), max_length=50)
+    agent_or_customer_name = forms.CharField(
+        widget=forms.TextInput(attrs={'class': 'w3-input'}), max_length=50)
+    address_details = forms.CharField(widget=forms.TextInput(
+        attrs={'class': 'w3-input'}), max_length=1000)
+    city = forms.CharField(widget=forms.TextInput(
+        attrs={'class': 'w3-input'}), max_length=50)
+    state = forms.CharField(widget=forms.TextInput(
+        attrs={'class': 'w3-input'}), max_length=50)
+    pin_code = forms.IntegerField(widget=forms.TextInput(
+        attrs={'class': 'w3-input'}), max_value=999999)
+    gst_no = forms.CharField(widget=forms.TextInput(
+        attrs={'class': 'w3-input'}), min_length=15, max_length=15)
+    pan_no = forms.CharField(widget=forms.TextInput(
+        attrs={'class': 'w3-input'}), min_length=10, max_length=10)
+    payment_term = forms.IntegerField(widget=forms.TextInput(
+        attrs={'class': 'w3-input'}))  # payment period in days
+    dispatch_to = forms.CharField(widget=forms.TextInput(
+        attrs={'class': 'w3-input'}), max_length=50)
+    district = forms.CharField(widget=forms.TextInput(
+        attrs={'class': 'w3-input'}), max_length=50)
+    invoice_type = forms.ChoiceField(widget=forms.Select(
+        attrs={'class': 'w3-input'}), choices=order_types)
 
 
 class supplier(forms.Form):
@@ -176,16 +188,24 @@ class open_bal_prod(forms.Form):
     agent = forms.ChoiceField(choices=[])
     fsc = forms.ChoiceField(choices=[(True, "yes"), (False, "no")])
     lot_no = forms.IntegerField()
+
     def __init__(self, *args, user_id=None, **kwargs):
         super().__init__(*args, **kwargs)
         if user_id is not None:
-            self.fields['variety'].choices = db.get_choices("variety", "variety", user_id)
-            self.fields['type'].choices = db.get_choices("items", "item_type", user_id)
-            self.fields['item_code'].choices = db.get_choices("items", "item_code", user_id)
-            self.fields['unit'].choices = db.get_choices("units", "unit_of_measurement", user_id)
-            self.fields['location'].choices = db.get_choices("location", "location", user_id)
-            self.fields['party'].choices = db.get_choices("customer", "customer_name", user_id)
-            self.fields['agent'].choices = db.get_choices("agent", "agent_name", user_id)
+            self.fields['variety'].choices = db.get_choices(
+                "variety", "variety", user_id)
+            self.fields['type'].choices = db.get_choices(
+                "items", "item_type", user_id)
+            self.fields['item_code'].choices = db.get_choices(
+                "items", "item_code", user_id)
+            self.fields['unit'].choices = db.get_choices(
+                "units", "unit_of_measurement", user_id)
+            self.fields['location'].choices = db.get_choices(
+                "location", "location", user_id)
+            self.fields['party'].choices = db.get_choices(
+                "customer", "customer_name", user_id)
+            self.fields['agent'].choices = db.get_choices(
+                "agent", "agent_name", user_id)
 
 
 class production(forms.Form):
@@ -223,12 +243,16 @@ class production(forms.Form):
     agent = forms.ChoiceField(choices=[])
     fsc = forms.ChoiceField(choices=[(True, "yes"), (False, "no")])
     lot_no = forms.IntegerField()
+
     def __init__(self, *args, user_id=None, **kwargs):
         super().__init__(*args, **kwargs)
         if user_id is not None:
-            self.fields['variety'].choices = db.get_choices("variety", "variety", user_id)
-            self.fields['item_type'].choices = db.get_choices("items", "item_type", user_id)
-            self.fields['item_code'].choices = db.get_choices("items", "item_code", user_id)
+            self.fields['variety'].choices = db.get_choices(
+                "variety", "variety", user_id)
+            self.fields['item_type'].choices = db.get_choices(
+                "items", "item_type", user_id)
+            self.fields['item_code'].choices = db.get_choices(
+                "items", "item_code", user_id)
 
 
 class prod_plus_minus(forms.Form):
@@ -264,16 +288,25 @@ class prod_plus_minus(forms.Form):
     agent = forms.ChoiceField(choices=[])
     fsc = forms.ChoiceField(choices=[(True, "yes"), (False, "no")])
     lot_no = forms.IntegerField()
+
     def __init__(self, *args, user_id=None, **kwargs):
         super().__init__(*args, **kwargs)
         if user_id is not None:
-            self.fields['variety'].choices = db.get_choices("variety", "variety", user_id)
-            self.fields['item_type'].choices = db.get_choices("items", "item_type", user_id)
-            self.fields['item_code'].choices = db.get_choices("items", "item_code", user_id)
-            self.fields['unit'].choices = db.get_choices("units", "unit_of_measurement", user_id)
-            self.fields['location'].choices = db.get_choices("location", "location", user_id)
-            self.fields['party'].choices = db.get_choices("customer", "customer_name", user_id)
-            self.fields['agent'].choices = db.get_choices("agent", "agent_name", user_id)
+            self.fields['variety'].choices = db.get_choices(
+                "variety", "variety", user_id)
+            self.fields['item_type'].choices = db.get_choices(
+                "items", "item_type", user_id)
+            self.fields['item_code'].choices = db.get_choices(
+                "items", "item_code", user_id)
+            self.fields['unit'].choices = db.get_choices(
+                "units", "unit_of_measurement", user_id)
+            self.fields['location'].choices = db.get_choices(
+                "location", "location", user_id)
+            self.fields['party'].choices = db.get_choices(
+                "customer", "customer_name", user_id)
+            self.fields['agent'].choices = db.get_choices(
+                "agent", "agent_name", user_id)
+
 
 class prod_approval(forms.Form):
     template_name = "form_snippet.html"
@@ -303,7 +336,7 @@ class invoice(forms.Form):
     sales_type = forms.ChoiceField(choices=order_types)
     pre_time_date = forms.DateTimeField()
     rem_time_date = forms.DateTimeField()
-    order_no = forms.IntegerField() 
+    order_no = forms.IntegerField()
     order_date = forms.DateField(
         widget=forms.DateInput(attrs={'type': 'date'}))
     transport = forms.ChoiceField(choices=[])
@@ -311,12 +344,16 @@ class invoice(forms.Form):
     supervisor_name = forms.ChoiceField(choices=[])
     remark = forms.CharField(max_length=50)
     delivery_at = forms.CharField(max_length=50)
+
     def __init__(self, *args, user_id=None, **kwargs):
         super().__init__(*args, **kwargs)
         if user_id is not None:
-            self.fields['variety'].choices = db.get_choices("variety", "variety", user_id)
-            self.fields['transport'].choices = db.get_choices("transport", "transport", user_id)
-            self.fields['supervisor_name'].choices = db.get_choices("supervisor", "supervisor_name", user_id)
+            self.fields['variety'].choices = db.get_choices(
+                "variety", "variety", user_id)
+            self.fields['transport'].choices = db.get_choices(
+                "transport", "transport", user_id)
+            self.fields['supervisor_name'].choices = db.get_choices(
+                "supervisor", "supervisor_name", user_id)
 # table_view
 # Exciseno, Quality, Variety, Size, Length, GSM, NO of bundles, No of stream, Stream wt., Weight, Unit, Rate, Amount
 # output table view
@@ -377,10 +414,12 @@ class jumbo_roll_qc(forms.Form):
     varnishability = forms.DecimalField()
     cracking_creasing = forms.DecimalField()
     flatness = forms.DecimalField()
+
     def __init__(self, *args, user_id=None, **kwargs):
         super().__init__(*args, **kwargs)
         if user_id is not None:
-            self.fields['variety'].choices = db.get_choices("variety", "variety", user_id)
+            self.fields['variety'].choices = db.get_choices(
+                "variety", "variety", user_id)
 
 
 class lot_no_wise_qc(forms.Form):
@@ -405,15 +444,22 @@ class lot_no_wise_qc(forms.Form):
     party = forms.ChoiceField(choices=[])
     agent = forms.ChoiceField(choices=[])
     weight = forms.DecimalField()
+
     def __init__(self, *args, user_id=None, **kwargs):
         super().__init__(*args, **kwargs)
         if user_id is not None:
-            self.fields['variety'].choices = db.get_choices("variety", "variety", user_id)
-            self.fields['item_code'].choices = db.get_choices("items", "item_code", user_id)
-            self.fields['unit'].choices = db.get_choices("units", "unit_of_measurement", user_id)
-            self.fields['location'].choices = db.get_choices("location", "location", user_id)
-            self.fields['party'].choices = db.get_choices("customer", "customer_name", user_id)
-            self.fields['agent'].choices = db.get_choices("agent", "agent_name", user_id)
+            self.fields['variety'].choices = db.get_choices(
+                "variety", "variety", user_id)
+            self.fields['item_code'].choices = db.get_choices(
+                "items", "item_code", user_id)
+            self.fields['unit'].choices = db.get_choices(
+                "units", "unit_of_measurement", user_id)
+            self.fields['location'].choices = db.get_choices(
+                "location", "location", user_id)
+            self.fields['party'].choices = db.get_choices(
+                "customer", "customer_name", user_id)
+            self.fields['agent'].choices = db.get_choices(
+                "agent", "agent_name", user_id)
 
 
 class finishing_house(forms.Form):
@@ -439,15 +485,23 @@ class finishing_house(forms.Form):
     party = forms.ChoiceField(choices=[])
     agent = forms.ChoiceField(choices=[])
     weight = forms.DecimalField()
+
     def __init__(self, *args, user_id=None, **kwargs):
         super().__init__(*args, **kwargs)
         if user_id is not None:
-            self.fields['variety'].choices = db.get_choices("variety", "variety", user_id)
-            self.fields['item_code'].choices = db.get_choices("items", "item_code", user_id)
-            self.fields['unit'].choices = db.get_choices("units", "unit_of_measurement", user_id)
-            self.fields['location'].choices = db.get_choices("location", "location", user_id)
-            self.fields['party'].choices = db.get_choices("customer", "customer_name", user_id)
-            self.fields['agent'].choices = db.get_choices("agent", "agent_name", user_id)
+            self.fields['variety'].choices = db.get_choices(
+                "variety", "variety", user_id)
+            self.fields['item_code'].choices = db.get_choices(
+                "items", "item_code", user_id)
+            self.fields['unit'].choices = db.get_choices(
+                "units", "unit_of_measurement", user_id)
+            self.fields['location'].choices = db.get_choices(
+                "location", "location", user_id)
+            self.fields['party'].choices = db.get_choices(
+                "customer", "customer_name", user_id)
+            self.fields['agent'].choices = db.get_choices(
+                "agent", "agent_name", user_id)
+
 
 class program_planing(forms.Form):
     template_name = "form_snippet.html"
@@ -463,13 +517,17 @@ class program_planing(forms.Form):
     ream_wt = forms.DecimalField()
     customer_name = forms.ChoiceField(choices=[])
     indent_no = forms.IntegerField()
+
     def __init__(self, *args, user_id=None, **kwargs):
         super().__init__(*args, **kwargs)
         if user_id is not None:
-            self.fields['planning'].choices = db.get_choices("planning", "planning", user_id)
-            self.fields['customer_name'].choices = db.get_choices("customer", "customer_name", user_id)
+            self.fields['planning'].choices = db.get_choices(
+                "planning", "planning", user_id)
+            self.fields['customer_name'].choices = db.get_choices(
+                "customer", "customer_name", user_id)
 
-# report
+# report #
+
 
 class pending_order(forms.Form):
     template_name = "form_snippet.html"
@@ -480,10 +538,12 @@ class pending_order(forms.Form):
     to_date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
     party = forms.ChoiceField(choices=[])
     export_to = forms.FileField()
+
     def __init__(self, *args, user_id=None, **kwargs):
         super().__init__(*args, **kwargs)
         if user_id is not None:
-            self.fields['party'].choices = db.get_choices("customer", "customer_name", user_id)
+            self.fields['party'].choices = db.get_choices(
+                "customer", "customer_name", user_id)
             # logger.debug(self.fields['party'].choices)
 
 
@@ -496,10 +556,12 @@ class prod_record(forms.Form):
     to_date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
     party = forms.ChoiceField(choices=[])
     export_to = forms.FileField()
+
     def __init__(self, *args, user_id=None, **kwargs):
         super().__init__(*args, **kwargs)
         if user_id is not None:
-            self.fields['party'].choices = db.get_choices("customer", "customer_name", user_id)
+            self.fields['party'].choices = db.get_choices(
+                "customer", "customer_name", user_id)
 
 
 class dispatch_details(forms.Form):
@@ -511,16 +573,19 @@ class dispatch_details(forms.Form):
     to_date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
     party = forms.ChoiceField(choices=[])
     export_to = forms.FileField()
+
     def __init__(self, *args, user_id=None, **kwargs):
         super().__init__(*args, **kwargs)
         if user_id is not None:
-            self.fields['party'].choices = db.get_choices("customer", "customer_name", user_id)
+            self.fields['party'].choices = db.get_choices(
+                "customer", "customer_name", user_id)
 
 
 class stock_report(forms.Form):
     template_name = "form_snippet.html"
     error_css_class = "error"
     required_css_class = "required"
+
 
 class loader_report(forms.Form):
     template_name = "form_snippet.html"
@@ -530,10 +595,13 @@ class loader_report(forms.Form):
     to_date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
     party = forms.ChoiceField(choices=[])
     export_to = forms.FileField()
+
     def __init__(self, *args, user_id=None, **kwargs):
         super().__init__(*args, **kwargs)
         if user_id is not None:
-            self.fields['party'].choices = db.get_choices("customer", "customer_name", user_id)
+            self.fields['party'].choices = db.get_choices(
+                "customer", "customer_name", user_id)
+
 
 class qc_report(forms.Form):
     template_name = "form_snippet.html"
@@ -543,10 +611,13 @@ class qc_report(forms.Form):
     to_date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
     party = forms.ChoiceField(choices=[])
     export_to = forms.FileField()
+
     def __init__(self, *args, user_id=None, **kwargs):
         super().__init__(*args, **kwargs)
         if user_id is not None:
-            self.fields['party'].choices = db.get_choices("customer", "customer_name", user_id)
+            self.fields['party'].choices = db.get_choices(
+                "customer", "customer_name", user_id)
+
 
 class stock_plus_minus(forms.Form):
     template_name = "form_snippet.html"
@@ -556,7 +627,10 @@ class stock_plus_minus(forms.Form):
     to_date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
     party = forms.ChoiceField(choices=[])
     export_to = forms.FileField()
+
     def __init__(self, *args, user_id=None, **kwargs):
         super().__init__(*args, **kwargs)
         if user_id is not None:
-            self.fields['party'].choices = db.get_choices("customer", "customer_name", user_id)
+            self.fields['party'].choices = db.get_choices(
+                "customer", "customer_name", user_id)
+

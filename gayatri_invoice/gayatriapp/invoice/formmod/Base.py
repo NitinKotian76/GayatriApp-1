@@ -8,37 +8,39 @@ from django.core.exceptions import ValidationError
 import json
 import logging
 logger = logging.getLogger(__name__)
-
 # Simple base class - minimal change for immediate DRY benefits
+
+
 class BaseInvoiceForm(forms.Form):
     """Base form class with common configuration"""
     template_name = "form_snippet.html"
     error_css_class = "error"
     required_css_class = "required"
-    
+
     # Common choice options - eliminate duplication
     ORDER_TYPES = [
         ("local", "Local"),
         ("direct", "Direct"),
         ("export", "Export"),
     ]
-    
+
     ORDER_TYPES_LOCAL_EXPORT = [
         ("local", "Local"),
         ("export", "Export"),
     ]
-    
+
     YES_NO_CHOICES = [
-        (True, "yes"), 
+        (True, "yes"),
         (False, "no")
     ]
-    
+
     PLUS_MINUS_CHOICES = [
-        (True, "plus"), 
+        (True, "plus"),
         (False, "minus")
     ]
 
 # helper functions
+
 
 def getInputFields(object):
     methods_list = [
@@ -48,7 +50,8 @@ def getInputFields(object):
     ]
     return methods_list
 
-def button(name:str, hx_vals:dict, hx_req:str, target:str="#dynform"):
+
+def button(name: str, hx_vals: dict, hx_req: str, target: str = "#dynform"):
     data = json.dumps(hx_vals)
     html = format_html('<input class="w3-button w3-ripple w3-green w3-padding w3-margin"\
                 type="button" value="{}" \
@@ -61,8 +64,9 @@ def button(name:str, hx_vals:dict, hx_req:str, target:str="#dynform"):
 
 # auth forms
 
+
 class loginForm(forms.Form):
-    template_name = "form_snippet.html"
+    template_name = "login_snippet.html"
     error_css_class = "error"
     required_css_class = "required"
 
@@ -182,7 +186,8 @@ class reportCreate(forms.Form):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['company'].choices = Company.objects.values_list('id', 'company_name')
+        self.fields['company'].choices = Company.objects.values_list(
+            'id', 'company_name')
 
 
 class keyValueForm(forms.Form):
@@ -209,7 +214,8 @@ class table_list(forms.Form):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['company'].choices = Company.objects.values_list('id', 'company_name')
+        self.fields['company'].choices = Company.objects.values_list(
+            'id', 'company_name')
 
 
 class table_create(forms.Form):
@@ -221,7 +227,8 @@ class table_create(forms.Form):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['company'].choices = Company.objects.values_list('id', 'company_name')
+        self.fields['company'].choices = Company.objects.values_list(
+            'id', 'company_name')
 
 
 class table_edit(forms.Form):

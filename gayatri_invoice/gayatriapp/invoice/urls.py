@@ -3,7 +3,7 @@ from . import views
 from .all_views import *
 
 app_name = "invoice"
-
+# names with sentencecase are class based views
 # Report URLs
 report_urlpatterns = [
     path("report_view", report_views.report_view, name="report_view"),
@@ -42,7 +42,8 @@ admin_urlpatterns = [
     path("form_config", admin_views.form_config, name="form_config"),
     path("form_edit", admin_views.form_edit, name="form_edit"),
     path("field_setup", admin_views.field_setup, name="field_setup"),
-    path("table_list", admin_views.table_list, name="table_list"),
+    path("Table_list_form", admin_views.Table_list_form, name="Table_list_form"),
+    path("Table_list", admin_views.Table_list.as_view(), name="Table_list"),
     path("create_table", admin_views.create_table, name="create_table"),
     path("report_list", admin_views.report_list, name="report_list"),
     path("new_report", admin_views.new_report, name="new_report"),

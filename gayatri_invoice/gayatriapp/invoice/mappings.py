@@ -15,12 +15,12 @@ FORMHANDLER = {
                 "hx_req": "/invoice/form_view"
             },
         },
-        "table_buttons":{
-            "delete":{
+        "table_buttons": {
+            "delete": {
                 "hx_vals": {"form": "customer"},
                 "hx_req": "/invoice/select_row"
             },
-            "approve":{
+            "approve": {
                 "hx_vals": {"form": "customer"},
                 "hx_req": "/invoice/select_row"
             }
@@ -256,13 +256,13 @@ REPORT = {
     },
     "loader_report": {
         "form_class": df.loader_report,
-        "table_name": "loader_report",  
+        "table_name": "loader_report",
         "buttons": {
             "submit": {
                 "hx_vals": {"form": "loader_report"},
                 "hx_req": "/invoice/report_view"
             },
-        }   
+        }
     },
     "qc_report": {
         "form_class": df.qc_report,
