@@ -2,12 +2,13 @@
 import pandas as pd
 import numpy as np
 from invoice.dbmod import dbfunctions as db
+import os
 
 # NOTE: the Path for the report and invoice templates will be the same
 # only the name will change
 
 
-def set_report_data(report_name: str, data_list: dict, template_name: str, sheet_name: str, user_id):
+def set_report_data(report_name: str, data_list: dict, template_name: str, : str, user_id: str):
     # map the report_name , datalist and the templateName to a json store
     data_dict = []
     data_dict["datalist"] = data_list
@@ -18,23 +19,27 @@ def set_report_data(report_name: str, data_list: dict, template_name: str, sheet
     return table
 
 
-def get_template(report_name: str, user_id: str):
-    # TODO: check if the template exists in the server filesystem
-    data = db.get_data("report", user_id, report_name)
-    template = data.table_data.template_name
-    sheet_name = data.table_data.sheet_name
-    sheet = pd.read_excel(template, sheet_name=sheet_name, header=None)
-    return sheet
+class templateops():
+    '''
+        this function is used to process excel templates and add data in the format specified 
+    '''
 
-def get_data(tag: str, user_id: str):
-    data = db.get_data("report", user_id, tag)
-def process_report(report_name: str, user_id: str):
-    sheet = get_template(report_name, user_id)
-    
-    for tag, data in data_list:
-        results = (sheet == "{{"+tag+"}}")
-        location = list(zip(*results.to_numpy().nonzero()))
-        for row, column in location:
-            packing.at[row, column] = data
-    # use the list to match and replace with user data retrieved from TableData
-    # copy modified dataframe and make excel sheet
+    def __init__(self):
+        self.templatepath = os.path.join(
+            BASE_DIR, 'invoice', 'ReportTemplates', 'template.xlsx')
+
+    def get_template(self, report_name: str, user_id: str):
+        # TODO: check if the template exists in the server filesystem
+        try:
+            filepath = self.templatepath + report_name
+            os.path.exists(filepath)
+            data = db.get_data("report", user_id, search_term=report_name)
+
+            sheet_name = data.table_data.sheet_name
+            sheet = pd.read_excel(template, sheet_name=sheet_name, header=None)
+            return sheet
+        except Exception as e:
+            logger.debug("template issue %s", e)
+
+        # use the list to match and replace with user data retrieved from TableData
+        # copy modified dataframe and make excel sheet

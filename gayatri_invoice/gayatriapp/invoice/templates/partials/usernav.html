@@ -33,6 +33,13 @@
       hx-target="#mainform"
       hx-vals='{"form":"production"}'
     >
+      <div
+        hx-get="/invoice/table_data_view"
+        hx-trigger="click from:closest (a)"
+        hx-target="#tableview"
+        hx-vals='{"form": "production"}'
+        hx-swap="innerHTML"
+      ></div>
       Production
     </a>
     <a
@@ -160,7 +167,7 @@
       hx-target="#mainform"
       hx-vals='{"form":"loader_report"}'
     >
-     Loader Report
+      Loader Report
     </a>
     <a
       href="#"
@@ -254,4 +261,3 @@
     </a>
   </div>
 </div>
-

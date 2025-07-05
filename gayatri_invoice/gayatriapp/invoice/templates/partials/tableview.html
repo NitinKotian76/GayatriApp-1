@@ -78,7 +78,7 @@
                                            hx-vals='{"row_id": "{{ row.id }}"}'
                                            hx-swap="none">
                                 </td>
-                                {% for value in row.0.table_data.values %}<td>{{ value }}</td>{% endfor %}
+                                {% for value in row.table_data.values %}<td>{{ value }}</td>{% endfor %}
                             </tr>
                         {% endfor %}
                     </tbody>

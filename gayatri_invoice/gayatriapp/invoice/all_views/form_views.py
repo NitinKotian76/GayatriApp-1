@@ -21,6 +21,16 @@ from django.views.decorators.cache import never_cache
 logger = logging.getLogger(__name__)
 
 
+def btn_append(handler: list, item: str):
+    buttons = []
+    for key in handler[item]:
+        hx_vals = handler[item][key]["hx_vals"]
+        hx_req = handler[item][key]["hx_req"]
+        button = bf.button(key, hx_vals, hx_req)
+        buttons.append(button)
+    return buttons
+
+
 @login_required
 @permission_required('invoice.view_form', raise_exception=True)
 def form_view(request):
@@ -30,17 +40,14 @@ def form_view(request):
     formdata = None
     buttons = []
     hx_req = "/invoice/form_view"
+
     if request.method == "POST":
         formtype = request.POST.get("form")
         logger.debug(formtype)
         if formtype in form_handler:
             handler = form_handler[formtype]
             formdata = handler["form_class"](request.POST)
-            for key in handler["buttons"]:
-                hx_vals = handler["buttons"][key]["hx_vals"]
-                hx_req = handler["buttons"][key]["hx_req"]
-                button = bf.button(key, hx_vals, hx_req)
-                buttons.append(button)
+            buttons = btn_append(handler, "buttons")
             if formdata.is_valid():
                 logger.debug("data validated")
                 data = formdata.cleaned_data
@@ -63,11 +70,7 @@ def form_view(request):
         if formtype in form_handler:
             handler = form_handler[formtype]
             formdata = handler["form_class"]()
-            for key in handler["buttons"]:
-                hx_vals = handler["buttons"][key]["hx_vals"]
-                hx_req = handler["buttons"][key]["hx_req"]
-                button = bf.button(key, hx_vals, hx_req)
-                buttons.append(button)
+            buttons = btn_append(handler, "buttons")
     context = {
         "form": formdata,
         "buttons": buttons,
@@ -91,16 +94,13 @@ def table_data_view(request):
     data = None
     rows = []
     page_obj = None
+    user_id = request.user.id
 
     if form_name and form_name in mp.FORMHANDLER:
         handler = mp.FORMHANDLER[form_name]
         table_name = handler["table_name"]
         if "table_buttons" in handler:
-            for key in handler["table_buttons"]:
-                hx_vals = handler["table_buttons"][key]["hx_vals"]
-                hx_req = handler["table_buttons"][key]["hx_req"]
-                button = bf.button(key, hx_vals, hx_req)
-                buttons.append(button)
+            buttons = btn_append(handler, "table_buttons")
         logger.debug("form_name: " + form_name)
     else:
         logger.debug("issue with the request")
@@ -108,14 +108,15 @@ def table_data_view(request):
     # this if is for admin view
     if request.user.is_admin:
         company_id = request.session.get('selected_company_id')
-
-    user_id = request.user.id
-    data = db.get_data(table_name, user_id, company_id)
+        data = db.get_data(table_name, user_id, company_id)
+    else:
+        data = db.get_data(table_name, user_id)
     if not data:
         logger.debug("table name doesnt exist: " + table_name)
         messages.error(request, "table name doesnt exist: " + table_name)
     elif data == []:
-        messages.error(request, "table name exists but no data: " + table_name)
+        logger.debug("no data for  " + table_name)
+        messages.error(request, "no data available for the table" + table_name)
     else:
         logger.debug(data)
         paginator = Paginator(data, 20)
@@ -125,6 +126,7 @@ def table_data_view(request):
         rows = [{"id": obj.get("id"), "table_data": obj.get(
             "table_data")} for obj in page_obj]
         logger.debug(type(rows))
+
     context = {
         "rows": rows,
         "page_obj": page_obj,
