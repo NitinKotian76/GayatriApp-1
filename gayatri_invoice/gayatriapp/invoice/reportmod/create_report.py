@@ -47,4 +47,4 @@ class templateops():
         # get the data list and find the key tags in the template
         # and render the value tags
         # make different functions for redering table and single values.
-        pass
+        data_list = self.data.objects.filter(table_data_)

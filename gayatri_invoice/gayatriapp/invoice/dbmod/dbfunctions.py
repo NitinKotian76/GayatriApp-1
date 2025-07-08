@@ -14,15 +14,17 @@ def get_company_inst(user_id: str) -> Company:
     return Company.objects.get(id=user.company_id)
 
 
-def get_choices(table_name:str, column:str, user_id:str):
-    table = TableName.objects.get(table_name=table_name, company= get_company_inst(user_id))
+def get_choices(table_name: str, column: str, user_id: str):
+    table = TableName.objects.get(
+        table_name=table_name, company=get_company_inst(user_id))
     dataquery = TableData.objects.filter(table_name=table).values("table_data")
     list_data = [item["table_data"][column] for item in dataquery]
     list_data = list(set(list_data))
     choices = [(item, item) for item in list_data]
     return choices
 
-def set_data(table_name: str, data:dict, user_id:str, company_id:int=None):
+
+def set_data(table_name: str, data: dict, user_id: str, company_id: int = None):
     if company_id:
         company = Company.objects.get(id=company_id)
     else:
@@ -32,12 +34,13 @@ def set_data(table_name: str, data:dict, user_id:str, company_id:int=None):
     except ValueError:
         logger.debug("data is not json compatible")
         return 1
-    obj = TableName.objects.filter(table_name__contains=table_name, company=company)
+    obj = TableName.objects.filter(
+        table_name__contains=table_name, company=company)
     if obj.exists():
         logger.debug("table_name exists")
         table = TableName.objects.get(table_name=table_name, company=company)
         try:
-            #only instances are allowed 
+            # only instances are allowed
             table_query = TableData.objects.create(
                 table_data=data, table_name=table, company=company)
             table_query.save()
@@ -50,7 +53,8 @@ def set_data(table_name: str, data:dict, user_id:str, company_id:int=None):
     logger.debug("data stored")
     return 0
 
-def update_data(table_name: str, data:dict, user_id:str,search_term:str=None, company_id:int=None):
+
+def update_data(table_name: str, data: dict, user_id: str, search_term: str = None, company_id: int = None):
     if company_id:
         company = Company.objects.get(id=company_id)
     else:
@@ -60,12 +64,13 @@ def update_data(table_name: str, data:dict, user_id:str,search_term:str=None, co
     except ValueError:
         logger.debug("data is not json compatible")
         return 1
-    obj = TableName.objects.filter(table_name__contains=table_name, company=company)
+    obj = TableName.objects.filter(
+        table_name__contains=table_name, company=company)
     if obj.exists():
         logger.debug("table_name exists")
         table = TableName.objects.get(table_name=table_name, company=company)
         try:
-            query = get_data(table_name,user_id,search_term)
+            query = get_data(table_name, user_id, search_term)
             query[0]
             if data:
                 table_query = TableData.objects.update(
@@ -84,7 +89,6 @@ def update_data(table_name: str, data:dict, user_id:str,search_term:str=None, co
     return 0
 
 
-
 def new_table(table_name: str, user_id: str, data: dict = {}) -> int:
     company = get_company_inst(user_id)
     try:
@@ -98,13 +102,14 @@ def new_table(table_name: str, user_id: str, data: dict = {}) -> int:
     return 0
 
 
-def get_data(table_name: str, user_id: str, search_term: str = None, company_id:int=None) -> list:
+def get_data(table_name: str, user_id: str, company_id: int = None, search_term: str = None) -> list:
     try:
         if company_id:
             company = Company.objects.get(id=company_id)
         else:
             company = get_company_inst(user_id)
-        table = TableName.objects.get(table_name=table_name, company=company.id)
+        table = TableName.objects.get(
+            table_name=table_name, company=company.id)
         queryset = TableData.objects.filter(
             table_name=table, company=company)
         if search_term:
@@ -117,3 +122,7 @@ def get_data(table_name: str, user_id: str, search_term: str = None, company_id:
     except Exception as e:
         logger.error(f"Error fetching data: {str(e)}")
         return 1
+
+
+def get_data_column():
+    pass
