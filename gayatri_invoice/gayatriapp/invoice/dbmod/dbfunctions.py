@@ -1,5 +1,4 @@
 from django.core.paginator import Paginator
-from django.contrib.postgres.search import SearchQuery
 from ..models import *
 import logging
 import pandas as pd

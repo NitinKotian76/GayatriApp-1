@@ -2,10 +2,13 @@
 import pandas as pd
 import numpy as np
 from invoice.dbmod import dbfunctions as db
+from django.db.models import F, Value
 import os
 
 # NOTE: the Path for the report and invoice templates will be the same
 # only the name will change
+
+# tagdata = {tag_name:{column:column_name,from:yesterday,to:today}}
 
 
 def set_report_data(report_name: str, tag_data: dict, template_name: str, sheet_name: str, user_id: str):
@@ -35,7 +38,7 @@ class templateops():
             os.path.exists(filepath)
 
             sheet_name = data.table_data.sheet_name
-            sheet = pd.read_excel(template, sheet_name=sheet_name, header=None)
+            sheet = pd.read_excel(filepath, sheet_name=sheet_name, header=None)
             return sheet
         except Exception as e:
             logger.debug("template issue %s", e)
@@ -47,4 +50,18 @@ class templateops():
         # get the data list and find the key tags in the template
         # and render the value tags
         # make different functions for redering table and single values.
-        data_list = self.data.objects.filter(table_data_)
+        data_list = self.data.objects.annotate(
+            tagdata=F("table_data__tagdata")
+        ).values("tagdata")
+        df = get_template()
+        loc_dict = {}
+        # find the loc of the tags in the template
+        for tag in data_list[0]["tagdata"].keys():
+            for i in df.len()-1:
+                a = df[i].filter("{{"+tag+"}}").dropna().to_dict()
+                if a.values():
+                    loc_dict["tag"] = [i, a.keys()]
+
+        # prepare the type of data to be rendered
+        for tag in loc_dict:
+            match data_list[0]["tagdata"][tag].values():
