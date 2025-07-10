@@ -8,7 +8,28 @@ import os
 # NOTE: the Path for the report and invoice templates will be the same
 # only the name will change
 
-# tagdata = {tag_name:{column:column_name,from:yesterday,to:today}}
+# tag_data = {
+#         "demo_table": [column1, column2, column3],
+#         "orderby": [column1, column2],
+#         "groupby": [column1],
+#         "formula": {
+#             "row1": 'sum',
+#             "row2": 'average',
+#             },
+#         "filter": {
+#             'fil1': {
+#                 'greaterthan': {
+#                     'column': {
+#                         'column1': value,
+#                         'column2': value,
+#                         }
+#                 }
+#                 'lessthan': {},
+#                 'equalto': {},
+#             }
+#         }
+# }
+# this dict will contain all the information related to the tags.
 
 
 def set_report_data(report_name: str, tag_data: dict, template_name: str, sheet_name: str, user_id: str):
@@ -65,3 +86,6 @@ class templateops():
         # prepare the type of data to be rendered
         for tag in loc_dict:
             match data_list[0]["tagdata"][tag].values():
+                case single:
+                    data
+                case table:
