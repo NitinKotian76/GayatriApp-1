@@ -170,9 +170,9 @@ class new_report(forms.Form):
     template_name = forms.SlugField()
     data_list = forms.JSONField()
 
-    def __init__(self):
-        super().__init__(*args, **kwargs)
-        self.fields['template_name'].choices = get_template_name()
+    # def __init__(self):
+    #     super().__init__(*args, **kwargs)
+    #     self.fields['template_name'].choices = get_template_name()
 
 
 class reportCreate(forms.Form):

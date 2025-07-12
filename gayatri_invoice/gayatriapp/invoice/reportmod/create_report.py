@@ -84,8 +84,8 @@ class templateops():
                     loc_dict["tag"] = [i, a.keys()]
 
         # prepare the type of data to be rendered
-        for tag in loc_dict:
-            match data_list[0]["tagdata"][tag].values():
-                case single:
-                    data
-                case table:
+        # for tag in loc_dict:
+        #     match data_list[0]["tagdata"][tag].values():
+        #         case single:
+        #             data
+        #         case table:

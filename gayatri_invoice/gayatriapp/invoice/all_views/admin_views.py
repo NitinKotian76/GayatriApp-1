@@ -142,19 +142,18 @@ def report_list(request):
 @login_required
 def new_report(request):
     # PRIORITY 2: To be implemented (Create Report CRUD operation)
-    logger.debug("create new report")
-    form = bf.reportCreate()
     keyValueFormset = formset_factory(bf.keyValueForm, extra=1)
     if request.method == 'POST':
-        form = bf.reportCreate(request.POST)
+        form = bf.new_report(request.POST)
         formset = keyValueFormset(request.POST)
-        if form.is_valid() and formset.is_valid():
-            formset.save()
-            return redirect('report_list')
+        buttons = bf.button("submit", {}, "/invoice/new_report")
     else:
+        logger.debug("create new report")
+        form = bf.new_report()
         formset = keyValueFormset()
-
-    return render(request, "partials/forms.html", {"form": form, "formset": formset})
+        buttons = bf.button("submit", {}, "/invoice/new_report")
+    context = {"form": form, "formset": formset, "buttons": buttons}
+    return render(request, "partials/forms.html", context)
 
 # IMPROVEMENT NEEDED: Add proper error handling
 # IMPROVEMENT NEEDED: Add proper logging
