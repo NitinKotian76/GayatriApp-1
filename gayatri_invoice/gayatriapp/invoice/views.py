@@ -5,24 +5,11 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse, FileResponse
 from django.template.loader import render_to_string
 from django.views.decorators.csrf import ensure_csrf_cookie, csrf_protect
-from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required, permission_required
-from django.contrib.auth import login, logout, update_session_auth_hash
-from django.contrib.auth.hashers import check_password
-from django.contrib.auth.password_validation import validate_password
-from django.core.paginator import Paginator
 from django.contrib import messages as msg
-from django.urls import reverse_lazy
-from django.views import View
 import logging
-from invoice.cachestore import cachestore as cache
 from .models import *
 from .forms import *
-from .formmod import Static as df
-from .formmod import Base as bf
-from .dbmod import dbfunctions as db
-from .reportmod import create_report as cr
-from . import mappings as mp
 # IMPROVEMENT NEEDED: Add proper docstring for the module
 # IMPROVEMENT NEEDED: Add proper type hints for better code maintainability
 # IMPROVEMENT NEEDED: Consider splitting views into separate files (auth_views.py, form_views.py, etc.)
@@ -60,10 +47,12 @@ def profile_user(request):
 # IMPROVEMENT NEEDED: Add proper logging
 # IMPROVEMENT NEEDED: Add proper pagination handling
 
+
 @ensure_csrf_cookie
 @login_required
 def get_notifications(request):
-        messages = msg.get_messages(request)
-        if messages:
-             return HttpResponse(render_to_string("partials/notif.html", {"messages": messages}))
-        return HttpResponse("")
+    messages = msg.get_messages(request)
+    if messages:
+        return HttpResponse(render_to_string("partials/notif.html", {"messages": messages}))
+    return HttpResponse("")
+

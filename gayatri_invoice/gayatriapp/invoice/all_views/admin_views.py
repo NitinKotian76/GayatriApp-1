@@ -12,6 +12,7 @@ from ..models import *
 from ..forms import *
 from ..formmod import Static as df
 from ..formmod import Base as bf
+from ..formmod import helperFunct as hf
 from ..dbmod import dbfunctions as db
 from ..reportmod import create_report as cr
 from .. import mappings as mp
@@ -47,135 +48,6 @@ from django.views.generic.list import ListView
 logger = logging.getLogger(__name__)
 
 
-# forms
-@login_required
-def form_setup(request):
-    # PRIORITY 2: To be implemented (Create Form CRUD operation)
-    if request.method == 'POST':
-        # get the config
-        formdata = bf.create_form(request.POST)
-        logger.debug("data sent to form setup ")
-        formname = "Form Name"
-        username = request.POST.get("User Name")
-        read = request.POST.get("Read")
-        write = request.POST.get("Write")
-        tablenames = request.POST.get("Tables")
-        description = request.POST.get("Description")
-        form_config.create_form(
-            formname, username, read, write, tablenames, description
-        )
-
-        logger.debug("redirect to field config page")
-        # TODO: save in cache
-        return HttpResponse(df.addFieldshtml())
-    else:
-        formdata = bf.create_form()
-
-    context = {}
-    return render(request, "partials/formcrud.html", context)
-# IMPROVEMENT NEEDED: Add proper error handling
-# IMPROVEMENT NEEDED: Add proper logging
-# IMPROVEMENT NEEDED: Add proper form validation
-
-
-@login_required
-def field_setup(View):  # IMPROVEMENT NEEDED: Fix class inheritance
-    # PRIORITY 2: To be implemented (Create Field CRUD operation)
-    if request.method == 'GET':
-        return HttpResponse(df.fieldConfightml())
-
-    if request.method == 'POST':
-        fieldtype = request.POST.get("field type")
-        label = request.POST.get("Field Name")
-        disabled = request.POST.get("Disabled")
-        tableRow = request.POST.get("Table Row")
-        tableColumn = request.POST.get("Table Column")
-        fieldno = cache.get("fieldno")
-        # add_field(fieldtype, label, attr, form, fieldno, child)
-        if fieldno == 0:
-            cache.set("fieldno", fieldno + 1)
-
-# IMPROVEMENT NEEDED: Add proper error handling
-# IMPROVEMENT NEEDED: Add proper logging
-
-
-@login_required
-def form_config(request):
-    # PRIORITY 2: To be implemented (Create Form CRUD operation)
-    form = bf.open_bal_prod()
-    return render(request, "partials/forms.html", {"form": form})
-
-# IMPROVEMENT NEEDED: Add proper error handling
-# IMPROVEMENT NEEDED: Add proper logging
-
-
-@login_required
-def form_delete(request):
-    # PRIORITY 2: To be implemented (Delete Form CRUD operation)
-    form = df.formDelete()
-    return render(request, "partials/forms.html", {"form": form})
-
-
-@login_required
-def form_edit(request):
-    # PRIORITY 2: To be implemented (Edit Form CRUD operation)
-    logger.debug("edit form")
-
-
-@login_required
-def form_list(request):
-    # PRIORITY 2: To be implemented (List Forms CRUD operation)
-    logger.debug("list form")
-
-
-# report
-
-
-@login_required
-def report_list(request):
-    # PRIORITY 2: To be implemented (List Reports CRUD operation)
-    logger.debug("list report")
-# IMPROVEMENT NEEDED: Add proper error handling
-# IMPROVEMENT NEEDED: Add proper logging
-
-
-@login_required
-def new_report(request):
-    # PRIORITY 2: To be implemented (Create Report CRUD operation)
-    keyValueFormset = formset_factory(bf.keyValueForm, extra=1)
-    if request.method == 'POST':
-        form = bf.new_report(request.POST)
-        formset = keyValueFormset(request.POST)
-        buttons = bf.button("submit", {}, "/invoice/new_report")
-    else:
-        logger.debug("create new report")
-        form = bf.new_report()
-        formset = keyValueFormset()
-        buttons = bf.button("submit", {}, "/invoice/new_report")
-    context = {"form": form, "formset": formset, "buttons": buttons}
-    return render(request, "partials/forms.html", context)
-
-# IMPROVEMENT NEEDED: Add proper error handling
-# IMPROVEMENT NEEDED: Add proper logging
-
-
-@login_required
-def edit_report(request):
-    # PRIORITY 2: To be implemented (Edit Report CRUD operation)
-    logger.debug("edit report")
-
-# IMPROVEMENT NEEDED: Add proper error handling
-# IMPROVEMENT NEEDED: Add proper logging
-
-
-@login_required
-def del_report(request):
-    # PRIORITY 2: To be implemented (Delete Report CRUD operation)
-    pass
-
-# IMPROVEMENT NEEDED: Add proper error handling
-# IMPROVEMENT NEEDED: Add proper logging
-
 # table
 
 
@@ -192,7 +64,7 @@ def create_table(request):
             messages.error(request, "Form validation failed")
     else:
         form = bf.table_create()
-        buttons = bf.buttons()
+        buttons = hf.buttons()
         formset = formset_factory(bf.keyValueForm, extra=1)
 
     context = {
@@ -221,7 +93,7 @@ class Table_list(LoginRequiredMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data()
-        context["buttons"] = bf.button(
+        context["buttons"] = hf.button(
             "select",
             {"form": "adminCompany"},
             "/invoice/admin_company"
@@ -238,16 +110,16 @@ class Table_list(LoginRequiredMixin, ListView):
 def admin_company(request):
     buttons = []
     if request.method == 'POST':
-        form = bf.adminCompany(request.POST)
+        form = df.adminCompany(request.POST)
         if form.is_valid():
             company_id = form.cleaned_data['company_name'].id
             logger.debug(company_id)
             request.session['selected_company_id'] = company_id
             messages.success(request, "Company selected successfully")
     else:
-        form = bf.adminCompany()
+        form = df.adminCompany()
     buttons.append(
-        bf.button("select", {"form": "adminCompany"}, "/invoice/admin_company"))
+        hf.button("select", {"form": "adminCompany"}, "/invoice/admin_company"))
     context = {
         "form": form,
         "buttons": buttons,

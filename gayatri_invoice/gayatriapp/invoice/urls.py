@@ -7,12 +7,20 @@ app_name = "invoice"
 # Report URLs
 report_urlpatterns = [
     path("report_view", report_views.report_view, name="report_view"),
+    path("report_list", report_views.report_list, name="report_list"),
+    path("new_report", report_views.new_report, name="new_report"),
 ]
 
 # Form URLs
 form_urlpatterns = [
     path("form_view", form_views.form_view, name="form_view"),
-    path('select_row', form_views.select_row, name='select_row'),
+    path("select_row", form_views.select_row, name="select_row"),
+    path("form_list", form_views.form_list, name="form_list"),
+    path("form_setup", form_views.form_setup, name="form_setup"),
+    path("form_delete", form_views.form_delete, name="form_delete"),
+    path("form_config", form_views.form_config, name="form_config"),
+    path("form_edit", form_views.form_edit, name="form_edit"),
+    path("field_setup", form_views.field_setup, name="field_setup"),
 ]
 
 # Authentication URLs
@@ -36,16 +44,8 @@ main_urlpatterns = [
 
 # Admin URLs
 admin_urlpatterns = [
-    path("form_list", admin_views.form_list, name="form_list"),
-    path("form_setup", admin_views.form_setup, name="form_setup"),
-    path("form_delete", admin_views.form_delete, name="form_delete"),
-    path("form_config", admin_views.form_config, name="form_config"),
-    path("form_edit", admin_views.form_edit, name="form_edit"),
-    path("field_setup", admin_views.field_setup, name="field_setup"),
     path("Table_list", admin_views.Table_list.as_view(), name="Table_list"),
     path("create_table", admin_views.create_table, name="create_table"),
-    path("report_list", admin_views.report_list, name="report_list"),
-    path("new_report", admin_views.new_report, name="new_report"),
     path("admin_company", admin_views.admin_company, name="admin_company"),
 ]
 

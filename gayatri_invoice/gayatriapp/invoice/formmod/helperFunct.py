@@ -1,10 +1,37 @@
-from .CrudForm import form_store_json
 from .LoadFunct import Filedata
+from django.utils.html import format_html
+from django.http import JsonResponse
+from ..models import *
+import logging
+import json
+logger = logging.getLogger(__name__)
 
-# TODO: do something about the class instance for formfield data
+
+# helper functions
+
+def getInputFields(object):
+    methods_list = [
+        method
+        for method in dir(object)
+        if callable(getattr(object, method)) and not method.startswith("__")
+    ]
+    return methods_list
+
+
+def button(name: str, hx_vals: dict, hx_req: str, target: str = "#dynform"):
+    data = json.dumps(hx_vals)
+    html = format_html('<input class="w3-button w3-ripple w3-green w3-padding w3-margin"\
+                type="button" value="{}" \
+                hx-post={} \
+                hx-trigger="click" \
+                hx-target={} \
+                hx-swap="outerHTML" \
+                hx-vals=\'{}\'/>', name, hx_req, target, data)
+    return html
 
 
 class form_setup:
+    # TODO: do something about the class instance for formfield data
     def __init__(self):
         self.ff = None
 

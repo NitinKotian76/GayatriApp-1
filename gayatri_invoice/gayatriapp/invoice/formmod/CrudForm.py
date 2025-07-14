@@ -3,6 +3,7 @@ import json
 import os
 import logging
 from django import forms
+from ..formmod import helperFunct as hf
 
 logger = logging.getLogger(__name__)
 # TODO: have to transform this to set a form using the UI and get form.Form methods
@@ -123,13 +124,12 @@ class fieldAdd(forms.Form):
     required_css_class = "required"
 
     field_name = forms.ChoiceField(
-        widget=forms.Select, choices=getInputFields(formComponents), required=True
+        widget=forms.Select, choices=hf.getInputFields(formComponents), required=True
     )
     var_name = forms.CharField(required=True)
     disabled = forms.ChoiceField(widget=forms.CheckboxInput, required=True)
     table_row = forms.IntegerField(required=True)
     table_column = forms.IntegerField(required=True)
-
 
 
 class formCreate(forms.Form):
@@ -162,3 +162,4 @@ class formEdit(forms.Form):
     group_name = forms.ChoiceField()
     # attr=f'hx-get="/invoice/form_setup" hx-vals={jsonvalue} hx-target="none" hx-swap="none"',
     # attr='onclick=document.getElementById("modalView").style.display="none"',
+

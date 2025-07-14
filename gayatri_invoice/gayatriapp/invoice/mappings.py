@@ -10,6 +10,9 @@ FORMHANDLER = {
                 "hx_vals": {"form": "customer"},
                 "hx_req": "/invoice/form_view"
             },
+            "find": {
+                "hx_req": "/invoice/find"
+            },
             "reset": {
                 "hx_vals": {"form": "customer"},
                 "hx_req": "/invoice/form_view"

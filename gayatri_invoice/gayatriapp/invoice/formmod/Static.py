@@ -8,9 +8,30 @@ logger = logging.getLogger(__name__)
 
 # Custom Forms#
 
-# TODO: all master forms need a search field
-# masters #
+# admin forms
 
+
+class adminCompany(forms.Form):
+    template_name = "form_snippet.html"
+    error_css_class = "error"
+    required_css_class = "required"
+
+    company_name = forms.ModelChoiceField(
+        queryset=Company.objects.none(),
+        empty_label="Select Company",
+        widget=forms.Select(attrs={}),
+        to_field_name="id",
+        label="company_name",
+        required=True)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['company_name'].queryset = Company.objects.all()
+
+
+# TODO: all master forms need a search field for faster filtering
+
+# masters #
 
 class customer(forms.Form):
     template_name = "form_snippet.html"
@@ -633,4 +654,3 @@ class stock_plus_minus(forms.Form):
         if user_id is not None:
             self.fields['party'].choices = db.get_choices(
                 "customer", "customer_name", user_id)
-

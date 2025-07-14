@@ -1,18 +1,13 @@
 from django.shortcuts import render, redirect
-from django.http import HttpResponse, FileResponse
-from django.views.decorators.csrf import ensure_csrf_cookie, csrf_protect
-from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required, permission_required
-from django.core.paginator import Paginator
 from django.contrib import messages
+from django.forms import formset_factory
 import logging
 from ..cachestore import cachestore as cache
 from ..models import *
 from ..forms import *
-from ..formmod import Static as df
-from ..formmod import Base as bf
-from ..dbmod import dbfunctions as db
-from ..reportmod import create_report as cr
+from ..formmod import CrudReport as cr
+from ..formmod import helperFunct as hf
 from .. import mappings as mp
 
 # IMPROVEMENT NEEDED: Add proper docstring for the module
@@ -42,7 +37,7 @@ def report_view(request):
             for key in handler["buttons"]:
                 hx_vals = handler["buttons"][key]["hx_vals"]
                 hx_req = handler["buttons"][key]["hx_req"]
-                button = bf.button(key, hx_vals, hx_req)
+                button = hf.button(key, hx_vals, hx_req)
                 buttons.append(button)
             # data validation
             if formdata.is_valid():
@@ -61,7 +56,7 @@ def report_view(request):
             for key in handler["buttons"]:
                 hx_vals = handler["buttons"][key]["hx_vals"]
                 hx_req = handler["buttons"][key]["hx_req"]
-                button = bf.button(key, hx_vals, hx_req)
+                button = hf.button(key, hx_vals, hx_req)
                 buttons.append(button)
     context = {
         "form": formdata,
@@ -74,3 +69,52 @@ def report_view(request):
 # IMPROVEMENT NEEDED: Add proper error handling
 # IMPROVEMENT NEEDED: Add proper logging
 # IMPROVEMENT NEEDED: Add proper form validation
+# report
+
+
+@login_required
+def report_list(request):
+    # PRIORITY 2: To be implemented (List Reports CRUD operation)
+    logger.debug("list report")
+# IMPROVEMENT NEEDED: Add proper error handling
+# IMPROVEMENT NEEDED: Add proper logging
+
+
+@login_required
+def new_report(request):
+    # PRIORITY 2: To be implemented (Create Report CRUD operation)
+    form = cr.new_report()
+    keyno = request.session["keyno"]
+    keyValueFormset = formset_factory(cr.keyValueForm, extra=keyno)
+    if request.method == 'POST':
+        form = bf.new_report(request.POST)
+        formset = keyValueFormset(request.POST)
+        buttons = hf.button("submit", {}, "/invoice/new_report")
+    else:
+        logger.debug("create new report")
+        form = cr.new_report()
+        formset = keyValueFormset()
+        buttons = hf.button("submit", {}, "/invoice/new_report")
+    context = {"form": form, "formset": formset, "buttons": buttons}
+    return render(request, "partials/forms.html", context)
+
+# IMPROVEMENT NEEDED: Add proper error handling
+# IMPROVEMENT NEEDED: Add proper logging
+
+
+@login_required
+def edit_report(request):
+    # PRIORITY 2: To be implemented (Edit Report CRUD operation)
+    logger.debug("edit report")
+
+# IMPROVEMENT NEEDED: Add proper error handling
+# IMPROVEMENT NEEDED: Add proper logging
+
+
+@login_required
+def del_report(request):
+    # PRIORITY 2: To be implemented (Delete Report CRUD operation)
+    pass
+
+# IMPROVEMENT NEEDED: Add proper error handling
+# IMPROVEMENT NEEDED: Add proper logging

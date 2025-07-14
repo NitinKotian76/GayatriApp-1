@@ -11,6 +11,7 @@ from ..models import *
 from ..forms import *
 from ..formmod import Static as df
 from ..formmod import Base as bf
+from ..formmod import helperFunct as hf
 from ..dbmod import dbfunctions as db
 from .. import mappings as mp
 from django.views.decorators.http import require_POST
@@ -26,7 +27,7 @@ def btn_append(handler: list, item: str):
     for key in handler[item]:
         hx_vals = handler[item][key]["hx_vals"]
         hx_req = handler[item][key]["hx_req"]
-        button = bf.button(key, hx_vals, hx_req)
+        button = hf.button(key, hx_vals, hx_req)
         buttons.append(button)
     return buttons
 
@@ -166,3 +167,85 @@ def select_row(request):
 
 def get_selected_rows(request):
     return request.session.get('selected_rows', [])
+
+# forms
+
+
+@login_required
+def form_setup(request):
+    # PRIORITY 2: To be implemented (Create Form CRUD operation)
+    if request.method == 'POST':
+        # get the config
+        formdata = bf.create_form(request.POST)
+        logger.debug("data sent to form setup ")
+        formname = "Form Name"
+        username = request.POST.get("User Name")
+        read = request.POST.get("Read")
+        write = request.POST.get("Write")
+        tablenames = request.POST.get("Tables")
+        description = request.POST.get("Description")
+        form_config.create_form(
+            formname, username, read, write, tablenames, description
+        )
+
+        logger.debug("redirect to field config page")
+        # TODO: save in cache
+        return HttpResponse(df.addFieldshtml())
+    else:
+        formdata = bf.create_form()
+
+    context = {}
+    return render(request, "partials/formcrud.html", context)
+# IMPROVEMENT NEEDED: Add proper error handling
+# IMPROVEMENT NEEDED: Add proper logging
+# IMPROVEMENT NEEDED: Add proper form validation
+
+
+@login_required
+def field_setup(View):  # IMPROVEMENT NEEDED: Fix class inheritance
+    # PRIORITY 2: To be implemented (Create Field CRUD operation)
+    if request.method == 'GET':
+        return HttpResponse(df.fieldConfightml())
+
+    if request.method == 'POST':
+        fieldtype = request.POST.get("field type")
+        label = request.POST.get("Field Name")
+        disabled = request.POST.get("Disabled")
+        tableRow = request.POST.get("Table Row")
+        tableColumn = request.POST.get("Table Column")
+        fieldno = cache.get("fieldno")
+        # add_field(fieldtype, label, attr, form, fieldno, child)
+        if fieldno == 0:
+            cache.set("fieldno", fieldno + 1)
+
+# IMPROVEMENT NEEDED: Add proper error handling
+# IMPROVEMENT NEEDED: Add proper logging
+
+
+@login_required
+def form_config(request):
+    # PRIORITY 2: To be implemented (Create Form CRUD operation)
+    form = bf.open_bal_prod()
+    return render(request, "partials/forms.html", {"form": form})
+
+# IMPROVEMENT NEEDED: Add proper error handling
+# IMPROVEMENT NEEDED: Add proper logging
+
+
+@login_required
+def form_delete(request):
+    # PRIORITY 2: To be implemented (Delete Form CRUD operation)
+    form = df.formDelete()
+    return render(request, "partials/forms.html", {"form": form})
+
+
+@login_required
+def form_edit(request):
+    # PRIORITY 2: To be implemented (Edit Form CRUD operation)
+    logger.debug("edit form")
+
+
+@login_required
+def form_list(request):
+    # PRIORITY 2: To be implemented (List Forms CRUD operation)
+    logger.debug("list form")
