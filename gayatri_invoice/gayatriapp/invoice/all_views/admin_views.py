@@ -1,10 +1,5 @@
 from django.shortcuts import render, redirect
-from django.urls import reverse
-from django.http import HttpResponse, FileResponse
-from django.views.decorators.csrf import ensure_csrf_cookie, csrf_protect
-from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required, permission_required
-from django.core.paginator import Paginator
 from django.contrib import messages
 import logging
 from ..cachestore import cachestore as cache

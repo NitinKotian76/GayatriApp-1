@@ -69,12 +69,11 @@ def report_view(request):
 # IMPROVEMENT NEEDED: Add proper error handling
 # IMPROVEMENT NEEDED: Add proper logging
 # IMPROVEMENT NEEDED: Add proper form validation
-# report
 
 
 @login_required
 def report_list(request):
-    # PRIORITY 2: To be implemented (List Reports CRUD operation)
+    # PRIORITY 1: To be implemented (List Reports CRUD operation)
     logger.debug("list report")
 # IMPROVEMENT NEEDED: Add proper error handling
 # IMPROVEMENT NEEDED: Add proper logging
@@ -83,23 +82,46 @@ def report_list(request):
 @login_required
 def new_report(request):
     # PRIORITY 2: To be implemented (Create Report CRUD operation)
-    form = cr.new_report()
-    keyno = request.session["keyno"]
-    keyValueFormset = formset_factory(cr.keyValueForm, extra=keyno)
     if request.method == 'POST':
         form = bf.new_report(request.POST)
-        formset = keyValueFormset(request.POST)
         buttons = hf.button("submit", {}, "/invoice/new_report")
     else:
         logger.debug("create new report")
         form = cr.new_report()
-        formset = keyValueFormset()
         buttons = hf.button("submit", {}, "/invoice/new_report")
-    context = {"form": form, "formset": formset, "buttons": buttons}
+    context = {"form": form,
+               "buttons": buttons}
     return render(request, "partials/forms.html", context)
 
 # IMPROVEMENT NEEDED: Add proper error handling
 # IMPROVEMENT NEEDED: Add proper logging
+
+
+def formset_view(request):
+    if request.method == "POST":
+        keyno = request.session.get("keyno")
+        keyValueFormset = formset_factory(cr.keyValueForm, extra=keyno)
+        formset = keyValueFormset(request.POST)
+        formsetbtn = hf.button("+", {}, "/invoice/add_key_value_pair")
+    else:
+        if request.session.get("keyno") == None:
+            request.session["keyno"] = 1
+        keyno = request.session.get("keyno")
+        keyValueFormset = formset_factory(cr.keyValueForm, extra=keyno)
+        formset = keyValueFormset()
+        formsetbtn = hf.button("+", {}, "/invoice/add_key_value_pair")
+
+    context = {"formset": formset, "formsetbtn": formsetbtn}
+    return render(request, "partials/formset.html", context)
+
+
+def add_key_value_pair(request):
+    if request.method == "POST":
+        keyno = request.session.get("keyno")
+        request.session["keyno"] = keyno+1
+        messages.success(request, "added key value pair")
+        # TODO: sub partial for the formset \
+    return redirect(formset_view)
 
 
 @login_required

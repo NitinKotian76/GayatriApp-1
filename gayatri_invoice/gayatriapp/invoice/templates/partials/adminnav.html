@@ -9,7 +9,7 @@
       href="#"
       class="w3-bar-item w3-button w3-ripple"
       hx-get="/invoice/admin_company"
-      hx-target="#mainform"
+      hx-target="#formpart"
       hx-vals='{"form": "adminCompany"}'
       hx-swap="innerHTML"
     >
@@ -19,7 +19,7 @@
       href="#"
       class="w3-bar-item w3-button w3-ripple"
       hx-get="/invoice/form_view"
-      hx-target="#mainform"
+      hx-target="#formpart"
       hx-vals='{"form": "customer"}'
       hx-swap="innerHTML"
     >
@@ -36,7 +36,7 @@
       href="#"
       class="w3-bar-item w3-button w3-ripple"
       hx-get="/invoice/form_view"
-      hx-target="#mainform"
+      hx-target="#formpart"
       hx-vals='{"form":"supplier"}'
       hx-swap="innerHTML"
     >
@@ -53,7 +53,7 @@
       href="#"
       class="w3-bar-item w3-button w3-ripple"
       hx-get="/invoice/form_view"
-      hx-target="#mainform"
+      hx-target="#formpart"
       hx-vals='{"form":"export_fields"}'
       hx-swap="innerHTML"
     >
@@ -70,7 +70,7 @@
       href="#"
       class="w3-bar-item w3-button w3-ripple"
       hx-get="/invoice/form_view"
-      hx-target="#mainform"
+      hx-target="#formpart"
       hx-vals='{"form":"item_category"}'
       hx-swap="innerHTML"
     >
@@ -87,7 +87,7 @@
       href="#"
       class="w3-bar-item w3-button w3-ripple"
       hx-get="/invoice/form_view"
-      hx-target="#mainform"
+      hx-target="#formpart"
       hx-vals='{"form":"variety"}'
       hx-swap="innerHTML"
     >
@@ -104,7 +104,7 @@
       href="#"
       class="w3-bar-item w3-button w3-ripple"
       hx-get="/invoice/form_view"
-      hx-target="#mainform"
+      hx-target="#formpart"
       hx-vals='{"form":"item_name}'
       hx-swap="innerHTML"
     >
@@ -121,7 +121,7 @@
       href="#"
       class="w3-bar-item w3-button w3-ripple"
       hx-get="/invoice/form_view"
-      hx-target="#mainform"
+      hx-target="#formpart"
       hx-vals='{"form":"stock_plusminus"}'
       hx-swap="innerHTML"
     >
@@ -138,7 +138,7 @@
       href="#"
       class="w3-bar-item w3-button w3-ripple"
       hx-get="/invoice/form_view"
-      hx-target="#mainform"
+      hx-target="#formpart"
       hx-vals='{"form":"location"}'
       hx-swap="innerHTML"
     >
@@ -148,7 +148,7 @@
       href="#"
       class="w3-bar-item w3-button w3-ripple"
       hx-get="/invoice/form_view"
-      hx-target="#mainform"
+      hx-target="#formpart"
       hx-vals='{"form":"stock_transfer"}'
       hx-swap="innerHTML"
     >
@@ -168,7 +168,7 @@
       href="#"
       class="w3-bar-item w3-button w3-ripple"
       hx-get="/invoice/form_list"
-      hx-target="#mainform"
+      hx-target="#formpart"
       hx-swap="innerHTML"
     >
       view forms
@@ -177,7 +177,7 @@
       href="#"
       class="w3-bar-item w3-button w3-ripple"
       hx-get="/invoice/form_config"
-      hx-target="#mainform"
+      hx-target="#formpart"
       hx-swap="innerHTML"
     >
       create form
@@ -186,7 +186,7 @@
       href="#"
       class="w3-bar-item w3-button w3-ripple"
       hx-get="/invoice/form_delete"
-      hx-target="#mainform"
+      hx-target="#formpart"
       hx-swap="innerHTML"
     >
       delete form
@@ -195,7 +195,7 @@
       href="#"
       class="w3-bar-item w3-button w3-ripple"
       hx-get="/invoice/form_edit"
-      hx-target="#mainform"
+      hx-target="#formpart"
       hx-swap="innerHTML"
     >
       edit form
@@ -214,7 +214,7 @@
       href="#"
       class="w3-bar-item w3-button w3-ripple"
       hx-get="/invoice/report_list"
-      hx-target="#mainform"
+      hx-target="#formpart"
     >
       view report
     </a>
@@ -222,15 +222,21 @@
       href="#"
       class="w3-bar-item w3-button w3-ripple"
       hx-get="/invoice/new_report"
-      hx-target="#mainform"
+      hx-target="#formpart"
     >
+      <div
+	hx-get="/invoice/formset_view"
+        hx-trigger="click from:closest (a)"
+	hx-target="#formset"
+	hx-swap="innerHTML"
+	></div>
       new report
     </a>
     <a
       href="#"
       class="w3-bar-item w3-button w3-ripple"
       hx-get="/invoice/edit_report"
-      hx-target="#mainform"
+      hx-target="#formpart"
     >
       edit report
     </a>
@@ -238,7 +244,7 @@
       href="#"
       class="w3-bar-item w3-button w3-ripple"
       hx-get="/invoice/del_report"
-      hx-target="#mainform"
+      hx-target="#formpart"
     >
       delete report
     </a>
@@ -256,7 +262,7 @@
       href="#"
       class="w3-bar-item w3-button w3-ripple"
       hx-get="/invoice/Table_list_form"
-      hx-target="#mainform"
+      hx-target="#formpart"
       hx-vals='{"form": "table_list"}'
       hx-swap="innerHTML"
     >
@@ -266,7 +272,7 @@
       href="#"
       class="w3-bar-item w3-button w3-ripple"
       hx-get="/invoice/create_table"
-      hx-target="#mainform"
+      hx-target="#formpart"
       hx-swap="innerHTML"
     >
       create table
@@ -275,7 +281,7 @@
       href="#"
       class="w3-bar-item w3-button w3-ripple"
       hx-get="/invoice/edittable_db"
-      hx-target="#mainform"
+      hx-target="#formpart"
     >
       edit table
     </a>
@@ -283,7 +289,7 @@
       href="#"
       class="w3-bar-item w3-button w3-ripple"
       hx-get="/invoice/deletetable_db"
-      hx-target="#mainform"
+      hx-target="#formpart"
     >
       delete table
     </a>
@@ -291,7 +297,7 @@
       href="#"
       class="w3-bar-item w3-button w3-ripple"
       hx-get="/invoice/backup"
-      hx-target="#mainform"
+      hx-target="#formpart"
     >
       backup
     </a>
@@ -310,9 +316,9 @@
       href="#"
       class="w3-bar-item w3-button w3-ripple"
       hx-get="/invoice/form_view"
-      hx-target="#mainform"
+      hx-target="#formpart"
       hx-vals='{"form":"api"}'
-      onclick='document.getElementById("mainform").style.display="block"'
+      
     >
       API
     </a>
@@ -320,9 +326,9 @@
       href="#"
       class="w3-bar-item w3-button w3-ripple"
       hx-get="/invoice/form_view"
-      hx-target="#mainform"
+      hx-target="#formpart"
       hx-vals='{"form":"multiple_export_packing_slip"}'
-      onclick='document.getElementById("mainform").style.display="block"'
+      
     >
       Multiple Export Packing Slip
     </a>
@@ -330,9 +336,9 @@
       href="#"
       class="w3-bar-item w3-button w3-ripple"
       hx-get="/invoice/form_view"
-      hx-target="#mainform"
+      hx-target="#formpart"
       hx-vals='{"form":"millsoft_to_orion"}'
-      onclick='document.getElementById("mainform").style.display="block"'
+      
     >
       MillSoft To Orion
     </a>
@@ -340,9 +346,9 @@
       href="#"
       class="w3-bar-item w3-button w3-ripple"
       hx-get="/invoice/form_view"
-      hx-target="#mainform"
+      hx-target="#formpart"
       hx-vals='{"form":"backup"}'
-      onclick='document.getElementById("mainform").style.display="block"'
+      
     >
       Backup
     </a>
@@ -350,7 +356,7 @@
       href="#"
       class="w3-bar-item w3-button w3-ripple"
       hx-get="/invoice/form_view"
-      hx-target="#mainform"
+      hx-target="#formpart"
       hx-vals='{"form":"config"}'
       hx-swap="innerHTML"
     >
@@ -360,9 +366,9 @@
       href="#"
       class="w3-bar-item w3-button w3-ripple"
       hx-get="/invoice/form_view"
-      hx-target="#mainform"
+      hx-target="#formpart"
       hx-vals='{"form":"printer_setting"}'
-      onclick='document.getElementById("mainform").style.display="block"'
+      
     >
       Printer Setting
     </a>
@@ -370,9 +376,9 @@
       href="#"
       class="w3-bar-item w3-button w3-ripple"
       hx-get="/invoice/form_view"
-      hx-target="#mainform"
+      hx-target="#formpart"
       hx-vals='{"form":"calculator"}'
-      onclick='document.getElementById("mainform").style.display="block"'
+      
     >
       Calculator
     </a>

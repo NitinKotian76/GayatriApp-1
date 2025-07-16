@@ -1,15 +1,7 @@
 <div id="dynform">
     {% csrf_token %}
     {{ form }}
-    {% if formset %}
-        {{ formset.management_form }}
-        {% for field in formset %}
-            <div class="w3-padding w3-margin">
-                {{ field.label_tag }} {{ field }}
-                <button class="w3-btn">+</button>
-            </div>
-        {% endfor %}
-    {% endif %}
+    {% include "partials/formset.html" %}
     {% autoescape off %}
         <div>
             {% for button in buttons %}{{ button }}{% endfor %}

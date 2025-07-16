@@ -1,0 +1,11 @@
+<div id="formset">
+    {{ formset.management_form }}
+    {% for field in formset %}
+        <div class="w3-padding w3-margin">
+            {{ field.label_tag }} {{ field }}
+            {% autoescape off %}
+                {% for button in formsetbtn %}{{ button }}{% endfor %}
+            {% endautoescape %}
+        </div>
+    {% endfor %}
+</div>

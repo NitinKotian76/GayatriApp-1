@@ -3,10 +3,13 @@
     <form>
         {% csrf_token %}
         <section id="mainform" class="w3-container">
-                <div id="formpart">{% include 'partials/forms.html' %}</div>
+            <div id="formpart">{% include 'partials/forms.html' %}</div>
         </section>
+    </form>
+    <form>
+        {% csrf_token %}
         <section class="w3-container">
-                <div id="tableview">{% include 'partials/tableview.html' %}</div>
+            <div id="tableview">{% include 'partials/tableview.html' %}</div>
         </section>
     </form>
 {% endblock %}
