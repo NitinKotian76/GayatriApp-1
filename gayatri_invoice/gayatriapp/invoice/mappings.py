@@ -7,8 +7,8 @@ FORMHANDLER = {
         "table_name": "customer",
         "buttons": {
             "submit": {
+                "hx_req": "/invoice/form_view",
                 "hx_vals": {"form": "customer"},
-                "hx_req": "/invoice/form_view"
             },
             "find": {
                 "hx_req": "/invoice/find"

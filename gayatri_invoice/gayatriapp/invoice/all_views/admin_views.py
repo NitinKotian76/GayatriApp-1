@@ -88,11 +88,12 @@ class Table_list(LoginRequiredMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data()
-        context["buttons"] = hf.button(
-            "select",
-            {"form": "adminCompany"},
-            "/invoice/admin_company"
-        )
+        context["buttons"] = hf.button("select",
+                                       hx_req_type="hx-post",
+                                       hx_vals={"form": "adminCompany"},
+                                       hx_req="/invoice/admin_company",
+                                       hx_target="#dynform"
+                                       )
         logger.debug(context)
         context["form_name"] = "table_list"
         return context
@@ -114,7 +115,13 @@ def admin_company(request):
     else:
         form = df.adminCompany()
     buttons.append(
-        hf.button("select", {"form": "adminCompany"}, "/invoice/admin_company"))
+        hf.button("select",
+                  hx_req_type="hx-post",
+                  hx_vals={"form": "adminCompany"},
+                  hx_req="/invoice/admin_company",
+                  hx_target="#dynform"
+                  )
+    )
     context = {
         "form": form,
         "buttons": buttons,

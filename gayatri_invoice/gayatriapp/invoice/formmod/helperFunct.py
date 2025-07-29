@@ -3,7 +3,6 @@ from django.utils.html import format_html
 from django.http import JsonResponse
 from ..models import *
 import logging
-import json
 logger = logging.getLogger(__name__)
 
 
@@ -18,15 +17,20 @@ def getInputFields(object):
     return methods_list
 
 
-def button(name: str, hx_vals: dict, hx_req: str, target: str = "#dynform"):
-    data = json.dumps(hx_vals)
-    html = format_html('<input class="w3-button w3-ripple w3-green w3-padding w3-margin"\
-                type="button" value="{}" \
-                hx-post={} \
-                hx-trigger="click" \
-                hx-target={} \
-                hx-swap="outerHTML" \
-                hx-vals=\'{}\'/>', name, hx_req, target, data)
+def button(name: str, **kwargs):
+    hx_req_type = kwargs.get("hx_req_type", "hx-post")
+    hx_req = kwargs.get("hx_req", "")
+    hx_vals = kwargs.get("hx_vals", "{}")
+    hx_target = kwargs.get("hx_target", "#dynform")
+    hx_swap = kwargs.get("hx_swap", "innerHTML")
+
+    html = format_html("<input class='w3-button w3-ripple w3-green w3-padding w3-margin'\
+                type='button' value='{}' \
+                {}={}\
+                hx-vals=\'{}\'\
+                hx-target={}\
+                hx-swap={}\
+                />", name, hx_req_type, hx_req, hx_vals, hx_target, hx_swap)
     return html
 
 

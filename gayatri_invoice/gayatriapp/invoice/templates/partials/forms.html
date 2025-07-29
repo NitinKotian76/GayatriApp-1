@@ -1,7 +1,9 @@
 <div id="dynform">
     {% csrf_token %}
     {{ form }}
-    {% include "partials/formset.html" %}
+    {% if formset %}
+        {% include 'partials/formset.html' with formset=formset %}
+    {% endif %}
     {% autoescape off %}
         <div>
             {% for button in buttons %}{{ button }}{% endfor %}

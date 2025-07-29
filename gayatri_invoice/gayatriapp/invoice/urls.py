@@ -9,9 +9,8 @@ report_urlpatterns = [
     path("report_view", report_views.report_view, name="report_view"),
     path("report_list", report_views.report_list, name="report_list"),
     path("new_report", report_views.new_report, name="new_report"),
-    path("add_key_value_pair", report_views.add_key_value_pair,
-         name="add_key_value_pair"),
-    path("formset_view", report_views.formset_view, name="formset_view"),
+    path("add_formset_field", report_views.add_formset_field,
+         name="add_formset_field"),
 ]
 
 # Form URLs

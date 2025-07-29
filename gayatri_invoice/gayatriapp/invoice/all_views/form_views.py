@@ -25,9 +25,23 @@ logger = logging.getLogger(__name__)
 def btn_append(handler: list, item: str):
     buttons = []
     for key in handler[item]:
-        hx_vals = handler[item][key]["hx_vals"]
-        hx_req = handler[item][key]["hx_req"]
-        button = hf.button(key, hx_vals, hx_req)
+        call_args = {}
+        if handler[item][key].get("hx_req_type"):
+            call_args["hx_req_type"] = handler[item][key].get("hx_req_type")
+
+        if handler[item][key].get("hx_vals"):
+            call_args["hx_vals"] = handler[item][key].get("hx_vals")
+
+        if handler[item][key].get("hx_req"):
+            call_args["hx_req"] = handler[item][key].get("hx_req")
+
+        if handler[item][key].get("hx_swap"):
+            call_args["hx_swap"] = handler[item][key].get("hx_swap")
+
+        if handler[item][key].get("hx_target"):
+            call_args["hx_target"] = handler[item][key].get("hx_target")
+
+        button = hf.button(key, **call_args)
         buttons.append(button)
     return buttons
 

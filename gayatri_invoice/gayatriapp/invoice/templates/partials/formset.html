@@ -1,11 +1,5 @@
+{{ formset.management_form }}
 <div id="formset">
-    {{ formset.management_form }}
-    {% for field in formset %}
-        <div class="w3-padding w3-margin">
-            {{ field.label_tag }} {{ field }}
-            {% autoescape off %}
-                {% for button in formsetbtn %}{{ button }}{% endfor %}
-            {% endautoescape %}
-        </div>
-    {% endfor %}
+    {% for field in formset %}<div class="w3-padding w3-margin">{{ field.label_tag }} {{ field }}</div>{% endfor %}
+    {% include 'partials/add_button.html' with total_forms=formset.total_form_count %}
 </div>

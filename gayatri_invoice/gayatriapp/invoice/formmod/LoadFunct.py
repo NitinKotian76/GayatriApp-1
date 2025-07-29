@@ -7,8 +7,10 @@ from ..models import TableData
 #
 
 def Filedata(filename):
+    # TODO: need to update the load functions to builting Django Forms
     """
-    the purpose of this function should be to get the json data form file and
+    dynamic form based on old html components
+    the purpose of this function should be to get the json data from file and
     create a list of input fields with htmx attributes
     """
 
@@ -32,5 +34,4 @@ def Filedata(filename):
         for i in range(len(htmllist)):
             # print(htmllist[i])
             html += htmllist[i]
-        print(type(html))
         return html

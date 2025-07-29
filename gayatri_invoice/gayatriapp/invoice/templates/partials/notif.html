@@ -1,4 +1,6 @@
-<div id="notif" class="w3-card-4 w3-display-topmiddle w3-animate-top">
+<div id="notif"
+     hx-swap-oob="true"
+     class="w3-card-4 w3-display-topmiddle w3-animate-top">
     {% if messages %}
         <div class="w3-bar-block ">
             {% for message in messages %}

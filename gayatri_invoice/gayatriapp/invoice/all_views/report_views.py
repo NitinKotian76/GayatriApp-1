@@ -8,7 +8,9 @@ from ..models import *
 from ..forms import *
 from ..formmod import CrudReport as cr
 from ..formmod import helperFunct as hf
+from ..dbmod import dbfunctions as df
 from .. import mappings as mp
+from django.core.cache import cache
 
 # IMPROVEMENT NEEDED: Add proper docstring for the module
 # IMPROVEMENT NEEDED: Add proper type hints for better code maintainability
@@ -27,6 +29,7 @@ def report_view(request):
     buttons = []
     hx_req = "/invoice/report_view"
     if request.method == "POST":
+        print(request.headers.get('HX-request'))
         formtype = request.POST.get("form")
         logger.debug(formtype)
         if formtype in form_handler:
@@ -82,46 +85,58 @@ def report_list(request):
 @login_required
 def new_report(request):
     # PRIORITY 2: To be implemented (Create Report CRUD operation)
+    newform = None
+    keyValueFormset = formset_factory(cr.keyValueForm)
     if request.method == 'POST':
-        form = bf.new_report(request.POST)
-        buttons = hf.button("submit", {}, "/invoice/new_report")
+        form = cr.reportCreate(request.POST)
+        formset = keyValueFormset(request.POST)
+        newform = formset
+        buttons = hf.button("submit",
+                            hx_req_type="hx-post",
+                            hx_req="/invoice/new_report",
+                            hx_target="#dynform",
+                            hx_swap="innerHTML")
     else:
         logger.debug("create new report")
-        form = cr.new_report()
-        buttons = hf.button("submit", {}, "/invoice/new_report")
+        form = cr.reportCreate()
+        formset = keyValueFormset()
+        newform = formset.empty_form
+        buttons = hf.button("submit",
+                            hx_req_type="hx-post",
+                            hx_req="/invoice/new_report",
+                            hx_target="#dynform",
+                            hx_swap="innerHTML")
+
     context = {"form": form,
-               "buttons": buttons}
+               "formset": formset,
+               "buttons": buttons,
+               "req": "/invoice/formset_view"}
     return render(request, "partials/forms.html", context)
 
 # IMPROVEMENT NEEDED: Add proper error handling
 # IMPROVEMENT NEEDED: Add proper logging
 
 
-def formset_view(request):
-    if request.method == "POST":
-        keyno = request.session.get("keyno")
-        keyValueFormset = formset_factory(cr.keyValueForm, extra=keyno)
-        formset = keyValueFormset(request.POST)
-        formsetbtn = hf.button("+", {}, "/invoice/add_key_value_pair")
-    else:
-        if request.session.get("keyno") == None:
-            request.session["keyno"] = 1
-        keyno = request.session.get("keyno")
-        keyValueFormset = formset_factory(cr.keyValueForm, extra=keyno)
-        formset = keyValueFormset()
-        formsetbtn = hf.button("+", {}, "/invoice/add_key_value_pair")
+def add_formset_field(request):
+    # add fields
+    cache.clear()
+    newform = None
+    forms = []
+    if request.GET.get("add"):
+        total_forms = request.GET.get("form-TOTAL_FORMS")  # 0
+        logger.debug(total_forms)
+        total_forms = int(total_forms)+1  # 1
+        logger.debug(total_forms)
+        keyValueFormset = formset_factory(cr.keyValueForm, extra=total_forms)
+        formset = keyValueFormset(request.GET)
+        newform = formset.empty_form
+        for i in range(1, total_forms):
+            newform.prefix = f"{formset.prefix}-{i}"
+            forms.append(newform)
+            print(forms)
 
-    context = {"formset": formset, "formsetbtn": formsetbtn}
+    context = {"formset": forms}
     return render(request, "partials/formset.html", context)
-
-
-def add_key_value_pair(request):
-    if request.method == "POST":
-        keyno = request.session.get("keyno")
-        request.session["keyno"] = keyno+1
-        messages.success(request, "added key value pair")
-        # TODO: sub partial for the formset \
-    return redirect(formset_view)
 
 
 @login_required
