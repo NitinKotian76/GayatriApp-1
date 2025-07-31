@@ -24,11 +24,11 @@ class reportCreate(forms.Form):
 
 
 class keyValueForm(forms.Form):
-    template_name = "form_snippet.html"
     error_css_class = "error"
     required_css_class = "required"
+
     key = forms.CharField()
-    value = forms.CharField()
+    value = forms.ChoiceField()
 
 # Filters
 # add filters as per requirement

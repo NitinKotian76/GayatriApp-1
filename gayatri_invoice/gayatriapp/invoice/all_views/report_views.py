@@ -85,22 +85,25 @@ def report_list(request):
 @login_required
 def new_report(request):
     # PRIORITY 2: To be implemented (Create Report CRUD operation)
-    newform = None
     keyValueFormset = formset_factory(cr.keyValueForm)
     if request.method == 'POST':
         form = cr.reportCreate(request.POST)
         formset = keyValueFormset(request.POST)
-        newform = formset
         buttons = hf.button("submit",
                             hx_req_type="hx-post",
                             hx_req="/invoice/new_report",
                             hx_target="#dynform",
                             hx_swap="innerHTML")
+        # do something with the data
+        if form.is_valid and formset.is_valid:
+            report_name = form.cleaned_data("report_name")
+            company = form.cleaned_data("company")
+
     else:
         logger.debug("create new report")
         form = cr.reportCreate()
         formset = keyValueFormset()
-        newform = formset.empty_form
+        logger.debug(formset.management_form)
         buttons = hf.button("submit",
                             hx_req_type="hx-post",
                             hx_req="/invoice/new_report",
@@ -118,24 +121,24 @@ def new_report(request):
 
 
 def add_formset_field(request):
-    # add fields
-    cache.clear()
     newform = None
     forms = []
-    if request.GET.get("add"):
-        total_forms = request.GET.get("form-TOTAL_FORMS")  # 0
-        logger.debug(total_forms)
-        total_forms = int(total_forms)+1  # 1
-        logger.debug(total_forms)
-        keyValueFormset = formset_factory(cr.keyValueForm, extra=total_forms)
-        formset = keyValueFormset(request.GET)
-        newform = formset.empty_form
-        for i in range(1, total_forms):
-            newform.prefix = f"{formset.prefix}-{i}"
-            forms.append(newform)
-            print(forms)
+    keyValueFormset = formset_factory(cr.keyValueForm)
+    if request.POST.get("add"):
+        total_forms = request.POST.get("form-TOTAL_FORMS")
+        if total_forms == None:
+            total_forms = 1
+        else:
+            total_forms = int(total_forms)+1
 
-    context = {"formset": forms}
+        formset = keyValueFormset(request.POST)
+        newform = formset.empty_form
+        newform.prefix = f"{formset.prefix}-{total_forms}"
+        for form in formset.forms:
+            forms.append(form)
+        forms.append(newform)
+
+    context = {"formset": forms, "total_forms": total_forms}
     return render(request, "partials/formset.html", context)
 
 
