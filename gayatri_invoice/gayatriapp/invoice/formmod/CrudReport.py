@@ -28,7 +28,13 @@ class keyValueForm(forms.Form):
     required_css_class = "required"
 
     key = forms.CharField()
-    value = forms.ChoiceField()
+    value = forms.ChoiceField(choices=[])
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['value'].choices = Company.objects.values_list(
+            'id', 'company_name')
+
 
 # Filters
 # add filters as per requirement

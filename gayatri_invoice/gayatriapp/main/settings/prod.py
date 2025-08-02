@@ -55,6 +55,11 @@ MIDDLEWARE = [
     # end of cache middleware
     "django.middleware.cache.FetchFromCacheMiddleware",
 ]
+FILE_UPLOAD_HANDLERS = [
+
+    "django.core.files.uploadhandler.MemoryFileUploadHandler",
+    "django.core.files.uploadhandler.TemporaryFileUploadHandler",
+]
 
 SESSION_ENGINE = "django.contrib.sessions.backends.db"
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
@@ -179,3 +184,4 @@ LOGGING = {
         },
     },
 }
+

@@ -1,21 +1,33 @@
 {% extends 'base.html' %}
 {% block content %}
-    <form>
-        {% csrf_token %}
-        <section id="mainform" class="w3-container">
-            <div id="formpart">{% include 'partials/forms.html' %}</div>
-        </section>
-    </form>
-    <form>
-        {% csrf_token %}
-        <section class="w3-container">
-            <div id="tableview">{% include 'partials/tableview.html' %}</div>
-        </section>
-    </form>
-{% endblock %}
-{% block modal %}
-    <form>
-        {% csrf_token %}
-        <div id="modalview"></div>
-    </form>
-{% endblock %}
+    {% if form.is_multipart %}
+        <form enctype="multipart/form-data" method="post" action="/foo/">
+        {% else %}
+            <form>
+            {% endif %}
+            {% csrf_token %}
+            <section id="mainform" class="w3-container">
+                <div id="formpart">{% include 'partials/forms.html' %}</div>
+            </section>
+        </form>
+        {% if form.is_multipart %}
+            <form enctype="multipart/form-data" method="post" action="/foo/">
+            {% else %}
+                <form>
+                {% endif %}
+                {% csrf_token %}
+                <section class="w3-container">
+                    <div id="tableview">{% include 'partials/tableview.html' %}</div>
+                </section>
+            </form>
+        {% endblock %}
+        {% block modal %}
+            {% if form.is_multipart %}
+                <form enctype="multipart/form-data" method="post" action="/foo/">
+                {% else %}
+                    <form>
+                    {% endif %}
+                    {% csrf_token %}
+                    <div id="modalview"></div>
+                </form>
+            {% endblock %}

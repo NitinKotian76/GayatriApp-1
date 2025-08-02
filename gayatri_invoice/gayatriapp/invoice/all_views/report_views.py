@@ -87,7 +87,8 @@ def new_report(request):
     # PRIORITY 2: To be implemented (Create Report CRUD operation)
     keyValueFormset = formset_factory(cr.keyValueForm)
     if request.method == 'POST':
-        form = cr.reportCreate(request.POST)
+        logger.debug(request.FILES)
+        form = cr.reportCreate(request.POST, request.FILES)
         formset = keyValueFormset(request.POST)
         buttons = hf.button("submit",
                             hx_req_type="hx-post",
@@ -95,10 +96,17 @@ def new_report(request):
                             hx_target="#dynform",
                             hx_swap="innerHTML")
         # do something with the data
-        if form.is_valid and formset.is_valid:
-            report_name = form.cleaned_data("report_name")
-            company = form.cleaned_data("company")
-
+        logger.debug(form.errors)
+        logger.debug(formset.errors)
+        if form.is_valid() and formset.is_valid():
+            data = form.cleaned_data
+            logger.debug(data)
+            tagdata = {}
+            for i in range(0, total_forms):
+                key = formset.cleaned_data[f"form-{i}-key"]
+                value = formset.cleaned_data[f"form-{i}-value"]
+                tagdata[key] = value
+            logger.debug(tagdata)
     else:
         logger.debug("create new report")
         form = cr.reportCreate()
