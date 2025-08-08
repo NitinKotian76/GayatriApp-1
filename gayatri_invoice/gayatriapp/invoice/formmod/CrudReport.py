@@ -11,7 +11,8 @@ class reportCreate(forms.Form):
     error_css_class = "error"
     required_css_class = "required"
 
-    report_name = forms.CharField()
+    template_name = forms.CharField()
+    sheet_name = forms.CharField()
     company = forms.ChoiceField(choices=[])
     excel_file = forms.FileField()
 

@@ -69,3 +69,12 @@ function hideNotifAfterTimeout() {
     }, 5000);
   }
 }
+
+function clearSelectedRows(){
+const allInputs = document.querySelectorAll('#tableform input'); // Selects all input elements within the form
+allInputs.forEach(input => {
+  input.checked = false;
+input.value="";
+});
+console.log("cleared input ")
+}

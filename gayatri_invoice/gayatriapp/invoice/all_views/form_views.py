@@ -41,6 +41,9 @@ def btn_append(handler: list, item: str):
         if handler[item][key].get("hx_target"):
             call_args["hx_target"] = handler[item][key].get("hx_target")
 
+        if handler[item][key].get("attrs"):
+            call_args["attrs"] = handler[item][key].get("attrs")
+
         button = hf.button(key, **call_args)
         buttons.append(button)
     return buttons
@@ -164,13 +167,15 @@ def select_row(request):
     if request.method == "POST":
         row_id = request.POST.get('row_id')
         selected_rows = request.session.get('selected_rows', [])
-        logger.debug(selected_rows)
         # Toggle selection
         if row_id in selected_rows:
             selected_rows.remove(row_id)
+            logger.debug(selected_rows)
+            logger.debug(row_id)
         else:
             selected_rows.append(row_id)
-        logger.debug(selected_rows)
+            logger.debug(selected_rows)
+            logger.debug(row_id)
 
     # Update session
         request.session['selected_rows'] = selected_rows
@@ -179,8 +184,34 @@ def select_row(request):
     return HttpResponse(status=200)
 
 
-def get_selected_rows(request):
-    return request.session.get('selected_rows', [])
+def reset_selected_row(request):
+    request.session["selected_rows"] = []
+    return HttpResponse(status=200)
+
+
+def delete_row(request):
+    selected_rows = request.session.get('selected_rows', [])
+    # delete selected selected_rows
+    for row_id in selected_rows:
+        logger.debug(TableData.objects.filter(pk=row_id).delete())
+        selected_rows.remove(row_id)
+    request.session['selected_rows'] = selected_rows
+    return HttpResponse(status=200)
+
+
+def approve_row(request):
+    selected_rows = request.session.get('selected_rows', [])
+    logger.debug(selected_rows)
+    for row_id in selected_rows:
+        data = TableData.objects.filter(pk=row_id).values()
+        logger.debug(data)
+        # column = list(data)[0]["table_data"]
+        # column["approved"] = True
+        # data.update(table_data=column)
+        # logger.debug("updated", row_id)
+
+    return HttpResponse(status=200)
+
 
 # forms
 

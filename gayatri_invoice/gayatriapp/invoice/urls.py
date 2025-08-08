@@ -17,6 +17,10 @@ report_urlpatterns = [
 form_urlpatterns = [
     path("form_view", form_views.form_view, name="form_view"),
     path("select_row", form_views.select_row, name="select_row"),
+    path("reset_selected_row", form_views.reset_selected_row,
+         name="reset_selected_row"),
+    path("delete_row", form_views.delete_row, name="delete_row"),
+    path("approve_row", form_views.approve_row, name="approve_row"),
     path("form_list", form_views.form_list, name="form_list"),
     path("form_setup", form_views.form_setup, name="form_setup"),
     path("form_delete", form_views.form_delete, name="form_delete"),

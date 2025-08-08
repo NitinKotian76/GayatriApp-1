@@ -23,6 +23,13 @@ def button(name: str, **kwargs):
     hx_vals = kwargs.get("hx_vals", "{}")
     hx_target = kwargs.get("hx_target", "#dynform")
     hx_swap = kwargs.get("hx_swap", "innerHTML")
+    attrs = kwargs.get("attrs", "")
+
+    attrs_str = " "
+    if attrs != "":
+        for keys, values in attrs.items():
+            str = keys+"="+values
+            attrs_str += str+" "
 
     html = format_html("<input class='w3-button w3-ripple w3-green w3-padding w3-margin'\
                 type='button' value='{}' \
@@ -30,7 +37,8 @@ def button(name: str, **kwargs):
                 hx-vals=\'{}\'\
                 hx-target={}\
                 hx-swap={}\
-                />", name, hx_req_type, hx_req, hx_vals, hx_target, hx_swap)
+                {}\
+                />", name, hx_req_type, hx_req, hx_vals, hx_target, hx_swap, attrs_str)
     return html
 
 

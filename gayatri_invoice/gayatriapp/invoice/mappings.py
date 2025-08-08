@@ -21,11 +21,16 @@ FORMHANDLER = {
         "table_buttons": {
             "delete": {
                 "hx_vals": {"form": "customer"},
-                "hx_req": "/invoice/select_row"
+                "hx_req": "/invoice/delete_row"
             },
             "approve": {
                 "hx_vals": {"form": "customer"},
-                "hx_req": "/invoice/select_row"
+                "hx_req": "/invoice/approve_row"
+            },
+            "clear": {
+                "hx_vals": {"form": "customer"},
+                "hx_req": "/invoice/reset_selected_row",
+                "attrs": {"onclick": "clearSelectedRows()"}
             }
         }
     },

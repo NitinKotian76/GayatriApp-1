@@ -1,5 +1,5 @@
 <div id="tableshow">
-    <form>
+    <form id="tableform">
         {% csrf_token %}
         {% if listdata %}
             <div style="overflow-x:auto;">
@@ -16,7 +16,6 @@
                             <tr>
                                 <td>
                                     <input type="checkbox"
-                                           class="w3-input"
                                            name="selected_row"
                                            hx-post="/invoice/select_row"
                                            hx-vals='{"listdata_id": "{{ data.id }}"}'

@@ -7,6 +7,7 @@ from ..cachestore import cachestore as cache
 from ..models import *
 from ..forms import *
 from ..formmod import CrudReport as cr
+from ..reportmod import create_report as rf
 from ..formmod import helperFunct as hf
 from ..dbmod import dbfunctions as df
 from .. import mappings as mp
@@ -99,14 +100,18 @@ def new_report(request):
         logger.debug(form.errors)
         logger.debug(formset.errors)
         if form.is_valid() and formset.is_valid():
-            data = form.cleaned_data
-            logger.debug(data)
+            report_name = form.cleaned_data["report_name"]
+            template_name = form.cleaned_data["template_name"]
+            sheet_name = form.cleaned_data["sheet_name"]
+
             tagdata = {}
             for i in range(0, total_forms):
                 key = formset.cleaned_data[f"form-{i}-key"]
                 value = formset.cleaned_data[f"form-{i}-value"]
                 tagdata[key] = value
             logger.debug(tagdata)
+            rf.set_report_data(report_name, tagdata,
+                               template_name, sheet_name, request.user.id)
     else:
         logger.debug("create new report")
         form = cr.reportCreate()

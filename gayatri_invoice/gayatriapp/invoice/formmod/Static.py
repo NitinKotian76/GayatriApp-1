@@ -43,30 +43,24 @@ class customer(forms.Form):
                    ("export", "Export"),
                    ]
 
-    customer_name = forms.CharField(widget=forms.TextInput(
-        attrs={'class': 'w3-input'}), max_length=50)
+    customer_name = forms.CharField(widget=forms.TextInput(), max_length=50)
     agent_or_customer_name = forms.CharField(
-        widget=forms.TextInput(attrs={'class': 'w3-input'}), max_length=50)
-    address_details = forms.CharField(widget=forms.TextInput(
-        attrs={'class': 'w3-input'}), max_length=1000)
-    city = forms.CharField(widget=forms.TextInput(
-        attrs={'class': 'w3-input'}), max_length=50)
-    state = forms.CharField(widget=forms.TextInput(
-        attrs={'class': 'w3-input'}), max_length=50)
-    pin_code = forms.IntegerField(widget=forms.TextInput(
-        attrs={'class': 'w3-input'}), max_value=999999)
-    gst_no = forms.CharField(widget=forms.TextInput(
-        attrs={'class': 'w3-input'}), min_length=15, max_length=15)
-    pan_no = forms.CharField(widget=forms.TextInput(
-        attrs={'class': 'w3-input'}), min_length=10, max_length=10)
-    payment_term = forms.IntegerField(widget=forms.TextInput(
-        attrs={'class': 'w3-input'}))  # payment period in days
-    dispatch_to = forms.CharField(widget=forms.TextInput(
-        attrs={'class': 'w3-input'}), max_length=50)
-    district = forms.CharField(widget=forms.TextInput(
-        attrs={'class': 'w3-input'}), max_length=50)
-    invoice_type = forms.ChoiceField(widget=forms.Select(
-        attrs={'class': 'w3-input'}), choices=order_types)
+        widget=forms.TextInput(), max_length=50)
+    address_details = forms.CharField(
+        widget=forms.TextInput(), max_length=1000)
+    city = forms.CharField(widget=forms.TextInput(), max_length=50)
+    state = forms.CharField(widget=forms.TextInput(), max_length=50)
+    pin_code = forms.IntegerField(widget=forms.TextInput(), max_value=999999)
+    gst_no = forms.CharField(widget=forms.TextInput(),
+                             min_length=15, max_length=15)
+    pan_no = forms.CharField(widget=forms.TextInput(),
+                             min_length=10, max_length=10)
+    payment_term = forms.IntegerField(
+        widget=forms.TextInput())  # payment period in days
+    dispatch_to = forms.CharField(widget=forms.TextInput(), max_length=50)
+    district = forms.CharField(widget=forms.TextInput(), max_length=50)
+    invoice_type = forms.ChoiceField(
+        widget=forms.Select(), choices=order_types)
 
 
 class supplier(forms.Form):
