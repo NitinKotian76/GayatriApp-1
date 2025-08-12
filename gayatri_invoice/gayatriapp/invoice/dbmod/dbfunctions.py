@@ -24,6 +24,7 @@ def get_choices(table_name: str, column: str, user_id: str):
 
 
 def set_data(table_name: str, data: dict, user_id: str, company_id: int = None):
+
     if company_id:
         company = Company.objects.get(id=company_id)
     else:
