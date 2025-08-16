@@ -23,6 +23,7 @@ def get_choices(table_name: str, column: str, user_id: str) -> list:
     return [(item, item) for item in list_data]
 
 
+<<<<<<< HEAD
 def check_metadata(table_name: str, data: str) -> None:
     """
         this function check whether the data format conforms with metadata
@@ -52,6 +53,10 @@ def new_table(table_name: str, user_id: str, company_id: str = None, metadata: d
     """
         this def sets the table name and the metadata
     """
+=======
+def set_data(table_name: str, data: dict, user_id: str, company_id: int = None):
+
+>>>>>>> ba7e3147723ca0c46d561d8f5ae0883af2410d4b
     if company_id:
         company = Company.objects.get(id=company_id)
     else:

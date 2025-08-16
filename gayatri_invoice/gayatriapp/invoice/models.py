@@ -29,10 +29,17 @@ class Company(models.Model):
 class TableName(models.Model):
     table_name = models.CharField(
         max_length=255, null=True, blank=True, verbose_name="table name")
+<<<<<<< HEAD
     description = models.CharField(
         max_length=255, null=True, blank=True, verbose_name="table description")
     company = models.ForeignKey(
         Company, on_delete=models.CASCADE, related_name="tables")
+=======
+    company = models.ForeignKey(
+        Company, on_delete=models.CASCADE, related_name="tables")
+    table_metadata = models.JSONField(
+        null=True, blank=True, default=dict, unique=True, verbose_name="table data")
+>>>>>>> ba7e3147723ca0c46d561d8f5ae0883af2410d4b
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -49,11 +56,23 @@ class TableName(models.Model):
 class TableMetaData(models.Model):
     # IMPROVEMENT NEEDED: Add proper validation for JSONField
     # IMPROVEMENT NEEDED: Add related_name for ForeignKeys
+<<<<<<< HEAD
     table_metadata = models.JSONField(
         null=True, blank=True, default=dict, unique=True, verbose_name="table metadata")
     table_name = models.ForeignKey(
         TableName, on_delete=models.CASCADE, related_name="metadata")
     # Should add: related_name="table_data"
+=======
+    table_data = models.CharField()
+    column_name = models.CharField()
+    entry_no = models.uuid
+    # Should add: related_name="data_rows"
+    table_name = models.ForeignKey(
+        TableName, on_delete=models.CASCADE, related_name="data_rows")
+    # Should add: related_name="table_data"
+    company = models.ForeignKey(
+        Company, on_delete=models.CASCADE, related_name="table_data")
+>>>>>>> ba7e3147723ca0c46d561d8f5ae0883af2410d4b
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -91,20 +110,31 @@ class TableData(models.Model):
 class CustomUserManager(BaseUserManager):
     # IMPROVEMENT NEEDED: Add proper error messages for validation
     # IMPROVEMENT NEEDED: Add email validation in create_user
+<<<<<<< HEAD
     def create_user(self, email, user_name, user_emp_code, password=None, **extrafields):
+=======
+    def create_user(self, email, user_emp_code, password=None, **extra_fields):
+>>>>>>> ba7e3147723ca0c46d561d8f5ae0883af2410d4b
         if not user_emp_code:
             raise ValueError("user must have emp code")
+        if not email:
+            raise ValueError("user must have an email")
 
         user = self.model(
             user_name=user_name,
             email=self.normalize_email(email),
             user_emp_code=user_emp_code,
+<<<<<<< HEAD
             **extrafields
+=======
+            **extra_fields
+>>>>>>> ba7e3147723ca0c46d561d8f5ae0883af2410d4b
         )
         user.set_password(password)
         user.save(using=self._db)
         return user
 
+<<<<<<< HEAD
     def create_superuser(self, email, user_name, user_emp_code, password=None, **extrafields):
         # IMPROVEMENT NEEDED: Add proper validation for superuser creation
         extrafields.setdefault('is_admin', True)
@@ -117,11 +147,28 @@ class CustomUserManager(BaseUserManager):
             user_emp_code=user_emp_code,
             password=password,
             **extrafields
+=======
+    def create_superuser(self, email, user_emp_code, password=None, **extra_fields):
+        # IMPROVEMENT NEEDED: Add proper validation for superuser creation
+        extra_fields.setdefault('is_admin', True)
+        extra_fields.setdefault('is_staff', True)
+        extra_fields.setdefault('is_superuser', True)
+        if extra_fields.get('is_staff') is not True:
+            raise ValueError('Superuser must have is_staff=True.')
+        if extra_fields.get('is_superuser') is not True:
+            raise ValueError('Superuser must have is_superuser=True.')
+
+        return self.create_user(
+            email,
+            user_emp_code=user_emp_code,
+            password=password,
+            **extra_fields
+>>>>>>> ba7e3147723ca0c46d561d8f5ae0883af2410d4b
         )
 
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
-    user_name = models.CharField(max_length=255, verbose_name="User Name")
+    user_name = models.CharField(max_length=50, verbose_name="User Name")
     email = models.EmailField(
         verbose_name="email address",
         max_length=255,
@@ -180,6 +227,9 @@ class Form(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
+        verbose_name = "Form"
+        verbose_name_plural = "Forms"
+        ordering = ['-created_at']
         permissions = [
             ("edit_form", "can edit form"),
             ("access_form", "can access form"),
@@ -203,5 +253,19 @@ class Report(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        # IMPROVEMENT NEEDED: Add proper ordering and indexes
-        pass
+        verbose_name = "Report"
+        verbose_name_plural = "Reports"
+        ordering = ['-created_at']
+
+
+class Template(models.Model):
+    template_name = models.CharField()
+    file_type = models.CharField()
+    file_data = models.FileField(upload_to="ReportTemplates/")
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = "Template"
+        verbose_name_plural = "Templates"
+        ordering = ['-created_at']
