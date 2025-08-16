@@ -1,107 +1,114 @@
-from django.core.paginator import Paginator
 from ..models import *
 import logging
-import pandas as pd
-import json
-from django.db import IntegrityError
 
 logger = logging.getLogger(__name__)
 
 
 def get_company_inst(user_id: str) -> Company:
-    user = CustomUser.objects.get(id=user_id)
+    user: CustomUser = CustomUser.objects.get(id=user_id)
     return Company.objects.get(id=user.company_id)
 
 
-def get_choices(table_name: str, column: str, user_id: str):
-    table = TableName.objects.get(
-        table_name=table_name, company=get_company_inst(user_id))
+def get_choices(table_name: str, column: str, user_id: str) -> list:
+    """
+        can improve this function a bit
+    """
+    table: TableName = TableName.objects.get(
+        table_name=table_name,
+        company=get_company_inst(user_id)
+    )
     dataquery = TableData.objects.filter(table_name=table).values("table_data")
     list_data = [item["table_data"][column] for item in dataquery]
     list_data = list(set(list_data))
-    choices = [(item, item) for item in list_data]
-    return choices
+    return [(item, item) for item in list_data]
 
 
-def set_data(table_name: str, data: dict, user_id: str, company_id: int = None):
+def check_metadata(table_name: str, data: str) -> None:
+    """
+        this function check whether the data format conforms with metadata
+    """
+
+
+type_data: dict = {
+    "str": str,
+    "float": float,
+    "int": int,
+    "bool": bool,
+}
+
+ meta = TableMetaData.objects.filter(
+      table_name=TableName.objects.get(table_name=table_name)).values("table_metadata")
+
+  for key, value in data.items():
+       if key not in meta:
+            raise ValueError(f"unexpected key {key}")
+        expected_value = type_data.get(meta[key])
+        if not expected_value or not isinstance(value, expected_value):
+            raise ValueError(
+                f"data invalid expected data type {key}:{expected_value}")
+
+
+def new_table(table_name: str, user_id: str, company_id: str = None, metadata: dict = {}, description: str = {}) -> None:
+    """
+        this def sets the table name and the metadata
+    """
     if company_id:
         company = Company.objects.get(id=company_id)
     else:
         company = get_company_inst(user_id)
-    try:
-        json.loads(json.dumps(data))
-    except ValueError:
-        logger.debug("data is not json compatible")
-        return 1
-    obj = TableName.objects.filter(
-        table_name__contains=table_name, company=company)
-    if obj.exists():
-        logger.debug("table_name exists")
-        table = TableName.objects.get(table_name=table_name, company=company)
-        try:
-            # only instances are allowed
-            table_query = TableData.objects.create(
-                table_data=data, table_name=table, company=company)
-            table_query.save()
-        except Exception as e:
-            logger.debug("error storing data %s", e)
-            return 1
-    else:
-        logger.debug("table does not exist")
-        return 1
-    logger.debug("data stored")
-    return 0
 
-
-def update_data(table_name: str, data: dict, user_id: str, search_term: str = None, company_id: int = None):
-    if company_id:
-        company = Company.objects.get(id=company_id)
-    else:
-        company = get_company_inst(user_id)
-    try:
-        json.loads(json.dumps(data))
-    except ValueError:
-        logger.debug("data is not json compatible")
-        return 1
-    obj = TableName.objects.filter(
-        table_name__contains=table_name, company=company)
-    if obj.exists():
-        logger.debug("table_name exists")
-        table = TableName.objects.get(table_name=table_name, company=company)
-        try:
-            query = get_data(table_name, user_id, search_term)
-            query[0]
-            if data:
-                table_query = TableData.objects.update(
-                    table_data=data, table_name=table, company=company)
-                table_query.save()
-            else:
-                logger.debug("data not found")
-                return 1
-        except Exception as e:
-            logger.debug("error storing data %s", e)
-            return 1
-    else:
-        logger.debug("table does not exist")
-        return 1
-    logger.debug("data stored")
-    return 0
-
-
-def new_table(table_name: str, user_id: str, data: dict = {}) -> int:
-    company = get_company_inst(user_id)
     try:
         table = TableName.objects.create(
-            table_name=table_name, company=company)
-        TableData.objects.create(
-            table_data=data, table_name=table, company=company)
+            table_name=table_name,
+            description=description,
+            company=company
+        )
+        metadata = TableMetaData.objects.create(
+            table_name=table,
+            table_metadata=metadata
+        )
+
+
+def set_data(table_name: str, data: dict, user_id: str, company_id: int = None) -> None:
+    """
+         this function will set the initial data
+    """
+    try:
+        if isinstance(data, dict) != True:
+            logger.debug("data is not json compatible")
+            raise Exception("data not compatible")
+
+        if company_id:
+            company = Company.objects.get(id=company_id)
+        else:
+            company = get_company_inst(user_id)
+
+        obj = TableName.objects.filter(
+            table_name__contains=table_name,
+            company=company)
+        if obj.exists():
+            table: TableName = TableName.objects.get(
+                table_name=table_name,
+                company=company)
+            try:
+                table_query: TableData = TableData.objects.create(
+                    table_data=data, table_name=table, company=company)
+                table_query.save()
+            except Exception as e:
+                logger.error("error storing data %s", e)
+        else:
+            logger.error("table does not exist")
+        logger.info("data stored")
+
     except Exception as e:
-        logger.debug("issue with table creation %s " % e)
-        return 1
-    return 0
+        pass
 
 
 def get_data(table_name: str, user_id: str, company_id: int = None, search_term: str = None) -> list:
+    """
+        this function is a general search function and returns rows of data
+        but can be split in to 2 functions one for search and one for getting data 
+    """
     try:
         if company_id:
             company = Company.objects.get(id=company_id)
@@ -116,12 +123,59 @@ def get_data(table_name: str, user_id: str, company_id: int = None, search_term:
         data = queryset.values().order_by("id")
         return data
     except TableName.DoesNotExist:
-        logger.debug("Table does not exists")
-        return 1
+        logger.error("Table does not exists")
     except Exception as e:
         logger.error(f"Error fetching data: {str(e)}")
-        return 1
 
 
-def get_data_column():
-    pass
+def get_data_column(table_name: str, user_id: str, column_name: str, company_id: str = None) -> list:
+    """
+         this function is meant for extracting columnar data from the json strings
+    """
+    if company_id:
+        company: Company = Company.objects.get(id=company_id)
+    else:
+        company: Company = get_company_inst(user_id)
+
+    tableobj = TableName.objects.get(table_name=table_name)
+    data = TableData.objects.filter(table_name=tableobj, company=Company.objects.get(
+        company_id=company)).values("table_data")
+
+
+def update_data(table_name: str, data: dict, user_id: str, search_term: str = None, company_id: int = None) -> None:
+    """
+        this function will only update the data not the metadata
+    """
+    # initial checks
+
+    if isinstance(data, dict) != True:
+        logger.error("data is not json compatible")
+        raise Exception("data not compatible")
+    if company_id:
+        company: Company = Company.objects.get(id=company_id)
+    else:
+        company: Company = get_company_inst(user_id)
+
+    obj = TableName.objects.filter(
+        table_name__contains=table_name, company=company)
+    # check the data with metadata format
+    try:
+        check_metadata(table_name, data)
+    except Exception as e:
+        pass
+
+    if obj.exists():
+        table = TableName.objects.get(table_name=table_name, company=company)
+        try:
+            query = get_data(table_name, user_id, search_term)
+            if data:
+                table_query = TableData.objects.update(
+                    table_data=data, table_name=table, company=company)
+                table_query.save()
+            else:
+                logger.error("data not found")
+        except Exception as e:
+            logger.error("error storing data %s", e)
+    else:
+        logger.error("table does not exist")
+    logger.error("data stored")

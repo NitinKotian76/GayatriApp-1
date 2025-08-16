@@ -14,7 +14,8 @@ logger = logging.getLogger(__name__)
 
 class Company(models.Model):
     # user based
-    company_name = models.CharField( max_length=255,null=True, verbose_name="company name") 
+    company_name = models.CharField(
+        max_length=255, null=True, verbose_name="company name")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -26,8 +27,12 @@ class Company(models.Model):
 
 
 class TableName(models.Model):
-    table_name = models.CharField(max_length=255,null=True, blank=True,verbose_name="table name")  
-    company = models.ForeignKey(Company, on_delete=models.CASCADE , related_name="tables")
+    table_name = models.CharField(
+        max_length=255, null=True, blank=True, verbose_name="table name")
+    description = models.CharField(
+        max_length=255, null=True, blank=True, verbose_name="table description")
+    company = models.ForeignKey(
+        Company, on_delete=models.CASCADE, related_name="tables")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -41,49 +46,78 @@ class TableName(models.Model):
         return self.table_name
 
 
-class TableData(models.Model):
+class TableMetaData(models.Model):
     # IMPROVEMENT NEEDED: Add proper validation for JSONField
     # IMPROVEMENT NEEDED: Add related_name for ForeignKeys
-    table_data = models.JSONField(
-        null=True, blank=True, default=dict, unique=True, verbose_name="table data")
-    table_name = models.ForeignKey(TableName, on_delete=models.CASCADE , related_name="data_rows")  # Should add: related_name="data_rows"
-    company = models.ForeignKey(Company, on_delete=models.CASCADE , related_name="table_data")  # Should add: related_name="table_data"
+    table_metadata = models.JSONField(
+        null=True, blank=True, default=dict, unique=True, verbose_name="table metadata")
+    table_name = models.ForeignKey(
+        TableName, on_delete=models.CASCADE, related_name="metadata")
+    # Should add: related_name="table_data"
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         ordering = ['-created_at', '-updated_at']
         constraints = [models.UniqueConstraint(
-            fields=["table_data", "table_name", "company"], name="unique_table_data_table_name_company")]
-        indexes = [GinIndex(fields=["table_data"], name="table_data_gin_idx")]
+            fields=["table_metadata", "table_name"], name="unique_table_metadata_name")]
+        indexes = [GinIndex(fields=["table_metadata"],
+                            name="table_metadata_gin_idx")]
+
+
+class TableData(models.Model):
+    # IMPROVEMENT NEEDED: Add proper validation for JSONField
+    # IMPROVEMENT NEEDED: Add related_name for ForeignKeys
+
+    table_data = models.JSONField(
+        null=True, blank=True, default=dict, unique=True, verbose_name="table data")
+    # Should add: related_name="data_rows"
+    table_name = models.ForeignKey(
+        TableName, on_delete=models.CASCADE, related_name="data_rows")
+    # Should add: related_name="table_data"
+    company = models.ForeignKey(
+        Company, on_delete=models.CASCADE, related_name="table_data")
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-created_at', '-updated_at']
+        constraints = [models.UniqueConstraint(
+            fields=["table_data", "table_name", "company"], name="unique_table_data_name_company")]
+        indexes = [GinIndex(fields=["table_data"],
+                            name="table_data_gin_idx")]
 
 
 class CustomUserManager(BaseUserManager):
     # IMPROVEMENT NEEDED: Add proper error messages for validation
     # IMPROVEMENT NEEDED: Add email validation in create_user
-    def create_user(self, user_emp_code, password=None):
+    def create_user(self, email, user_name, user_emp_code, password=None, **extrafields):
         if not user_emp_code:
             raise ValueError("user must have emp code")
 
         user = self.model(
+            user_name=user_name,
             email=self.normalize_email(email),
             user_emp_code=user_emp_code,
+            **extrafields
         )
         user.set_password(password)
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, user_emp_code, password=None):
+    def create_superuser(self, email, user_name, user_emp_code, password=None, **extrafields):
         # IMPROVEMENT NEEDED: Add proper validation for superuser creation
-        user = self.create_user(
-            # email,
+        extrafields.setdefault('is_admin', True)
+        extrafields.setdefault('is_staff', True)
+        extrafields.setdefault('is_superuser', True)
+
+        return self.create_user(
+            email,
+            user_name,
             user_emp_code=user_emp_code,
             password=password,
+            **extrafields
         )
-        user.is_admin = True
-        user.is_staff = True
-        user.save(using=self._db)
-        return user
 
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
@@ -105,7 +139,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    
+
     USERNAME_FIELD = "user_emp_code"
     REQUIRED_FIELDS = ["email", "user_name"]
 
@@ -132,12 +166,16 @@ class Form(models.Model):
     # IMPROVEMENT NEEDED: Add proper field constraints and validations
     # IMPROVEMENT NEEDED: Add proper verbose_names
     logger.debug("form added")
-    form_name = models.CharField()  # Should be: models.CharField(max_length=255, verbose_name="Form Name")
+    # Should be: models.CharField(max_length=255, verbose_name="Form Name")
+    form_name = models.CharField()
     group = models.ManyToManyField(Group)  # Should add: related_name="forms"
-    table = models.ManyToManyField(TableName)  # Should add: related_name="forms"
-    company = models.ForeignKey(Company, on_delete=models.CASCADE)  # Should add: related_name="forms"
+    # Should add: related_name="forms"
+    table = models.ManyToManyField(TableName)
+    # Should add: related_name="forms"
+    company = models.ForeignKey(Company, on_delete=models.CASCADE)
 
-    form_data = models.JSONField(null=True)  # IMPROVEMENT NEEDED: Add proper validation
+    # IMPROVEMENT NEEDED: Add proper validation
+    form_data = models.JSONField(null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -152,11 +190,15 @@ class Form(models.Model):
 class Report(models.Model):
     # IMPROVEMENT NEEDED: Add proper field constraints and validations
     # IMPROVEMENT NEEDED: Add proper verbose_names
-    report_name = models.CharField()  # Should be: models.CharField(max_length=255, verbose_name="Report Name")
-    report_data = models.JSONField(null=True)  # IMPROVEMENT NEEDED: Add proper validation
+    # Should be: models.CharField(max_length=255, verbose_name="Report Name")
+    report_name = models.CharField()
+    # IMPROVEMENT NEEDED: Add proper validation
+    report_data = models.JSONField(null=True)
     group = models.ManyToManyField(Group)  # Should add: related_name="reports"
-    table = models.ManyToManyField(TableName)  # Should add: related_name="reports"
-    company = models.ForeignKey(Company, on_delete=models.CASCADE)  # Should add: related_name="reports"
+    # Should add: related_name="reports"
+    table = models.ManyToManyField(TableName)
+    # Should add: related_name="reports"
+    company = models.ForeignKey(Company, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
