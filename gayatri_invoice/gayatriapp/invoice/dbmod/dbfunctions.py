@@ -23,40 +23,34 @@ def get_choices(table_name: str, column: str, user_id: str) -> list:
     return [(item, item) for item in list_data]
 
 
-<<<<<<< HEAD
 def check_metadata(table_name: str, data: str) -> None:
     """
         this function check whether the data format conforms with metadata
     """
 
+    type_data: dict = {
+        "str": str,
+        "float": float,
+        "int": int,
+        "bool": bool,
+    }
+    meta = TableMetaData.objects.filter(
+        table_name=TableName.objects.get(table_name=table_name)).values("table_metadata")
 
-type_data: dict = {
-    "str": str,
-    "float": float,
-    "int": int,
-    "bool": bool,
-}
-
- meta = TableMetaData.objects.filter(
-      table_name=TableName.objects.get(table_name=table_name)).values("table_metadata")
-
-  for key, value in data.items():
-       if key not in meta:
+    for key, value in data.items():
+        if key not in meta:
             raise ValueError(f"unexpected key {key}")
+
         expected_value = type_data.get(meta[key])
         if not expected_value or not isinstance(value, expected_value):
             raise ValueError(
                 f"data invalid expected data type {key}:{expected_value}")
 
 
-def new_table(table_name: str, user_id: str, company_id: str = None, metadata: dict = {}, description: str = {}) -> None:
+def new_table(table_name: str, user_id: str, description: str, company_id: str = None, metadata: dict = {}) -> None:
     """
         this def sets the table name and the metadata
     """
-=======
-def set_data(table_name: str, data: dict, user_id: str, company_id: int = None):
-
->>>>>>> ba7e3147723ca0c46d561d8f5ae0883af2410d4b
     if company_id:
         company = Company.objects.get(id=company_id)
     else:
@@ -72,6 +66,8 @@ def set_data(table_name: str, data: dict, user_id: str, company_id: int = None):
             table_name=table,
             table_metadata=metadata
         )
+    except Exception as e:
+        pass
 
 
 def set_data(table_name: str, data: dict, user_id: str, company_id: int = None) -> None:
