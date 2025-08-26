@@ -7,6 +7,7 @@ from ..models import *
 from ..forms import *
 from ..formmod import Static as df
 from ..formmod import Base as bf
+from ..formmod import CrudTable as ct
 from ..formmod import helperFunct as hf
 from ..dbmod import dbfunctions as db
 from ..reportmod import create_report as cr
@@ -48,30 +49,30 @@ logger = logging.getLogger(__name__)
 
 @login_required
 def create_table(request):
-    # PRIORITY 2: To be implemented (Create Table CRUD operation)
+    """
+        this view is for creating a new table
+    """
     if request.method == 'POST':
-        form = bf.table_create(request.POST)
+        form = ct.table_create(request.POST)
         if form.is_valid():
-            form.save()
-            return redirect('table_list')
+            pass
         else:
             logger.error(f"Form validation failed: {form.errors}")
             messages.error(request, "Form validation failed")
     else:
-        form = bf.table_create()
-        buttons = hf.buttons()
-        formset = formset_factory(bf.keyValueForm, extra=1)
+        form = ct.table_create()
+        buttons = hf.button("submit")
+        formset = formset_factory(ct.keyvalue_metadata, extra=1)
 
     context = {
         "form": form,
         "buttons": buttons,
         "formset": formset
     }
-    return render(request, "partials/createform.html", context)
+    return render(request, "partials/forms.html", context)
 
 
-class Table_list(LoginRequiredMixin, ListView):
-    # NOTE: priority 2
+def table_list(request):
     model = TableName
     template_name = "partials/tableview.html"
     context_object_name = "listdata"

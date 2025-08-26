@@ -4,6 +4,14 @@ import logging
 logger = logging.getLogger(__name__)
 
 
+TYPE_DATA: dict = {
+    "str": str,
+    "float": float,
+    "int": int,
+    "bool": bool,
+}
+
+
 def get_company_inst(user_id: str) -> Company:
     user: CustomUser = CustomUser.objects.get(id=user_id)
     return Company.objects.get(id=user.company_id)
@@ -11,7 +19,7 @@ def get_company_inst(user_id: str) -> Company:
 
 def get_choices(table_name: str, column: str, user_id: str) -> list:
     """
-        can improve this function a bit
+    this function is to get list of choices in a table
     """
     table: TableName = TableName.objects.get(
         table_name=table_name,
@@ -28,12 +36,7 @@ def check_metadata(table_name: str, data: str) -> None:
         this function check whether the data format conforms with metadata
     """
 
-    type_data: dict = {
-        "str": str,
-        "float": float,
-        "int": int,
-        "bool": bool,
-    }
+    type_data = TYPE_DATA
     meta = TableMetaData.objects.filter(
         table_name=TableName.objects.get(table_name=table_name)).values("table_metadata")
 

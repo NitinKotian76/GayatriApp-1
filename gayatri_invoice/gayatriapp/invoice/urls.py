@@ -50,7 +50,7 @@ main_urlpatterns = [
 
 # Admin URLs
 admin_urlpatterns = [
-    path("Table_list", admin_views.Table_list.as_view(), name="Table_list"),
+    path("table_list", admin_views.table_list, name="table_list"),
     path("create_table", admin_views.create_table, name="create_table"),
     path("admin_company", admin_views.admin_company, name="admin_company"),
 ]

@@ -1,4 +1,5 @@
 from django import forms
+from ..dbmod.dbfunctions import TYPE_DATA
 from ..models import *
 import logging
 logger = logging.getLogger(__name__)
@@ -28,6 +29,19 @@ class table_create(forms.Form):
         super().__init__(*args, **kwargs)
         self.fields['company'].choices = Company.objects.values_list(
             'id', 'company_name')
+
+
+class keyvalue_metadata(forms.Form):
+    error_css_class = "error"
+    required_css_class = "required"
+
+    column = forms.CharField()
+    data_type = forms.ChoiceField(choices=[])
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['data_type'].choices = [
+            (key, value) for key, value in TYPE_DATA.items()]
 
 
 class table_edit(forms.Form):
