@@ -46,7 +46,6 @@ logger = logging.getLogger(__name__)
 
 # table
 
-
 @login_required
 def create_table(request):
     """

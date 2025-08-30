@@ -136,7 +136,7 @@ def new_report(request):
 def add_formset_field(request):
     newform = None
     forms = []
-    keyValueFormset = formset_factory(cr.keyValueForm)
+    keyValueFormset = formset_factory(cr.keyValueForm, extra=0)
     if request.POST.get("add"):
         total_forms = request.POST.get("form-TOTAL_FORMS")
         if total_forms == None:

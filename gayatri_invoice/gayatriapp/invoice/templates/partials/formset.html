@@ -1,14 +1,13 @@
 <div>
     {{ formset.management_form }}
     <div id="formset">
-        {% for field in formset %}<div class="w3-padding w3-margin">{{ field.label_tag }} {{ field }}</div>{% endfor %}
-        <!-- <div class="w3-panel w3-red"> -->
-        <!--     {% for field, errors in formset.errors.items %} -->
-        <!--         <ul style="list-style-type: none"> -->
-        <!--             {% for error in errors %}<li>{{ error }}</li>{% endfor %} -->
-        <!--         </ul> -->
-        <!--     {% endfor %} -->
-        <!-- </div> -->
+        {% for field in formset %}
+            <div class="w3-padding w3-margin">
+                {{ field.non_field_errors }}
+                {{ field.key.label_tag }} {{ field.key }}{{ field.key.errors }}
+                {{ field.value.label_tag }} {{ field.value }}{{ field.value.errors }}
+            </div>
+        {% endfor %}
         {% include 'partials/add_button.html' %}
     </div>
 </div>
