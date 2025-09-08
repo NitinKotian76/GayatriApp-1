@@ -134,24 +134,17 @@ def new_report(request):
 
 
 def add_formset_field(request):
-    newform = None
-    forms = []
     keyValueFormset = formset_factory(cr.keyValueForm, extra=0)
-    if request.POST.get("add"):
-        total_forms = request.POST.get("form-TOTAL_FORMS")
-        if total_forms == None:
-            total_forms = 1
-        else:
-            total_forms = int(total_forms)+1
+    if request.method == "POST" and request.POST.get("add"):
+        data = request.POST.copy()
+        total_forms = int(data.get("form-TOTAL_FORMS", 0))
+        data["form-TOTAL_FORMS"] = str(total_forms+1)
 
-        formset = keyValueFormset(request.POST)
-        newform = formset.empty_form
-        newform.prefix = f"{formset.prefix}-{total_forms}"
-        for form in formset.forms:
-            forms.append(form)
-        forms.append(newform)
+        formset = keyValueFormset(data)
+    else:
+        formset = keyValueFormset()
 
-    context = {"formset": forms, "total_forms": total_forms}
+    context = {"formset": formset}
     return render(request, "partials/formset.html", context)
 
 
