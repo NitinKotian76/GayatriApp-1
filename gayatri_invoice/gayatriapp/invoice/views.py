@@ -1,6 +1,7 @@
 from .all_views.admin_views import *
 from .all_views.form_views import *
 from .all_views.auth_views import *
+from .all_views.common_views import *
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, FileResponse
 from django.template.loader import render_to_string
@@ -55,4 +56,3 @@ def get_notifications(request):
     if messages:
         return HttpResponse(render_to_string("partials/notif.html", {"messages": messages}))
     return HttpResponse("")
-

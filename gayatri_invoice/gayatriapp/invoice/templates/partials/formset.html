@@ -1,13 +1,9 @@
-<div>
-    {{ formset.management_form }}
-    <div id="formset">
-        {% for field in formset %}
-            <div class="w3-padding w3-margin">
-                {{ field.non_field_errors }}
-                {{ field.key.label_tag }} {{ field.key }}{{ field.key.errors }}
-                {{ field.value.label_tag }} {{ field.value }}{{ field.value.errors }}
-            </div>
-        {% endfor %}
-        {% include 'partials/add_button.html' %}
+{{ formset.management_form }}
+{% for field in formset %}
+    <div class="w3-padding w3-margin">
+        {{ field.non_field_errors }}
+        {{ field.key.label_tag }} {{ field.key }}{{ field.key.errors }}
+        {{ field.value.label_tag }} {{ field.value }}{{ field.value.errors }}
     </div>
-</div>
+{% endfor %}
+{% include 'partials/add_button.html' with formset_form=formset_form %}

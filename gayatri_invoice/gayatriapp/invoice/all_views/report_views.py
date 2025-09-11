@@ -86,7 +86,7 @@ def report_list(request):
 @login_required
 def new_report(request):
     # PRIORITY 2: To be implemented (Create Report CRUD operation)
-    keyValueFormset = formset_factory(cr.keyValueForm)
+    keyValueFormset = formset_factory(cr.reportKeyValueForm)
     if request.method == 'POST':
         logger.debug(request.FILES)
         form = cr.reportCreate(request.POST, request.FILES)
@@ -125,27 +125,14 @@ def new_report(request):
 
     context = {"form": form,
                "formset": formset,
+               "formset_form": "reportKeyValueForm",
                "buttons": buttons,
                "req": "/invoice/formset_view"}
     return render(request, "partials/forms.html", context)
 
+
 # IMPROVEMENT NEEDED: Add proper error handling
 # IMPROVEMENT NEEDED: Add proper logging
-
-
-def add_formset_field(request):
-    keyValueFormset = formset_factory(cr.keyValueForm, extra=0)
-    if request.method == "POST" and request.POST.get("add"):
-        data = request.POST.copy()
-        total_forms = int(data.get("form-TOTAL_FORMS", 0))
-        data["form-TOTAL_FORMS"] = str(total_forms+1)
-
-        formset = keyValueFormset(data)
-    else:
-        formset = keyValueFormset()
-
-    context = {"formset": formset}
-    return render(request, "partials/formset.html", context)
 
 
 @login_required

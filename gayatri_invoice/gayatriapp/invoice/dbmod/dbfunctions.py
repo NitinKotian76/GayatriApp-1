@@ -4,12 +4,12 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-TYPE_DATA: dict = {
-    "str": str,
-    "float": float,
-    "int": int,
-    "bool": bool,
-}
+TYPE_DATA = [
+    ("str", "str"),
+    ("float", "float"),
+    ("int", "int"),
+    ("bool", "bool"),
+]
 
 
 def get_company_inst(user_id: str) -> Company:

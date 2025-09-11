@@ -51,8 +51,11 @@ def create_table(request):
     """
         this view is for creating a new table
     """
+    metadataform = ct.table_metadata
+    formset_metadata = formset_factory(metadataform, extra=0)
     if request.method == 'POST':
         form = ct.table_create(request.POST)
+        formset = formset_metadata(request.POST)
         if form.is_valid():
             pass
         else:
@@ -61,12 +64,13 @@ def create_table(request):
     else:
         form = ct.table_create()
         buttons = hf.button("submit")
-        formset = formset_factory(ct.keyvalue_metadata, extra=1)
+        formset = formset_metadata()
 
     context = {
         "form": form,
+        "formset": formset,
+        "formset_form": "table_metadata",
         "buttons": buttons,
-        "formset": formset
     }
     return render(request, "partials/forms.html", context)
 

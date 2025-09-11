@@ -24,7 +24,7 @@ class reportCreate(forms.Form):
 # sub-forms runtime additions
 
 
-class keyValueForm(forms.Form):
+class reportKeyValueForm(forms.Form):
     error_css_class = "error"
     required_css_class = "required"
 
