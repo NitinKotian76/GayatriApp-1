@@ -52,7 +52,7 @@ def create_table(request):
         this view is for creating a new table
     """
     metadataform = ct.table_metadata
-    formset_metadata = formset_factory(metadataform, extra=0)
+    formset_metadata = formset_factory(metadataform)
     if request.method == 'POST':
         form = ct.table_create(request.POST)
         formset = formset_metadata(request.POST)

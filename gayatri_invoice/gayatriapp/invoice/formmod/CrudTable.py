@@ -42,8 +42,7 @@ class table_metadata(forms.Form):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['data_type'].choices = Company.objects.values_list(
-            'id', 'company_name')
+        self.fields['data_type'].choices = TYPE_DATA
 
 
 class table_edit(forms.Form):
