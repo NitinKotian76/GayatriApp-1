@@ -42,9 +42,10 @@ table_urlpatterns = [
 
 # Main URLs
 main_urlpatterns = [
-    path("index", views.index, name="index"),
-    path("profile_user", views.profile_user, name="profile_user"),
-    path("get_notifications", views.get_notifications, name="get_notifications"),
+    path("index", common_views.index, name="index"),
+    path("profile_user", common_views.profile_user, name="profile_user"),
+    path("get_notifications", common_views.get_notifications,
+         name="get_notifications"),
     path("add_formset_field/<str:formname>", common_views.add_formset_field,
          name="add_formset_field"),
 ]

@@ -8,10 +8,10 @@ from django.core.paginator import Paginator
 import logging
 from ..cachestore import cachestore as cache
 from ..models import *
-from ..forms import *
-from ..formmod import Static as df
-from ..formmod import Base as bf
-from ..formmod import helperFunct as hf
+from ..form_files import *
+from ..form_files import Static as df
+from ..form_files import Base as bf
+from ..form_files import helperFunct as hf
 from ..dbmod import dbfunctions as db
 from .. import mappings as mp
 from django.views.decorators.http import require_POST

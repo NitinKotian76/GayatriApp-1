@@ -4,11 +4,11 @@ from django.contrib import messages
 import logging
 from ..cachestore import cachestore as cache
 from ..models import *
-from ..forms import *
-from ..formmod import Static as df
-from ..formmod import Base as bf
-from ..formmod import CrudTable as ct
-from ..formmod import helperFunct as hf
+from ..form_files import *
+from ..form_files import Static as df
+from ..form_files import Base as bf
+from ..form_files import CrudTable as ct
+from ..form_files import helperFunct as hf
 from ..dbmod import dbfunctions as db
 from ..reportmod import create_report as cr
 from .. import mappings as mp
@@ -25,7 +25,7 @@ from django.views.generic.list import ListView
 #
 # Possible approaches for implementation:
 # - Use Django's generic class-based views (ListView, CreateView, UpdateView, DeleteView) for standard CRUD patterns.
-# - Leverage form classes in formmod/BaseForm.py and formmod/DefaultForm.py for custom form handling.
+# - Leverage form classes in form_files/BaseForm.py and form_files/DefaultForm.py for custom form handling.
 # - Integrate with the existing caching and dbfunctions modules for optimized data access and business logic.
 # - Ensure proper permission checks using Django's @permission_required decorators.
 # - Use partial templates in templates/partials/ for modular UI rendering.

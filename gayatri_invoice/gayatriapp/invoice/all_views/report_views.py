@@ -5,10 +5,10 @@ from django.forms import formset_factory
 import logging
 from ..cachestore import cachestore as cache
 from ..models import *
-from ..forms import *
-from ..formmod import CrudReport as cr
+from ..form_files import *
+from ..form_files import CrudReport as cr
 from ..reportmod import create_report as rf
-from ..formmod import helperFunct as hf
+from ..form_files import helperFunct as hf
 from ..dbmod import dbfunctions as df
 from .. import mappings as mp
 from django.core.cache import cache
@@ -116,7 +116,6 @@ def new_report(request):
         logger.debug("create new report")
         form = cr.reportCreate()
         formset = keyValueFormset()
-        logger.debug(formset.management_form)
         buttons = hf.button("submit",
                             hx_req_type="hx-post",
                             hx_req="/invoice/new_report",
