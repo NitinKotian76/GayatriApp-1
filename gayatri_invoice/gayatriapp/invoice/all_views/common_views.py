@@ -3,6 +3,7 @@ from ..form_files import CrudTable as ct
 from django.shortcuts import render
 from django.forms import formset_factory
 from django.template.loader import render_to_string
+from django.http import HttpResponse
 from django.views.decorators.csrf import ensure_csrf_cookie, csrf_protect
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib import messages as msg

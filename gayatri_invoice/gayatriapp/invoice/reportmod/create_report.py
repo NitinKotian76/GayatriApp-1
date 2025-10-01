@@ -8,7 +8,20 @@ import os
 # NOTE: the Path for the report and invoice templates will be the same
 # only the name will change
 
-# tag_data = {
+
+def show_data(tablename: str, user_id: str):
+    """
+        this is to show the queryset data in a table format
+
+    """
+    table = TableName.objects.get(
+        table_name=tablename, company=db.get_company_inst(user_id))
+    query = TableData.objects.filter(
+        table_name=table, company=db.get_company_inst(user_id)).values("table_data")
+    query
+
+
+# report_metadata = {
 #         "demo_table": [column1, column2, column3],
 #         "orderby": [column1, column2],
 #         "groupby": [column1],
@@ -29,11 +42,24 @@ import os
 #             }
 #         }
 # }
-# this dict will contain all the information related to the tags.
+# this dict will contain all the information related to the report.
 
 
-def set_report_data(report_name: str, tag_data: dict, template_name: str, sheet_name: str, user_id: str):
+def set_report_metadata(report_name: str, tag_data: dict, template_name: str, sheet_name: str, user_id: str):
+    """
+        this function is used to store the report metadata in the report table
+
+        Args:   
+            report_name = name of the report 
+            tag_data=  metadata in dict
+            template_name = name of the report template
+            sheet_name = the sheet name in the excel report template
+            user_id = for identifying the company
+        return 
+            table object
+    """
     # map the report_name , datalist and the templateName to a json store
+
     data_dict = {}
     data_dict["tagdata"] = tag_data
     data_dict["temp_name"] = template_name
@@ -45,7 +71,9 @@ def set_report_data(report_name: str, tag_data: dict, template_name: str, sheet_
 
 class templateops():
     '''
-        this function is used to process excel templates and add data in the format specified 
+
+        this class is used to process excel templates and add data in the specified format
+
     '''
 
     def __init__(self, report_name, user_id):
@@ -54,6 +82,9 @@ class templateops():
         self.data = db.get_data("report", user_id, search_term=report_name)
 
     def get_template(self):
+        """
+            get the template from the file system and load it in a dataframe
+        """
         try:
             filepath = self.templatepath + report_name
             os.path.exists(filepath)
@@ -67,7 +98,7 @@ class templateops():
         # use the list to match and replace with user data retrieved from TableData
         # copy modified dataframe and make excel sheet
 
-    def render_template(self):
+    def use_template(self):
         # get the data list and find the key tags in the template
         # and render the value tags
         # make different functions for redering table and single values.

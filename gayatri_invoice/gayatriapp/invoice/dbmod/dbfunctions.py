@@ -31,18 +31,29 @@ def get_choices(table_name: str, column: str, user_id: str) -> list:
     return [(item, item) for item in list_data]
 
 
-def check_metadata(table_name: str, data: str) -> None:
+def check_metadata(table_name: str, data: str) -> bool:
+    # NOTE:the data coming has to be of the same structure or ValueError is raised
     """
         this function check whether the data format conforms with metadata
+        Args:
+            table_name = table name of the table whose schema has to be checked 
+            data = the incoming dict data that has to be checked 
+        return:
+            False:
+            ValueError
+                if the dict structure is different
+                if the value is not the expected data type 
+            True:
+            if datatype is accurate in each key value pair.
     """
-
-    type_data = TYPE_DATA
+    type_data = TYPE_DATA  # this is predefined above
     meta = TableMetaData.objects.filter(
         table_name=TableName.objects.get(table_name=table_name)).values("table_metadata")
-
+    logger.debug(meta)
     for key, value in data.items():
         if key not in meta:
             raise ValueError(f"unexpected key {key}")
+            return False
 
         expected_value = type_data.get(meta[key])
         if not expected_value or not isinstance(value, expected_value):
@@ -50,15 +61,22 @@ def check_metadata(table_name: str, data: str) -> None:
                 f"data invalid expected data type {key}:{expected_value}")
 
 
-def new_table(table_name: str, user_id: str, description: str, company_id: str = None, metadata: dict = {}) -> None:
+def new_table(table_name: str, user_id: str, description: str, metadata: dict = {}, company_id: str = None):
     """
         this def sets the table name and the metadata
+        Args:
+            table_name: table name for the new table
+            user_id: user id of for to get the company details and can add owner details to creation record
+            description: description of the table for the user
+            company_id: optional company id for the table 
+            metadata: to define the dict structure and the datatype for the key value pairs 
+        return:
+           None 
     """
-    if company_id:
+    if company_id is not None:
         company = Company.objects.get(id=company_id)
     else:
         company = get_company_inst(user_id)
-
     try:
         table = TableName.objects.create(
             table_name=table_name,
@@ -69,6 +87,7 @@ def new_table(table_name: str, user_id: str, description: str, company_id: str =
             table_name=table,
             table_metadata=metadata
         )
+        return table, metadata
     except Exception as e:
         pass
 
