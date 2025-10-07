@@ -57,15 +57,14 @@ def form_view(request):
     form_handler = mp.FORMHANDLER
     formdata = None
     buttons = []
-    hx_req = "/invoice/form_view"
 
     if request.method == "POST":
         formtype = request.POST.get("form")
-        logger.debug(formtype)
         if formtype in form_handler:
             handler = form_handler[formtype]
             formdata = handler["form_class"](request.POST)
             buttons = btn_append(handler, "buttons")
+            logger.debug("get the metadata")
             if formdata.is_valid():
                 logger.debug("data validated")
                 data = formdata.cleaned_data

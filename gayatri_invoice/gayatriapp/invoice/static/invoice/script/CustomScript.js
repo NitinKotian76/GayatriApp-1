@@ -49,7 +49,7 @@ function w3_open() {
 function w3_close() {
   document.getElementById("mySidebar").style.display = "none";
 }
-// htmx.logAll();
+htmx.logAll();
 
 document.body.addEventListener('htmx:afterSwap', function(evt) {
   if (evt.detail.target.id === "mainform" || evt.detail.target.id === "dynform") {

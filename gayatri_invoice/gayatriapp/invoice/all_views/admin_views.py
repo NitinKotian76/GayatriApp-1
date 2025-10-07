@@ -56,14 +56,26 @@ def create_table(request):
     if request.method == 'POST':
         form = ct.table_create(request.POST)
         formset = formset_metadata(request.POST)
+        buttons = hf.button("submit",
+                            hx_req="/invoice/create_table",
+                            hx_vals={"form": "adminCompany"})
         if form.is_valid():
-            pass
+            logger.debug("create the table")
+            data = form.cleaned_data
+            fsdata = formset.cleaned_data
+            table_name = data["table_name"]
+            company = data["company"]
+            table, metadata = db.new_table(table_name=table_name, request.user.id, description="", metadata=fsdata, company_id=company)
+            logger.debug(table)
+            logger.debug(metadata)
         else:
             logger.error(f"Form validation failed: {form.errors}")
             messages.error(request, "Form validation failed")
     else:
         form = ct.table_create()
-        buttons = hf.button("submit")
+        buttons = hf.button("submit",
+                            hx_req="/invoice/create_table",
+                            hx_vals={"form": "adminCompany"})
         formset = formset_metadata()
 
     context = {

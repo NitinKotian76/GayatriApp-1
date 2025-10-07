@@ -106,14 +106,23 @@ def set_data(table_name: str, data: dict, user_id: str, company_id: int = None) 
         else:
             company = get_company_inst(user_id)
 
-        obj = TableName.objects.filter(
-            table_name__contains=table_name,
+        tableobj = TableName.objects.filter(
+            table_name=table_name,
             company=company)
-        if obj.exists():
+        tablemeta = TableMetaData.objects.filter(
+            table_name=table_name, company=company).values("table_metadata")
+
+        if tableobj.exists():
             table: TableName = TableName.objects.get(
                 table_name=table_name,
                 company=company)
             try:
+                for mkey in tablemeta:
+                    # check if the data contains all the columns
+                    if mkey not in data.keys():
+                        raise ValueError(f"{mkey} doesnt exist")
+                    if type(data[mkey]).__name__ not in tablemeta[mkey]:
+                        raise ValueError(f"{mkey} datatype doesnt match")
                 table_query: TableData = TableData.objects.create(
                     table_data=data, table_name=table, company=company)
                 table_query.save()
@@ -127,10 +136,15 @@ def set_data(table_name: str, data: dict, user_id: str, company_id: int = None) 
         pass
 
 
-def get_data(table_name: str, user_id: str, company_id: int = None, search_term: str = None) -> list:
+def get_data(table_name: str, user_id: str, company_id: int = None) -> list:
     """
         this function is a general search function and returns rows of data
         but can be split in to 2 functions one for search and one for getting data 
+        Args: 
+            table_name = table name
+            user_id = user id for company_id
+            company_id = specifically mention company_id
+            search_term = for search term in the table in TableData
     """
     try:
         if company_id:
@@ -141,14 +155,30 @@ def get_data(table_name: str, user_id: str, company_id: int = None, search_term:
             table_name=table_name, company=company.id)
         queryset = TableData.objects.filter(
             table_name=table, company=company)
-        if search_term:
-            queryset = queryset.filter(table_data__icontains=search_term)
         data = queryset.values().order_by("id")
         return data
     except TableName.DoesNotExist:
         logger.error("Table does not exists")
-    except Exception as e:
-        logger.error(f"Error fetching data: {str(e)}")
+
+
+def search_data(table_name: str, user_id: str, search_term: str, search_column: str = None, company_id: int = None):
+    try:
+        if company_id:
+            company = Company.objects.get(id=company_id)
+        else:
+            company = get_company_inst(user_id)
+        table = TableName.objects.get(
+            table_name=table_name, company=company.id)
+        metadata = TableMetaData.objects.filter(
+            table_name=table, company=company).values("table_metadata")
+        if search_column and search_column in metadata.keys():
+            raise ValueError("search coulmn not found")
+        queryset = TableData.objects.filter(table_name=table, company=company).filter(
+            table_data__icontains=search_term)
+        data = queryset.values().order_by("id")
+        return data
+    except TableName.DoesNotExist:
+        logger.error("Table does not exists")
 
 
 def get_data_column(table_name: str, user_id: str, column_name: str, company_id: str = None) -> list:

@@ -31,7 +31,6 @@ def login_user(request):
         form = bf.loginForm(request.POST)
         if form.is_valid():
             login(request, form.user)
-            messages.success(request, 'Successfully logged in.')
             return redirect('invoice:index')
     else:
         form = bf.loginForm()
