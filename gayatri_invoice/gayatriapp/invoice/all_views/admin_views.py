@@ -62,12 +62,24 @@ def create_table(request):
         if form.is_valid():
             logger.debug("create the table")
             data = form.cleaned_data
-            fsdata = formset.cleaned_data
             table_name = data["table_name"]
             company = data["company"]
-            table, metadata = db.new_table(table_name=table_name, request.user.id, description="", metadata=fsdata, company_id=company)
-            logger.debug(table)
-            logger.debug(metadata)
+            description = data["description"]
+
+            dictlist = formset.cleaned_data
+            fsdata = {}
+            for i in dictlist:
+                fsdata[i["column"]] = i["data_type"]
+            logger.debug(fsdata)
+
+            db.new_table(
+                table_name=table_name,
+                user_id=request.user.id,
+                description=description,
+                metadata=fsdata,
+                company_id=company)
+            # logger.debug(table)
+            # logger.debug(metadata)
         else:
             logger.error(f"Form validation failed: {form.errors}")
             messages.error(request, "Form validation failed")
@@ -88,33 +100,16 @@ def create_table(request):
 
 
 def table_list(request):
-    model = TableName
-    template_name = "partials/tableview.html"
-    context_object_name = "listdata"
-    paginate_by = 10
-
-    def get_queryset(self):
-        queryset = super().get_queryset()
-        company_id = self.request.GET.get("company")
-        if company_id:
-            queryset = TableName.objects.filter(
-                company=company_id).values("id", "table_name").order_by("id")
-            logger.debug(queryset)
-        return queryset
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data()
-        context["buttons"] = hf.button("select",
-                                       hx_req_type="hx-post",
-                                       hx_vals={"form": "adminCompany"},
-                                       hx_req="/invoice/admin_company",
-                                       hx_target="#dynform"
-                                       )
-        logger.debug(context)
-        context["form_name"] = "table_list"
-        return context
-
-
+    pass
+#     if request.method == "POST":
+#         form =
+#     else:
+#         form =
+#     context = {
+#         "form": form,
+#         "buttons": buttons,
+#     }
+#     return render(request, "partials/forms.html", context)
 # IMPROVEMENT NEEDED: Add proper error handling
 # IMPROVEMENT NEEDED: Add proper logging
 

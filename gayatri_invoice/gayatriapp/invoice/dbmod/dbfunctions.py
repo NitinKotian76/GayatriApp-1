@@ -71,7 +71,8 @@ def new_table(table_name: str, user_id: str, description: str, metadata: dict = 
             company_id: optional company id for the table 
             metadata: to define the dict structure and the datatype for the key value pairs 
         return:
-           None 
+           table
+           metadata
     """
     if company_id is not None:
         company = Company.objects.get(id=company_id)
@@ -89,7 +90,7 @@ def new_table(table_name: str, user_id: str, description: str, metadata: dict = 
         )
         return table, metadata
     except Exception as e:
-        pass
+        logger.debug(f"new table error {e}")
 
 
 def set_data(table_name: str, data: dict, user_id: str, company_id: int = None) -> None:

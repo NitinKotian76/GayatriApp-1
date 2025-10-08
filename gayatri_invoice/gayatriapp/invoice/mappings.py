@@ -286,3 +286,18 @@ REPORT = {
         }
     },
 }
+
+
+# NOTE: this is for when i require that the admin forms also need better structure
+# ADMIN_MAP= {
+#     "stock_plus_minus": {
+#         "form_class": df.stock_plus_minus,
+#         "table_name": "stock_plus_minus",
+#         "buttons": {
+#             "submit": {
+#                 "hx_vals": {"form": "stock_plus_minus"},
+#                 "hx_req": "/invoice/report_view",
+#             },
+#         }
+#     },
+# }

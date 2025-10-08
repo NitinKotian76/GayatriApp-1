@@ -10,6 +10,7 @@ class table_list(forms.Form):
     error_css_class = "error"
     required_css_class = "required"
 
+    table_name = forms.CharField(max_length=100)
     company = forms.ChoiceField(choices=[])
 
     def __init__(self, *args, **kwargs):
@@ -24,6 +25,7 @@ class table_create(forms.Form):
     required_css_class = "required"
 
     table_name = forms.CharField(max_length=100)
+    description = forms.CharField(max_length=100)
     company = forms.ChoiceField(choices=[])
 
     def __init__(self, *args, **kwargs):

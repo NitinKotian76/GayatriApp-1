@@ -79,9 +79,7 @@ def form_view(request):
                     logger.debug("data is not saved")
                     messages.error(request, "data is not saved")
                 formdata = handler["form_class"]()
-            else:
-                logger.debug("data invalid")
-                logger.debug(formdata.errors)
+
     else:
         formtype = request.GET.get("form")
         if formtype in form_handler:
