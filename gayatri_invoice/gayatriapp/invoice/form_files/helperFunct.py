@@ -42,6 +42,44 @@ def button(name: str, **kwargs):
     return html
 
 
+def btn_append(handler: dict, item: str) -> str:
+    """
+    append the list of buttons
+        Args:
+        handler = list of objects
+        item = the name of the list of items
+
+        returns:
+        buttons = appended list of buttons html fragment
+
+    """
+    buttons = []
+    for key in handler[item]:
+        call_args = {}
+        if handler[item][key].get("hx_req_type"):
+            call_args["hx_req_type"] = handler[item][key].get("hx_req_type")
+
+        if handler[item][key].get("hx_vals"):
+            call_args["hx_vals"] = handler[item][key].get("hx_vals")
+
+        if handler[item][key].get("hx_req"):
+            call_args["hx_req"] = handler[item][key].get("hx_req")
+
+        if handler[item][key].get("hx_swap"):
+            call_args["hx_swap"] = handler[item][key].get("hx_swap")
+
+        if handler[item][key].get("hx_target"):
+            call_args["hx_target"] = handler[item][key].get("hx_target")
+
+        if handler[item][key].get("attrs"):
+            call_args["attrs"] = handler[item][key].get("attrs")
+
+        # adds all the args for the current item
+        btn = button(key, **call_args)
+        buttons.append(btn)
+    return buttons
+
+
 class form_setup:
     # TODO: do something about the class instance for formfield data
     def __init__(self):

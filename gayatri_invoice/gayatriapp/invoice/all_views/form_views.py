@@ -22,33 +22,6 @@ from django.views.decorators.cache import never_cache
 logger = logging.getLogger(__name__)
 
 
-def btn_append(handler: list, item: str):
-    buttons = []
-    for key in handler[item]:
-        call_args = {}
-        if handler[item][key].get("hx_req_type"):
-            call_args["hx_req_type"] = handler[item][key].get("hx_req_type")
-
-        if handler[item][key].get("hx_vals"):
-            call_args["hx_vals"] = handler[item][key].get("hx_vals")
-
-        if handler[item][key].get("hx_req"):
-            call_args["hx_req"] = handler[item][key].get("hx_req")
-
-        if handler[item][key].get("hx_swap"):
-            call_args["hx_swap"] = handler[item][key].get("hx_swap")
-
-        if handler[item][key].get("hx_target"):
-            call_args["hx_target"] = handler[item][key].get("hx_target")
-
-        if handler[item][key].get("attrs"):
-            call_args["attrs"] = handler[item][key].get("attrs")
-
-        button = hf.button(key, **call_args)
-        buttons.append(button)
-    return buttons
-
-
 @login_required
 @permission_required('invoice.view_form', raise_exception=True)
 def form_view(request):
@@ -63,7 +36,7 @@ def form_view(request):
         if formtype in form_handler:
             handler = form_handler[formtype]
             formdata = handler["form_class"](request.POST)
-            buttons = btn_append(handler, "buttons")
+            buttons = hf.btn_append(handler, "buttons")
             logger.debug("get the metadata")
             if formdata.is_valid():
                 logger.debug("data validated")
@@ -85,7 +58,7 @@ def form_view(request):
         if formtype in form_handler:
             handler = form_handler[formtype]
             formdata = handler["form_class"]()
-            buttons = btn_append(handler, "buttons")
+            buttons = hf.btn_append(handler, "buttons")
     context = {
         "form": formdata,
         "buttons": buttons,
@@ -115,7 +88,7 @@ def table_data_view(request):
         handler = mp.FORMHANDLER[form_name]
         table_name = handler["table_name"]
         if "table_buttons" in handler:
-            buttons = btn_append(handler, "table_buttons")
+            buttons = hf.btn_append(handler, "table_buttons")
         logger.debug("form_name: " + form_name)
     else:
         logger.debug("issue with the request")

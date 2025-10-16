@@ -10,13 +10,16 @@ class table_list(forms.Form):
     error_css_class = "error"
     required_css_class = "required"
 
-    table_name = forms.CharField(max_length=100)
-    company = forms.ChoiceField(choices=[])
+    company = forms.ChoiceField(widget=forms.Select(choices=[], attrs={}))
+    table_list = forms.ChoiceField(widget=forms.Select(
+        choices=[], attrs={}))
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['company'].choices = Company.objects.values_list(
             'id', 'company_name')
+        self.fields['table_list'].choices = TableName.objects.values_list(
+            'id', 'table_name')
 
 
 class table_create(forms.Form):

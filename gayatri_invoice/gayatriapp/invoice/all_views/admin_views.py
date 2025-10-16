@@ -100,16 +100,27 @@ def create_table(request):
 
 
 def table_list(request):
-    pass
-#     if request.method == "POST":
-#         form =
-#     else:
-#         form =
-#     context = {
-#         "form": form,
-#         "buttons": buttons,
-#     }
-#     return render(request, "partials/forms.html", context)
+    handler = {
+        "buttons": {
+            "submit": {
+                "hx_req": "/invoice/table_list",
+                "hx_vals": {"form": ""},
+            }
+        }
+    }
+    if request.method == "POST":
+        # mostly for delete table
+        # confirmation neccessary as its a destructive operation
+        form = ct.table_list(request.POST)
+        buttons = hf.btn_append(handler, "buttons")
+    else:
+        form = ct.table_list()
+        buttons = hf.btn_append(handler, "buttons")
+    context = {
+        "form": form,
+        "buttons": buttons,
+    }
+    return render(request, "partials/forms.html", context)
 # IMPROVEMENT NEEDED: Add proper error handling
 # IMPROVEMENT NEEDED: Add proper logging
 
@@ -125,14 +136,15 @@ def admin_company(request):
             messages.success(request, "Company selected successfully")
     else:
         form = df.adminCompany()
-    buttons.append(
-        hf.button("select",
-                  hx_req_type="hx-post",
-                  hx_vals={"form": "adminCompany"},
-                  hx_req="/invoice/admin_company",
-                  hx_target="#dynform"
-                  )
-    )
+        handler = {
+            "buttons": {
+                "submit": {
+                    "hx_req": "/invoice/admin_company",
+                    "hx_vals": {"form": "adminCompany"},
+                }
+            }
+        }
+        buttons = hf.btn_append(handler, "buttons")
     context = {
         "form": form,
         "buttons": buttons,
