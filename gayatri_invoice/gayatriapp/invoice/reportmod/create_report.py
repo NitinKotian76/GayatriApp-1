@@ -8,6 +8,19 @@ import os
 # NOTE: the Path for the report and invoice templates will be the same
 # only the name will change
 
+#NOTE: export csv data from any table 
+
+def exportData():
+    """
+        this def will export data using pandas in csv format
+    """
+    # get the table name and table data
+    # convert the data from json to dataframe 
+    # add in header for the dataframe
+    # export the data in a csv file
+
+
+
 
 def show_data(tablename: str, user_id: str):
     """
@@ -19,6 +32,8 @@ def show_data(tablename: str, user_id: str):
     query = TableData.objects.filter(
         table_name=table, company=db.get_company_inst(user_id)).values("table_data")
     query
+
+#TODO: REPORT DESIGNER MODULE functions
 
 
 # report_metadata = {
@@ -47,8 +62,8 @@ def show_data(tablename: str, user_id: str):
 
 def set_report_metadata(report_name: str, tag_data: dict, template_name: str, sheet_name: str, user_id: str):
     """
-        this function is used to store the report metadata in the report table
-
+       this function is used to store the report metadata in the report table 
+       for template 
         Args:   
             report_name = name of the report 
             tag_data=  metadata in dict

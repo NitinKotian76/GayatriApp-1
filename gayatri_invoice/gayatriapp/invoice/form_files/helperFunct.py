@@ -1,6 +1,8 @@
 from .LoadFunct import Filedata
 from django.utils.html import format_html
 from django.http import JsonResponse
+from django.core.files.storage import default_storage
+from django.core.files.base import ContentFile
 from ..models import *
 import logging
 logger = logging.getLogger(__name__)
@@ -79,6 +81,13 @@ def btn_append(handler: dict, item: str) -> str:
         buttons.append(btn)
     return buttons
 
+def file_handler(name,file):
+    #TODO: properly handle Files 
+
+    path = default_storage.save(f"ReportTemplates/{name}",file)
+    logger.debug(default_storage.size(path))
+
+
 
 class form_setup:
     # TODO: do something about the class instance for formfield data
@@ -139,3 +148,4 @@ class form_setup:
 
     def cancel(self):
         return HttpResponse("")
+

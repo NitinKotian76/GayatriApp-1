@@ -554,10 +554,10 @@ class pending_order(forms.Form):
     party = forms.ChoiceField(choices=[])
     export_to = forms.FileField()
 
-    def __init__(self, *args, user_id=None, **kwargs):
+    def __init__(self,user_id: int= None,*args, **kwargs):
         super().__init__(*args, **kwargs)
         if user_id is not None:
-            self.fields['party'].choices = db.get_choices(
+            self.fields['party'].choices =[(None,"--------")] + db.get_choices(
                 "customer", "customer_name", user_id)
             # logger.debug(self.fields['party'].choices)
 
@@ -572,10 +572,10 @@ class prod_record(forms.Form):
     party = forms.ChoiceField(choices=[])
     export_to = forms.FileField()
 
-    def __init__(self, *args, user_id=None, **kwargs):
+    def __init__(self, user_id:int=None,  *args,**kwargs):
         super().__init__(*args, **kwargs)
         if user_id is not None:
-            self.fields['party'].choices = db.get_choices(
+            self.fields['party'].choices =[(None,"--------")] +  db.get_choices(
                 "customer", "customer_name", user_id)
 
 
@@ -589,10 +589,10 @@ class dispatch_details(forms.Form):
     party = forms.ChoiceField(choices=[])
     export_to = forms.FileField()
 
-    def __init__(self, *args, user_id=None, **kwargs):
+    def __init__(self, user_id:int=None,  *args,**kwargs):
         super().__init__(*args, **kwargs)
         if user_id is not None:
-            self.fields['party'].choices = db.get_choices(
+            self.fields['party'].choices =[(None,"--------")] +  db.get_choices(
                 "customer", "customer_name", user_id)
 
 
@@ -600,6 +600,16 @@ class stock_report(forms.Form):
     template_name = "form_snippet.html"
     error_css_class = "error"
     required_css_class = "required"
+
+    from_date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
+    party = forms.ChoiceField(choices=[])
+
+    def __init__(self, user_id:int=None,  *args,**kwargs):
+        super().__init__(*args, **kwargs)
+        if user_id is not None:
+            self.fields['party'].choices =[(None,"--------")] +  db.get_choices(
+                "customer", "customer_name", user_id)
+
 
 
 class loader_report(forms.Form):
@@ -611,10 +621,10 @@ class loader_report(forms.Form):
     party = forms.ChoiceField(choices=[])
     export_to = forms.FileField()
 
-    def __init__(self, *args, user_id=None, **kwargs):
+    def __init__(self, user_id:int=None,  *args,**kwargs):
         super().__init__(*args, **kwargs)
         if user_id is not None:
-            self.fields['party'].choices = db.get_choices(
+            self.fields['party'].choices =[(None,"--------")] +  db.get_choices(
                 "customer", "customer_name", user_id)
 
 
@@ -627,10 +637,10 @@ class qc_report(forms.Form):
     party = forms.ChoiceField(choices=[])
     export_to = forms.FileField()
 
-    def __init__(self, *args, user_id=None, **kwargs):
+    def __init__(self, user_id:int=None,  *args,**kwargs):
         super().__init__(*args, **kwargs)
         if user_id is not None:
-            self.fields['party'].choices = db.get_choices(
+            self.fields['party'].choices =[(None,"--------")] +  db.get_choices(
                 "customer", "customer_name", user_id)
 
 
@@ -643,8 +653,8 @@ class stock_plus_minus(forms.Form):
     party = forms.ChoiceField(choices=[])
     export_to = forms.FileField()
 
-    def __init__(self, *args, user_id=None, **kwargs):
+    def __init__(self, user_id:int=None,  *args,**kwargs):
         super().__init__(*args, **kwargs)
         if user_id is not None:
-            self.fields['party'].choices = db.get_choices(
+            self.fields['party'].choices =[(None,"--------")] +  db.get_choices(
                 "customer", "customer_name", user_id)

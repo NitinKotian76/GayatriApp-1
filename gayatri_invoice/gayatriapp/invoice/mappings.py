@@ -222,7 +222,9 @@ REPORT = {
                 "hx_vals": {"form": "pending_order"},
                 "hx_req": "/invoice/report_view"
             },
-
+            "generate":{
+                "hx_req":"/invoice/generate_report",
+            },
         }
     },
     "prod_record": {

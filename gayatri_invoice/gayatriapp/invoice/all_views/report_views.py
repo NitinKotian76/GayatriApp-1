@@ -25,6 +25,7 @@ logger = logging.getLogger(__name__)
 def report_view(request):
     # NOTE: this view is specifically for reports
     # IMPROVEMENT NEEDED: Use proper constant naming convention
+    user_id=request.user.id
     form_handler = mp.REPORT
     formdata = None
     buttons = []
@@ -36,7 +37,7 @@ def report_view(request):
         if formtype in form_handler:
             handler = form_handler[formtype]
             formdata = handler["form_class"](
-                request.POST, user_id=request.user.id)
+                request.POST,user_id )
             # buttons
             for key in handler["buttons"]:
                 hx_vals = handler["buttons"][key]["hx_vals"]
@@ -47,7 +48,6 @@ def report_view(request):
             if formdata.is_valid():
                 logger.debug("data validated")
                 data = formdata.cleaned_data
-                user_id = request.user.id
                 logger.debug(user_id)
             else:
                 logger.debug("data invalid")
@@ -56,12 +56,8 @@ def report_view(request):
         formtype = request.GET.get("form")
         if formtype in form_handler:
             handler = form_handler[formtype]
-            formdata = handler["form_class"](user_id=request.user.id)
-            for key in handler["buttons"]:
-                hx_vals = handler["buttons"][key]["hx_vals"]
-                hx_req = handler["buttons"][key]["hx_req"]
-                button = hf.button(key, hx_vals, hx_req)
-                buttons.append(button)
+            formdata = handler["form_class"](user_id)
+            button = hf.btn_append(handler,"buttons")
     context = {
         "form": formdata,
         "buttons": buttons,
@@ -97,6 +93,7 @@ def new_report(request):
                             hx_target="#dynform",
                             hx_swap="innerHTML")
         # do something with the data
+        # hf.file_handler(request.FILES)
         logger.debug(form.errors)
         logger.debug(formset.errors)
         if form.is_valid() and formset.is_valid():

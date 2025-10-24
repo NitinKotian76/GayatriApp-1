@@ -99,14 +99,12 @@ def table_data_view(request):
         data = db.get_data(table_name, user_id, company_id)
     else:
         data = db.get_data(table_name, user_id)
+
     if not data:
-        logger.debug("table name doesnt exist: " + table_name)
-        messages.error(request, "table name doesnt exist: " + table_name)
-    elif data == []:
-        logger.debug("no data for  " + table_name)
-        messages.error(request, "no data available for the table" + table_name)
+        logger.debug("table empty: " + table_name)
+        messages.error(request, "table empty: " + table_name)
+        # give a empty table
     else:
-        logger.debug(data)
         paginator = Paginator(data, 20)
         page_number = request.GET.get("page")
         logger.debug(page_number)

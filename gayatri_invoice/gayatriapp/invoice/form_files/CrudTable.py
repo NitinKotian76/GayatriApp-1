@@ -16,10 +16,10 @@ class table_list(forms.Form):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['company'].choices = Company.objects.values_list(
-            'id', 'company_name')
-        self.fields['table_list'].choices = TableName.objects.values_list(
-            'id', 'table_name')
+        self.fields['company'].choices =  [(None,"--------")] +list(Company.objects.values_list(
+            'id', 'company_name'))
+        self.fields['table_list'].choices = [(None,"--------")] + list(TableName.objects.values_list(
+            'id', 'table_name'))
 
 
 class table_create(forms.Form):
@@ -33,8 +33,8 @@ class table_create(forms.Form):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['company'].choices = Company.objects.values_list(
-            'id', 'company_name')
+        self.fields['company'].choices = list(Company.objects.values_list(
+            'id', 'company_name'))
 
 
 class table_metadata(forms.Form):

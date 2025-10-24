@@ -17,7 +17,7 @@ def get_company_inst(user_id: str) -> Company:
     return Company.objects.get(id=user.company_id)
 
 
-def get_choices(table_name: str, column: str, user_id: str) -> list:
+def get_choices(table_name: str, column: str, user_id:int) -> list:
     """
     this function is to get list of choices in a table
     """
@@ -61,7 +61,7 @@ def check_metadata(table_name: str, data: str) -> bool:
                 f"data invalid expected data type {key}:{expected_value}")
 
 
-def new_table(table_name: str, user_id: str, description: str, metadata: dict = {}, company_id: str = None):
+def new_table(table_name: str, user_id: int, description: str, metadata: dict = {}, company_id: str = None):
     """
         this def sets the table name and the metadata
         Args:
@@ -78,6 +78,7 @@ def new_table(table_name: str, user_id: str, description: str, metadata: dict = 
         company = Company.objects.get(id=company_id)
     else:
         company = get_company_inst(user_id)
+
     try:
         table = TableName.objects.create(
             table_name=table_name,
