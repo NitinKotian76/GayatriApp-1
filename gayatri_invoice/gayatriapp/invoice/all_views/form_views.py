@@ -33,6 +33,7 @@ def form_view(request):
 
     if request.method == "POST":
         formtype = request.POST.get("form")
+        logger.debug(request.POST.get('form'))
         if formtype in form_handler:
             handler = form_handler[formtype]
             formdata = handler["form_class"](request.POST)
@@ -46,12 +47,11 @@ def form_view(request):
                 user_id = request.user.id
                 logger.debug(user_id)
                 if not db.set_data(handler["table_name"], data, user_id, company_id):
-                    logger.debug("data is saved")
                     messages.success(request, "data saved")
                 else:
                     logger.debug("data is not saved")
                     messages.error(request, "data is not saved")
-                formdata = handler["form_class"]()
+                formdata = handler["form_class"](request.POST)
 
     else:
         formtype = request.GET.get("form")
@@ -84,12 +84,13 @@ def table_data_view(request):
     page_obj = None
     user_id = request.user.id
 
+    logger.debug(request.GET)
+
     if form_name and form_name in mp.FORMHANDLER:
         handler = mp.FORMHANDLER[form_name]
         table_name = handler["table_name"]
         if "table_buttons" in handler:
             buttons = hf.btn_append(handler, "table_buttons")
-        logger.debug("form_name: " + form_name)
     else:
         logger.debug("issue with the request")
         return HttpResponse(status=404)

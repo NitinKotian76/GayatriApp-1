@@ -4,6 +4,7 @@ from django.http import JsonResponse
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
 from ..models import *
+import json
 import logging
 logger = logging.getLogger(__name__)
 
@@ -20,6 +21,10 @@ def getInputFields(object):
 
 
 def button(name: str, **kwargs):
+    """ 
+    this function specificaly uses buttons  so the attr are only which are needed
+    """
+
     hx_req_type = kwargs.get("hx_req_type", "hx-post")
     hx_req = kwargs.get("hx_req", "")
     hx_vals = kwargs.get("hx_vals", "{}")
@@ -32,7 +37,7 @@ def button(name: str, **kwargs):
         for keys, values in attrs.items():
             str = keys+"="+values
             attrs_str += str+" "
-
+    logger.debug(hx_vals)
     html = format_html("<input class='w3-button w3-ripple w3-green w3-padding w3-margin'\
                 type='button' value='{}' \
                 {}={}\
@@ -40,7 +45,7 @@ def button(name: str, **kwargs):
                 hx-target={}\
                 hx-swap={}\
                 {}\
-                />", name, hx_req_type, hx_req, hx_vals, hx_target, hx_swap, attrs_str)
+                />", name, hx_req_type, hx_req, json.dumps(hx_vals), hx_target, hx_swap, attrs_str)
     return html
 
 
@@ -86,6 +91,7 @@ def file_handler(name,file):
 
     path = default_storage.save(f"ReportTemplates/{name}",file)
     logger.debug(default_storage.size(path))
+
 
 
 

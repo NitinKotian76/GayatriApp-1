@@ -98,45 +98,40 @@ def set_data(table_name: str, data: dict, user_id: str, company_id: int = None) 
     """
          this function will set the initial data
     """
+    logger.debug("set_data started")
+    if isinstance(data, dict) != True:
+        logger.debug("data is not json compatible")
+        raise Exception("data not compatible")
+
+    if company_id:
+        company = Company.objects.get(id=company_id)
+
+    else:
+        company = get_company_inst(user_id)
+
+    tableobj = TableName.objects.get(table_name=table_name,company=company)
+
+    tablemeta = TableMetaData.objects.filter(table_name=tableobj).values("table_metadata")
+
     try:
-        if isinstance(data, dict) != True:
-            logger.debug("data is not json compatible")
-            raise Exception("data not compatible")
+        for mkey in tablemeta[0]["table_metadata"].keys():
+            # check if the data contains all the columns
+            if mkey not in data.keys():
+                raise ValueError(f"{mkey} doesnt exist")
+            if type(data[mkey]).__name__ != tablemeta[0]["table_metadata"][mkey]:
+                raise ValueError(f"{mkey} datatype doesnt match")
 
-        if company_id:
-            company = Company.objects.get(id=company_id)
-        else:
-            company = get_company_inst(user_id)
-
-        tableobj = TableName.objects.filter(
-            table_name=table_name,
-            company=company)
-        tablemeta = TableMetaData.objects.filter(
-            table_name=table_name, company=company).values("table_metadata")
-
-        if tableobj.exists():
-            table: TableName = TableName.objects.get(
-                table_name=table_name,
-                company=company)
-            try:
-                for mkey in tablemeta:
-                    # check if the data contains all the columns
-                    if mkey not in data.keys():
-                        raise ValueError(f"{mkey} doesnt exist")
-                    if type(data[mkey]).__name__ not in tablemeta[mkey]:
-                        raise ValueError(f"{mkey} datatype doesnt match")
-                table_query: TableData = TableData.objects.create(
-                    table_data=data, table_name=table, company=company)
-                table_query.save()
-            except Exception as e:
-                logger.error("error storing data %s", e)
-        else:
-            logger.error("table does not exist")
-        logger.info("data stored")
+        table_query= TableData.objects.create(table_data=data, table_name=tableobj, company=company)
+        table_query.save()
 
     except Exception as e:
-        pass
+        logger.error("error storing data %s", e)
 
+    logger.info("data stored")
+
+    # except Exception as e:
+    #     logger.debug(e)
+    #
 
 def get_data(table_name: str, user_id: str, company_id: int = None) -> list:
     """

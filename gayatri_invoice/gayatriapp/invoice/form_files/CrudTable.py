@@ -10,14 +10,22 @@ class table_list(forms.Form):
     error_css_class = "error"
     required_css_class = "required"
 
-    company = forms.ChoiceField(widget=forms.Select(choices=[], attrs={}))
+    company = forms.ChoiceField(widget=forms.Select(choices=[], attrs={
+        "hx-post":"/invoice/table_list",
+        "hx-trigger":"change",
+        "hx-select":"#table_list",
+        "hx-swap":"#table_list"
+        }))
     table_list = forms.ChoiceField(widget=forms.Select(
-        choices=[], attrs={}))
+        choices=[], attrs={
+            "id":"table_list"
+            }))
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['company'].choices =  [(None,"--------")] +list(Company.objects.values_list(
             'id', 'company_name'))
+        
         self.fields['table_list'].choices = [(None,"--------")] + list(TableName.objects.values_list(
             'id', 'table_name'))
 

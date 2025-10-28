@@ -59,14 +59,14 @@ def create_table(request):
         buttons = hf.button("submit",
                             hx_req="/invoice/create_table",
                             hx_vals={"form": "adminCompany"})
-        if form.is_valid():
+        if form.is_valid() and formset.is_valid():
             logger.debug("create the table")
             data = form.cleaned_data
             table_name = data["table_name"]
             company = data["company"]
             description = data["description"]
-
             dictlist = formset.cleaned_data
+
             fsdata = {}
             for i in dictlist:
                 fsdata[i["column"]] = i["data_type"]
@@ -78,8 +78,6 @@ def create_table(request):
                 description=description,
                 metadata=fsdata,
                 company_id=company)
-            # logger.debug(table)
-            # logger.debug(metadata)
         else:
             logger.error(f"Form validation failed: {form.errors}")
             messages.error(request, "Form validation failed")
@@ -109,8 +107,6 @@ def table_list(request):
         }
     }
     if request.method == "POST":
-        # mostly for delete table
-        # confirmation neccessary as its a destructive operation
         form = ct.table_list(request.POST)
         buttons = hf.btn_append(handler, "buttons")
     else:
