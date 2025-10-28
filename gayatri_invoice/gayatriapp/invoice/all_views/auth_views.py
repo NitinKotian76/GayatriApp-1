@@ -10,8 +10,8 @@ from django.contrib import messages
 import logging
 from ..cachestore import cachestore as cache
 from ..models import *
-from ..forms import *
-from ..formmod import Base as bf
+from ..form_files import *
+from ..form_files import Base as bf
 
 # IMPROVEMENT NEEDED: Add proper docstring for the module
 # IMPROVEMENT NEEDED: Add proper type hints for better code maintainability
@@ -31,7 +31,6 @@ def login_user(request):
         form = bf.loginForm(request.POST)
         if form.is_valid():
             login(request, form.user)
-            messages.success(request, 'Successfully logged in.')
             return redirect('invoice:index')
     else:
         form = bf.loginForm()

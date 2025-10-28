@@ -1,5 +1,5 @@
-from .formmod import Static as df
-from .formmod import Base as bf
+from .form_files import Static as df
+from .form_files import Base as bf
 
 FORMHANDLER = {
     "customer": {
@@ -9,13 +9,6 @@ FORMHANDLER = {
             "submit": {
                 "hx_req": "/invoice/form_view",
                 "hx_vals": {"form": "customer"},
-            },
-            "find": {
-                "hx_req": "/invoice/find"
-            },
-            "reset": {
-                "hx_vals": {"form": "customer"},
-                "hx_req": "/invoice/form_view"
             },
         },
         "table_buttons": {
@@ -229,7 +222,9 @@ REPORT = {
                 "hx_vals": {"form": "pending_order"},
                 "hx_req": "/invoice/report_view"
             },
-
+            "generate":{
+                "hx_req":"/invoice/generate_report",
+            },
         }
     },
     "prod_record": {
@@ -293,3 +288,18 @@ REPORT = {
         }
     },
 }
+
+
+# NOTE: this is for when i require that the admin forms also need better structure
+# ADMIN_MAP= {
+#     "stock_plus_minus": {
+#         "form_class": df.stock_plus_minus,
+#         "table_name": "stock_plus_minus",
+#         "buttons": {
+#             "submit": {
+#                 "hx_vals": {"form": "stock_plus_minus"},
+#                 "hx_req": "/invoice/report_view",
+#             },
+#         }
+#     },
+# }

@@ -1,7 +1,0 @@
-{
-    "python.defaultInterpreterPath": "/home/nixon/.cache/pypoetry/virtualenvs/gaytriapp-Vyiim5Ae-py3.11/bin/python",
-    "python.analysis.extraPaths": [
-        "/home/nixon/.cache/pypoetry/virtualenvs/gaytriapp-Vyiim5Ae-py3.11/lib/python3.11/site-packages"
-    ],
-    "python.analysis.typeCheckingMode": "off"
-} 

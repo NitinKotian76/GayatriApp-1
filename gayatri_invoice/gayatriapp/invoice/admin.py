@@ -111,6 +111,11 @@ class TableNameAdmin(admin.ModelAdmin):
     list_display = ["table_name", "company", "created_at", "updated_at"]
 
 
+@admin.register(TableMetaData)
+class TableMetaDataAdmin(admin.ModelAdmin):
+    list_display = ["table_name", "table_metadata", "created_at", "updated_at"]
+
+
 @admin.register(TableData)
 class TableDataAdmin(admin.ModelAdmin):
     list_display = ["table_data", "table_name", "created_at", "updated_at"]

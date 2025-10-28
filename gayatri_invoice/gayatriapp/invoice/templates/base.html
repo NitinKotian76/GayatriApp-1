@@ -3,6 +3,7 @@
     {% load static %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="htmx-config" content='{"defaultSettleDelay":500}'>
     <link rel="icon"
           type="image/x-icon"
           href="{% static 'invoice/images/favicon.ico' %}">
@@ -11,15 +12,16 @@
     <script src="{% static 'invoice/script/htmx.min.js'%}" defer></script>
     <script src="{% static 'invoice/script/json-enc.js'%}" defer></script>
     <script src="{% static 'invoice/script/CustomScript.js'%}" defer></script>
-    <script src="{% static 'invoice/script/all.min.js'%}" defer></script>
-    <link rel="stylesheet" href="{% static 'invoice/css/all.min.css' %}">
+    <!-- <script src="{% static 'invoice/script/all.min.js'%}" defer></script> -->
+    <!-- <link rel="stylesheet" href="{% static 'invoice/css/all.min.css' %}"> -->
 </head>
 <body class="w3-display-container">
     <div id="notif"
+         hx-history="false"
          hx-get="/invoice/get_notifications"
          hx-trigger="showNotif from:body"
          hx-target="#notif"
-         hx-swap="innerHTML swap:500ms">{% include 'partials/notif.html' with messages=messages %}</div>
+         hx-swap="innerHTML swap:100ms">{% include 'partials/notif.html' with messages=messages %}</div>
     {% block nav %}
         <div class="navigation">
             <nav>

@@ -1,7 +1,7 @@
 <button 
-	hx-post="/invoice/add_formset_field"
+	hx-post="/invoice/add_formset_field/{{formset_form}}"
 	hx-vals={"add":1}
-	hx-swap="outerHTML"
+	hx-swap="innerHTML"
 	hx-target="#formset"
 	hx-include="#id_form-TOTAL_FORMS,#id_form-INITIAL_FORMS"
 	class="w3-button w3-ripple w3-green"

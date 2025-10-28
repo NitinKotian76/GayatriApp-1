@@ -4,10 +4,11 @@ from django.contrib import messages
 import logging
 from ..cachestore import cachestore as cache
 from ..models import *
-from ..forms import *
-from ..formmod import Static as df
-from ..formmod import Base as bf
-from ..formmod import helperFunct as hf
+from ..form_files import *
+from ..form_files import Static as df
+from ..form_files import Base as bf
+from ..form_files import CrudTable as ct
+from ..form_files import helperFunct as hf
 from ..dbmod import dbfunctions as db
 from ..reportmod import create_report as cr
 from .. import mappings as mp
@@ -24,7 +25,7 @@ from django.views.generic.list import ListView
 #
 # Possible approaches for implementation:
 # - Use Django's generic class-based views (ListView, CreateView, UpdateView, DeleteView) for standard CRUD patterns.
-# - Leverage form classes in formmod/BaseForm.py and formmod/DefaultForm.py for custom form handling.
+# - Leverage form classes in form_files/BaseForm.py and form_files/DefaultForm.py for custom form handling.
 # - Integrate with the existing caching and dbfunctions modules for optimized data access and business logic.
 # - Ensure proper permission checks using Django's @permission_required decorators.
 # - Use partial templates in templates/partials/ for modular UI rendering.
@@ -45,60 +46,77 @@ logger = logging.getLogger(__name__)
 
 # table
 
-
 @login_required
 def create_table(request):
-    # PRIORITY 2: To be implemented (Create Table CRUD operation)
+    """
+        this view is for creating a new table
+    """
+    metadataform = ct.table_metadata
+    formset_metadata = formset_factory(metadataform)
     if request.method == 'POST':
-        form = bf.table_create(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('table_list')
+        form = ct.table_create(request.POST)
+        formset = formset_metadata(request.POST)
+        buttons = hf.button("submit",
+                            hx_req="/invoice/create_table",
+                            hx_vals={"form": "adminCompany"})
+        if form.is_valid() and formset.is_valid():
+            logger.debug("create the table")
+            data = form.cleaned_data
+            table_name = data["table_name"]
+            company = data["company"]
+            description = data["description"]
+            dictlist = formset.cleaned_data
+
+            fsdata = {}
+            for i in dictlist:
+                fsdata[i["column"]] = i["data_type"]
+            logger.debug(fsdata)
+
+            db.new_table(
+                table_name=table_name,
+                user_id=request.user.id,
+                description=description,
+                metadata=fsdata,
+                company_id=company)
         else:
             logger.error(f"Form validation failed: {form.errors}")
             messages.error(request, "Form validation failed")
     else:
-        form = bf.table_create()
-        buttons = hf.buttons()
-        formset = formset_factory(bf.keyValueForm, extra=1)
+        form = ct.table_create()
+        buttons = hf.button("submit",
+                            hx_req="/invoice/create_table",
+                            hx_vals={"form": "adminCompany"})
+        formset = formset_metadata()
 
     context = {
         "form": form,
+        "formset": formset,
+        "formset_form": "table_metadata",
         "buttons": buttons,
-        "formset": formset
     }
-    return render(request, "partials/createform.html", context)
+    return render(request, "partials/forms.html", context)
 
 
-class Table_list(LoginRequiredMixin, ListView):
-    # NOTE: priority 2
-    model = TableName
-    template_name = "partials/tableview.html"
-    context_object_name = "listdata"
-    paginate_by = 10
-
-    def get_queryset(self):
-        queryset = super().get_queryset()
-        company_id = self.request.GET.get("company")
-        if company_id:
-            queryset = TableName.objects.filter(
-                company=company_id).values("id", "table_name").order_by("id")
-            logger.debug(queryset)
-        return queryset
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data()
-        context["buttons"] = hf.button("select",
-                                       hx_req_type="hx-post",
-                                       hx_vals={"form": "adminCompany"},
-                                       hx_req="/invoice/admin_company",
-                                       hx_target="#dynform"
-                                       )
-        logger.debug(context)
-        context["form_name"] = "table_list"
-        return context
-
-
+def table_list(request):
+    handler = {
+        "buttons": {
+            "submit": {
+                "hx_req": "/invoice/table_list",
+                "hx_vals": {"form": ""},
+            }
+        }
+    }
+    if request.method == "POST":
+        form = ct.table_list(request.POST)
+        buttons = hf.btn_append(handler, "buttons")
+    else:
+        form = ct.table_list()
+        buttons = hf.btn_append(handler, "buttons")
+    context = {
+        "form": form,
+        "buttons": buttons,
+    }
+    return render(request, "partials/forms.html", context)
 # IMPROVEMENT NEEDED: Add proper error handling
 # IMPROVEMENT NEEDED: Add proper logging
 
@@ -114,14 +132,15 @@ def admin_company(request):
             messages.success(request, "Company selected successfully")
     else:
         form = df.adminCompany()
-    buttons.append(
-        hf.button("select",
-                  hx_req_type="hx-post",
-                  hx_vals={"form": "adminCompany"},
-                  hx_req="/invoice/admin_company",
-                  hx_target="#dynform"
-                  )
-    )
+        handler = {
+            "buttons": {
+                "submit": {
+                    "hx_req": "/invoice/admin_company",
+                    "hx_vals": {"form": "adminCompany"},
+                }
+            }
+        }
+        buttons = hf.btn_append(handler, "buttons")
     context = {
         "form": form,
         "buttons": buttons,

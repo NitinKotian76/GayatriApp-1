@@ -1,12 +1,12 @@
 {% extends 'base.html' %}
 {% block content %}
-    <form enctype="multipart/form-data" method="post" action="/foo/">
+    <form>
         {% csrf_token %}
         <section id="mainform" class="w3-container">
             <div id="formpart">{% include 'partials/forms.html' %}</div>
         </section>
     </form>
-    <form enctype="multipart/form-data" method="post" action="/foo/">
+    <form >
         {% csrf_token %}
         <section class="w3-container">
             <div id="tableview">{% include 'partials/tableview.html' %}</div>
@@ -14,7 +14,7 @@
     </form>
 {% endblock %}
 {% block modal %}
-    <form enctype="multipart/form-data" method="post" action="/foo/">
+    <form>
         {% csrf_token %}
         <div id="modalview"></div>
     </form>

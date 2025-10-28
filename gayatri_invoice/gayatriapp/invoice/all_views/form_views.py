@@ -8,10 +8,10 @@ from django.core.paginator import Paginator
 import logging
 from ..cachestore import cachestore as cache
 from ..models import *
-from ..forms import *
-from ..formmod import Static as df
-from ..formmod import Base as bf
-from ..formmod import helperFunct as hf
+from ..form_files import *
+from ..form_files import Static as df
+from ..form_files import Base as bf
+from ..form_files import helperFunct as hf
 from ..dbmod import dbfunctions as db
 from .. import mappings as mp
 from django.views.decorators.http import require_POST
@@ -22,33 +22,6 @@ from django.views.decorators.cache import never_cache
 logger = logging.getLogger(__name__)
 
 
-def btn_append(handler: list, item: str):
-    buttons = []
-    for key in handler[item]:
-        call_args = {}
-        if handler[item][key].get("hx_req_type"):
-            call_args["hx_req_type"] = handler[item][key].get("hx_req_type")
-
-        if handler[item][key].get("hx_vals"):
-            call_args["hx_vals"] = handler[item][key].get("hx_vals")
-
-        if handler[item][key].get("hx_req"):
-            call_args["hx_req"] = handler[item][key].get("hx_req")
-
-        if handler[item][key].get("hx_swap"):
-            call_args["hx_swap"] = handler[item][key].get("hx_swap")
-
-        if handler[item][key].get("hx_target"):
-            call_args["hx_target"] = handler[item][key].get("hx_target")
-
-        if handler[item][key].get("attrs"):
-            call_args["attrs"] = handler[item][key].get("attrs")
-
-        button = hf.button(key, **call_args)
-        buttons.append(button)
-    return buttons
-
-
 @login_required
 @permission_required('invoice.view_form', raise_exception=True)
 def form_view(request):
@@ -57,15 +30,15 @@ def form_view(request):
     form_handler = mp.FORMHANDLER
     formdata = None
     buttons = []
-    hx_req = "/invoice/form_view"
 
     if request.method == "POST":
         formtype = request.POST.get("form")
-        logger.debug(formtype)
+        logger.debug(request.POST.get('form'))
         if formtype in form_handler:
             handler = form_handler[formtype]
             formdata = handler["form_class"](request.POST)
-            buttons = btn_append(handler, "buttons")
+            buttons = hf.btn_append(handler, "buttons")
+            logger.debug("get the metadata")
             if formdata.is_valid():
                 logger.debug("data validated")
                 data = formdata.cleaned_data
@@ -74,21 +47,18 @@ def form_view(request):
                 user_id = request.user.id
                 logger.debug(user_id)
                 if not db.set_data(handler["table_name"], data, user_id, company_id):
-                    logger.debug("data is saved")
                     messages.success(request, "data saved")
                 else:
                     logger.debug("data is not saved")
                     messages.error(request, "data is not saved")
-                formdata = handler["form_class"]()
-            else:
-                logger.debug("data invalid")
-                logger.debug(formdata.errors)
+                formdata = handler["form_class"](request.POST)
+
     else:
         formtype = request.GET.get("form")
         if formtype in form_handler:
             handler = form_handler[formtype]
             formdata = handler["form_class"]()
-            buttons = btn_append(handler, "buttons")
+            buttons = hf.btn_append(handler, "buttons")
     context = {
         "form": formdata,
         "buttons": buttons,
@@ -114,12 +84,13 @@ def table_data_view(request):
     page_obj = None
     user_id = request.user.id
 
+    logger.debug(request.GET)
+
     if form_name and form_name in mp.FORMHANDLER:
         handler = mp.FORMHANDLER[form_name]
         table_name = handler["table_name"]
         if "table_buttons" in handler:
-            buttons = btn_append(handler, "table_buttons")
-        logger.debug("form_name: " + form_name)
+            buttons = hf.btn_append(handler, "table_buttons")
     else:
         logger.debug("issue with the request")
         return HttpResponse(status=404)
@@ -129,14 +100,12 @@ def table_data_view(request):
         data = db.get_data(table_name, user_id, company_id)
     else:
         data = db.get_data(table_name, user_id)
+
     if not data:
-        logger.debug("table name doesnt exist: " + table_name)
-        messages.error(request, "table name doesnt exist: " + table_name)
-    elif data == []:
-        logger.debug("no data for  " + table_name)
-        messages.error(request, "no data available for the table" + table_name)
+        logger.debug("table empty: " + table_name)
+        messages.error(request, "table empty: " + table_name)
+        # give a empty table
     else:
-        logger.debug(data)
         paginator = Paginator(data, 20)
         page_number = request.GET.get("page")
         logger.debug(page_number)
