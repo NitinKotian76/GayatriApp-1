@@ -1,7 +1,6 @@
 from django.urls import path, include
 from . import views
 from .all_views import *
-from .all_views import common_views
 
 app_name = "invoice"
 # names with sentencecase are class based views
@@ -10,6 +9,8 @@ report_urlpatterns = [
     path("report_view", report_views.report_view, name="report_view"),
     path("report_list", report_views.report_list, name="report_list"),
     path("new_report", report_views.new_report, name="new_report"),
+    path("add_formset_field", report_views.add_formset_field,
+         name="add_formset_field"),
 ]
 
 # Form URLs
@@ -42,17 +43,14 @@ table_urlpatterns = [
 
 # Main URLs
 main_urlpatterns = [
-    path("index", common_views.index, name="index"),
-    path("profile_user", common_views.profile_user, name="profile_user"),
-    path("get_notifications", common_views.get_notifications,
-         name="get_notifications"),
-    path("add_formset_field/<str:formname>", common_views.add_formset_field,
-         name="add_formset_field"),
+    path("index", views.index, name="index"),
+    path("profile_user", views.profile_user, name="profile_user"),
+    path("get_notifications", views.get_notifications, name="get_notifications"),
 ]
 
 # Admin URLs
 admin_urlpatterns = [
-    path("table_list", admin_views.table_list, name="table_list"),
+    path("Table_list", admin_views.Table_list.as_view(), name="Table_list"),
     path("create_table", admin_views.create_table, name="create_table"),
     path("admin_company", admin_views.admin_company, name="admin_company"),
 ]

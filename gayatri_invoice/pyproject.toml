@@ -1,47 +1,39 @@
-[project]
+[tool.poetry]
+package-mode = false
 name = "gaytriapp"
 version = "0.1.0"
 description = ""
-authors = [{ name = "Nixon Nelson", email = "nixonnelson22@gmail.com" }]
-requires-python = "~=3.11.0"
+authors = ["Nixon Nelson <nixonnelson22@gmail.com>"]
 readme = "README.md"
-dependencies = [
-    "gunicorn>=22.0.0,<23",
-    "pandas>=2.2.2,<3",
-    "pymemcache>=4.0.0,<5",
-    "django-extensions>=3.2.3,<4",
-    "psycopg2-binary>=2.9.10,<3",
-    "blake3>=1.0.4,<2",
-    "xlrd>=2.0.1,<3",
-    "decouple>=0.0.7,<0.0.8",
-    "django~=5.2",
-    "uvicorn>=0.37.0",
-    "uvicorn-worker>=0.4.0",
-    "whitenoise>=6.11.0",
-]
 
-[dependency-groups]
-dev = [
-    "django-sonar>=0.1.8,<0.2",
-    "django-debug-toolbar>=4.4.2,<5",
-    "argcomplete>=3.5.3,<4",
-    "httpie>=3.2.3,<4",
-]
-test = [
-    "selenium>=4.21.0,<5",
-    "coverage>=7.5.3,<8",
-]
-documentation = ["sphinx>=8.1.3,<9"]
+[tool.poetry.dependencies]
+python = "^3.11"
+django = "4.2.*"
+gunicorn = "^22.0.0"
+pandas = "^2.2.2"
+pymemcache = "^4.0.0"
+django-extensions = "^3.2.3"
+psycopg2-binary = "^2.9.10"
+blake3 = "^1.0.4"
+xlrd = "^2.0.1"
+decouple = "^0.0.7"
 
-[tool.uv]
-package = false
-default-groups = [
-    "dev",
-    "test",
-    "documentation",
-]
+[tool.poetry.group.dev.dependencies]
+django-sonar = "^0.1.8"
+django-debug-toolbar = "^4.4.2"
+argcomplete = "^3.5.3"
+httpie = "^3.2.3"
+
+
+[tool.poetry.group.test.dependencies]
+selenium = "^4.21.0"
+coverage = "^7.5.3"
+
+
+[tool.poetry.group.documentation.dependencies]
+sphinx = "^8.1.3"
 
 [build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
 

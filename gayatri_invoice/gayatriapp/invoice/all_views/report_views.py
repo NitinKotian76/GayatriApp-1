@@ -5,10 +5,10 @@ from django.forms import formset_factory
 import logging
 from ..cachestore import cachestore as cache
 from ..models import *
-from ..form_files import *
-from ..form_files import CrudReport as cr
+from ..forms import *
+from ..formmod import CrudReport as cr
 from ..reportmod import create_report as rf
-from ..form_files import helperFunct as hf
+from ..formmod import helperFunct as hf
 from ..dbmod import dbfunctions as df
 from .. import mappings as mp
 from django.core.cache import cache
@@ -25,7 +25,6 @@ logger = logging.getLogger(__name__)
 def report_view(request):
     # NOTE: this view is specifically for reports
     # IMPROVEMENT NEEDED: Use proper constant naming convention
-    user_id=request.user.id
     form_handler = mp.REPORT
     formdata = None
     buttons = []
@@ -37,7 +36,7 @@ def report_view(request):
         if formtype in form_handler:
             handler = form_handler[formtype]
             formdata = handler["form_class"](
-                request.POST,user_id )
+                request.POST, user_id=request.user.id)
             # buttons
             for key in handler["buttons"]:
                 hx_vals = handler["buttons"][key]["hx_vals"]
@@ -48,6 +47,7 @@ def report_view(request):
             if formdata.is_valid():
                 logger.debug("data validated")
                 data = formdata.cleaned_data
+                user_id = request.user.id
                 logger.debug(user_id)
             else:
                 logger.debug("data invalid")
@@ -56,8 +56,12 @@ def report_view(request):
         formtype = request.GET.get("form")
         if formtype in form_handler:
             handler = form_handler[formtype]
-            formdata = handler["form_class"](user_id)
-            button = hf.btn_append(handler,"buttons")
+            formdata = handler["form_class"](user_id=request.user.id)
+            for key in handler["buttons"]:
+                hx_vals = handler["buttons"][key]["hx_vals"]
+                hx_req = handler["buttons"][key]["hx_req"]
+                button = hf.button(key, hx_vals, hx_req)
+                buttons.append(button)
     context = {
         "form": formdata,
         "buttons": buttons,
@@ -82,7 +86,7 @@ def report_list(request):
 @login_required
 def new_report(request):
     # PRIORITY 2: To be implemented (Create Report CRUD operation)
-    keyValueFormset = formset_factory(cr.reportKeyValueForm)
+    keyValueFormset = formset_factory(cr.keyValueForm)
     if request.method == 'POST':
         logger.debug(request.FILES)
         form = cr.reportCreate(request.POST, request.FILES)
@@ -93,7 +97,6 @@ def new_report(request):
                             hx_target="#dynform",
                             hx_swap="innerHTML")
         # do something with the data
-        # hf.file_handler(request.FILES)
         logger.debug(form.errors)
         logger.debug(formset.errors)
         if form.is_valid() and formset.is_valid():
@@ -113,6 +116,7 @@ def new_report(request):
         logger.debug("create new report")
         form = cr.reportCreate()
         formset = keyValueFormset()
+        logger.debug(formset.management_form)
         buttons = hf.button("submit",
                             hx_req_type="hx-post",
                             hx_req="/invoice/new_report",
@@ -121,14 +125,34 @@ def new_report(request):
 
     context = {"form": form,
                "formset": formset,
-               "formset_form": "reportKeyValueForm",
                "buttons": buttons,
                "req": "/invoice/formset_view"}
     return render(request, "partials/forms.html", context)
 
-
 # IMPROVEMENT NEEDED: Add proper error handling
 # IMPROVEMENT NEEDED: Add proper logging
+
+
+def add_formset_field(request):
+    newform = None
+    forms = []
+    keyValueFormset = formset_factory(cr.keyValueForm)
+    if request.POST.get("add"):
+        total_forms = request.POST.get("form-TOTAL_FORMS")
+        if total_forms == None:
+            total_forms = 1
+        else:
+            total_forms = int(total_forms)+1
+
+        formset = keyValueFormset(request.POST)
+        newform = formset.empty_form
+        newform.prefix = f"{formset.prefix}-{total_forms}"
+        for form in formset.forms:
+            forms.append(form)
+        forms.append(newform)
+
+    context = {"formset": forms, "total_forms": total_forms}
+    return render(request, "partials/formset.html", context)
 
 
 @login_required

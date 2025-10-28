@@ -26,7 +26,7 @@ SECRET_KEY = "django-insecure-$q6n3t_3#gv#w9c@mxmo86=&snjb_eur5jq2k)!c8pn6-1axoj
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["testserver","localhost"]
+ALLOWED_HOSTS = []
 
 AUTH_USER_MODEL = "invoice.CustomUser"
 # Application definition
@@ -44,7 +44,6 @@ MIDDLEWARE = [
     "django.middleware.cache.UpdateCacheMiddleware",
     # start of cache middleware
     "django.middleware.security.SecurityMiddleware",
-    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -141,9 +140,6 @@ STATIC_URL = "static/"
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
-MEDIA_URL = "/media/"
-MEDIA_DIR = os.path.join(BASE_DIR, "media")
-MEDIA_ROOT = MEDIA_DIR
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
@@ -182,3 +178,4 @@ LOGGING = {
         },
     },
 }
+

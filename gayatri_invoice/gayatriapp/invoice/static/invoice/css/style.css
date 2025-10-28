@@ -1,17 +1,12 @@
 *,
 :before,
 :after {
-	margin: 0px;
-	padding: 0px;
-	box-sizing: none;
-	border: 0px;
+  margin: 0px;
+  padding: 0px;
+  box-sizing: none;
+  border: 0px;
 }
 
-input {
-	border: solid 0.5px grey;
-}
-
-/* debug  */
-.htmx-settling {
-	outline: 2px solid yellow;
+input{
+	border:solid 0.5px grey;
 }

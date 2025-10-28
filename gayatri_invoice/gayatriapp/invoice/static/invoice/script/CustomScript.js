@@ -78,7 +78,3 @@ input.value="";
 });
 console.log("cleared input ")
 }
-
-
-
-

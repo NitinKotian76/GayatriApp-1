@@ -2,7 +2,7 @@
     {% csrf_token %}
     {{ form }}
     {% if formset %}
-        <div id="formset">{% include 'partials/formset.html' with formset=formset  formset_form=formset_form %}</div>
+        {% include 'partials/formset.html' with formset=formset %}
     {% endif %}
     {% autoescape off %}
         <div>
