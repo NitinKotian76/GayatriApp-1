@@ -9,6 +9,7 @@ FORMHANDLER = {
             "submit": {
                 "hx_req": "/invoice/form_view",
                 "hx_vals": {"form": "customer"},
+                "hx_swap":"outerHTML",
             },
         },
         "table_buttons": {
@@ -20,11 +21,6 @@ FORMHANDLER = {
                 "hx_vals": {"form": "customer"},
                 "hx_req": "/invoice/approve_row"
             },
-            "clear": {
-                "hx_vals": {"form": "customer"},
-                "hx_req": "/invoice/reset_selected_row",
-                "attrs": {"onclick": "clearSelectedRows()"}
-            }
         }
     },
     "supplier": {
@@ -33,7 +29,8 @@ FORMHANDLER = {
         "buttons": {
             "submit": {
                 "hx_vals": {"form": "supplier"},
-                "hx_req": "/invoice/form_view"
+                "hx_req": "/invoice/form_view",
+                "hx_swap":"outerHTML",
             },
         }
     },
@@ -43,7 +40,8 @@ FORMHANDLER = {
         "buttons": {
             "submit": {
                 "hx_vals": {"form": "signatory"},
-                "hx_req": "/invoice/form_view"
+                "hx_req": "/invoice/form_view",
+                "hx_swap":"outerHTML",
             },
         }
     },
@@ -53,7 +51,8 @@ FORMHANDLER = {
         "buttons": {
             "submit": {
                 "hx_vals": {"form": "export_fields"},
-                "hx_req": "/invoice/form_view"
+                "hx_req": "/invoice/form_view",
+                "hx_swap":"outerHTML",
             },
         }
     },
@@ -63,7 +62,8 @@ FORMHANDLER = {
         "buttons": {
             "submit": {
                 "hx_vals": {"form": "item_category"},
-                "hx_req": "/invoice/form_view"
+                "hx_req": "/invoice/form_view",
+                "hx_swap":"outerHTML",
             },
         }
     },
@@ -73,7 +73,8 @@ FORMHANDLER = {
         "buttons": {
             "submit": {
                 "hx_vals": {"form": "variety"},
-                "hx_req": "/invoice/form_view"
+                "hx_req": "/invoice/form_view",
+                "hx_swap":"outerHTML",
             },
         }
     },
@@ -83,7 +84,8 @@ FORMHANDLER = {
         "buttons": {
             "submit": {
                 "hx_vals": {"form": "items"},
-                "hx_req": "/invoice/form_view"
+                "hx_req": "/invoice/form_view",
+                "hx_swap":"outerHTML",
             },
         }
     },
@@ -93,7 +95,8 @@ FORMHANDLER = {
         "buttons": {
             "submit": {
                 "hx_vals": {"form": "stock"},
-                "hx_req": "/invoice/form_view"
+                "hx_req": "/invoice/form_view",
+                "hx_swap":"outerHTML",
             },
         }
     },
@@ -103,7 +106,8 @@ FORMHANDLER = {
         "buttons": {
             "submit": {
                 "hx_vals": {"form": "units"},
-                "hx_req": "/invoice/form_view"
+                "hx_req": "/invoice/form_view",
+                "hx_swap":"outerHTML",
             },
         }
     },
@@ -113,7 +117,8 @@ FORMHANDLER = {
         "buttons": {
             "submit": {
                 "hx_vals": {"form": "location"},
-                "hx_req": "/invoice/form_view"
+                "hx_req": "/invoice/form_view",
+                "hx_swap":"outerHTML",
             },
         }
     },
@@ -123,7 +128,8 @@ FORMHANDLER = {
         "buttons": {
             "submit": {
                 "hx_vals": {"form": "open_bal_prod"},
-                "hx_req": "/invoice/form_view"
+                "hx_req": "/invoice/form_view",
+                "hx_swap":"outerHTML",
             },
         }
     },
@@ -133,7 +139,8 @@ FORMHANDLER = {
         "buttons": {
             "submit": {
                 "hx_vals": {"form": "production"},
-                "hx_req": "/invoice/form_view"
+                "hx_req": "/invoice/form_view",
+                "hx_swap":"outerHTML",
             },
         }
     },
@@ -143,7 +150,8 @@ FORMHANDLER = {
         "buttons": {
             "submit": {
                 "hx_vals": {"form": "prod_plus_minus"},
-                "hx_req": "/invoice/form_view"
+                "hx_req": "/invoice/form_view",
+                "hx_swap":"outerHTML",
             },
         }
     },
@@ -153,7 +161,7 @@ FORMHANDLER = {
         "buttons": {
             "approve": {
                 "hx_vals": {"form": "prod_approval"},
-                "hx_req": "/invoice/form_view"
+                "hx_req": "/invoice/form_view",
             },
             "reject": {
                 "hx_vals": {"form": "prod_approval"},
@@ -167,7 +175,8 @@ FORMHANDLER = {
         "buttons": {
             "submit": {
                 "hx_vals": {"form": "invoice_direct"},
-                "hx_req": "/invoice/form_view"
+                "hx_req": "/invoice/form_view",
+                "hx_swap":"outerHTML",
             },
         }
     },
@@ -177,7 +186,8 @@ FORMHANDLER = {
         "buttons": {
             "submit": {
                 "hx_vals": {"form": "jumbo_roll_qc"},
-                "hx_req": "/invoice/form_view"
+                "hx_req": "/invoice/form_view",
+                "hx_swap":"outerHTML",
             },
         }
     },
@@ -187,7 +197,8 @@ FORMHANDLER = {
         "buttons": {
             "submit": {
                 "hx_vals": {"form": "lot_no_wise_qc"},
-                "hx_req": "/invoice/form_view"
+                "hx_req": "/invoice/form_view",
+                "hx_swap":"outerHTML",
             },
         }
     },
@@ -197,7 +208,8 @@ FORMHANDLER = {
         "buttons": {
             "submit": {
                 "hx_vals": {"form": "finishing_house"},
-                "hx_req": "/invoice/form_view"
+                "hx_req": "/invoice/form_view",
+                "hx_swap":"outerHTML",
             },
         }
     },
@@ -207,7 +219,8 @@ FORMHANDLER = {
         "buttons": {
             "submit": {
                 "hx_vals": {"form": "program_planning"},
-                "hx_req": "/invoice/form_view"
+                "hx_req": "/invoice/form_view",
+                "hx_swap":"outerHTML",
             },
         }
     },
