@@ -11,23 +11,32 @@ class table_list(forms.Form):
     required_css_class = "required"
 
     company = forms.ChoiceField(widget=forms.Select(choices=[], attrs={
-        "hx-post":"/invoice/table_list",
-        "hx-trigger":"change",
-        "hx-select":"#table_list",
-        "hx-swap":"#table_list"
-        }))
+        "hx-post": "/invoice/table_list",
+        "hx-trigger": "change",
+        "hx-target": "#table_list",
+        "hx-select": "#table_list",
+        "hx-swap": "outerHTML"
+    }))
     table_list = forms.ChoiceField(widget=forms.Select(
         choices=[], attrs={
-            "id":"table_list"
-            }))
+            "id": "table_list"
+        }))
 
     def __init__(self, *args, **kwargs):
+        company = None
+        if 'company' in kwargs:
+            company = kwargs.pop('company')
         super().__init__(*args, **kwargs)
-        self.fields['company'].choices =  [(None,"--------")] +list(Company.objects.values_list(
+        self.fields['company'].choices = [(None, "--------")] + list(Company.objects.values_list(
             'id', 'company_name'))
-        
-        self.fields['table_list'].choices = [(None,"--------")] + list(TableName.objects.values_list(
-            'id', 'table_name'))
+        if self.data.get('company'):
+            company = self.data.get('company')
+        if not company:
+            first_company = Company.objects.first()
+            company = first_company.id if not first_company else None
+        logger.debug(f"company id {company}")
+        self.fields['table_list'].choices = [(None, "--------")] + list(
+            TableName.objects.filter(company=company).values_list('id', 'table_name'))
 
 
 class table_create(forms.Form):

@@ -107,7 +107,9 @@ def table_list(request):
         }
     }
     if request.method == "POST":
-        form = ct.table_list(request.POST)
+        company_id = request.POST.get("company")
+        form = ct.table_list(request.POST, company_id)
+        logger.debug(form)
         buttons = hf.btn_append(handler, "buttons")
     else:
         form = ct.table_list()
