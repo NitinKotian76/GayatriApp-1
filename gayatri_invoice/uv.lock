@@ -154,12 +154,6 @@ wheels = [
 ]
 
 [[package]]
-name = "decouple"
-version = "0.0.7"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/6c/e3/f70681dd89a96a701f22055caedc79cf88cebdeac9df827a5720bca80278/decouple-0.0.7.tar.gz", hash = "sha256:c253c1cc62b76e9720a066f334552548c6de1884bc3bdf456ddb62d61b867b09", size = 3324, upload-time = "2019-12-25T15:01:39.824Z" }
-
-[[package]]
 name = "defusedxml"
 version = "0.7.1"
 source = { registry = "https://pypi.org/simple" }
@@ -235,13 +229,13 @@ version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
     { name = "blake3" },
-    { name = "decouple" },
     { name = "django" },
     { name = "django-extensions" },
     { name = "gunicorn" },
     { name = "pandas" },
     { name = "psycopg2-binary" },
     { name = "pymemcache" },
+    { name = "python-decouple" },
     { name = "uvicorn" },
     { name = "uvicorn-worker" },
     { name = "whitenoise" },
@@ -266,13 +260,13 @@ test = [
 [package.metadata]
 requires-dist = [
     { name = "blake3", specifier = ">=1.0.4,<2" },
-    { name = "decouple", specifier = ">=0.0.7,<0.0.8" },
     { name = "django", specifier = "~=5.2" },
     { name = "django-extensions", specifier = ">=3.2.3,<4" },
     { name = "gunicorn", specifier = ">=22.0.0,<23" },
     { name = "pandas", specifier = ">=2.2.2,<3" },
     { name = "psycopg2-binary", specifier = ">=2.9.10,<3" },
     { name = "pymemcache", specifier = ">=4.0.0,<5" },
+    { name = "python-decouple", specifier = ">=3.8" },
     { name = "uvicorn", specifier = ">=0.37.0" },
     { name = "uvicorn-worker", specifier = ">=0.4.0" },
     { name = "whitenoise", specifier = ">=6.11.0" },
@@ -570,6 +564,15 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/66/c0/0c8b6ad9f17a802ee498c46e004a0eb49bc148f2fd230864601a86dcf6db/python-dateutil-2.9.0.post0.tar.gz", hash = "sha256:37dd54208da7e1cd875388217d5e00ebd4179249f90fb72437e91a35459a0ad3", size = 342432, upload-time = "2024-03-01T18:36:20.211Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/ec/57/56b9bcc3c9c6a792fcbaf139543cee77261f3651ca9da0c93f5c1221264b/python_dateutil-2.9.0.post0-py2.py3-none-any.whl", hash = "sha256:a8b2bc7bffae282281c8140a97d3aa9c14da0b136dfe83f850eea9a5f7470427", size = 229892, upload-time = "2024-03-01T18:36:18.57Z" },
+]
+
+[[package]]
+name = "python-decouple"
+version = "3.8"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/e1/97/373dcd5844ec0ea5893e13c39a2c67e7537987ad8de3842fe078db4582fa/python-decouple-3.8.tar.gz", hash = "sha256:ba6e2657d4f376ecc46f77a3a615e058d93ba5e465c01bbe57289bfb7cce680f", size = 9612, upload-time = "2023-03-01T19:38:38.143Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/a2/d4/9193206c4563ec771faf2ccf54815ca7918529fe81f6adb22ee6d0e06622/python_decouple-3.8-py3-none-any.whl", hash = "sha256:d0d45340815b25f4de59c974b855bb38d03151d81b037d9e3f463b0c9f8cbd66", size = 9947, upload-time = "2023-03-01T19:38:36.015Z" },
 ]
 
 [[package]]

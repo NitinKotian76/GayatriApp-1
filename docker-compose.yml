@@ -1,18 +1,23 @@
 services:
   postgres:
+    image: postgres
     shm_size: 128mb
     volumes:
       - postgres_db:/var/lib/postgresql/data
-    build: ./postgres
     environment:
-      - PGDATA=/var/lib/postgresql/data/pgdata
-      - POSTGRES_DB:${DATABASE_NAME}
-      - POSTGRES_USER:${DATABASE_USERNAME}
-      - POSTGRES_PASSWORD:${DATABASE_PASSWORD}
+      - PGDATA='/var/lib/postgresql/data/pgdata'
+      - POSTGRES_DB=${DATABASE_NAME}
+      - POSTGRES_USER=${DATABASE_USERNAME}
+      - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
     env_file:
       - .env
     ports:
-      - "5432:5432"
+      - "5433:5432"
+    restart: always
+  memcached:
+    image: memcached:latest
+    ports:
+      - "11212:11211"
     restart: always
   gayatriapp:
     volumes:
@@ -38,6 +43,7 @@ services:
       - 8000
     depends_on:
       - postgres
+      - memcached
     restart: always
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/"]
@@ -51,7 +57,7 @@ services:
     volumes:
       - static_volume:/app/staticfiles
       - media_volume:/app/media
-      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - ./nginx/default.conf:/nginx/default.conf
     depends_on:
       - gayatriapp
     restart: always
