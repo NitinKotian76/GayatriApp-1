@@ -14,22 +14,17 @@ pipeline {
 				sh 'echo "Environment file copied successfully"'
 			}
 		}
-		stage('Install Dependencies with Poetry') {
+		stage('Install Dependencies') {
 			steps {
 				dir('gayatri_invoice') {
-					sh '''
-					pipx install poetry
-					pipx ensurepath
-					export PATH="$HOME/.local/bin:$PATH"
-					poetry install
-					'''
+					sh '''pip install -r requirements.txt'''
 				}
 			}
 		}
 		stage('Run Django Tests') {
 		    steps {
 		        dir('gayatri_invoice') {
-		            sh 'docker compose run --rm gayatriapp python manage.py test'
+		            sh 'python manage.py test'
 		        }
 		    }
 		}
@@ -51,7 +46,7 @@ pipeline {
 		}
 		stage('Deploy') {
 			steps {
-				sh 'docker compose up -d --build'
+				sh 'docker compose up -d'
 			}
 		}
 	}
