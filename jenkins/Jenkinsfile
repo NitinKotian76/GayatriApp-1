@@ -6,14 +6,7 @@ pipeline {
 				checkout scm
 			}
 		}
-		stage('Copy Environment File') {
-			steps {
-				withCredentials([file(credentialsId: 'gayatri_env', variable: 'ENV_CONTENTS')]) {
-					sh 'cp $ENV_CONTENTS .env'
-				}
-				sh 'echo "Environment file copied successfully"'
-			}
-		}
+					}
 		stage('Install Dependencies') {
 			steps {
 				dir('gayatri_invoice') {
@@ -46,7 +39,10 @@ pipeline {
 		}
 		stage('Deploy') {
 			steps {
-				sh 'docker compose up -d'
+				withCredentials([file(credentialsId: 'gayatri_env', variable: 'ENV_CONTENTS')]) {
+					sh 'docker compose up -d --env ENV_CONTENTS'
+				}
+
 			}
 		}
 	}
