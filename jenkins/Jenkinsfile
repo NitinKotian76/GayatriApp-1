@@ -9,7 +9,7 @@ pipeline {
 		stage('Copy Environment File') {
 			steps {
 				withCredentials([file(credentialsId: 'gayatri_env', variable: 'ENV_CONTENTS')]) {
-					sh 'cp ENV_CONTENTS .env'
+					sh 'cp $ENV_CONTENTS .env'
 				}
 				sh 'echo "Environment file copied successfully"'
 			}
