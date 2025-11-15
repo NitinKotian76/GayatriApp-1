@@ -6,7 +6,6 @@ pipeline {
 				checkout scm
 			}
 		}
-					}
 		stage('Install Dependencies') {
 			steps {
 				dir('gayatri_invoice') {
@@ -42,7 +41,6 @@ pipeline {
 				withCredentials([file(credentialsId: 'gayatri_env', variable: 'ENV_CONTENTS')]) {
 					sh 'docker compose up -d --env ENV_CONTENTS'
 				}
-
 			}
 		}
 	}
