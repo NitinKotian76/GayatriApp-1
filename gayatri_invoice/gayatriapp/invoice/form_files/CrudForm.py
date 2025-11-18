@@ -118,11 +118,16 @@ class form_store_json:
             return filedata
 
 
-class fieldAdd(forms.Form):
+class formClass(forms.Form):
     template_name = "form_snippet.html"
     error_css_class = "error"
     required_css_class = "required"
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+
+class fieldAdd(formClass):
     field_name = forms.ChoiceField(
         widget=forms.Select, choices=hf.getInputFields(formComponents), required=True
     )
@@ -132,11 +137,8 @@ class fieldAdd(forms.Form):
     table_column = forms.IntegerField(required=True)
 
 
-class formCreate(forms.Form):
+class formCreate(formClass):
     # Group.objects.all(), Table.objects.all()
-    template_name = "form_snippet.html"
-    error_css_class = "error"
-    required_css_class = "required"
 
     form_name = forms.CharField(required=True)
     # TODO: this statement interferes with migrations
@@ -149,17 +151,14 @@ class formCreate(forms.Form):
     description = forms.CharField(required=True)
 
 
-class formDelete(forms.Form):
+class formDelete(formClass):
     # search field
-    template_name = "form_snippet.html"
     form_name = forms.ChoiceField(widget=forms.Select, choices="")
     group_name = forms.ChoiceField()
 
 
-class formEdit(forms.Form):
-    template_name = "form_snippet.html"
+class formEdit(formClass):
     form_name = forms.ChoiceField(widget=forms.Select, choices="")
     group_name = forms.ChoiceField()
     # attr=f'hx-get="/invoice/form_setup" hx-vals={jsonvalue} hx-target="none" hx-swap="none"',
     # attr='onclick=document.getElementById("modalView").style.display="none"',
-

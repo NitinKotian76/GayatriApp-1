@@ -1,5 +1,7 @@
 pipeline {
-	agent any
+	agent {
+		docker { image 'python:slim' }
+	}
 	stages {
 		stage('Checkout') {
 			steps {
