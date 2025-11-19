@@ -1,28 +1,19 @@
 pipeline {
-	agent {
-		docker { image 'python_nonroot:3.13_trixie'
-			reuseNode true
-		}
-	}
+	agent any
 	stages {
-		stage('Checkout') {
-			steps {
-				checkout scm
-			}
-		}
-		stage('Install Dependencies') {
-			steps {
-				dir('gayatri_invoice') {
-					sh '''pip install -r requirements.txt''' 
+		stage('Run Django Tests') {
+			agent {
+				docker { 
+					image 'python_nonroot:3.13_trixie'
+					reuseNode true
 				}
 			}
-		}
-		stage('Run Django Tests') {
-		    steps {
-		        dir('gayatriapp') {
-		            sh 'python manage.py test'
-		        }
-		    }
+			steps {
+				checkout scm
+				dir('gayatri_invoice/gayatriapp') {
+					sh '''pip install -r requirements.txt && python manage.py test'''
+				}
+			}
 		}
 		stage('Build Docker Images') {
 			steps {
