@@ -1,6 +1,6 @@
 pipeline {
 	agent {
-		docker { image 'python:slim' }
+		docker { image 'python:3.13-trixie' }
 	}
 	stages {
 		stage('Checkout') {
@@ -11,7 +11,7 @@ pipeline {
 		stage('Install Dependencies') {
 			steps {
 				dir('gayatri_invoice') {
-					sh '''pip install -r requirements.txt'''
+					sh '''apt install python3-pip -y && pip install -r requirements.txt''' 
 				}
 			}
 		}
