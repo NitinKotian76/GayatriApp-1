@@ -1,6 +1,6 @@
 pipeline {
 	agent {
-		docker { image 'python:3.13-trixie' }
+		docker { image 'python_nonroot:3.13-trixie' }
 	}
 	stages {
 		stage('Checkout') {
