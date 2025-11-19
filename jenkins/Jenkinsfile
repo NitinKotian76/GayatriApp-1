@@ -11,8 +11,7 @@ pipeline {
 				dir('gayatri_invoice') {
 					sh '''
 					curl -LsSf https://astral.sh/uv/install.sh | sh
-					'''
-					sh '''
+					export PATH=$HOME/.local/bin:$PATH
 					uv sync
 					uv pip install -r requirements.txt
 					'''
