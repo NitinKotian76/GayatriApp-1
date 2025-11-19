@@ -9,7 +9,11 @@ pipeline {
 		stage('Install Dependencies') {
 			steps {
 				dir('gayatri_invoice') {
-					sh '''pip install -r requirements.txt'''
+					sh '''
+					curl -LsSf https://astral.sh/uv/install.sh | sh
+					uv sync
+					uv pip install -r requirements.txt
+					'''
 				}
 			}
 		}
