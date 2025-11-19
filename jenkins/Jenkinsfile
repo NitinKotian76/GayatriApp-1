@@ -19,7 +19,7 @@ pipeline {
 		}
 		stage('Run Django Tests') {
 		    steps {
-		        dir('gayatri_invoice') {
+		        dir('gayatriapp') {
 		            sh 'python manage.py test'
 		        }
 		    }
