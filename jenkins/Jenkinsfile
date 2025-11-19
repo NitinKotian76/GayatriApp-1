@@ -1,6 +1,8 @@
 pipeline {
 	agent {
-		docker { image 'python_nonroot:3.13-trixie' }
+		docker { image 'python_nonroot:3.13-trixie' 
+			reuseNode true
+		}
 	}
 	stages {
 		stage('Checkout') {
