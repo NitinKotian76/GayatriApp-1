@@ -68,6 +68,7 @@ class loginForm(forms.Form):
         required=True)
 
     def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop('request', None)
         super().__init__(*args, **kwargs)
         self.fields['company_name'].queryset = Company.objects.all()
 
@@ -77,9 +78,11 @@ class loginForm(forms.Form):
         empid = cleaned_data.get("employee_id")
         password = cleaned_data.get("password")
         company = cleaned_data.get("company_name")
+        request = self.request
 
         try:
             user = authenticate(
+                request=request,
                 user_emp_code=empid,
                 password=password,
             )
