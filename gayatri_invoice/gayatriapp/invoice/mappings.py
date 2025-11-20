@@ -47,7 +47,7 @@ FORMHANDLER = {
     },
     "export_fields": {
         "form_class": df.export_fields,
-        "table_name": "export_fields",
+        "table_name": "export",
         "buttons": {
             "submit": {
                 "hx_vals": {"form": "export_fields"},
@@ -58,7 +58,7 @@ FORMHANDLER = {
     },
     "item_category": {
         "form_class": df.item_category,
-        "table_name": "item_category",
+        "table_name": "category",
         "buttons": {
             "submit": {
                 "hx_vals": {"form": "item_category"},
@@ -78,12 +78,12 @@ FORMHANDLER = {
             },
         }
     },
-    "items": {
-        "form_class": df.items,
-        "table_name": "items",
+    "item_name": {
+        "form_class": df.item_name,
+        "table_name": "item_name",
         "buttons": {
             "submit": {
-                "hx_vals": {"form": "items"},
+                "hx_vals": {"form": "item_name"},
                 "hx_req": "/invoice/form_view",
                 "hx_swap":"outerHTML",
             },
@@ -117,6 +117,17 @@ FORMHANDLER = {
         "buttons": {
             "submit": {
                 "hx_vals": {"form": "location"},
+                "hx_req": "/invoice/form_view",
+                "hx_swap":"outerHTML",
+            },
+        }
+    },
+    "stock_transfer": {
+        "form_class": df.stock_transfer,
+        "table_name": "stock",
+        "buttons": {
+            "submit": {
+                "hx_vals": {"form": "stock_transfer"},
                 "hx_req": "/invoice/form_view",
                 "hx_swap":"outerHTML",
             },

@@ -5,11 +5,16 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-# NOTE: priority 2
-class reportCreate(forms.Form):
+class formClass(forms.Form):
     template_name = "form_snippet.html"
     error_css_class = "error"
     required_css_class = "required"
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+
+class reportCreate(formClass):
 
     template_name = forms.CharField()
     sheet_name = forms.CharField()
@@ -24,10 +29,9 @@ class reportCreate(forms.Form):
 # sub-forms runtime additions
 
 
-class reportKeyValueForm(forms.Form):
-    error_css_class = "error"
-    required_css_class = "required"
+class reportKeyValueForm(formClass):
 
+    template_name = None
     key = forms.CharField()
     value = forms.ChoiceField(choices=[])
 
@@ -41,17 +45,17 @@ class reportKeyValueForm(forms.Form):
 # add filters as per requirement
 
 
-class datefilters(forms.Form):
+class datefilters(formClass):
     # add default filters
+    template_name = None
     from_date = forms.DateField()
     to_date = forms.DateField()
 
 
-class reportEdit(forms.Form):
-    template_name = "form_snippet.html"
+class reportEdit(formClass):
+    template_name = None
     report_name = forms.ChoiceField(choices=[])
 
 
-class reportDelete(forms.Form):
-    template_name = "form_snippet.html"
+class reportDelete(formClass):
     report_name = forms.ChoiceField(choices=[])

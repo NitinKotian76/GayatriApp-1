@@ -30,13 +30,14 @@ def form_view(request):
     form_handler = mp.FORMHANDLER
     formdata = None
     buttons = []
+    user_id = request.user.id
 
     if request.method == "POST":
         formtype = request.POST.get("form")
         logger.debug(request.POST.get('form'))
         if formtype in form_handler:
             handler = form_handler[formtype]
-            formdata = handler["form_class"](request.POST)
+            formdata = handler["form_class"](request.POST,user_id=user_id)
             buttons = hf.btn_append(handler, "buttons")
             logger.debug("get the metadata")
             if formdata.is_valid():
@@ -44,9 +45,7 @@ def form_view(request):
                 data = formdata.cleaned_data
                 if request.user.is_admin:
                     company_id = request.session.get('selected_company_id')
-                user_id = request.user.id
-                logger.debug(user_id)
-                if not db.set_data(handler["table_name"], data, user_id, company_id):
+                if db.set_data(handler["table_name"], data, user_id, company_id):
                     messages.success(request, "data saved")
                 else:
                     logger.debug("data is not saved")
@@ -57,7 +56,7 @@ def form_view(request):
         formtype = request.GET.get("form")
         if formtype in form_handler:
             handler = form_handler[formtype]
-            formdata = handler["form_class"]()
+            formdata = handler["form_class"](user_id=user_id)
             buttons = hf.btn_append(handler, "buttons")
     context = {
         "form": formdata,

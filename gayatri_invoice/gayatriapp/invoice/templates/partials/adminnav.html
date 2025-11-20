@@ -105,7 +105,7 @@
       class="w3-bar-item w3-button w3-ripple"
       hx-get="/invoice/form_view"
       hx-target="#formpart"
-      hx-vals='{"form":"item_name}'
+      hx-vals='{"form":"item_name"}'
       hx-swap="innerHTML"
     >
       <div
@@ -122,14 +122,14 @@
       class="w3-bar-item w3-button w3-ripple"
       hx-get="/invoice/form_view"
       hx-target="#formpart"
-      hx-vals='{"form":"stock_plusminus"}'
+      hx-vals='{"form":"stock"}'
       hx-swap="innerHTML"
     >
       <div
         hx-get="/invoice/table_data_view"
         hx-trigger="click from:closest (a)"
         hx-target="#tableview"
-        hx-vals='{"form":"stock_plusminus"}'
+        hx-vals='{"form":"stock"}'
         hx-swap="innerHTML"
       ></div>
       Stock Plus minus head
@@ -142,6 +142,13 @@
       hx-vals='{"form":"location"}'
       hx-swap="innerHTML"
     >
+    <div
+        hx-get="/invoice/table_data_view"
+        hx-trigger="click from:closest (a)"
+        hx-target="#tableview"
+        hx-vals='{"form":"location"}'
+        hx-swap="innerHTML"
+      ></div>
       Location
     </a>
     <a
@@ -152,6 +159,13 @@
       hx-vals='{"form":"stock_transfer"}'
       hx-swap="innerHTML"
     >
+      <div
+        hx-get="/invoice/table_data_view"
+        hx-trigger="click from:closest (a)"
+        hx-target="#tableview"
+        hx-vals='{"form":"stock"}'
+        hx-swap="innerHTML"
+      ></div>
       Stock transfer
     </a>
   </div>

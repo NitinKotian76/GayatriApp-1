@@ -28,12 +28,12 @@ logger = logging.getLogger(__name__)
 @csrf_protect
 def login_user(request):
     if request.method == 'POST':
-        form = bf.loginForm(request.POST)
+        form = bf.loginForm(request.POST, request=request)
         if form.is_valid():
             login(request, form.user)
             return redirect('invoice:index')
     else:
-        form = bf.loginForm()
+        form = bf.loginForm(request=request)
 
     return render(request, "invoice/login.html", {
         "login": form,

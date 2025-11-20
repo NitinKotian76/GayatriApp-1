@@ -10,7 +10,8 @@ services:
       - POSTGRES_USER=${DATABASE_USERNAME}
       - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
     env_file:
-      - .env
+      - .env 
+      - "${ENV_CONTENTS}"
     ports:
       - "5433:5432"
     restart: always
@@ -39,6 +40,7 @@ services:
       - DATABASE_PORT:${DATABASE_PORT}
     env_file:
       - .env
+      - "${ENV_CONTENTS}"
     expose:
       - 8000
     depends_on:
