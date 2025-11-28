@@ -65,6 +65,7 @@ def create_table(request):
             table_name = data["table_name"]
             company = data["company"]
             description = data["description"]
+            duplicates_allowed = data["duplicates_allowed"]
             dictlist = formset.cleaned_data
 
             fsdata = {}
@@ -76,6 +77,7 @@ def create_table(request):
                 table_name=table_name,
                 user_id=request.user.id,
                 description=description,
+                duplicates_allowed=duplicates_allowed,
                 metadata=fsdata,
                 company_id=company)
         else:

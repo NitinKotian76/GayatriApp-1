@@ -2,46 +2,35 @@ pipeline {
 	agent any
 	stages {
 		stage('Checkout') {
+
 			steps {
 				checkout scm
-			}
-		}
-		stage('Install Dependencies') {
-			steps {
-				dir('gayatri_invoice') {
-					sh '''
-					curl -LsSf https://astral.sh/uv/install.sh | sh
-					export PATH=$HOME/.local/bin:$PATH
-					uv sync
-					uv pip install -r requirements.txt
-					'''
-				}
 			}
 		}
 		stage('Run Django Tests') {
 		    steps {
 			withCredentials([file(credentialsId: 'gayatri_env', variable: 'ENV_CONTENTS')]) {
-				sh 'docker compose up -d --env ENV_CONTENTS'
+				sh 'docker compose up --env ENV_CONTENTS'
 			}
 		        dir('gayatri_invoice/gayatriapp') {
 		            sh 'python manage.py test'
 		        }
+			dir('gayatri_invoice') {
+				sh '''
+				curl -LsSf https://astral.sh/uv/install.sh | sh
+				export PATH=$HOME/.local/bin:$PATH
+				uv sync
+				uv pip install -r requirements.txt
+				'''
+			}
 		    }
+		}
+		stage{
+			input(message:"continue to deployment",ok:"deploy now",cancel:"stop here")
 		}
 		stage('Build Docker Images') {
 			steps {
 				sh 'docker compose build'
-			}
-		}
-		stage('Collect Static Files') {
-			steps {
-				sh 'docker compose run --rm gayatriapp python manage.py collectstatic --noinput'
-			}
-		}
-		stage('Migrate Database') {
-			steps {
-				sh 'docker compose run --rm gayatriapp python manage.py makemigrate'
-				sh 'docker compose run --rm gayatriapp python manage.py migrate'
 			}
 		}
 		stage('Deploy') {

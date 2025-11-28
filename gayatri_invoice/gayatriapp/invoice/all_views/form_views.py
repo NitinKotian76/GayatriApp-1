@@ -37,7 +37,7 @@ def form_view(request):
         logger.debug(request.POST.get('form'))
         if formtype in form_handler:
             handler = form_handler[formtype]
-            formdata = handler["form_class"](request.POST,user_id=user_id)
+            formdata = handler["form_class"](request.POST, user_id=user_id)
             buttons = hf.btn_append(handler, "buttons")
             logger.debug("get the metadata")
             if formdata.is_valid():

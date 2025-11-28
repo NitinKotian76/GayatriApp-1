@@ -1,5 +1,6 @@
-from ..models import *
 import logging
+
+from ..models import *
 
 logger = logging.getLogger(__name__)
 
@@ -17,7 +18,7 @@ def get_company_inst(user_id: str) -> Company:
     return Company.objects.get(id=user.company_id)
 
 
-def get_choices(table_name: str, column: str, user_id:int) -> list:
+def get_choices(table_name: str, column: str, user_id: int) -> list:
     """
     this function is to get list of choices in a table
     """
@@ -59,20 +60,19 @@ def check_metadata(table_name: str, data: str) -> bool:
         if not expected_value or not isinstance(value, expected_value):
             raise ValueError(
                 f"data invalid expected data type {key}:{expected_value}")
+            return False
+    return True
 
 
-def new_table(table_name: str, user_id: int, description: str, metadata: dict = {}, company_id: str = None):
+def new_table(table_name: str, user_id: int, description: str, duplicates_allowed: bool, metadata: dict = {}, company_id: str = None):
     """
-        this def sets the table name and the metadata
-        Args:
-            table_name: table name for the new table
-            user_id: user id of for to get the company details and can add owner details to creation record
-            description: description of the table for the user
-            company_id: optional company id for the table 
-            metadata: to define the dict structure and the datatype for the key value pairs 
-        return:
-           table
-           metadata
+    this def sets the table name and the metadata
+
+    :param table_name: table_name
+    :param user_id: user id of the current user
+    :param description: description of the new table
+    :param metadata: metadata list 
+    :param company_id: optional company_id
     """
     if company_id is not None:
         company = Company.objects.get(id=company_id)
@@ -87,6 +87,7 @@ def new_table(table_name: str, user_id: int, description: str, metadata: dict = 
         )
         metadata = TableMetaData.objects.create(
             table_name=table,
+            table_unique=duplicates_allowed,
             table_metadata=metadata
         )
         return table, metadata
@@ -96,7 +97,15 @@ def new_table(table_name: str, user_id: int, description: str, metadata: dict = 
 
 def set_data(table_name: str, data: dict, user_id: str, company_id: int = None) -> None:
     """
-         this function will set the initial data
+    this function sets the nested data base rows by checking the metadata of the nested table
+
+    :param table_name: table name of the nested table
+    :param data: data dict for the row data
+    :param user_id: user id 
+    :param company_id: company id 
+    :raises Exception: raises exception if data is not type dict 
+    :raises ValueError: if the table dosent contain the column name 
+    :raises ValueError: if the data is not the data type of the column
     """
     logger.debug("set_data started")
     if isinstance(data, dict) != True:
@@ -109,9 +118,10 @@ def set_data(table_name: str, data: dict, user_id: str, company_id: int = None) 
     else:
         company = get_company_inst(user_id)
 
-    tableobj = TableName.objects.get(table_name=table_name,company=company)
+    tableobj = TableName.objects.get(table_name=table_name, company=company)
 
-    tablemeta = TableMetaData.objects.filter(table_name=tableobj).values("table_metadata")
+    tablemeta = TableMetaData.objects.filter(
+        table_name=tableobj).values("table_metadata")
 
     try:
         for mkey in tablemeta[0]["table_metadata"].keys():
@@ -123,17 +133,18 @@ def set_data(table_name: str, data: dict, user_id: str, company_id: int = None) 
                 logger.debug(tablemeta[0]["table_metadata"][mkey])
                 raise ValueError(f"{mkey} datatype doesnt match")
 
-        table_query= TableData.objects.create(table_data=data, table_name=tableobj, company=company)
+        table_query = TableData.objects.create(
+            table_data=data, table_name=tableobj, company=company)
         table_query.save()
 
+        logger.info("data stored")
     except Exception as e:
         logger.error("error storing data %s", e)
-
-    logger.info("data stored")
 
     # except Exception as e:
     #     logger.debug(e)
     #
+
 
 def get_data(table_name: str, user_id: str, company_id: int = None) -> list:
     """
@@ -160,26 +171,6 @@ def get_data(table_name: str, user_id: str, company_id: int = None) -> list:
         logger.error("Table does not exists")
 
 
-def search_data(table_name: str, user_id: str, search_term: str, search_column: str = None, company_id: int = None):
-    try:
-        if company_id:
-            company = Company.objects.get(id=company_id)
-        else:
-            company = get_company_inst(user_id)
-        table = TableName.objects.get(
-            table_name=table_name, company=company.id)
-        metadata = TableMetaData.objects.filter(
-            table_name=table, company=company).values("table_metadata")
-        if search_column and search_column in metadata.keys():
-            raise ValueError("search coulmn not found")
-        queryset = TableData.objects.filter(table_name=table, company=company).filter(
-            table_data__icontains=search_term)
-        data = queryset.values().order_by("id")
-        return data
-    except TableName.DoesNotExist:
-        logger.error("Table does not exists")
-
-
 def get_data_column(table_name: str, user_id: str, column_name: str, company_id: str = None) -> list:
     """
          this function is meant for extracting columnar data from the json strings
@@ -190,8 +181,9 @@ def get_data_column(table_name: str, user_id: str, column_name: str, company_id:
         company: Company = get_company_inst(user_id)
 
     tableobj = TableName.objects.get(table_name=table_name)
-    data = TableData.objects.filter(table_name=tableobj, company=Company.objects.get(
-        company_id=company)).values("table_data")
+    data = TableData.objects.filter(
+        table_name=tableobj, company=company).values("table_data")
+    return data
 
 
 def update_data(table_name: str, data: dict, user_id: str, search_term: str = None, company_id: int = None) -> None:

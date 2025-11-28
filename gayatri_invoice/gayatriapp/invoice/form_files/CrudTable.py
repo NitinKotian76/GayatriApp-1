@@ -60,6 +60,8 @@ class table_create(forms.Form):
     table_name = forms.CharField(max_length=100)
     description = forms.CharField(max_length=100)
     company = forms.ChoiceField(choices=[])
+    duplicates_allowed = forms.BooleanField(
+        widget=forms.NullBooleanSelect(), required=False)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
