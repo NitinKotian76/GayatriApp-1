@@ -20,10 +20,9 @@ class table_list(forms.Form):
     table_list = forms.ChoiceField(widget=forms.Select(
         choices=[], attrs={
             "id": "table_list",
-            "hx-get": "/invoice/table_data_view",
+            "hx-get": "/invoice/table_list",
             "hx-trigger": "change",
-            "hx-target": "#tableview",
-            "hx-vals": '{"table_name": "customer"}',
+            "hx-target": "#submit",
             "hx-swap": "innerHTML",
         }))
 
@@ -36,20 +35,19 @@ class table_list(forms.Form):
             tablename = kwargs.pop('tablename')
 
         super().__init__(*args, **kwargs)
+        # get list of company name
         self.fields['company'].choices = [(None, "--------")] + list(Company.objects.values_list(
             'id', 'company_name'))
+        # check if the request has the company variable
         if self.data.get('company'):
             company = self.data.get('company')
+        # if company var is not available put the first company name  or none
         if not company:
             first_company = Company.objects.first()
             company = first_company.id if not first_company else None
-        logger.debug(f"company id {company}")
+        # get the list of tablenames for the particular company
         self.fields['table_list'].choices = [(None, "--------")] + list(
             TableName.objects.filter(company=company).values_list('id', 'table_name'))
-        if self.data.get('tablename'):
-            tablename = self.data.get('tablename')
-
-        logger.debug(f"tablename id {tablename}")
 
 
 class table_create(forms.Form):

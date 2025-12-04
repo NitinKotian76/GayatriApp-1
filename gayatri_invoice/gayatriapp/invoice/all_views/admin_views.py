@@ -103,17 +103,25 @@ def table_list(request):
     handler = {
         "buttons": {
             "submit": {
-                "hx_req": "/invoice/table_list",
-                "hx_vals": {"form": ""},
+                "attrs": {"id": "submit"},
+                "hx_req": "/invoice/table_data_view",
+                "hx_req_type": "hx-get",
+                "hx_target": "#tableview",
             }
         }
     }
     if request.method == "POST":
         company_id = request.POST.get("company")
         form = ct.table_list(request.POST, company_id)
-        logger.debug(form)
         buttons = hf.btn_append(handler, "buttons")
     else:
+        table_list = request.GET.get("table_list")
+        logger.debug("table_list %s", table_list)
+        table_id = ""
+        if table_list:
+            table_id = TableName.objects.get(pk=table_list)
+            logger.debug(table_id)
+        handler["buttons"]["submit"]["hx_vals"] = str(table_id)
         form = ct.table_list()
         buttons = hf.btn_append(handler, "buttons")
     context = {

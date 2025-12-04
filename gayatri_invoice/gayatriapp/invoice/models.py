@@ -113,7 +113,7 @@ class TableData(models.Model):
 
         :return: returns the boolean value of the flag
         """
-        metadata = TableMetaData.objects.get(self.table_name)
+        metadata = TableMetaData.objects.get(table_name=self.table_name)
         return metadata.table_unique
 
     def save(self, *args, **kwargs):

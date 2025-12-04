@@ -92,7 +92,6 @@ def table_data_view(request):
             buttons = hf.btn_append(handler, "table_buttons")
     elif table_name:
         data = db.get_data(table_name, user_id)
-
     else:
         logger.debug("issue with the request")
         return HttpResponse(status=404)

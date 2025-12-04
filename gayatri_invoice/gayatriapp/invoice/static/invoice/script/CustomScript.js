@@ -32,7 +32,6 @@ function filter(inputid, filterDiv) {
   }
 }
 
-
 function visible(id) {
   var x = document.getElementById(id);
   if (x.style.display == "none") {
@@ -49,16 +48,21 @@ function w3_open() {
 function w3_close() {
   document.getElementById("mySidebar").style.display = "none";
 }
-// htmx.logAll();
+htmx.logAll();
 
-document.body.addEventListener('htmx:afterSwap', function(evt) {
-  if (evt.detail.target.id === "mainform" || evt.detail.target.id === "dynform") {
+document.body.addEventListener("htmx:afterSwap", function (evt) {
+  if (
+    evt.detail.target.id === "mainform" ||
+    evt.detail.target.id === "dynform"
+  ) {
     htmx.trigger(document.body, "showNotif");
   }
   if (evt.detail.target.id === "notif") {
     hideNotifAfterTimeout();
   }
 });
+
+document.body.addEventListener("htmx:");
 
 function hideNotifAfterTimeout() {
   const notif = document.getElementById("notif");
@@ -70,15 +74,11 @@ function hideNotifAfterTimeout() {
   }
 }
 
-function clearSelectedRows(){
-const allInputs = document.querySelectorAll('#tableform input'); // Selects all input elements within the form
-allInputs.forEach(input => {
-  input.checked = false;
-input.value="";
-});
-console.log("cleared input ")
+function clearSelectedRows() {
+  const allInputs = document.querySelectorAll("#tableform input"); // Selects all input elements within the form
+  allInputs.forEach((input) => {
+    input.checked = false;
+    input.value = "";
+  });
+  console.log("cleared input ");
 }
-
-
-
-

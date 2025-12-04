@@ -214,7 +214,7 @@ class open_bal_prod(formClass):
             self.fields['item_code'].choices = db.get_choices(
                 "item_name", "item_code", self.user_id)
             self.fields['unit'].choices = db.get_choices(
-                "units", "unit", self.user_id)
+                "units", "units", self.user_id)
             self.fields['location'].choices = db.get_choices(
                 "location", "location", self.user_id)
             self.fields['party'].choices = db.get_choices(
