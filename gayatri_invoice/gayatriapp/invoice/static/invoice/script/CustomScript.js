@@ -62,8 +62,6 @@ document.body.addEventListener("htmx:afterSwap", function (evt) {
   }
 });
 
-document.body.addEventListener("htmx:");
-
 function hideNotifAfterTimeout() {
   const notif = document.getElementById("notif");
   if (notif) {
@@ -74,11 +72,11 @@ function hideNotifAfterTimeout() {
   }
 }
 
-function clearSelectedRows() {
-  const allInputs = document.querySelectorAll("#tableform input"); // Selects all input elements within the form
-  allInputs.forEach((input) => {
-    input.checked = false;
-    input.value = "";
-  });
-  console.log("cleared input ");
-}
+// function clearSelectedRows() {
+//   const allInputs = document.querySelectorAll("#tableform input"); // Selects all input elements within the form
+//   allInputs.forEach((input) => {
+//     input.checked = false;
+//     input.value = "";
+//   });
+//   console.log("cleared input ");
+// }

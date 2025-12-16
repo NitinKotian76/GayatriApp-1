@@ -1,5 +1,6 @@
 from ..models import *
 import logging
+from .dbfunctions import get_company_inst
 
 logger = logging.getLogger(__name__)
 
@@ -16,7 +17,7 @@ def search_data(table_name: str, user_id: str, search_term: str, search_column: 
         table = TableName.objects.get(
             table_name=table_name, company=company.id)
         metadata = TableMetaData.objects.filter(
-            table_name=table, company=company).values("table_metadata")
+            table_name=table).values("table_metadata")
         if search_column and search_column in metadata.keys():
             raise ValueError("search coulmn not found")
         queryset = TableData.objects.filter(table_name=table, company=company).filter(

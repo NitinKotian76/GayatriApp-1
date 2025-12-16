@@ -1,6 +1,26 @@
 <div id="tableshow">
-	<form id="tableform" hx-get="/invoice/table_data_view" hx-vals='{"form":"{{form_name }}"}' hx-swap="outerHTML" hx-target="#tableform" hx-trigger="click[event.target.matches()]" >
+    <form id="tableform">
         {% csrf_token %}
+        <div id="searchbar" class="w3-margin-top">
+            <div class="w3-bar w3-container">
+                <input type="search"
+                       id="search"
+                       name="q"
+                       placeholder="search.."
+                       hx-post="/invoice/table_view_search"
+                       hx-trigger="keyup changed delay:400ms"
+                       hx-vals='{"form_name":"{{ form_name }}"}'
+                       hx-target="#tableshow"
+                       hx-swap="innerHTML"
+                       class="w3-bar-item w3-input w3-round w3-border" />
+                <!-- <button class="w3-bar-item w3-button w3-round w3-green w3-ripple">&#x1F806</button> -->
+            </div>
+            {% autoescape off %}
+                <div class="w3-container">
+                    {% for button in buttons %}{{ button }}{% endfor %}
+                </div>
+            {% endautoescape %}
+        </div>
         {% if listdata %}
             <div style="overflow-x:auto;">
                 <table class="w3-table-all w3-tiny w3-responsive">
@@ -11,13 +31,16 @@
                             {% for key in listdata.0.keys %}<th>{{ key|title }}</th>{% endfor %}
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="table-body">
                         {% for data in listdata %}
                             <tr>
                                 <td>
                                     <input type="checkbox"
+                                           class="w3-check"
                                            name="selected_row"
                                            hx-post="/invoice/select_row"
+                                           hx-trigger="change"
+                                           value="{{ data.id }}"
                                            hx-vals='{"listdata_id": "{{ data.id }}"}'
                                            hx-swap="none">
                                 </td>
@@ -59,21 +82,23 @@
         {% endif %}
         {% if rows %}
             <div style="overflow-x:auto;">
-                <table class="w3-table-all w3-tiny w3-responsive">
+                <table class="w3-table-all w3-responsive">
                     <thead>
                         <tr>
                             <th>select</th>
                             {% for key in rows.0.table_data.keys %}<th>{{ key|title }}</th>{% endfor %}
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="table-body">
                         {% for row in rows %}
                             <tr>
                                 <td>
                                     <input type="checkbox"
-                                           class="w3-input"
+                                           class="w3-check"
                                            name="selected_row"
                                            hx-post="/invoice/select_row"
+                                           hx-trigger="change"
+                                           value="{{ row.id }}"
                                            hx-vals='{"row_id": "{{ row.id }}"}'
                                            hx-swap="none">
                                 </td>
@@ -113,19 +138,5 @@
                    class="w3-button">last &raquo;</a>
             {% endif %}
         {% endif %}
-        <div id="searchbar" class="w3-margin-top">
-            <div class="w3-bar w3-container">
-                <input type="text"
-                       id="search"
-                       placeholder="search.."
-                       class="w3-bar-item w3-input w3-round w3-border" />
-                <button class="w3-bar-item w3-button w3-round w3-green w3-ripple">&#x1F806</button>
-            </div>
-            {% autoescape off %}
-                <div class="w3-container">
-                    {% for button in buttons %}{{ button }}{% endfor %}
-                </div>
-            {% endautoescape %}
-        </div>
     </form>
 </div>

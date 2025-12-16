@@ -12,6 +12,7 @@ from ..form_files import *
 from ..form_files import Static as df
 from ..form_files import Base as bf
 from ..form_files import helperFunct as hf
+from ..dbmod import filter_search as fq
 from ..dbmod import dbfunctions as db
 from .. import mappings as mp
 from django.views.decorators.http import require_POST
@@ -181,6 +182,46 @@ def approve_row(request):
         # logger.debug("updated", row_id)
 
     return HttpResponse(status=200)
+
+
+def table_view_search(request):
+    q = request.POST.get("q", "")
+    form_name = request.POST.get("form_name")
+    table_name = request.POST.get("table_name", "")
+    data = None
+    rows = []
+    page_obj = None
+    user_id = request.user.id
+
+    if form_name and form_name in mp.FORMHANDLER or table_name:
+        handler = mp.FORMHANDLER[form_name]
+        table_name = table_name if table_name else handler["table_name"]
+        data = fq.search_data(table_name, user_id, q) if q else db.get_data(
+            table_name, user_id)
+    else:
+        logger.debug("issue with the request")
+        return HttpResponse(status=404)
+    if data:
+        paginator = Paginator(data, 20)
+        page_number = request.GET.get("page")
+        logger.debug(page_number)
+        page_obj = paginator.get_page(page_number)
+        rows = [{"id": obj.get("id"), "table_data": obj.get(
+            "table_data")} for obj in page_obj]
+        logger.debug(type(rows))
+        context = {
+            "rows": rows,
+            "page_obj": page_obj,
+            "table_name": table_name,
+            "form_name": form_name,
+        }
+        response = render(request, "partials/tableview.html", context)
+        response['Cache-Control'] = 'no-cache, must-revalidate'
+        return response
+
+    else:
+        logger.debug("table empty: " + table_name)
+        messages.error(request, "table empty: " + table_name)
 
 
 # forms
