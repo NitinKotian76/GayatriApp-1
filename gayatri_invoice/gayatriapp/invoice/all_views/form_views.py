@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, FileResponse
-from django.views.decorators.csrf import ensure_csrf_cookie, csrf_protect
+from django.views.decorators.csrf import ensure_csrf_cookie
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib import messages
@@ -164,7 +164,8 @@ def delete_row(request):
     selected_rows = request.session.get('selected_rows', [])
     # delete selected selected_rows
     for row_id in selected_rows:
-        logger.debug(TableData.objects.filter(pk=row_id).delete())
+        table = TableData.objects.filter(pk=row_id).delete()
+        logger.debug(table)
         selected_rows.remove(row_id)
     request.session['selected_rows'] = selected_rows
     return HttpResponse(status=200)
@@ -185,6 +186,7 @@ def approve_row(request):
 
 
 def table_view_search(request):
+
     q = request.POST.get("q", "")
     form_name = request.POST.get("form_name")
     table_name = request.POST.get("table_name", "")
@@ -211,6 +213,7 @@ def table_view_search(request):
         logger.debug(type(rows))
         context = {
             "rows": rows,
+            "search_query": q,
             "page_obj": page_obj,
             "table_name": table_name,
             "form_name": form_name,
@@ -221,7 +224,7 @@ def table_view_search(request):
 
     else:
         logger.debug("table empty: " + table_name)
-        messages.error(request, "table empty: " + table_name)
+        messages.error(request, f"table empty: {table_name}")
 
 
 # forms

@@ -17,12 +17,12 @@ class table_list(forms.Form):
         "hx-select": "#table_list",
         "hx-swap": "outerHTML"
     }))
-    table_list = forms.ChoiceField(widget=forms.Select(
+    table_name = forms.ChoiceField(widget=forms.Select(
         choices=[], attrs={
             "id": "table_list",
-            "hx-get": "/invoice/table_list",
-            "hx-trigger": "change",
-            "hx-target": "#submit",
+            "hx-get": "/invoice/table_data_view",
+            "hx-trigger": "change delay:400ms ",
+            "hx-target": "#tableshow",
             "hx-swap": "innerHTML",
         }))
 
@@ -46,8 +46,8 @@ class table_list(forms.Form):
             first_company = Company.objects.first()
             company = first_company.id if not first_company else None
         # get the list of tablenames for the particular company
-        self.fields['table_list'].choices = [(None, "--------")] + list(
-            TableName.objects.filter(company=company).values_list('id', 'table_name'))
+        self.fields['table_name'].choices = [(None, "--------")] + list(
+            TableName.objects.filter(company=company).values_list('table_name', 'table_name'))
 
 
 class table_create(forms.Form):

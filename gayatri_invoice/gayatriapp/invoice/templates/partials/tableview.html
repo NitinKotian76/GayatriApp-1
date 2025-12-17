@@ -5,6 +5,7 @@
             <div class="w3-bar w3-container">
                 <input type="search"
                        id="search"
+                       value="{{ search_query|default_if_none:"" }}"
                        name="q"
                        placeholder="search.."
                        hx-post="/invoice/table_view_search"

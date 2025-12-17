@@ -16,6 +16,14 @@ function getCSRFToken() {
   return "";
 }
 
+/**
+ * this function is for the searchfield in the table view
+ * its meant to provde the user response on the client side
+ * and send the request only if it cant find it in the current view
+ *
+ * @param {str} inputid - id of the searchbar element
+ * @param {str} filterDiv - id of the table parent
+ */
 function filter(inputid, filterDiv) {
   var input, filter, ul, li, a, i;
   input = document.getElementById("inputid");
