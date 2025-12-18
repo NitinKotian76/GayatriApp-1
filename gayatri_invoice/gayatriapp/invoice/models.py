@@ -7,6 +7,9 @@ from django.contrib.auth.models import PermissionsMixin
 import logging
 from django.contrib.auth.models import Permission, Group
 from django.contrib.postgres.indexes import GinIndex
+from django.core.exceptions import ValidationError
+import json
+import hashlib
 
 logger = logging.getLogger(__name__)
 # Create your models here.
@@ -47,10 +50,19 @@ class TableName(models.Model):
 
 
 class TableMetaData(models.Model):
-    # IMPROVEMENT NEEDED: Add proper validation for JSONField
-    # IMPROVEMENT NEEDED: Add related_name for ForeignKeys
+    """
+    store nested table metadata
+
+    Attributes:
+        table_metadata (JSONField): store record as json string
+        table_unique (bool): stores if Table data should be unique
+        table_name (ForeignKey): relates TableMetaData to TableName
+        created_at (DateTimeField): stores date time value of record entry 
+        updated_at (DateTimeField): store date time value of record update
+    """
     table_metadata = models.JSONField(
         null=True, blank=True, default=dict, unique=True, verbose_name="table metadata")
+    table_unique = models.BooleanField(null=True)
     table_name = models.ForeignKey(
         TableName, on_delete=models.CASCADE, related_name="metadata")
     # Should add: related_name="table_data"
@@ -66,11 +78,21 @@ class TableMetaData(models.Model):
 
 
 class TableData(models.Model):
-    # IMPROVEMENT NEEDED: Add proper validation for JSONField
-    # IMPROVEMENT NEEDED: Add related_name for ForeignKeys
+    """
+    This model stores the nested table data
 
+    Attributes:
+        table_data (json): stores the data in a json string
+        json_hash (char): stores the has of table_data field
+        table_name (ForeignKey): relates tabledata to table name
+        company (ForeignKey): relates tabledata to company
+        created_at (DateTimeField): stores date and time of record entry 
+        updated_at (DateTimeField): stores date and time of record update
+    """
     table_data = models.JSONField(
-        null=True, blank=True, default=dict, unique=True, verbose_name="table data")
+        null=True, blank=True, default=dict, verbose_name="table data")
+    json_hash = models.CharField(
+        max_length=64, editable=False, db_index=True, null=True)
     # Should add: related_name="data_rows"
     table_name = models.ForeignKey(
         TableName, on_delete=models.CASCADE, related_name="data_rows")
@@ -82,15 +104,42 @@ class TableData(models.Model):
 
     class Meta:
         ordering = ['-created_at', '-updated_at']
-        constraints = [models.UniqueConstraint(
-            fields=["table_data", "table_name", "company"], name="unique_table_data_name_company")]
         indexes = [GinIndex(fields=["table_data"],
                             name="table_data_gin_idx")]
 
+    def is_unique(self) -> bool:
+        """
+        this checks for the table_unique flag in TableMetaData
+
+        :return: returns the boolean value of the flag
+        """
+        metadata = TableMetaData.objects.get(table_name=self.table_name)
+        return metadata.table_unique
+
+    def save(self, *args, **kwargs):
+        """
+        overriding the save method to include hashing and unique flag check 
+        to determine if the table_data has to be checked for uniqueness
+
+        :raises ValidationError: raises validation error id duplicate data exists
+        """
+        normalized = json.dumps(self.table_data, sort_keys=True)
+        self.json_hash = hashlib.sha256(normalized.encode('utf-8')).hexdigest()
+
+        if self.is_unique():
+            # check for duplicates
+            duplicate_exists = TableData.objects.filter(
+                json_hash=self.json_hash,
+                table_name=self.table_name,
+                company=self.company
+            ).exclude(pk=self.pk).exists()
+            if duplicate_exists:
+                raise ValidationError(
+                    "Duplicate entry not allowed in this table.")
+        super().save(*args, **kwargs)
+
 
 class CustomUserManager(BaseUserManager):
-    # IMPROVEMENT NEEDED: Add proper error messages for validation
-    # IMPROVEMENT NEEDED: Add email validation in create_user
     def create_user(self, email, user_name, user_emp_code, password=None, **extrafields):
         if not user_emp_code:
             raise ValueError("user must have emp code")

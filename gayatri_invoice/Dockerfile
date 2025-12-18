@@ -16,7 +16,7 @@ RUN --mount=type=cache,target=/root/.cache,id=uv_cache \
 # Copy the rest of the app
 COPY ./gayatriapp/ /gayatri/gayatriapp/
 RUN ls -a
-COPY entrypoint.sh /gayatri/
+COPY entrypoint.sh deploy.sh test.sh /gayatri/
 
 FROM python:3.13-slim
 RUN useradd -m -r appuser && \
@@ -35,7 +35,8 @@ COPY --from=builder /usr/local/bin/ /usr/local/bin/
 COPY --from=builder /gayatri/ /gayatri/
 
 RUN chown -R appuser:appuser /gayatri
-
+ARG TEST
+ENV TEST="${TEST}"
 USER appuser
 EXPOSE 8000
-ENTRYPOINT ["sh","/gayatri/entrypoint.sh"]
+ENTRYPOINT ["sh","/gayatri/entrypoint.sh","${TEST}"]

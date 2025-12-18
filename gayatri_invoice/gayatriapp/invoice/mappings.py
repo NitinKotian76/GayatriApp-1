@@ -9,7 +9,7 @@ FORMHANDLER = {
             "submit": {
                 "hx_req": "/invoice/form_view",
                 "hx_vals": {"form": "customer"},
-                "hx_swap":"outerHTML",
+                "hx_swap": "outerHTML",
             },
         },
         "table_buttons": {
@@ -30,7 +30,17 @@ FORMHANDLER = {
             "submit": {
                 "hx_vals": {"form": "supplier"},
                 "hx_req": "/invoice/form_view",
-                "hx_swap":"outerHTML",
+                "hx_swap": "outerHTML",
+            },
+        },
+        "table_buttons": {
+            "delete": {
+                "hx_vals": {"form": "supplier"},
+                "hx_req": "/invoice/delete_row"
+            },
+            "approve": {
+                "hx_vals": {"form": "supplier"},
+                "hx_req": "/invoice/approve_row"
             },
         }
     },
@@ -41,7 +51,7 @@ FORMHANDLER = {
             "submit": {
                 "hx_vals": {"form": "signatory"},
                 "hx_req": "/invoice/form_view",
-                "hx_swap":"outerHTML",
+                "hx_swap": "outerHTML",
             },
         }
     },
@@ -52,7 +62,7 @@ FORMHANDLER = {
             "submit": {
                 "hx_vals": {"form": "export_fields"},
                 "hx_req": "/invoice/form_view",
-                "hx_swap":"outerHTML",
+                "hx_swap": "outerHTML",
             },
         }
     },
@@ -63,7 +73,7 @@ FORMHANDLER = {
             "submit": {
                 "hx_vals": {"form": "item_category"},
                 "hx_req": "/invoice/form_view",
-                "hx_swap":"outerHTML",
+                "hx_swap": "outerHTML",
             },
         }
     },
@@ -74,7 +84,7 @@ FORMHANDLER = {
             "submit": {
                 "hx_vals": {"form": "variety"},
                 "hx_req": "/invoice/form_view",
-                "hx_swap":"outerHTML",
+                "hx_swap": "outerHTML",
             },
         }
     },
@@ -85,7 +95,7 @@ FORMHANDLER = {
             "submit": {
                 "hx_vals": {"form": "item_name"},
                 "hx_req": "/invoice/form_view",
-                "hx_swap":"outerHTML",
+                "hx_swap": "outerHTML",
             },
         }
     },
@@ -96,7 +106,7 @@ FORMHANDLER = {
             "submit": {
                 "hx_vals": {"form": "stock"},
                 "hx_req": "/invoice/form_view",
-                "hx_swap":"outerHTML",
+                "hx_swap": "outerHTML",
             },
         }
     },
@@ -107,7 +117,17 @@ FORMHANDLER = {
             "submit": {
                 "hx_vals": {"form": "units"},
                 "hx_req": "/invoice/form_view",
-                "hx_swap":"outerHTML",
+                "hx_swap": "outerHTML",
+            },
+        },
+        "table_buttons": {
+            "delete": {
+                "hx_vals": {"form": "units"},
+                "hx_req": "/invoice/delete_row"
+            },
+            "approve": {
+                "hx_vals": {"form": "units"},
+                "hx_req": "/invoice/approve_row"
             },
         }
     },
@@ -118,7 +138,7 @@ FORMHANDLER = {
             "submit": {
                 "hx_vals": {"form": "location"},
                 "hx_req": "/invoice/form_view",
-                "hx_swap":"outerHTML",
+                "hx_swap": "outerHTML",
             },
         }
     },
@@ -129,7 +149,7 @@ FORMHANDLER = {
             "submit": {
                 "hx_vals": {"form": "stock_transfer"},
                 "hx_req": "/invoice/form_view",
-                "hx_swap":"outerHTML",
+                "hx_swap": "outerHTML",
             },
         }
     },
@@ -140,7 +160,7 @@ FORMHANDLER = {
             "submit": {
                 "hx_vals": {"form": "open_bal_prod"},
                 "hx_req": "/invoice/form_view",
-                "hx_swap":"outerHTML",
+                "hx_swap": "outerHTML",
             },
         }
     },
@@ -151,7 +171,7 @@ FORMHANDLER = {
             "submit": {
                 "hx_vals": {"form": "production"},
                 "hx_req": "/invoice/form_view",
-                "hx_swap":"outerHTML",
+                "hx_swap": "outerHTML",
             },
         }
     },
@@ -162,7 +182,7 @@ FORMHANDLER = {
             "submit": {
                 "hx_vals": {"form": "prod_plus_minus"},
                 "hx_req": "/invoice/form_view",
-                "hx_swap":"outerHTML",
+                "hx_swap": "outerHTML",
             },
         }
     },
@@ -187,7 +207,7 @@ FORMHANDLER = {
             "submit": {
                 "hx_vals": {"form": "invoice_direct"},
                 "hx_req": "/invoice/form_view",
-                "hx_swap":"outerHTML",
+                "hx_swap": "outerHTML",
             },
         }
     },
@@ -198,7 +218,7 @@ FORMHANDLER = {
             "submit": {
                 "hx_vals": {"form": "jumbo_roll_qc"},
                 "hx_req": "/invoice/form_view",
-                "hx_swap":"outerHTML",
+                "hx_swap": "outerHTML",
             },
         }
     },
@@ -209,7 +229,7 @@ FORMHANDLER = {
             "submit": {
                 "hx_vals": {"form": "lot_no_wise_qc"},
                 "hx_req": "/invoice/form_view",
-                "hx_swap":"outerHTML",
+                "hx_swap": "outerHTML",
             },
         }
     },
@@ -220,7 +240,7 @@ FORMHANDLER = {
             "submit": {
                 "hx_vals": {"form": "finishing_house"},
                 "hx_req": "/invoice/form_view",
-                "hx_swap":"outerHTML",
+                "hx_swap": "outerHTML",
             },
         }
     },
@@ -231,7 +251,7 @@ FORMHANDLER = {
             "submit": {
                 "hx_vals": {"form": "program_planning"},
                 "hx_req": "/invoice/form_view",
-                "hx_swap":"outerHTML",
+                "hx_swap": "outerHTML",
             },
         }
     },
@@ -246,8 +266,8 @@ REPORT = {
                 "hx_vals": {"form": "pending_order"},
                 "hx_req": "/invoice/report_view"
             },
-            "generate":{
-                "hx_req":"/invoice/generate_report",
+            "generate": {
+                "hx_req": "/invoice/generate_report",
             },
         }
     },

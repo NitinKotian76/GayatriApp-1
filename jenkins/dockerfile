@@ -1,5 +1,0 @@
-FROM python:3.13-trixie
-
-RUN adduser --disabled-password --gecos "" appuser
-
-USER appuser

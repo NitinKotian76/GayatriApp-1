@@ -1,5 +1,5 @@
 from .LoadFunct import Filedata
-from django.utils.html import format_html
+from django.utils.html import format_html, format_html_join
 from django.http import JsonResponse
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
@@ -30,7 +30,9 @@ def button(name: str, **kwargs):
     hx_vals = kwargs.get("hx_vals", "{}")
     hx_target = kwargs.get("hx_target", "#dynform")
     hx_swap = kwargs.get("hx_swap", "innerHTML")
-    attrs = kwargs.get("attrs", "")
+    attrs = kwargs.get("attrs", {})
+
+    attrs_html = format_html_join(" ", '{}="{}"', attrs.items())
 
     html = format_html("<input class='w3-button w3-ripple w3-green w3-padding w3-margin'\
                 type='button' value='{}' \
@@ -38,7 +40,7 @@ def button(name: str, **kwargs):
                 hx-vals=\'{}\'\
                 hx-target={}\
                 hx-swap={}\
-                {}/>", name, hx_req_type, hx_req, json.dumps(hx_vals), hx_target, hx_swap, attrs)
+                {}/>", name, hx_req_type, hx_req, json.dumps(hx_vals), hx_target, hx_swap, attrs_html)
     return html
 
 
@@ -79,13 +81,12 @@ def btn_append(handler: dict, item: str) -> str:
         buttons.append(btn)
     return buttons
 
-def file_handler(name,file):
-    #TODO: properly handle Files 
 
-    path = default_storage.save(f"ReportTemplates/{name}",file)
+def file_handler(name, file):
+    # TODO: properly handle Files
+
+    path = default_storage.save(f"ReportTemplates/{name}", file)
     logger.debug(default_storage.size(path))
-
-
 
 
 class form_setup:
@@ -147,4 +148,3 @@ class form_setup:
 
     def cancel(self):
         return HttpResponse("")
-

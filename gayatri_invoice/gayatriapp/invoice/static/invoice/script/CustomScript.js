@@ -16,6 +16,14 @@ function getCSRFToken() {
   return "";
 }
 
+/**
+ * this function is for the searchfield in the table view
+ * its meant to provde the user response on the client side
+ * and send the request only if it cant find it in the current view
+ *
+ * @param {str} inputid - id of the searchbar element
+ * @param {str} filterDiv - id of the table parent
+ */
 function filter(inputid, filterDiv) {
   var input, filter, ul, li, a, i;
   input = document.getElementById("inputid");
@@ -31,7 +39,6 @@ function filter(inputid, filterDiv) {
     }
   }
 }
-
 
 function visible(id) {
   var x = document.getElementById(id);
@@ -49,10 +56,13 @@ function w3_open() {
 function w3_close() {
   document.getElementById("mySidebar").style.display = "none";
 }
-// htmx.logAll();
+htmx.logAll();
 
-document.body.addEventListener('htmx:afterSwap', function(evt) {
-  if (evt.detail.target.id === "mainform" || evt.detail.target.id === "dynform") {
+document.body.addEventListener("htmx:afterSwap", function (evt) {
+  if (
+    evt.detail.target.id === "mainform" ||
+    evt.detail.target.id === "dynform"
+  ) {
     htmx.trigger(document.body, "showNotif");
   }
   if (evt.detail.target.id === "notif") {
@@ -70,15 +80,11 @@ function hideNotifAfterTimeout() {
   }
 }
 
-function clearSelectedRows(){
-const allInputs = document.querySelectorAll('#tableform input'); // Selects all input elements within the form
-allInputs.forEach(input => {
-  input.checked = false;
-input.value="";
-});
-console.log("cleared input ")
-}
-
-
-
-
+// function clearSelectedRows() {
+//   const allInputs = document.querySelectorAll("#tableform input"); // Selects all input elements within the form
+//   allInputs.forEach((input) => {
+//     input.checked = false;
+//     input.value = "";
+//   });
+//   console.log("cleared input ");
+// }

@@ -17,13 +17,12 @@ class table_list(forms.Form):
         "hx-select": "#table_list",
         "hx-swap": "outerHTML"
     }))
-    table_list = forms.ChoiceField(widget=forms.Select(
+    table_name = forms.ChoiceField(widget=forms.Select(
         choices=[], attrs={
             "id": "table_list",
             "hx-get": "/invoice/table_data_view",
-            "hx-trigger": "change",
-            "hx-target": "#tableview",
-            "hx-vals": '{"table_name": "customer"}',
+            "hx-trigger": "change delay:400ms ",
+            "hx-target": "#tableshow",
             "hx-swap": "innerHTML",
         }))
 
@@ -36,20 +35,19 @@ class table_list(forms.Form):
             tablename = kwargs.pop('tablename')
 
         super().__init__(*args, **kwargs)
+        # get list of company name
         self.fields['company'].choices = [(None, "--------")] + list(Company.objects.values_list(
             'id', 'company_name'))
+        # check if the request has the company variable
         if self.data.get('company'):
             company = self.data.get('company')
+        # if company var is not available put the first company name  or none
         if not company:
             first_company = Company.objects.first()
             company = first_company.id if not first_company else None
-        logger.debug(f"company id {company}")
-        self.fields['table_list'].choices = [(None, "--------")] + list(
-            TableName.objects.filter(company=company).values_list('id', 'table_name'))
-        if self.data.get('tablename'):
-            tablename = self.data.get('tablename')
-
-        logger.debug(f"tablename id {tablename}")
+        # get the list of tablenames for the particular company
+        self.fields['table_name'].choices = [(None, "--------")] + list(
+            TableName.objects.filter(company=company).values_list('table_name', 'table_name'))
 
 
 class table_create(forms.Form):
@@ -60,6 +58,8 @@ class table_create(forms.Form):
     table_name = forms.CharField(max_length=100)
     description = forms.CharField(max_length=100)
     company = forms.ChoiceField(choices=[])
+    duplicates_allowed = forms.BooleanField(
+        widget=forms.NullBooleanSelect(), required=False)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

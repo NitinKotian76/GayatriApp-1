@@ -142,7 +142,7 @@
       hx-vals='{"form":"location"}'
       hx-swap="innerHTML"
     >
-    <div
+      <div
         hx-get="/invoice/table_data_view"
         hx-trigger="click from:closest (a)"
         hx-target="#tableview"
@@ -150,6 +150,23 @@
         hx-swap="innerHTML"
       ></div>
       Location
+    </a>
+    <a
+      href="#"
+      class="w3-bar-item w3-button w3-ripple"
+      hx-get="/invoice/form_view"
+      hx-target="#formpart"
+      hx-vals='{"form":"units"}'
+      hx-swap="innerHTML"
+    >
+      <div
+        hx-get="/invoice/table_data_view"
+        hx-trigger="click from:closest (a)"
+        hx-target="#tableview"
+        hx-vals='{"form":"units"}'
+        hx-swap="innerHTML"
+      ></div>
+      units
     </a>
     <a
       href="#"
@@ -326,7 +343,6 @@
       hx-get="/invoice/form_view"
       hx-target="#formpart"
       hx-vals='{"form":"api"}'
-      
     >
       API
     </a>
@@ -336,7 +352,6 @@
       hx-get="/invoice/form_view"
       hx-target="#formpart"
       hx-vals='{"form":"multiple_export_packing_slip"}'
-      
     >
       Multiple Export Packing Slip
     </a>
@@ -346,7 +361,6 @@
       hx-get="/invoice/form_view"
       hx-target="#formpart"
       hx-vals='{"form":"millsoft_to_orion"}'
-      
     >
       MillSoft To Orion
     </a>
@@ -356,7 +370,6 @@
       hx-get="/invoice/form_view"
       hx-target="#formpart"
       hx-vals='{"form":"backup"}'
-      
     >
       Backup
     </a>
@@ -376,7 +389,6 @@
       hx-get="/invoice/form_view"
       hx-target="#formpart"
       hx-vals='{"form":"printer_setting"}'
-      
     >
       Printer Setting
     </a>
@@ -386,7 +398,6 @@
       hx-get="/invoice/form_view"
       hx-target="#formpart"
       hx-vals='{"form":"calculator"}'
-      
     >
       Calculator
     </a>
