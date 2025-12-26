@@ -141,10 +141,6 @@ def set_data(table_name: str, data: dict, user_id: str, company_id: int = None) 
     except Exception as e:
         logger.error("error storing data %s", e)
 
-    # except Exception as e:
-    #     logger.debug(e)
-    #
-
 
 def get_data(table_name: str, user_id: str, company_id: int = None) -> list:
     """

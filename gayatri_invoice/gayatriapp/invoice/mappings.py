@@ -155,7 +155,7 @@ FORMHANDLER = {
     },
     "open_bal_prod": {
         "form_class": df.open_bal_prod,
-        "table_name": "open_bal_prod",
+        "table_name": "production",
         "buttons": {
             "submit": {
                 "hx_vals": {"form": "open_bal_prod"},
@@ -177,7 +177,7 @@ FORMHANDLER = {
     },
     "prod_plus_minus": {
         "form_class": df.prod_plus_minus,
-        "table_name": "prod_plus_minus",
+        "table_name": "production",
         "buttons": {
             "submit": {
                 "hx_vals": {"form": "prod_plus_minus"},
@@ -188,7 +188,7 @@ FORMHANDLER = {
     },
     "prod_approval": {
         "form_class": df.prod_approval,
-        "table_name": "prod_approval",
+        "table_name": "production",
         "buttons": {
             "approve": {
                 "hx_vals": {"form": "prod_approval"},

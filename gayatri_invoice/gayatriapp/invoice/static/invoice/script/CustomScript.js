@@ -1,4 +1,7 @@
 let count = 0;
+
+// htmx.logAll();
+
 function getCSRFToken() {
   //this function gets the csrftoken
   let name = "csrftoken=";
@@ -56,7 +59,6 @@ function w3_open() {
 function w3_close() {
   document.getElementById("mySidebar").style.display = "none";
 }
-htmx.logAll();
 
 document.body.addEventListener("htmx:afterSwap", function (evt) {
   if (

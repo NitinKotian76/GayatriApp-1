@@ -46,12 +46,14 @@ def form_view(request):
                 data = formdata.cleaned_data
                 if request.user.is_admin:
                     company_id = request.session.get('selected_company_id')
+                else:
+                    company_id = None
                 if db.set_data(handler["table_name"], data, user_id, company_id):
                     messages.success(request, "data saved")
                 else:
                     logger.debug("data is not saved")
                     messages.error(request, "data is not saved")
-                formdata = handler["form_class"](request.POST)
+                formdata = handler["form_class"](request.POST, user_id=user_id)
 
     else:
         formtype = request.GET.get("form")
