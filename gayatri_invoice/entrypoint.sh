@@ -2,8 +2,8 @@
 
 set -e
 
-if ["$1"='test']; then
-	./test.sh
+if [ "$TEST" = "test" ]; then
+	exec ./test.sh
 else
-	./deploy.sh
+	exec ./deploy.sh
 fi

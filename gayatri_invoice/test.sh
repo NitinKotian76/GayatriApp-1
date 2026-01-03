@@ -1,6 +1,6 @@
 #!/bin/bash
 set -e
-
+cd /gayatri/gayatriapp
 # Apply database migrations
 python manage.py migrate --noinput
 
