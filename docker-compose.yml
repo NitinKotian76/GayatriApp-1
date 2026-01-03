@@ -65,7 +65,7 @@ services:
       - gayatriapp
     restart: always
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost/"]
+      test: ["CMD", "curl", "-f", "http://localhost/invoice"]
       interval: 30s
       timeout: 10s
       retries: 5

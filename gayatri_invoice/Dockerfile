@@ -15,8 +15,8 @@ RUN --mount=type=cache,target=/root/.cache,id=uv_cache \
 
 # Copy the rest of the app
 COPY ./gayatriapp/ /gayatri/gayatriapp/
-RUN ls -a
 COPY entrypoint.sh deploy.sh test.sh /gayatri/
+RUN chmod +x /gayatri/*.sh
 
 FROM python:3.13-slim
 RUN useradd -m -r appuser && \
@@ -27,7 +27,7 @@ RUN mkdir -p /app/staticfiles && \
     chown -R appuser:appuser /app/staticfiles && \
     chmod -R u+rwx /app/staticfiles
 
-WORKDIR /gayatri/gayatriapp
+WORKDIR /gayatri
 
 # Copy installed dependencies and app from builder
 COPY --from=builder /usr/local/lib/python3.13/site-packages/ /usr/local/lib/python3.13/site-packages/
@@ -35,8 +35,7 @@ COPY --from=builder /usr/local/bin/ /usr/local/bin/
 COPY --from=builder /gayatri/ /gayatri/
 
 RUN chown -R appuser:appuser /gayatri
-ARG TEST
-ENV TEST="${TEST}"
+
 USER appuser
 EXPOSE 8000
-ENTRYPOINT ["sh","/gayatri/entrypoint.sh","${TEST}"]
+ENTRYPOINT ["/gayatri/entrypoint.sh"]
