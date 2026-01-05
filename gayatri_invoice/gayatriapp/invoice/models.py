@@ -8,6 +8,7 @@ import logging
 from django.contrib.auth.models import Permission, Group
 from django.contrib.postgres.indexes import GinIndex
 from django.core.exceptions import ValidationError
+from django.core.serializers.json import DjangoJSONEncoder
 import json
 import hashlib
 
@@ -60,8 +61,8 @@ class TableMetaData(models.Model):
         created_at (DateTimeField): stores date time value of record entry 
         updated_at (DateTimeField): store date time value of record update
     """
-    table_metadata = models.JSONField(
-        null=True, blank=True, default=dict, unique=True, verbose_name="table metadata")
+    table_metadata = models.JSONField(encoder=DjangoJSONEncoder,
+                                      null=True, blank=True, default=dict, unique=True, verbose_name="table metadata")
     table_unique = models.BooleanField(null=True)
     table_name = models.ForeignKey(
         TableName, on_delete=models.CASCADE, related_name="metadata")
@@ -89,8 +90,8 @@ class TableData(models.Model):
         created_at (DateTimeField): stores date and time of record entry 
         updated_at (DateTimeField): stores date and time of record update
     """
-    table_data = models.JSONField(
-        null=True, blank=True, default=dict, verbose_name="table data")
+    table_data = models.JSONField(encoder=DjangoJSONEncoder,
+                                  null=True, blank=True, default=dict, verbose_name="table data")
     json_hash = models.CharField(
         max_length=64, editable=False, db_index=True, null=True)
     # Should add: related_name="data_rows"
@@ -247,7 +248,7 @@ class Report(models.Model):
     # Should be: models.CharField(max_length=255, verbose_name="Report Name")
     report_name = models.CharField()
     # IMPROVEMENT NEEDED: Add proper validation
-    report_data = models.JSONField(null=True)
+    report_data = models.JSONField(encoder=DjangoJSONEncoder, null=True)
     group = models.ManyToManyField(Group)  # Should add: related_name="reports"
     # Should add: related_name="reports"
     table = models.ManyToManyField(TableName)
