@@ -1,3 +1,6 @@
+###############
+# PHASE 2
+###############
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, FileResponse
 from django.views.decorators.csrf import ensure_csrf_cookie

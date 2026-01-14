@@ -1,7 +1,6 @@
 from django.urls import path, include
 from . import views
-from .all_views import *
-from .all_views import common_views
+from .all_views import admin_views, auth_views, common_views, form_views, millsoft_views, report_views
 
 app_name = "invoice"
 # names with sentencecase are class based views
@@ -59,6 +58,16 @@ admin_urlpatterns = [
     path("admin_company", admin_views.admin_company, name="admin_company"),
 ]
 
+millsoft_urlpatterns = [
+    path("magent/create/", millsoft_views.MAgent_create.as_view(),
+         name="MAgent_create"),
+    path("magent/<int:pk>/update/", millsoft_views.MAgent_update.as_view(),
+         name="MAgent_update"),
+    path("magent/<int:pk>/delete/", millsoft_views.MAgent_delete.as_view(),
+         name="MAgent_delete"),
+    path("magent/", millsoft_views.MAgent_list.as_view(), name="MAgent_list"),
+]
+
 # Combine all URL patterns
 urlpatterns = (
     auth_urlpatterns +
@@ -66,5 +75,6 @@ urlpatterns = (
     table_urlpatterns +
     report_urlpatterns +
     admin_urlpatterns +
-    main_urlpatterns
+    main_urlpatterns +
+    millsoft_urlpatterns
 )

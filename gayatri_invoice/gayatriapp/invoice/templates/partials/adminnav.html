@@ -18,6 +18,22 @@
     <a
       href="#"
       class="w3-bar-item w3-button w3-ripple"
+      hx-get="/invoice/magent/create"
+      hx-target="#formpart"
+      hx-swap="innerHTML"
+    >
+      <div
+        hx-get="/invoice/magent"
+        hx-trigger="click from:closest (a)"
+        hx-target="#tableview"
+        hx-swap="innerHTML"
+      ></div>
+      Agent
+    </a>
+
+    <a
+      href="#"
+      class="w3-bar-item w3-button w3-ripple"
       hx-get="/invoice/form_view"
       hx-target="#formpart"
       hx-vals='{"form": "customer"}'

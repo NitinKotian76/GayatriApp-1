@@ -34,13 +34,14 @@ def button(name: str, **kwargs):
 
     attrs_html = format_html_join(" ", '{}="{}"', attrs.items())
 
-    html = format_html("<input class='w3-button w3-ripple w3-green w3-padding w3-margin'\
-                type='button' value='{}' \
-                {}={}\
-                hx-vals=\'{}\'\
-                hx-target={}\
-                hx-swap={}\
-                {}/>", name, hx_req_type, hx_req, json.dumps(hx_vals), hx_target, hx_swap, attrs_html)
+    html = format_html("<input class='w3-button w3-ripple w3-green w3-padding w3-margin'"
+                       "type='button' value='{}' "
+                       "{}='{}'"
+                       "hx-vals='{}'"
+                       "hx-target='{}'"
+                       "hx-swap='{}'"
+                       "{}/>", name, hx_req_type, hx_req, json.dumps(hx_vals),
+                       hx_target, hx_swap, attrs_html)
     return html
 
 

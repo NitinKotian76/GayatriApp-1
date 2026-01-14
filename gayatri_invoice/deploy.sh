@@ -5,7 +5,6 @@ set -e
 cd /gayatri/gayatriapp
 # Apply database migrations
 python manage.py migrate --noinput
-python manage.py migrate axes --noinput
 
 # Collect static files
 python manage.py collectstatic --noinput

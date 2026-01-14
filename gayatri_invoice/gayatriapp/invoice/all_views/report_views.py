@@ -1,3 +1,7 @@
+
+###############
+# PHASE 2
+###############
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib import messages
@@ -25,7 +29,7 @@ logger = logging.getLogger(__name__)
 def report_view(request):
     # NOTE: this view is specifically for reports
     # IMPROVEMENT NEEDED: Use proper constant naming convention
-    user_id=request.user.id
+    user_id = request.user.id
     form_handler = mp.REPORT
     formdata = None
     buttons = []
@@ -37,7 +41,7 @@ def report_view(request):
         if formtype in form_handler:
             handler = form_handler[formtype]
             formdata = handler["form_class"](
-                request.POST,user_id )
+                request.POST, user_id)
             # buttons
             for key in handler["buttons"]:
                 hx_vals = handler["buttons"][key]["hx_vals"]
@@ -57,7 +61,7 @@ def report_view(request):
         if formtype in form_handler:
             handler = form_handler[formtype]
             formdata = handler["form_class"](user_id)
-            button = hf.btn_append(handler,"buttons")
+            button = hf.btn_append(handler, "buttons")
     context = {
         "form": formdata,
         "buttons": buttons,

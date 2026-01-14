@@ -119,3 +119,12 @@ class TableMetaDataAdmin(admin.ModelAdmin):
 @admin.register(TableData)
 class TableDataAdmin(admin.ModelAdmin):
     list_display = ["table_data", "table_name", "created_at", "updated_at"]
+
+
+@admin.register(MAgent)
+class MAgentAdmin(admin.ModelAdmin):
+    list_display = [
+        "AgentId",
+        "Agentname",
+        "Bname"
+    ]

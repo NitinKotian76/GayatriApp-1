@@ -14,7 +14,7 @@
                        hx-target="#tableshow"
                        hx-swap="innerHTML"
                        class="w3-bar-item w3-input w3-round w3-border" />
-                <!-- <button class="w3-bar-item w3-button w3-round w3-green w3-ripple">&#x1F806</button> -->
+                <button class="w3-bar-item w3-button w3-round w3-green w3-ripple">&#x1F806</button>
             </div>
             {% autoescape off %}
                 <div class="w3-container">
@@ -25,7 +25,6 @@
         {% if listdata %}
             <div style="overflow-x:auto;">
                 <table class="w3-table-all w3-tiny w3-responsive">
-                    {{ listdata.0 }}
                     <thead>
                         <tr>
                             <th>select</th>

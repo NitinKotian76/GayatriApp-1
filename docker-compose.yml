@@ -11,7 +11,6 @@ services:
       - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
     env_file:
       - .env
-      - "${ENV_CONTENTS}"
     ports:
       - "5433:5432"
     restart: always
@@ -30,10 +29,6 @@ services:
     environment:
       - DJANGO_SETTINGS_MODULE:${DJANGO_SETTINGS_MODULE}
       - DJANGO_SECRET_KEY:${DJANGO_SECRET_KEY}
-      - DJANGO_SUPERUSER_PASSWORD:${DJANGO_SUPERUSER_PASSWORD}
-      - DJANGO_SUPERUSER_USR_EMP_CODE:${DJANGO_SUPERUSER_USR_EMP_CODE}
-      - DJANGO_SUPERUSER_USER_NAME:${DJANGO_SUPERUSER_USER_NAME}
-      - DJANGO_SUPERUSER_EMAIL:${DJANGO_SUPERUSER_EMAIL}
       - DEBUG:${DEBUG}
       - DJANGO_LOG_LEVEL:${DJANGO_LOG_LEVEL}
       - DJANGO_ALLOWED_HOSTS:${DJANGO_ALLOWED_HOSTS}
@@ -45,7 +40,6 @@ services:
       - TEST:${TEST}
     env_file:
       - .env
-      - "${ENV_CONTENTS}"
     expose:
       - 8000
     depends_on:

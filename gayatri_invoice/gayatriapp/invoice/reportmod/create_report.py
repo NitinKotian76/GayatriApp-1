@@ -1,3 +1,8 @@
+
+###############
+# PHASE 2
+###############
+
 # get the database table for the user
 from invoice.dbmod import dbfunctions as db
 from django.db.models import F, Value
