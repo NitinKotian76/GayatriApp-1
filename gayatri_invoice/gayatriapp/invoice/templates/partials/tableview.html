@@ -29,6 +29,7 @@
                         <tr>
                             <th>select</th>
                             {% for key in listdata.0.keys %}<th>{{ key|title }}</th>{% endfor %}
+                            <th>actions</th>
                         </tr>
                     </thead>
                     <tbody id="table-body">
@@ -45,6 +46,18 @@
                                            hx-swap="none">
                                 </td>
                                 {% for value in data.values %}<td>{{ value }}</td>{% endfor %}
+                                <td>
+                                    <button hx-post="{{ update_url }}"
+                                            hx-swap="none"
+                                            hx-target="#"
+                                            hx-include="#id_form-TOTAL_FORMS,#id_form-INITIAL_FORMS"
+                                            class="w3-button w3-ripple w3-green">Update</button>
+                                    <button hx-post="{{ delete_url }}"
+                                            hx-swap="none"
+                                            hx-target="#"
+                                            hx-include="#id_form-TOTAL_FORMS,#id_form-INITIAL_FORMS"
+                                            class="w3-button w3-ripple w3-green">Update</button>
+                                </td>
                             </tr>
                         {% endfor %}
                     </tbody>

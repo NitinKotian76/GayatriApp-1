@@ -8,8 +8,8 @@ from django import forms
 
 
 class MAgentForm(forms.ModelForm):
+    template_name = "form_snippet.html"
+
     class Meta:
         model = MAgent
         fields = "__all__"
-
-    template_name = "form_snippet.html"

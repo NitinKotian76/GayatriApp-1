@@ -8,6 +8,7 @@ import logging
 from django.contrib.auth.models import Permission, Group
 from django.contrib.postgres.indexes import GinIndex
 from django.core.exceptions import ValidationError
+from django.core.serializers.json import DjangoJSONEncoder
 import uuid
 import json
 import hashlib

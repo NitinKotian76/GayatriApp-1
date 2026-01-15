@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "axes",
+    "django_htmx",
 ]
 
 MIDDLEWARE = [
@@ -52,9 +53,10 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "axes.middleware.AxesMiddleware",
+    "django_htmx.middleware.HtmxMiddleware",
     # end of cache middleware
     "django.middleware.cache.FetchFromCacheMiddleware",
-    "axes.middleware.AxesMiddleware",
 ]
 FILE_UPLOAD_HANDLERS = [
 

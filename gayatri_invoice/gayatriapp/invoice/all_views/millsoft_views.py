@@ -7,8 +7,11 @@ from ..models import (TempDP, TempWeightSlip, TExport, TExportDetails, TIndent,
                       TProduction_bck, TProductionReel, TWB)
 from django.contrib.messages.views import SuccessMessageMixin
 from django.views.generic import (CreateView, UpdateView, DeleteView, ListView)
-from django.urls import reverse_lazy, reverse
+from django.urls import (reverse_lazy, reverse)
 from ..form_files import (helperFunct as hf, millsoftForm as mf)
+from django_htmx.http import retarget
+from django.views.decorators.cache import never_cache
+from django.utils.decorators import method_decorator
 import logging
 logger = logging.getLogger(__name__)
 
@@ -18,18 +21,24 @@ class MAgent_create(SuccessMessageMixin, CreateView):
     form_class = mf.MAgentForm
     template_name = "partials/forms.html"
     context_object_name = "form"
-    success_url = reverse_lazy("MAgent_list")
+    success_url = reverse_lazy("invoice:MAgent_create")
     success_message = "successfully created"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["date"] = "hello"
         context["buttons"] = hf.button("submit",
-                                       hx_req="",
+                                       hx_req=reverse('invoice:MAgent_create'),
                                        hx_target="#dynform",
                                        hx_swap="innerHTML")
-        logger.debug("hello")
+        context["update_url"] = 'MAgent_update'
+        context["delete_url"] = 'MAgent_delete'
+
         return context
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        return response
 
 
 class MAgent_update(SuccessMessageMixin, UpdateView):
@@ -39,12 +48,12 @@ class MAgent_update(SuccessMessageMixin, UpdateView):
     template_name = "form_snippet.html"
     context_object_name = "form"
     success_message = "successfully updated %(Agentname)"
-    success_url = reverse_lazy('magent/')
+    success_url = reverse_lazy('invoice:MAgent_list')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["buttons"] = hf.button("submit",
-                                       hx_req="/invoice/MAgent_update",)
+                                       hx_req=reverse('invoice:MAgent_update'),)
         return context
 
 
@@ -55,7 +64,7 @@ class MAgent_delete(SuccessMessageMixin, DeleteView):
     template_name = "form_snippet.html"
     context_object_name = "form"
     success_message = "successfully deleted %(Agentname)"
-    success_url = reverse_lazy('MAgent_list')
+    success_url = reverse_lazy('invoice:MAgent_list')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -64,6 +73,7 @@ class MAgent_delete(SuccessMessageMixin, DeleteView):
         return context
 
 
+@method_decorator(never_cache, name='dispatch')
 class MAgent_list(ListView):
     model = MAgent
     fields = ["AgentId", "Agentname", "Bname", "Area", "Road", "City", "Pin", "State",
