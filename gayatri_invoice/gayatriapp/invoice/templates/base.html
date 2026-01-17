@@ -17,12 +17,16 @@
     <!-- <link rel="stylesheet" href="{% static 'invoice/css/all.min.css' %}"> -->
     {% django_htmx_script %}
 </head>
-<body class="w3-display-container">
+<body hx-headers='{"x-csrftoken":"{{ csrf_token }}"}'>
     <div id="notif"
+         class="w3-modal"
          hx-get="/invoice/get_notifications"
          hx-trigger="showNotif from:body"
          hx-target="#notif"
-         hx-swap="innerHTML swap:50ms">{% include 'partials/notif.html' with messages=messages %}</div>
+         hx-swap="innerHTML swap:50ms"
+         hx-on::after-swap=" this.style.display= 'block'; setTimeout(()=>this.style.display= 'none',5000) ">
+        <div class="w3-modal-content w3-animate-top">{% include 'partials/notif.html' with messages=messages %}</div>
+    </div>
     {% block nav %}
         <div class="navigation">
             <nav>
@@ -57,10 +61,5 @@
         <address>
         </address>
     </footer>
-    <script>
-        document.body.addEventListener('htmx:configRequest', function(evt) {
-            evt.detail.headers['X-CSRFToken'] = '{{ csrf_token }}';
-        });
-    </script>
 </body>
 </html>

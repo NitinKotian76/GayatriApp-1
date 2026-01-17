@@ -35,10 +35,12 @@ def login_user(request):
     else:
         form = bf.loginForm(request=request)
 
-    return render(request, "invoice/login.html", {
+    response = render(request, "invoice/login.html", {
         "login": form,
         "messages": messages.get_messages(request)
     })
+    response['HX-Trigger-After-Swap'] = "showNotif"
+    return response
 
 # IMPROVEMENT NEEDED: Add proper error handling
 # IMPROVEMENT NEEDED: Add proper logging
@@ -101,7 +103,10 @@ def logout_user(request):
     logger.debug("logout")
     logout(request)
     messages.info(request, "logged out")
-    return redirect("/invoice")
+    response = redirect("/invoice")
+    response['HX-Trigger-After-Swap'] = 'showNotif'
+    return response
+
 
 # IMPROVEMENT NEEDED: Add proper error handling
 # IMPROVEMENT NEEDED: Add proper logging

@@ -9,7 +9,7 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.views.generic import (CreateView, UpdateView, DeleteView, ListView)
 from django.urls import (reverse_lazy, reverse)
 from ..form_files import (helperFunct as hf, millsoftForm as mf)
-from django_htmx.http import retarget
+from django_htmx.http import trigger_client_event
 from django.views.decorators.cache import never_cache
 from django.utils.decorators import method_decorator
 import logging
@@ -26,58 +26,52 @@ class MAgent_create(SuccessMessageMixin, CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["date"] = "hello"
         context["buttons"] = hf.button("submit",
                                        hx_req=reverse('invoice:MAgent_create'),
                                        hx_target="#dynform",
                                        hx_swap="innerHTML")
-        context["update_url"] = 'MAgent_update'
-        context["delete_url"] = 'MAgent_delete'
+        return context
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        return trigger_client_event(response, "RefreshTable")
+
+
+class MAgent_update(SuccessMessageMixin, UpdateView):
+    model = MAgent
+    form_class = mf.MAgentForm
+    template_name = "partials/forms.html"
+    context_object_name = "form"
+    success_message = "successfully updated"
+    success_url = reverse_lazy('invoice:MAgent_create')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["buttons"] = hf.button("submit",
+                                       hx_req=f"{self.request.path}",
+                                       hx_target="#dynform",
+                                       hx_swap="innerHTML")
 
         return context
 
     def form_valid(self, form):
         response = super().form_valid(form)
-        return response
-
-
-class MAgent_update(SuccessMessageMixin, UpdateView):
-    model = MAgent
-    fields = ["AgentId", "Agentname", "Bname", "Area", "Road", "City", "Pin", "State",
-              "Phone", "Cell", "range", "division"]
-    template_name = "form_snippet.html"
-    context_object_name = "form"
-    success_message = "successfully updated %(Agentname)"
-    success_url = reverse_lazy('invoice:MAgent_list')
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["buttons"] = hf.button("submit",
-                                       hx_req=reverse('invoice:MAgent_update'),)
-        return context
+        return trigger_client_event(response, "RefreshTable")
 
 
 class MAgent_delete(SuccessMessageMixin, DeleteView):
     model = MAgent
-    fields = ["AgentId", "Agentname", "Bname", "Area", "Road", "City", "Pin", "State",
-              "Phone", "Cell", "range", "division"]
+    form_class = mf.MAgentForm
     template_name = "form_snippet.html"
     context_object_name = "form"
-    success_message = "successfully deleted %(Agentname)"
-    success_url = reverse_lazy('invoice:MAgent_list')
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["buttons"] = hf.button("submit",
-                                       hx_req="/invoice/MAgent_delete",)
-        return context
+    success_message = "successfully deleted"
+    success_url = reverse_lazy('invoice:MAgent_create')
 
 
 @method_decorator(never_cache, name='dispatch')
 class MAgent_list(ListView):
     model = MAgent
-    fields = ["AgentId", "Agentname", "Bname", "Area", "Road", "City", "Pin", "State",
-              "Phone", "Cell", "range", "division"]
+    fields = '__all__'
     context_object_name = "form"
     template_name = "partials/tableview.html"
     paginate_by = 100
@@ -94,11 +88,10 @@ class MAgent_list(ListView):
             hf.button("Create Agent", hx_req="",
                       hx_req_type="hx-get", hx_target="#tableshow")
         ]
+        context["modelurl"] = reverse('invoice:MAgent_list')
         return context
 
-
-class MCategory(CreateView):
-    pass
+    # MCategory
     # MCompany
     # MCustomer
     # MEmployee

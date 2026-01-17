@@ -2,23 +2,6 @@ let count = 0;
 
 // htmx.logAll();
 
-function getCSRFToken() {
-  //this function gets the csrftoken
-  let name = "csrftoken=";
-  let decodedCookie = decodeURIComponent(document.cookie);
-  let ca = decodedCookie.split(";");
-  for (let i = 0; i < ca.length; i++) {
-    let c = ca[i];
-    while (c.charAt(0) == " ") {
-      c = c.substring(1);
-    }
-    if (c.indexOf(name) == 0) {
-      return c.substring(name.length, c.length);
-    }
-  }
-  return "";
-}
-
 /**
  * this function is for the searchfield in the table view
  * its meant to provde the user response on the client side
@@ -60,27 +43,34 @@ function w3_close() {
   document.getElementById("mySidebar").style.display = "none";
 }
 
-document.body.addEventListener("htmx:afterSwap", function (evt) {
-  if (
-    evt.detail.target.id === "mainform" ||
-    evt.detail.target.id === "dynform"
-  ) {
-    htmx.trigger(document.body, "showNotif");
-  }
-  if (evt.detail.target.id === "notif") {
-    hideNotifAfterTimeout();
-  }
+// document.body.addEventListener("htmx:afterSwap", function (evt) {
+//   if (
+//     evt.detail.target.id === "mainform" ||
+//     evt.detail.target.id === "dynform"
+//   ) {
+//     htmx.trigger(document.body, "showNotif");
+//   }
+//   if (evt.detail.target.id === "notif") {
+//     hideNotifAfterTimeout();
+//   }
+// });
+//
+// function hideNotifAfterTimeout() {
+//   const notif = document.getElementById("notif");
+//   if (notif) {
+//     notif.style.display = "block";
+//     setTimeout(() => {
+//       notif.style.display = "none";
+//     }, 5000);
+//   }
+// }
+htmx.on("htmx:afterRequest", (e) => {
+  console.log("Headers:", [
+    ...(e.detail.xhr
+      .getAllResponseHeaders()
+      .matchAll(/HX-Trigger-After-Swap: (.*)/gi) || []),
+  ]);
 });
-
-function hideNotifAfterTimeout() {
-  const notif = document.getElementById("notif");
-  if (notif) {
-    notif.style.display = "block";
-    setTimeout(() => {
-      notif.style.display = "none";
-    }, 5000);
-  }
-}
 
 // function clearSelectedRows() {
 //   const allInputs = document.querySelectorAll("#tableform input"); // Selects all input elements within the form
