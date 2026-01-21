@@ -10,7 +10,10 @@
           href="{% static 'invoice/images/favicon.ico' %}">
     <link rel="stylesheet" href="{% static 'invoice/css/w3.css' %}">
     <link rel="stylesheet" href="{% static 'invoice/css/style.css' %}">
-    <script src="{% static 'invoice/script/htmx.min.js'%}" defer></script>
+    <!-- <script src="{% static 'invoice/script/htmx.min.js'%}" defer></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.8/dist/htmx.js"
+            integrity="sha384-ezjq8118wdwdRMj+nX4bevEi+cDLTbhLAeFF688VK8tPDGeLUe0WoY2MZtSla72F"
+            crossorigin="anonymous"></script>
     <script src="{% static 'invoice/script/json-enc.js'%}" defer></script>
     <script src="{% static 'invoice/script/CustomScript.js'%}" defer></script>
     <!-- <script src="{% static 'invoice/script/all.min.js'%}" defer></script> -->
@@ -19,14 +22,15 @@
 </head>
 <body hx-headers='{"x-csrftoken":"{{ csrf_token }}"}'>
     <div id="notif"
-         class="w3-modal"
          hx-get="/invoice/get_notifications"
-         hx-trigger="showNotif from:body"
+         hx-trigger="every 5s"
          hx-target="#notif"
          hx-swap="innerHTML swap:50ms"
-         hx-on::after-swap=" this.style.display= 'block'; setTimeout(()=>this.style.display= 'none',5000) ">
-        <div class="w3-modal-content w3-animate-top">{% include 'partials/notif.html' with messages=messages %}</div>
-    </div>
+         hx-on::after-swap=" this.style.display= 'block'; setTimeout(()=>this.style.display= 'none',5000) "
+         class="w3-card-10"
+         style="position:absolute;
+                bottom:8px;
+                right:16px">{% include 'partials/notif.html' with messages=messages %}</div>
     {% block nav %}
         <div class="navigation">
             <nav>

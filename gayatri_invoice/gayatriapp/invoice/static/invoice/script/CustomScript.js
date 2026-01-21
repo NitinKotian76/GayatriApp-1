@@ -64,14 +64,8 @@ function w3_close() {
 //     }, 5000);
 //   }
 // }
-htmx.on("htmx:afterRequest", (e) => {
-  console.log("Headers:", [
-    ...(e.detail.xhr
-      .getAllResponseHeaders()
-      .matchAll(/HX-Trigger-After-Swap: (.*)/gi) || []),
-  ]);
-});
 
+//
 // function clearSelectedRows() {
 //   const allInputs = document.querySelectorAll("#tableform input"); // Selects all input elements within the form
 //   allInputs.forEach((input) => {

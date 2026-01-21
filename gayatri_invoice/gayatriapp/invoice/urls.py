@@ -1,6 +1,7 @@
 from django.urls import path, include
 from . import views
-from .all_views import admin_views, auth_views, common_views, form_views, millsoft_views, report_views
+from .all_views import admin_views, auth_views, common_views, form_views, report_views
+from .all_views.millsoft import millsoft_master_views, millsoft_transaction_views, millsoft_report_views
 
 app_name = "invoice"
 # names with sentencecase are class based views
@@ -45,7 +46,7 @@ table_urlpatterns = [
 main_urlpatterns = [
     path("index", common_views.index, name="index"),
     path("profile_user", common_views.profile_user, name="profile_user"),
-    path("get_notifications", common_views.get_notifications,
+    path("get_notifications", common_views.get_notifications.as_view(),
          name="get_notifications"),
     path("add_formset_field/<str:formname>", common_views.add_formset_field,
          name="add_formset_field"),
@@ -59,13 +60,18 @@ admin_urlpatterns = [
 ]
 
 millsoft_urlpatterns = [
-    path("magent/create/", millsoft_views.MAgent_create.as_view(),
+    path("magent/create/", millsoft_master_views.MAgent_create.as_view(),
          name="MAgent_create"),
-    path("magent/<int:pk>/update/", millsoft_views.MAgent_update.as_view(),
+    path("magent/<int:pk>/update/", millsoft_master_views.MAgent_update.as_view(),
          name="MAgent_update"),
-    path("magent/<int:pk>/delete/", millsoft_views.MAgent_delete.as_view(),
+    path("magent/<int:pk>/delete/", millsoft_master_views.MAgent_delete.as_view(),
          name="MAgent_delete"),
-    path("magent/", millsoft_views.MAgent_list.as_view(), name="MAgent_list"),
+    path("magent/", millsoft_master_views.MAgent_list.as_view(), name="MAgent_list"),
+
+    path("tproduction/", millsoft_transaction_views.TProduction_list.as_view(),
+         name="TProduction_list"),
+    path("tproduction/create/", millsoft_transaction_views.TProduction_create.as_view(),
+         name="TProduction_create"),
 ]
 
 # Combine all URL patterns
