@@ -5,27 +5,27 @@ from django.urls import (reverse_lazy, reverse)
 from django_htmx.http import trigger_client_event
 from django.views.decorators.cache import never_cache
 from django.utils.decorators import method_decorator
-from ..form_files import (helperFunct as hf, millsoftForm as mf)
-from ..models import (TempDP, TempWeightSlip, TExport, TExportDetails, TIndent,
-                      TInvoice, TJumboRollWiseQC, TLOTNoWiseQc, TProduction,
-                      TProduction_bck, TProductionReel, TWB)
+from ...form_files import (helperFunct as hf, millsoftForm as mf)
+from ...models import (TempDP, TempWeightSlip, TExport, TExportDetails, TIndent,
+                       TInvoice, TJumboRollWiseQC, TLOTNoWiseQc, TProduction,
+                       TProduction_bck, TProductionReel, TWB)
 import logging
 logger = logging.getLogger(__name__)
 
 
 class TempDP_create(SuccessMessageMixin, CreateView):
 
-    model = MAgent
-    form_class = mf.MAgentForm
+    model = TempDP
+    form_class = mf.TempDPForm
     template_name = "partials/forms.html"
     context_object_name = "form"
-    success_url = reverse_lazy("invoice:MAgent_create")
+    success_url = reverse_lazy("invoice:TempDP_create")
     success_message = "successfully created"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["buttons"] = hf.button("submit",
-                                       hx_req=reverse('invoice:MAgent_create'),
+                                       hx_req=reverse('invoice:TempDP_create'),
                                        hx_target="#dynform",
                                        hx_swap="innerHTML")
         return context
@@ -38,12 +38,12 @@ class TempDP_create(SuccessMessageMixin, CreateView):
 
 class TempDP_update(SuccessMessageMixin, UpdateView):
 
-    model = MAgent
-    form_class = mf.MAgentForm
+    model = TempDP
+    form_class = mf.TempDPForm
     template_name = "partials/forms.html"
     context_object_name = "form"
     success_message = "successfully updated"
-    success_url = reverse_lazy('invoice:MAgent_create')
+    success_url = reverse_lazy('invoice:TempDP_create')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -62,21 +62,21 @@ class TempDP_update(SuccessMessageMixin, UpdateView):
 
 class TempDP_delete(SuccessMessageMixin, DeleteView):
 
-    model = MAgent
+    model = TempDP
     success_message = "successfully deleted"
-    success_url = reverse_lazy('invoice:MAgent_list')
+    success_url = reverse_lazy('invoice:TempDP_list')
 
 
 class TempDP_list(SuccessMessageMixin, ListView):
 
-    model = MAgent
+    model = TempDP
     fields = '__all__'
     context_object_name = "form"
     template_name = "partials/tableview.html"
     paginate_by = 100
 
     def get_queryset(self):
-        return MAgent.objects.values()
+        return TempDP.objects.values()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -86,23 +86,24 @@ class TempDP_list(SuccessMessageMixin, ListView):
             hf.button("Create Agent", hx_req="",
                       hx_req_type="hx-get", hx_target="#tableshow")
         ]
-        context["modelurl"] = reverse('invoice:MAgent_list')
+        context["modelurl"] = reverse('invoice:TempDP_list')
         return context
 
 
 class TempWeightSlip_create(SuccessMessageMixin, CreateView):
 
-    model = MAgent
-    form_class = mf.MAgentForm
+    model = TempWeightSlip
+    form_class = mf.TempWeightSlipForm
     template_name = "partials/forms.html"
     context_object_name = "form"
-    success_url = reverse_lazy("invoice:MAgent_create")
+    success_url = reverse_lazy("invoice:TempWeightSlip_create")
     success_message = "successfully created"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["buttons"] = hf.button("submit",
-                                       hx_req=reverse('invoice:MAgent_create'),
+                                       hx_req=reverse(
+                                           'invoice:TempWeightSlip_create'),
                                        hx_target="#dynform",
                                        hx_swap="innerHTML")
         return context
@@ -115,12 +116,12 @@ class TempWeightSlip_create(SuccessMessageMixin, CreateView):
 
 class TempWeightSlip_update(SuccessMessageMixin, UpdateView):
 
-    model = MAgent
-    form_class = mf.MAgentForm
+    model = TempWeightSlip
+    form_class = mf.TempWeightSlipForm
     template_name = "partials/forms.html"
     context_object_name = "form"
     success_message = "successfully updated"
-    success_url = reverse_lazy('invoice:MAgent_create')
+    success_url = reverse_lazy('invoice:TempWeightSlip_create')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -139,21 +140,21 @@ class TempWeightSlip_update(SuccessMessageMixin, UpdateView):
 
 class TempWeightSlip_delete(SuccessMessageMixin, DeleteView):
 
-    model = MAgent
+    model = TempWeightSlip
     success_message = "successfully deleted"
-    success_url = reverse_lazy('invoice:MAgent_list')
+    success_url = reverse_lazy('invoice:TempWeightSlip_list')
 
 
 class TempWeightSlip_list(SuccessMessageMixin, ListView):
 
-    model = MAgent
+    model = TempWeightSlip
     fields = '__all__'
     context_object_name = "form"
     template_name = "partials/tableview.html"
     paginate_by = 100
 
     def get_queryset(self):
-        return MAgent.objects.values()
+        return TempWeightSlip.objects.values()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -163,23 +164,24 @@ class TempWeightSlip_list(SuccessMessageMixin, ListView):
             hf.button("Create Agent", hx_req="",
                       hx_req_type="hx-get", hx_target="#tableshow")
         ]
-        context["modelurl"] = reverse('invoice:MAgent_list')
+        context["modelurl"] = reverse('invoice:TempWeightSlip_list')
         return context
 
 
 class TExport_create(SuccessMessageMixin, CreateView):
 
-    model = MAgent
-    form_class = mf.MAgentForm
+    model = TExport
+    form_class = mf.TExportForm
     template_name = "partials/forms.html"
     context_object_name = "form"
-    success_url = reverse_lazy("invoice:MAgent_create")
+    success_url = reverse_lazy("invoice:TExport_create")
     success_message = "successfully created"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["buttons"] = hf.button("submit",
-                                       hx_req=reverse('invoice:MAgent_create'),
+                                       hx_req=reverse(
+                                           'invoice:TExport_create'),
                                        hx_target="#dynform",
                                        hx_swap="innerHTML")
         return context
@@ -192,12 +194,12 @@ class TExport_create(SuccessMessageMixin, CreateView):
 
 class TExport_update(SuccessMessageMixin, UpdateView):
 
-    model = MAgent
-    form_class = mf.MAgentForm
+    model = TExport
+    form_class = mf.TExportForm
     template_name = "partials/forms.html"
     context_object_name = "form"
     success_message = "successfully updated"
-    success_url = reverse_lazy('invoice:MAgent_create')
+    success_url = reverse_lazy('invoice:TExport_create')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -216,21 +218,21 @@ class TExport_update(SuccessMessageMixin, UpdateView):
 
 class TExport_delete(SuccessMessageMixin, DeleteView):
 
-    model = MAgent
+    model = TExport
     success_message = "successfully deleted"
-    success_url = reverse_lazy('invoice:MAgent_list')
+    success_url = reverse_lazy('invoice:TExport_list')
 
 
 class TExport_list(SuccessMessageMixin, ListView):
 
-    model = MAgent
+    model = TExport
     fields = '__all__'
     context_object_name = "form"
     template_name = "partials/tableview.html"
     paginate_by = 100
 
     def get_queryset(self):
-        return MAgent.objects.values()
+        return TExport.objects.values()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -240,23 +242,24 @@ class TExport_list(SuccessMessageMixin, ListView):
             hf.button("Create Agent", hx_req="",
                       hx_req_type="hx-get", hx_target="#tableshow")
         ]
-        context["modelurl"] = reverse('invoice:MAgent_list')
+        context["modelurl"] = reverse('invoice:TExport_list')
         return context
 
 
 class TExportDetails_create(SuccessMessageMixin, CreateView):
 
-    model = MAgent
-    form_class = mf.MAgentForm
+    model = TExportDetails
+    form_class = mf.TExportDetailsForm
     template_name = "partials/forms.html"
     context_object_name = "form"
-    success_url = reverse_lazy("invoice:MAgent_create")
+    success_url = reverse_lazy("invoice:TExportDetails_create")
     success_message = "successfully created"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["buttons"] = hf.button("submit",
-                                       hx_req=reverse('invoice:MAgent_create'),
+                                       hx_req=reverse(
+                                           'invoice:TExportDetails_create'),
                                        hx_target="#dynform",
                                        hx_swap="innerHTML")
         return context
@@ -269,12 +272,12 @@ class TExportDetails_create(SuccessMessageMixin, CreateView):
 
 class TExportDetails_update(SuccessMessageMixin, UpdateView):
 
-    model = MAgent
-    form_class = mf.MAgentForm
+    model = TExportDetails
+    form_class = mf.TExportDetailsForm
     template_name = "partials/forms.html"
     context_object_name = "form"
     success_message = "successfully updated"
-    success_url = reverse_lazy('invoice:MAgent_create')
+    success_url = reverse_lazy('invoice:TExportDetails_create')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -293,21 +296,21 @@ class TExportDetails_update(SuccessMessageMixin, UpdateView):
 
 class TExportDetails_delete(SuccessMessageMixin, DeleteView):
 
-    model = MAgent
+    model = TExportDetails
     success_message = "successfully deleted"
-    success_url = reverse_lazy('invoice:MAgent_list')
+    success_url = reverse_lazy('invoice:TExportDetails_list')
 
 
 class TExportDetails_list(SuccessMessageMixin, ListView):
 
-    model = MAgent
+    model = TExportDetails
     fields = '__all__'
     context_object_name = "form"
     template_name = "partials/tableview.html"
     paginate_by = 100
 
     def get_queryset(self):
-        return MAgent.objects.values()
+        return TExportDetails.objects.values()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -317,23 +320,24 @@ class TExportDetails_list(SuccessMessageMixin, ListView):
             hf.button("Create Agent", hx_req="",
                       hx_req_type="hx-get", hx_target="#tableshow")
         ]
-        context["modelurl"] = reverse('invoice:MAgent_list')
+        context["modelurl"] = reverse('invoice:TExportDetails_list')
         return context
 
 
 class TIndent_create(SuccessMessageMixin, CreateView):
 
-    model = MAgent
-    form_class = mf.MAgentForm
+    model = TIndent
+    form_class = mf.TIndentForm
     template_name = "partials/forms.html"
     context_object_name = "form"
-    success_url = reverse_lazy("invoice:MAgent_create")
+    success_url = reverse_lazy("invoice:TIndent_create")
     success_message = "successfully created"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["buttons"] = hf.button("submit",
-                                       hx_req=reverse('invoice:MAgent_create'),
+                                       hx_req=reverse(
+                                           'invoice:TIndent_create'),
                                        hx_target="#dynform",
                                        hx_swap="innerHTML")
         return context
@@ -346,12 +350,12 @@ class TIndent_create(SuccessMessageMixin, CreateView):
 
 class TIndent_update(SuccessMessageMixin, UpdateView):
 
-    model = MAgent
-    form_class = mf.MAgentForm
+    model = TIndent
+    form_class = mf.TIndentForm
     template_name = "partials/forms.html"
     context_object_name = "form"
     success_message = "successfully updated"
-    success_url = reverse_lazy('invoice:MAgent_create')
+    success_url = reverse_lazy('invoice:TIndent_create')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -370,21 +374,21 @@ class TIndent_update(SuccessMessageMixin, UpdateView):
 
 class TIndent_delete(SuccessMessageMixin, DeleteView):
 
-    model = MAgent
+    model = TIndent
     success_message = "successfully deleted"
-    success_url = reverse_lazy('invoice:MAgent_list')
+    success_url = reverse_lazy('invoice:TIndent_list')
 
 
 class TIndent_list(SuccessMessageMixin, ListView):
 
-    model = MAgent
+    model = TIndent
     fields = '__all__'
     context_object_name = "form"
     template_name = "partials/tableview.html"
     paginate_by = 100
 
     def get_queryset(self):
-        return MAgent.objects.values()
+        return TIndent.objects.values()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -394,25 +398,35 @@ class TIndent_list(SuccessMessageMixin, ListView):
             hf.button("Create Agent", hx_req="",
                       hx_req_type="hx-get", hx_target="#tableshow")
         ]
-        context["modelurl"] = reverse('invoice:MAgent_list')
+        context["modelurl"] = reverse('invoice:TIndent_list')
         return context
 
 
 class TInvoice_create(SuccessMessageMixin, CreateView):
 
-    model = MAgent
-    form_class = mf.MAgentForm
+    model = TInvoice
+    form_class = mf.TInvoiceForm
     template_name = "partials/forms.html"
     context_object_name = "form"
-    success_url = reverse_lazy("invoice:MAgent_create")
+    success_url = reverse_lazy("invoice:TInvoice_create")
     success_message = "successfully created"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["buttons"] = hf.button("submit",
-                                       hx_req=reverse('invoice:MAgent_create'),
-                                       hx_target="#dynform",
-                                       hx_swap="innerHTML")
+        context["buttons"] = hf.btn_append(
+            {
+                "submit": {
+                    "hx_req": reverse('invoice:TInvoice_create'),
+                    "hx_target": "#dynform",
+                    "hx_swap": "innerHTML"
+                },
+                "submit": {
+                    "hx_req": reverse('invoice:TInvoice_create'),
+                    "hx_target": "#dynform",
+                    "hx_swap": "innerHTML"
+                }
+            }
+        )
         return context
 
     def form_valid(self, form):
@@ -423,12 +437,12 @@ class TInvoice_create(SuccessMessageMixin, CreateView):
 
 class TInvoice_update(SuccessMessageMixin, UpdateView):
 
-    model = MAgent
-    form_class = mf.MAgentForm
+    model = TInvoice
+    form_class = mf.TInvoiceForm
     template_name = "partials/forms.html"
     context_object_name = "form"
     success_message = "successfully updated"
-    success_url = reverse_lazy('invoice:MAgent_create')
+    success_url = reverse_lazy('invoice:TInvoice_create')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -447,21 +461,22 @@ class TInvoice_update(SuccessMessageMixin, UpdateView):
 
 class TInvoice_delete(SuccessMessageMixin, DeleteView):
 
-    model = MAgent
+    model = TInvoice
     success_message = "successfully deleted"
-    success_url = reverse_lazy('invoice:MAgent_list')
+    success_url = reverse_lazy('invoice:TInvoice_list')
 
 
+@method_decorator(never_cache, name='dispatch')
 class TInvoice_list(SuccessMessageMixin, ListView):
 
-    model = MAgent
+    model = TInvoice
     fields = '__all__'
     context_object_name = "form"
     template_name = "partials/tableview.html"
     paginate_by = 100
 
     def get_queryset(self):
-        return MAgent.objects.values()
+        return TInvoice.objects.values()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -471,23 +486,24 @@ class TInvoice_list(SuccessMessageMixin, ListView):
             hf.button("Create Agent", hx_req="",
                       hx_req_type="hx-get", hx_target="#tableshow")
         ]
-        context["modelurl"] = reverse('invoice:MAgent_list')
+        context["modelurl"] = reverse('invoice:TInvoice_list')
         return context
 
 
 class TJumboRollWiseQC_create(SuccessMessageMixin, CreateView):
 
-    model = MAgent
-    form_class = mf.MAgentForm
+    model = TJumboRollWiseQC
+    form_class = mf.TJumboRollWiseQCForm
     template_name = "partials/forms.html"
     context_object_name = "form"
-    success_url = reverse_lazy("invoice:MAgent_create")
+    success_url = reverse_lazy("invoice:TJumboRollWiseQC_create")
     success_message = "successfully created"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["buttons"] = hf.button("submit",
-                                       hx_req=reverse('invoice:MAgent_create'),
+                                       hx_req=reverse(
+                                           'invoice:TJumboRollWiseQC_create'),
                                        hx_target="#dynform",
                                        hx_swap="innerHTML")
         return context
@@ -500,12 +516,12 @@ class TJumboRollWiseQC_create(SuccessMessageMixin, CreateView):
 
 class TJumboRollWiseQC_update(SuccessMessageMixin, UpdateView):
 
-    model = MAgent
-    form_class = mf.MAgentForm
+    model = TJumboRollWiseQC
+    form_class = mf.TJumboRollWiseQCForm
     template_name = "partials/forms.html"
     context_object_name = "form"
     success_message = "successfully updated"
-    success_url = reverse_lazy('invoice:MAgent_create')
+    success_url = reverse_lazy('invoice:TJumboRollWiseQC_create')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -524,21 +540,21 @@ class TJumboRollWiseQC_update(SuccessMessageMixin, UpdateView):
 
 class TJumboRollWiseQC_delete(SuccessMessageMixin, DeleteView):
 
-    model = MAgent
+    model = TJumboRollWiseQC
     success_message = "successfully deleted"
-    success_url = reverse_lazy('invoice:MAgent_list')
+    success_url = reverse_lazy('invoice:TJumboRollWiseQC_list')
 
 
 class TJumboRollWiseQC_list(SuccessMessageMixin, ListView):
 
-    model = MAgent
+    model = TJumboRollWiseQC
     fields = '__all__'
     context_object_name = "form"
     template_name = "partials/tableview.html"
     paginate_by = 100
 
     def get_queryset(self):
-        return MAgent.objects.values()
+        return TJumboRollWiseQC.objects.values()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -548,23 +564,24 @@ class TJumboRollWiseQC_list(SuccessMessageMixin, ListView):
             hf.button("Create Agent", hx_req="",
                       hx_req_type="hx-get", hx_target="#tableshow")
         ]
-        context["modelurl"] = reverse('invoice:MAgent_list')
+        context["modelurl"] = reverse('invoice:TJumboRollWiseQC_list')
         return context
 
 
 class TLOTNoWiseQc_create(SuccessMessageMixin, CreateView):
 
-    model = MAgent
-    form_class = mf.MAgentForm
+    model = TLOTNoWiseQc
+    form_class = mf.TLOTNoWiseQcForm
     template_name = "partials/forms.html"
     context_object_name = "form"
-    success_url = reverse_lazy("invoice:MAgent_create")
+    success_url = reverse_lazy("invoice:TLOTNoWiseQc_create")
     success_message = "successfully created"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["buttons"] = hf.button("submit",
-                                       hx_req=reverse('invoice:MAgent_create'),
+                                       hx_req=reverse(
+                                           'invoice:TLOTNoWiseQc_create'),
                                        hx_target="#dynform",
                                        hx_swap="innerHTML")
         return context
@@ -577,12 +594,12 @@ class TLOTNoWiseQc_create(SuccessMessageMixin, CreateView):
 
 class TLOTNoWiseQc_update(SuccessMessageMixin, UpdateView):
 
-    model = MAgent
-    form_class = mf.MAgentForm
+    model = TLOTNoWiseQc
+    form_class = mf.TLOTNoWiseQcForm
     template_name = "partials/forms.html"
     context_object_name = "form"
     success_message = "successfully updated"
-    success_url = reverse_lazy('invoice:MAgent_create')
+    success_url = reverse_lazy('invoice:TLOTNoWiseQc_create')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -601,21 +618,21 @@ class TLOTNoWiseQc_update(SuccessMessageMixin, UpdateView):
 
 class TLOTNoWiseQc_delete(SuccessMessageMixin, DeleteView):
 
-    model = MAgent
+    model = TLOTNoWiseQc
     success_message = "successfully deleted"
-    success_url = reverse_lazy('invoice:MAgent_list')
+    success_url = reverse_lazy('invoice:TLOTNoWiseQc_list')
 
 
 class TLOTNoWiseQc_list(SuccessMessageMixin, ListView):
 
-    model = MAgent
+    model = TLOTNoWiseQc
     fields = '__all__'
     context_object_name = "form"
     template_name = "partials/tableview.html"
     paginate_by = 100
 
     def get_queryset(self):
-        return MAgent.objects.values()
+        return TLOTNoWiseQc.objects.values()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -625,7 +642,7 @@ class TLOTNoWiseQc_list(SuccessMessageMixin, ListView):
             hf.button("Create Agent", hx_req="",
                       hx_req_type="hx-get", hx_target="#tableshow")
         ]
-        context["modelurl"] = reverse('invoice:MAgent_list')
+        context["modelurl"] = reverse('invoice:TLOTNoWiseQc_list')
         return context
 
 
@@ -635,7 +652,7 @@ class TProduction_create(SuccessMessageMixin, CreateView):
     form_class = mf.TProductionForm
     template_name = "partials/forms.html"
     context_object_name = "form"
-    success_url = reverse_lazy("invoice:MAgent_create")
+    success_url = reverse_lazy("invoice:TProduction_create")
     success_message = "successfully created"
 
     def get_context_data(self, **kwargs):
@@ -709,17 +726,18 @@ class TProduction_list(SuccessMessageMixin, ListView):
 
 class TProduction_bck_create(SuccessMessageMixin, CreateView):
 
-    model = MAgent
-    form_class = mf.MAgentForm
+    model = TProduction_bck
+    form_class = mf.TProduction_bckForm
     template_name = "partials/forms.html"
     context_object_name = "form"
-    success_url = reverse_lazy("invoice:MAgent_create")
+    success_url = reverse_lazy("invoice:TProduction_bck_create")
     success_message = "successfully created"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["buttons"] = hf.button("submit",
-                                       hx_req=reverse('invoice:MAgent_create'),
+                                       hx_req=reverse(
+                                           'invoice:TProduction_bck_create'),
                                        hx_target="#dynform",
                                        hx_swap="innerHTML")
         return context
@@ -732,12 +750,12 @@ class TProduction_bck_create(SuccessMessageMixin, CreateView):
 
 class TProduction_bck_update(SuccessMessageMixin, UpdateView):
 
-    model = MAgent
-    form_class = mf.MAgentForm
+    model = TProduction_bck
+    form_class = mf.TProduction_bckForm
     template_name = "partials/forms.html"
     context_object_name = "form"
     success_message = "successfully updated"
-    success_url = reverse_lazy('invoice:MAgent_create')
+    success_url = reverse_lazy('invoice:TProduction_bck_create')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -756,21 +774,21 @@ class TProduction_bck_update(SuccessMessageMixin, UpdateView):
 
 class TProduction_bck_delete(SuccessMessageMixin, DeleteView):
 
-    model = MAgent
+    model = TProduction_bck
     success_message = "successfully deleted"
-    success_url = reverse_lazy('invoice:MAgent_list')
+    success_url = reverse_lazy('invoice:TProduction_bck_list')
 
 
 class TProduction_bck_list(SuccessMessageMixin, ListView):
 
-    model = MAgent
+    model = TProduction_bck
     fields = '__all__'
     context_object_name = "form"
     template_name = "partials/tableview.html"
     paginate_by = 100
 
     def get_queryset(self):
-        return MAgent.objects.values()
+        return TProduction_bck.objects.values()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -780,23 +798,24 @@ class TProduction_bck_list(SuccessMessageMixin, ListView):
             hf.button("Create Agent", hx_req="",
                       hx_req_type="hx-get", hx_target="#tableshow")
         ]
-        context["modelurl"] = reverse('invoice:MAgent_list')
+        context["modelurl"] = reverse('invoice:TProduction_bck_list')
         return context
 
 
 class TProductionReel_create(SuccessMessageMixin, CreateView):
 
-    model = MAgent
-    form_class = mf.MAgentForm
+    model = TProductionReel
+    form_class = mf.TProductionReelForm
     template_name = "partials/forms.html"
     context_object_name = "form"
-    success_url = reverse_lazy("invoice:MAgent_create")
+    success_url = reverse_lazy("invoice:TProductionReel_create")
     success_message = "successfully created"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["buttons"] = hf.button("submit",
-                                       hx_req=reverse('invoice:MAgent_create'),
+                                       hx_req=reverse(
+                                           'invoice:TProductionReel_create'),
                                        hx_target="#dynform",
                                        hx_swap="innerHTML")
         return context
@@ -809,12 +828,12 @@ class TProductionReel_create(SuccessMessageMixin, CreateView):
 
 class TProductionReel_update(SuccessMessageMixin, UpdateView):
 
-    model = MAgent
-    form_class = mf.MAgentForm
+    model = TProductionReel
+    form_class = mf.TProductionReelForm
     template_name = "partials/forms.html"
     context_object_name = "form"
     success_message = "successfully updated"
-    success_url = reverse_lazy('invoice:MAgent_create')
+    success_url = reverse_lazy('invoice:TProductionReel_create')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -833,21 +852,21 @@ class TProductionReel_update(SuccessMessageMixin, UpdateView):
 
 class TProductionReel_delete(SuccessMessageMixin, DeleteView):
 
-    model = MAgent
+    model = TProductionReel
     success_message = "successfully deleted"
-    success_url = reverse_lazy('invoice:MAgent_list')
+    success_url = reverse_lazy('invoice:TProductionReel_list')
 
 
 class TProductionReel_list(SuccessMessageMixin, ListView):
 
-    model = MAgent
+    model = TProductionReel
     fields = '__all__'
     context_object_name = "form"
     template_name = "partials/tableview.html"
     paginate_by = 100
 
     def get_queryset(self):
-        return MAgent.objects.values()
+        return TProductionReel.objects.values()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -857,23 +876,23 @@ class TProductionReel_list(SuccessMessageMixin, ListView):
             hf.button("Create Agent", hx_req="",
                       hx_req_type="hx-get", hx_target="#tableshow")
         ]
-        context["modelurl"] = reverse('invoice:MAgent_list')
+        context["modelurl"] = reverse('invoice:TProductionReel_list')
         return context
 
 
 class TWB_create(SuccessMessageMixin, CreateView):
 
-    model = MAgent
-    form_class = mf.MAgentForm
+    model = TWB
+    form_class = mf.TWBForm
     template_name = "partials/forms.html"
     context_object_name = "form"
-    success_url = reverse_lazy("invoice:MAgent_create")
+    success_url = reverse_lazy("invoice:TWB_create")
     success_message = "successfully created"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["buttons"] = hf.button("submit",
-                                       hx_req=reverse('invoice:MAgent_create'),
+                                       hx_req=reverse('invoice:TWB_create'),
                                        hx_target="#dynform",
                                        hx_swap="innerHTML")
         return context
@@ -886,12 +905,12 @@ class TWB_create(SuccessMessageMixin, CreateView):
 
 class TWB_update(SuccessMessageMixin, UpdateView):
 
-    model = MAgent
-    form_class = mf.MAgentForm
+    model = TWB
+    form_class = mf.TWBForm
     template_name = "partials/forms.html"
     context_object_name = "form"
     success_message = "successfully updated"
-    success_url = reverse_lazy('invoice:MAgent_create')
+    success_url = reverse_lazy('invoice:TWB_create')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -910,21 +929,21 @@ class TWB_update(SuccessMessageMixin, UpdateView):
 
 class TWB_delete(SuccessMessageMixin, DeleteView):
 
-    model = MAgent
+    model = TWB
     success_message = "successfully deleted"
-    success_url = reverse_lazy('invoice:MAgent_list')
+    success_url = reverse_lazy('invoice:TWB_list')
 
 
 class TWB_list(SuccessMessageMixin, ListView):
 
-    model = MAgent
+    model = TWB
     fields = '__all__'
     context_object_name = "form"
     template_name = "partials/tableview.html"
     paginate_by = 100
 
     def get_queryset(self):
-        return MAgent.objects.values()
+        return TWB.objects.values()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -934,5 +953,5 @@ class TWB_list(SuccessMessageMixin, ListView):
             hf.button("Create Agent", hx_req="",
                       hx_req_type="hx-get", hx_target="#tableshow")
         ]
-        context["modelurl"] = reverse('invoice:MAgent_list')
+        context["modelurl"] = reverse('invoice:TWB_list')
         return context

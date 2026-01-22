@@ -61,7 +61,7 @@ class TableMetaData(models.Model):
         table_metadata (JSONField): store record as json string
         table_unique (bool): stores if Table data should be unique
         table_name (ForeignKey): relates TableMetaData to TableName
-        created_at (DateTimeField): stores date time value of record entry 
+        created_at (DateTimeField): stores date time value of record entry
         updated_at (DateTimeField): store date time value of record update
     """
     table_metadata = models.JSONField(encoder=DjangoJSONEncoder,
@@ -90,7 +90,7 @@ class TableData(models.Model):
         json_hash (char): stores the has of table_data field
         table_name (ForeignKey): relates tabledata to table name
         company (ForeignKey): relates tabledata to company
-        created_at (DateTimeField): stores date and time of record entry 
+        created_at (DateTimeField): stores date and time of record entry
         updated_at (DateTimeField): stores date and time of record update
     """
     table_data = models.JSONField(encoder=DjangoJSONEncoder,
@@ -122,7 +122,7 @@ class TableData(models.Model):
 
     def save(self, *args, **kwargs):
         """
-        overriding the save method to include hashing and unique flag check 
+        overriding the save method to include hashing and unique flag check
         to determine if the table_data has to be checked for uniqueness
 
         :raises ValidationError: raises validation error id duplicate data exists
@@ -301,6 +301,9 @@ class MAgent(models.Model):
     class Meta:
         ordering = ['pk']
 
+    def __str__(self):
+        return self.Agentname
+
 
 class MCategory(models.Model):
     CatID = models.UUIDField(null=False, primary_key=True,
@@ -310,6 +313,8 @@ class MCategory(models.Model):
     unit = models.CharField(null=True, max_length=10)
     chap = models.CharField(null=True, max_length=10)
 
+    def __str__(self):
+        return self.Cat
 
 # class MCompany(models.Model):
     # Compaid = models.UUIDField(
@@ -365,11 +370,17 @@ class MCustomer(models.Model):
     agentid = models.ForeignKey(MAgent, on_delete=models.CASCADE)
     CustTransport = models.CharField(null=True, max_length=60)
 
+    def __str__(self):
+        return self.Custname
+
 
 class MEmployee(models.Model):
     EMPID = models.UUIDField(null=True, default=uuid.uuid4, editable=False)
     EmpName = models.CharField(null=True, max_length=50)
     Designation = models.CharField(null=True, max_length=50)
+
+    def __str__(self):
+        return self.EmpName
 
 
 class MExportFields(models.Model):
@@ -383,6 +394,9 @@ class MExportFields(models.Model):
     DeclarationLine3 = models.CharField(null=True, max_length=100)
     DeclarationLine4 = models.CharField(null=True, max_length=100)
     INVBackPageHeading = models.CharField(null=True, max_length=100)
+
+    def __str__(self):
+        return self.ExportID
 
 
 class MShade(models.Model):
@@ -398,6 +412,9 @@ class MShade(models.Model):
     GroupCategory = models.BigIntegerField(null=True)
     StockTrans_Y_N = models.CharField(null=True, max_length=10)
 
+    def __str__(self):
+        return self.ShadeCode
+
 
 class MItem(models.Model):
     Itemid = models.UUIDField(
@@ -407,6 +424,9 @@ class MItem(models.Model):
         MShade, on_delete=models.CASCADE)
     SizeD = models.CharField(null=True, max_length=10)
     GSM = models.CharField(null=True, max_length=10)
+
+    def __str__(self):
+        return self.ItemCode
 
 
 class MItemCategory(models.Model):
@@ -418,21 +438,30 @@ class MItemCategory(models.Model):
         Company, on_delete=models.CASCADE)
     remarks = models.CharField(null=True, max_length=250)
 
+    def __str__(self):
+        return self.HSNCode
+
 
 class MItemRate(models.Model):
-    CatId = models.UUIDField(null=False, primary_key=True,
-                             default=uuid.uuid4, editable=False)
-    Cat = models.CharField(null=False, max_length=100)
-    HSNCode = models.CharField(null=True, max_length=20)
-    UnitID = models.ForeignKey(
-        Company, on_delete=models.CASCADE)
-    remarks = models.CharField(null=True, max_length=250)
+    ItemRateID = models.UUIDField(null=False,
+                                  primary_key=True, default=uuid.uuid4, editable=False)
+    CatID = models.ForeignKey(MCategory, on_delete=models.CASCADE)
+    ItemID = models.ForeignKey(MItem, on_delete=models.CASCADE)
+    CustID = models.ForeignKey(MCustomer, on_delete=models.CASCADE)
+    AgentID = models.ForeignKey(MAgent, on_delete=models.CASCADE)
+    Rate = models.FloatField(null=False)
+
+    def __str__(self):
+        return self.Rate
 
 
 class MLocation(models.Model):
     LocationID = models.UUIDField(
         null=True, default=uuid.uuid4, editable=False)
     Location = models.CharField(null=True, max_length=20)
+
+    def __str__(self):
+        return self.Location
 
 
 class MPlusMinusHead(models.Model):
@@ -441,6 +470,9 @@ class MPlusMinusHead(models.Model):
     Plus_Minus = models.CharField(null=True, max_length=10)
     Api = models.CharField(null=True, max_length=10)
     Ref = models.CharField(null=True, max_length=10)
+
+    def __str__(self):
+        return self.Head
 
 
 class MSupplier(models.Model):
@@ -456,8 +488,11 @@ class MSupplier(models.Model):
     SuppType = models.CharField(null=True, max_length=10)
     GSTNo = models.CharField(null=True, max_length=50)
 
+    def __str__(self):
+        return self.Suppname
 
-class TempDP(models.Model):
+
+class TempDP(models.Model):  # despatch
     SrNo = models.BigAutoField(primary_key=True, null=False)
     GSM = models.FloatField(null=True)
     SizeD = models.FloatField(null=True)
@@ -467,6 +502,9 @@ class TempDP(models.Model):
     GroupD = models.CharField(null=True, max_length=10)
     CustName = models.CharField(null=True, max_length=100)
     Indentno = models.CharField(null=True, max_length=20)
+
+    def __str__(self):
+        return self.SrNo
 
 
 class TempWeightSlip(models.Model):
@@ -482,6 +520,9 @@ class TempWeightSlip(models.Model):
     NetWt = models.FloatField(null=True)
     IDateTime = models.CharField(null=True, max_length=20)
     ODateTime = models.CharField(null=True, max_length=20)
+
+    def __str__(self):
+        return self.TicketNo
 
 
 class TInvoice(models.Model):
@@ -535,6 +576,9 @@ class TInvoice(models.Model):
     # UpdateUser
     # UpdateDate
 
+    def __str__(self):
+        return self.InvoiceNo
+
 
 class TExport(models.Model):
     ExportID = models.UUIDField(
@@ -568,6 +612,9 @@ class TExport(models.Model):
     HSCode = models.CharField(null=True, max_length=50)
     DescriptionGoods = models.CharField(null=True, max_length=100)
 
+    def __str__(self):
+        return self.ExportID
+
 
 class TExportDetails(models.Model):
     ExportDetailsID = models.UUIDField(
@@ -591,6 +638,9 @@ class TExportDetails(models.Model):
     NoOFReam = models.FloatField(null=True)
     REAMWt = models.FloatField(null=True)
 
+    def __str__(self):
+        return self.ExportDetailsID
+
 
 class TIndent(models.Model):
     IndentID = models.AutoField(primary_key=True)
@@ -601,6 +651,9 @@ class TIndent(models.Model):
     PONo = models.CharField(null=True, max_length=20)
     PODate = models.DateTimeField(null=True)
     remark = models.CharField(null=True, max_length=150)
+
+    def __str__(self):
+        return self.IndentNo
 
 
 class TJumboRollWiseQC(models.Model):
@@ -635,6 +688,9 @@ class TJumboRollWiseQC(models.Model):
     JumboRollWeight = models.FloatField(null=True)
     DateM = models.CharField(null=True, max_length=10)
 
+    def __str__(self):
+        return self.JumboRollNo
+
 
 class TLOTNoWiseQc(models.Model):
     LOTNoWiseQcID = models.UUIDField(
@@ -664,6 +720,9 @@ class TLOTNoWiseQc(models.Model):
     FPNo = models.CharField(null=True, max_length=10)
     Sized = models.CharField(null=True, max_length=10)
     GSM = models.CharField(null=True, max_length=10)
+
+    def __str__(self):
+        return self.LotNo
 
 
 class TProduction(models.Model):
@@ -702,6 +761,9 @@ class TProduction(models.Model):
     P_M_Remarks = models.CharField(null=True, max_length=60)
     Ind_Weight = models.FloatField(null=True)
     CM_Inch = models.CharField(null=True, max_length=10)
+
+    def __str__(self):
+        return self.ProductionID
 
 
 class TProduction_bck(models.Model):

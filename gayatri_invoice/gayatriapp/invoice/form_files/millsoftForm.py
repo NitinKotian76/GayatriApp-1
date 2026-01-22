@@ -4,6 +4,7 @@ from ..models import (MAgent, MCategory, MCustomer, MEmployee,
 from ..models import (TempDP, TempWeightSlip, TExport, TExportDetails, TIndent,
                       TInvoice, TJumboRollWiseQC, TLOTNoWiseQc, TProduction,
                       TProduction_bck, TProductionReel, TWB)
+from ..models import RChallan
 from django import forms
 
 
@@ -196,4 +197,12 @@ class TWBForm(forms.ModelForm):
 
     class Meta:
         model = TWB
+        fields = "__all__"
+
+
+class RChallanForm(forms.ModelForm):
+    template_name = "form_snippet.html"
+
+    class Meta:
+        model = RChallan
         fields = "__all__"

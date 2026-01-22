@@ -1,0 +1,314 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Indent Document</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: Arial, sans-serif;
+        font-size: 11px;
+        line-height: 1.4;
+        color: #000;
+        background: #fff;
+      }
+      .page {
+        width: 210mm;
+        height: 297mm;
+        padding: 15mm;
+        margin: auto;
+        background: white;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+      .header {
+        display: grid;
+        grid-template-columns: 1fr 2fr;
+        gap: 20px;
+        margin-bottom: 15px;
+        padding-bottom: 10px;
+      }
+      .company-info {
+	text-align: center;
+        font-weight: bold;
+        line-height: 1.6;
+      }
+      .company-info .name {
+        font-size: 13px;
+        font-weight: bold;
+      }
+      .company-info .address {
+        font-size: 10px;
+        margin-top: 5px;
+      }
+      .meta-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-bottom: 15px;
+        font-size: 10px;
+      }
+      .meta-item {
+        display: grid;
+        grid-template-columns: 100px 1fr;
+        gap: 10px;
+      }
+      .meta-label {
+        font-weight: bold;
+      }
+      .to-section {
+        margin-bottom: 15px;
+        padding: 10px;
+      }
+      .to-section .title {
+        font-weight: bold;
+        margin-bottom: 8px;
+        text-decoration: underline;
+      }
+      .to-section .content {
+        font-size: 10px;
+        line-height: 1.6;
+      }
+      .delivery-section {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+        margin-bottom: 15px;
+        font-size: 10px;
+      }
+      .delivery-box {
+        border: 1px solid #000;
+        padding: 8px;
+      }
+      .delivery-box .title {
+        font-weight: bold;
+        text-decoration: underline;
+        margin-bottom: 5px;
+      }
+      .delivery-box .label {
+        font-weight: bold;
+        margin-top: 5px;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 10px;
+      }
+      th {
+        background: #f0f0f0;
+        border: 1px solid #000;
+        padding: 6px;
+        text-align: left;
+        font-weight: bold;
+        font-size: 10px;
+      }
+      td {
+        border: 1px solid #000;
+        padding: 6px;
+        font-size: 10px;
+      }
+      .table-total {
+        text-align: right;
+        font-weight: bold;
+      }
+      .remarks-section {
+        margin-top: 10px;
+        font-size: 10px;
+        line-height: 1.6;
+      }
+      .remarks-section .label {
+        font-weight: bold;
+      }
+      .notes {
+        font-size: 9px;
+        margin-top: 10px;
+        line-height: 1.5;
+      }
+      .footer {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        margin-top: 20px;
+        text-align: center;
+      }
+      .footer-item {
+        grid-column: 2/3;
+        font-size: 10px;
+        padding-top: 5px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <!-- Header -->
+      <div class="header">
+        <div class="company-logo">
+        </div>
+        <div class="company-info">
+          <div class="name">{{ company_name }}</div>
+          <div class="address">
+            {{ company_address_line1 }}<br />
+            {{ company_address_line2 }}<br />
+            {{ company_address_line3 }}<br />
+            TEL.: {{ company_phone }}
+          </div>
+        </div>
+      </div>
+
+      <!-- Recipient Info -->
+      <div class="to-section">
+        <div class="title">To M/s. ({{ recipient_code }})</div>
+        <div class="content">
+          {{ recipient_name }}<br />
+          {{ recipient_address_line1 }}<br />
+          {{ recipient_address_line2 }}<br />
+          {{ recipient_address_line3 }}<br />
+	  {{ recipient_address_line4 }} <br/>
+	  {{ recipient_city }} - {{recipient_postal_code }}, {{ recipient_state }}, {{ recipient_country
+          }}<br />
+	  <strong>GST No :</strong> {{ recipient_gst_number }}<br/>
+	  <Strong>PAN No.:</strong> {{ company_pan_number }}
+        </div>
+      </div>
+
+      <!-- Meta Info Grid -->
+      <div class="meta-grid">
+        <div class="meta-item">
+          <span class="meta-label">INDENT NO.:</span>
+          <span>{{ indent_number }}</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">DATE:</span>
+          <span>{{ indent_date }}</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">ORDER NO.:</span>
+          <span>{{ order_number }}</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">VER DATE:</span>
+          <span>{{ ver_date }}</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">LOCATION CODE:</span>
+          <span>{{ location_code }}</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">INSURANCE TO BE CHARGED (Y/N):</span>
+          <span>{{ insurance_charged }}</span>
+        </div>
+      </div>
+
+      <!-- Delivery Options -->
+      <div class="meta-grid">
+        <div class="meta-item">
+          <span class="meta-label">Day Closed:</span>
+          <span>{{ day_closed }}</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Delivery Period:</span>
+          <span>{{ delivery_period }}</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Documents:</span>
+          <span>{{ documents }}</span>
+        </div>
+      </div>
+
+      <!-- Greeting -->
+      <p style="margin-bottom: 10px; font-size: 11px; margin-top: 10px">
+        <strong>Dear Sirs,</strong><br />
+        We are pleased to book your order as under
+      </p>
+
+      <!-- Items Table -->
+      <table>
+        <thead>
+          <tr>
+            <th style="width: 5%">SI.No.</th>
+            <th style="width: 30%">VARIETY</th>
+            <th style="width: 15%">SIZE</th>
+            <th style="width: 10%">GSM</th>
+            <th style="width: 15%">QUANTITY</th>
+            <th style="width: 12%">RATE</th>
+            <th style="width: 13%">REMARKS</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in items %}
+          <tr>
+            <td>{{ loop.index }}</td>
+            <td>{{ item.variety }}</td>
+            <td>{{ item.size }}</td>
+            <td>{{ item.gsm }}</td>
+            <td style="text-align: right">{{ item.quantity }}</td>
+            <td style="text-align: right">{{ item.rate }}</td>
+            <td>{{ item.remarks }}</td>
+          </tr>
+          {% endfor %}
+          <tr style="font-weight: bold">
+            <td colspan="4"></td>
+            <td style="text-align: right">Total Qty</td>
+            <td style="text-align: right">{{ total_quantity }}</td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Remarks -->
+      <div class="remarks-section">
+        <span class="label">Remarks:</span> {{ remarks }}
+      </div>
+
+      <!-- Terms & Conditions -->
+      <div class="notes">
+        <p>
+          <strong
+            >ABOVE RATES ARE BASIC RATES, ALL DUTIES & TAXES WILL BE EXTRA,
+            FREIGHT AND OCTROI IF ANY WILL BE ON PAY BASIS.</strong
+          >
+        </p>
+        <p style="margin-top: 8px">
+          Payment will be strictly in {{ payment_days }} days from the date of
+          our bill as specified, in case of delay {{ late_interest }}% interest
+          will be charged extra.
+        </p>
+      </div>
+
+      <!-- Delivery Section -->
+      <div class="delivery-section">
+        <div class="delivery-box">
+          <div class="title">Name of the Consignee :</div>
+          <div class="label">{{ consignee_name }}</div>
+          <div style="margin-top: 8px">
+            {{ consignee_address_line1 }}<br />{{ consignee_address_line2 }}<br />{{
+            consignee_city }} - {{ consignee_postal_code }} {{ consignee_state
+            }} ({{ consignee_country }})
+          </div>
+        </div>
+        <div class="delivery-box">
+          <div class="title">Delivery Address:</div>
+          <div style="margin-top: 8px">
+            {{ delivery_address_name }}<br />{{ delivery_address_line1 }}<br />{{
+            delivery_address_line2 }}<br />{{ delivery_city }} - {{
+            delivery_postal_code }} {{ delivery_state }} ({{ delivery_country
+            }})
+          </div>
+        </div>
+      </div>
+      <!-- Footer -->
+      <div class="footer">
+        <div class="footer-item">
+          For <strong>GAYATRISHAKTI PAPER & BOARDS LTD. (UNIT-I)</strong><br />
+          <br />
+          ________________________________________<br />
+          Authorized Signature
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
