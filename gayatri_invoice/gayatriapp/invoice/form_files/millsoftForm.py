@@ -1,9 +1,9 @@
 from ..models import (MAgent, MCategory, MCustomer, MEmployee,
                       MExportFields, MItem, MItemCategory, MItemRate,
                       MLocation, MPlusMinusHead, MShade, MSupplier)
-from ..models import (TempDP, TempWeightSlip, TExport, TExportDetails, TIndent,
+from ..models import (TExport, TExportDetails, TIndent,
                       TInvoice, TJumboRollWiseQC, TLOTNoWiseQc, TProduction,
-                      TProduction_bck, TProductionReel, TWB)
+                      TProduction_bck, TProductionReel)
 from ..models import RChallan
 from django import forms
 
@@ -104,22 +104,6 @@ class MSupplierForm(forms.ModelForm):
         fields = "__all__"
 
 
-class TempDPForm(forms.ModelForm):
-    template_name = "form_snippet.html"
-
-    class Meta:
-        model = TempDP
-        fields = "__all__"
-
-
-class TempWeightSlipForm(forms.ModelForm):
-    template_name = "form_snippet.html"
-
-    class Meta:
-        model = TempWeightSlip
-        fields = "__all__"
-
-
 class TExportForm(forms.ModelForm):
     template_name = "form_snippet.html"
 
@@ -189,14 +173,6 @@ class TProductionReelForm(forms.ModelForm):
 
     class Meta:
         model = TProductionReel
-        fields = "__all__"
-
-
-class TWBForm(forms.ModelForm):
-    template_name = "form_snippet.html"
-
-    class Meta:
-        model = TWB
         fields = "__all__"
 
 

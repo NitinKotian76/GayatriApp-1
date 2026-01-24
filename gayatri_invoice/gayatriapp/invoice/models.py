@@ -492,39 +492,6 @@ class MSupplier(models.Model):
         return self.Suppname
 
 
-class TempDP(models.Model):  # despatch
-    SrNo = models.BigAutoField(primary_key=True, null=False)
-    GSM = models.FloatField(null=True)
-    SizeD = models.FloatField(null=True)
-    SizeCutting = models.FloatField(null=True)
-    qty = models.FloatField(null=False)
-    ReamWt = models.FloatField(null=True)
-    GroupD = models.CharField(null=True, max_length=10)
-    CustName = models.CharField(null=True, max_length=100)
-    Indentno = models.CharField(null=True, max_length=20)
-
-    def __str__(self):
-        return self.SrNo
-
-
-class TempWeightSlip(models.Model):
-    TicketNo = models.CharField(null=True, max_length=20)
-    VehicleNo = models.CharField(null=True, max_length=50)
-    Product = models.CharField(null=True, max_length=50)
-    SupplierName = models.CharField(null=True, max_length=50)
-    SupplierNetWeight = models.FloatField(null=True)
-    WeightDiffrence = models.FloatField(null=True)
-    Remarks = models.CharField(null=True, max_length=50)
-    GrossWt = models.FloatField(null=True)
-    TareWt = models.FloatField(null=True)
-    NetWt = models.FloatField(null=True)
-    IDateTime = models.CharField(null=True, max_length=20)
-    ODateTime = models.CharField(null=True, max_length=20)
-
-    def __str__(self):
-        return self.TicketNo
-
-
 class TInvoice(models.Model):
     InvoiceID = models.UUIDField(
         primary_key=True, default=uuid.uuid4, editable=False)
@@ -813,31 +780,6 @@ class TProductionReel(models.Model):
     StkDate = models.DateTimeField(null=True)
     InvDate = models.DateTimeField(null=True)
     RefProductionReelid = models.UUIDField(null=True)
-
-
-class TWB(models.Model):
-    WBID = models.UUIDField(
-        primary_key=True, default=uuid.uuid4, editable=False)
-    TicketNo = models.FloatField(null=True)
-    WBDate = models.DateTimeField(null=True)
-    WBTime = models.CharField(null=True, max_length=10)
-    TRansactionType = models.CharField(null=True, max_length=50)
-    WeightType = models.CharField(null=True, max_length=50)
-    VehicleNo = models.CharField(null=True, max_length=50)
-    Product = models.CharField(null=True, max_length=50)
-    SupplierNetWT = models.FloatField(null=True)
-    DNetWt = models.FloatField(null=True)
-    SupplierName = models.CharField(null=True, max_length=50)
-    TransporterName = models.CharField(null=True, max_length=50)
-    Driver = models.CharField(null=True, max_length=50)
-    Remarks = models.CharField(null=True, max_length=50)
-    TareWt = models.FloatField(null=True)
-    GrossWt = models.FloatField(null=True)
-    NetWt = models.FloatField(null=True)
-    IDate = models.CharField(null=True, max_length=20)
-    ITime = models.CharField(null=True, max_length=20)
-    ODate = models.CharField(null=True, max_length=20)
-    OTime = models.CharField(null=True, max_length=20)
 
 
 class RChallan(models.Model):

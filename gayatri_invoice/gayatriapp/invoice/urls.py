@@ -68,6 +68,15 @@ millsoft_master_urls = [
          name="MAgent_delete"),
     path("magent/", millsoft_master_view.MAgent_list.as_view(), name="MAgent_list"),
 
+    path("mcategory/create/", millsoft_master_view.MCategory_create.as_view(),
+         name="MCategory_create"),
+    path("mcategory/<uuid:pk>/update/",
+         millsoft_master_view.MCategory_update.as_view(), name="MCategory_update"),
+    path("mcategory/<uuid:pk>/delete/",
+         millsoft_master_view.MCategory_delete.as_view(), name="MCategory_delete"),
+    path("mcategory/", millsoft_master_view.MCategory_list.as_view(),
+         name="MCategory_list"),
+
 ]
 millsoft_transact_urls = [
     path("tproduction/", millsoft_transaction_view.TProduction_list.as_view(),
@@ -84,8 +93,11 @@ millsoft_transact_urls = [
          name="TInvoice_list"),
 ]
 millsoft_report_urls = [
-    path("rchallan/", millsoft_report_view.RChallan_create.as_view(),
+    path("rchallan/create/", millsoft_report_view.RChallan_create,
          name="RChallan_create"),
+    path("rchallan/download/<str:filename>/", millsoft_report_view.download_challan,
+         name="download_challan"),
+
 ]
 
 millsoft_urlpatterns = (

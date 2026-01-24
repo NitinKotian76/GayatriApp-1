@@ -1,80 +1,64 @@
 from datetime import datetime
-from django.contrib.messages.views import SuccessMessageMixin
-from django.views.generic import (CreateView, UpdateView, DeleteView, ListView)
+from django.conf import settings
+from django.contrib import messages
+from django.http import FileResponse, HttpResponse, StreamingHttpResponse
+from django.template.loader import render_to_string
 from django.urls import (reverse_lazy, reverse)
 from django_htmx.http import trigger_client_event
-from django.views.decorators.cache import never_cache
-from django.utils.decorators import method_decorator
 
 from ...form_files import (helperFunct as hf, millsoftForm as mf)
 from ...models import (RChallan)
 
 from weasyprint import HTML
+from io import BytesIO
+import os
+import uuid
 import logging
 logger = logging.getLogger(__name__)
 
 
-class RChallan_create(SuccessMessageMixin, CreateView):
-    model = RChallan
-    success_url = reverse_lazy("invoice:RChallan_create")
-    success_message = "successfully created"
+def RChallan_create(request):
+    if request.method == "POST":
+        logger.debug("the pdf view ran")
+        pdf_buffer = BytesIO()
 
-    def form_valid(self, form):
-        form.save()
         html_string = render_to_string(
-            "DemoTemplate.html", {"company": "gayatrishakti paper and boards ltd"})
-        HTML(html_string).write_pdf("demo.pdf")
-        response = self.render_to_response(self.get_context_data())
-        return trigger_client_event(response, "RefreshTable")
+            "DemoTemplate.html", {"company_name": "GAYATRISHAKTI PAPER AND BOARDS LTD"})
+        logger.debug(html_string)
+        HTML(string=html_string).write_pdf(pdf_buffer)
+
+        filename = f"challan_{uuid.uuid4().hex[:8]}.pdf"
+        pdf_path = os.path.join(settings.MEDIA_ROOT, "challans", filename)
+        os.makedirs(os.path.dirname(pdf_path), exist_ok=True)
+
+        with open(pdf_path, 'wb') as f:
+            f.write(pdf_buffer.getvalue())
+
+        download_url = reverse("invoice:download_challan", args=[filename])
+
+        messages.success(request, "pdf created")
+        response = HttpResponse("pdf created")
+        response["HX-Redirect"] = download_url
+        return response
+    return HttpResponse(status=204)
 
 
-# class RChallan_update(SuccessMessageMixin, UpdateView):
-#     model = RChallan
-#     form_class = mf.RChallanForm
-#     template_name = "partials/forms.html"
-#     context_object_name = "form"
-#     success_message = "successfully updated"
-#     success_url = reverse_lazy('invoice:RChallan_create')
-#
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         context["buttons"] = hf.button("submit",
-#                                        hx_req=f"{self.request.path}",
-#                                        hx_target="#dynform",
-#                                        hx_swap="innerHTML")
-#
-#         return context
-#
-#     def form_valid(self, form):
-#         form.save()
-#         response = self.render_to_response(self.get_context_data())
-#         return trigger_client_event(response, "RefreshTable")
-#
-#
-# class RChallan_delete(SuccessMessageMixin, DeleteView):
-#     model = RChallan
-#     success_message = "successfully deleted"
-#     success_url = reverse_lazy('invoice:RChallan_list')
-#
-#
-# @method_decorator(never_cache, name='dispatch')
-# class RChallan_list(ListView):
-#     model = RChallan
-#     fields = '__all__'
-#     context_object_name = "form"
-#     template_name = "partials/tableview.html"
-#     paginate_by = 100
-#
-#     def get_queryset(self):
-#         return RChallan.objects.values()
-#
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         # Already dicts from .values()
-#         context['listdata'] = list(context['object_list'])
-#         context['buttons'] = [
-#             hf.button("Create Agent", hx_req="",
-#                       hx_req_type="hx-get", hx_target="#tableshow")
-#         ]
-#         context["modelurl"] = reverse('invoice:RChallan_list')
-#         return context
+def download_challan(request, filename):
+    pdf_path = os.path.join(settings.MEDIA_ROOT, "challans", filename)
+
+    if not os.path.exists(pdf_path):
+        return HttpResponse("File not Found", status=404)
+
+    def file_iterator(file_path, chunk_size=8192):
+        with open(pdf_path, "rb") as f:
+            while True:
+                data = f.read(chunk_size)
+                if not data:
+                    break
+                yield data
+
+    response = StreamingHttpResponse(
+        file_iterator(pdf_path),
+        content_type="application/pdf")
+    response['Content-Disposition'] = f'attachment;filename="{filename}"'
+    return response

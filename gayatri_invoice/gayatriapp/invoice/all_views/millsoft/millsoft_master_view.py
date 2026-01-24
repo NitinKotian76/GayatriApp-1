@@ -154,33 +154,14 @@ class MCategory_list(SuccessMessageMixin, ListView):
 
     def get_queryset(self):
         return MCategory.objects.values()
+        # annotate(pk_str=Cast("pk", output_field=CharField())).
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         # Already dicts from .values()
         context['listdata'] = list(context['object_list'])
         context['buttons'] = [
-            hf.button("Create Agent", hx_req="",
-                      hx_req_type="hx-get", hx_target="#tableshow")
-        ]
-        context["modelurl"] = reverse('invoice:MCategory_list')
-        return context
-
-    model = MCategory
-    fields = '__all__'
-    context_object_name = "form"
-    template_name = "partials/tableview.html"
-    paginate_by = 100
-
-    def get_queryset(self):
-        return MCategory.objects.values()
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        # Already dicts from .values()
-        context['listdata'] = list(context['object_list'])
-        context['buttons'] = [
-            hf.button("Create Agent", hx_req="",
+            hf.button("button", hx_req="",
                       hx_req_type="hx-get", hx_target="#tableshow")
         ]
         context["modelurl"] = reverse('invoice:MCategory_list')
