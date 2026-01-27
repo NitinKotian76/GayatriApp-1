@@ -5,6 +5,8 @@ from django.http import FileResponse, HttpResponse, StreamingHttpResponse
 from django.template.loader import render_to_string
 from django.urls import (reverse_lazy, reverse)
 from django_htmx.http import trigger_client_event
+from django.db.models.functions import Cast
+from django.db.models import CharField
 
 from ...form_files import (helperFunct as hf, millsoftForm as mf)
 from ...models import (RChallan)

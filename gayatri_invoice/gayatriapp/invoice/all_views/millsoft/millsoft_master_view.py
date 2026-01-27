@@ -6,11 +6,14 @@ from django.urls import (reverse_lazy, reverse)
 from django_htmx.http import trigger_client_event
 from django.views.decorators.cache import never_cache
 from django.utils.decorators import method_decorator
+from django.db.models.functions import Cast
+from django.db.models import CharField
 
 from ...form_files import (helperFunct as hf, millsoftForm as mf)
 from ...models import (MAgent, MCategory, MCustomer, MEmployee,
                        MExportFields, MItem, MItemCategory, MItemRate,
                        MLocation, MPlusMinusHead, MShade, MSupplier)
+
 import logging
 logger = logging.getLogger(__name__)
 
@@ -153,8 +156,7 @@ class MCategory_list(SuccessMessageMixin, ListView):
     paginate_by = 100
 
     def get_queryset(self):
-        return MCategory.objects.values()
-        # annotate(pk_str=Cast("pk", output_field=CharField())).
+        return MCategory.objects.annotate(pk_str=Cast("pk", output_field=CharField())).values()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

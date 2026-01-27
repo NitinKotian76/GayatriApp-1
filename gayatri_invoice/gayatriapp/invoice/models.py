@@ -285,7 +285,8 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
 
 class MAgent(models.Model):
-    AgentId = models.BigAutoField(primary_key=True, null=False)
+    AgentId = models.UUIDField(
+        primary_key=True, default=uuid.uuid4, null=False)
     Agentname = models.CharField(null=True, max_length=100)
     Bname = models.CharField(null=True, max_length=250)
     Area = models.CharField(null=True, max_length=30)
@@ -465,7 +466,7 @@ class MLocation(models.Model):
 
 
 class MPlusMinusHead(models.Model):
-    HeadID = models.BigAutoField(primary_key=True, null=False)
+    HeadID = models.UUIDField(primary_key=True, default=uuid.uuid4, null=False)
     Head = models.CharField(null=True, max_length=50)
     Plus_Minus = models.CharField(null=True, max_length=10)
     Api = models.CharField(null=True, max_length=10)
@@ -476,7 +477,7 @@ class MPlusMinusHead(models.Model):
 
 
 class MSupplier(models.Model):
-    SuppId = models.BigAutoField(primary_key=True, null=False)
+    SuppId = models.UUIDField(primary_key=True, default=uuid.uuid4, null=False)
     Suppname = models.CharField(null=True, max_length=100)
     Bname = models.CharField(null=True, max_length=250)
     Area = models.CharField(null=True, max_length=30)

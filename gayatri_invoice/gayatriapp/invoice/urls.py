@@ -76,7 +76,14 @@ millsoft_master_urls = [
          millsoft_master_view.MCategory_delete.as_view(), name="MCategory_delete"),
     path("mcategory/", millsoft_master_view.MCategory_list.as_view(),
          name="MCategory_list"),
-
+    path("mcustomer/create/", millsoft_master_view.MCustomer_create.as_view(),
+         name="MCustomer_create"),
+    path("mcustomer/<int:pk>/update/", millsoft_master_view.MCustomer_update.as_view(),
+         name="MCustomer_update"),
+    path("mcustomer/<int:pk>/delete/", millsoft_master_view.MCustomer_delete.as_view(),
+         name="MCustomer_delete"),
+    path("mcustomer/", millsoft_master_view.MCustomer_list.as_view(),
+         name="MCustomer_list"),
 ]
 millsoft_transact_urls = [
     path("tproduction/", millsoft_transaction_view.TProduction_list.as_view(),
