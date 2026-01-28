@@ -1,5 +1,6 @@
 from .LoadFunct import Filedata
 from django.utils.html import format_html, format_html_join
+from django.utils.safestring import mark_safe
 from django.http import JsonResponse
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
@@ -27,20 +28,31 @@ def button(name: str, **kwargs):
 
     hx_req_type = kwargs.get("hx_req_type", "hx-post")
     hx_req = kwargs.get("hx_req", "")
-    hx_vals = kwargs.get("hx_vals", "{}")
+    hx_vals = kwargs.get("hx_vals", "")
     hx_target = kwargs.get("hx_target", "#dynform")
     hx_swap = kwargs.get("hx_swap", "innerHTML")
     attrs = kwargs.get("attrs", {})
 
     attrs_html = format_html_join(" ", '{}="{}"', attrs.items())
 
-    html = format_html("<input class='w3-button w3-ripple w3-green w3-padding w3-margin'\
-                type='button' value='{}' \
-                {}={}\
-                hx-vals=\'{}\'\
-                hx-target={}\
-                hx-swap={}\
-                {}/>", name, hx_req_type, hx_req, json.dumps(hx_vals), hx_target, hx_swap, attrs_html)
+    html = format_html("<input class='w3-button w3-ripple w3-green w3-padding w3-margin'"
+                       "type='button' value='{}' "
+                       "{}='{}'"
+                       "hx-target='{}'"
+                       "hx-swap='{}'"
+                       "{}/>", name, hx_req_type, hx_req,
+                       hx_target, hx_swap, attrs_html)
+    if hx_vals != "":
+        html = format_html("<input class='w3-button w3-ripple w3-green w3-padding w3-margin'"
+                           "type='button' value='{}' "
+                           "{}='{}'"
+                           "hx-vals='{}'"
+                           "hx-target='{}'"
+                           "hx-swap='{}'"
+                           "{}/>", name, hx_req_type, hx_req,
+                           json.dumps(hx_vals),
+                           hx_target, hx_swap, attrs_html)
+
     return html
 
 

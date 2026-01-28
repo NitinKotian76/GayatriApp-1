@@ -20,7 +20,7 @@
         hx-get="/invoice/table_data_view"
         hx-trigger="click from:closest (a)"
         hx-target="#tableview"
-        hx-vals='{"table_name":"open_bal_prod"}'
+        hx-vals='{"table_name":"production"}'
         hx-swap="innerHTML"
       ></div>
       Opening balance Production
@@ -29,15 +29,15 @@
       href="#"
       class="w3-bar-item w3-button w3-ripple"
       id="editreport"
-      hx-get="/invoice/form_view"
+      hx-get="/invoice/tproduction/create"
       hx-target="#mainform"
       hx-vals='{"form":"production"}'
     >
       <div
-        hx-get="/invoice/table_data_view"
+        hx-get="/invoice/tproduction"
         hx-trigger="click from:closest (a)"
         hx-target="#tableview"
-        hx-vals='{"form": "production"}'
+        hx-vals='{"table_name": "production"}'
         hx-swap="innerHTML"
       ></div>
       Production
@@ -46,7 +46,7 @@
       href="#"
       class="w3-bar-item w3-button w3-ripple"
       id="deletereport"
-      hx-get="/invoice/form_view"
+      hx-get="/invoice/tproduction"
       hx-target="#mainform"
       hx-vals='{"form":"prod_plus_minus"}'
     >
@@ -66,10 +66,17 @@
       href="#"
       class="w3-bar-item w3-button w3-ripple"
       id="deletereport"
-      hx-get="/invoice/form_view"
+      hx-get="/invoice/tinvoice/create"
       hx-target="#mainform"
       hx-vals='{"form":"invoice"}'
-    >
+      ><div
+        hx-get="/invoice/tinvoice"
+        hx-trigger="click from:closest (a)"
+        hx-target="#tableview"
+        hx-vals='{"table_name": "production"}'
+        hx-swap="innerHTML"
+      ></div>
+
       Invoice
     </a>
     <a

@@ -7,6 +7,9 @@ from django.http import HttpResponse
 from django.views.decorators.csrf import ensure_csrf_cookie, csrf_protect
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib import messages as msg
+from django.views.decorators.cache import never_cache
+from django.utils.decorators import method_decorator
+from django.views import View
 import logging
 from ..models import *
 from ..form_files import *
@@ -70,10 +73,10 @@ def profile_user(request):
 # IMPROVEMENT NEEDED: Add proper pagination handling
 
 
-@ensure_csrf_cookie
-@login_required
-def get_notifications(request):
-    messages = msg.get_messages(request)
-    if messages:
-        return HttpResponse(render_to_string("partials/notif.html", {"messages": messages}))
-    return HttpResponse("")
+@method_decorator(never_cache, name='dispatch')
+class get_notifications(View):
+    def get(self, request, *args, **kwargs):
+        messages = msg.get_messages(request)
+        if messages:
+            return HttpResponse(render_to_string("partials/notif.html", {"messages": messages}))
+        return HttpResponse(status=204)

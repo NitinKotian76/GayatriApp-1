@@ -22,12 +22,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-$q6n3t_3#gv#w9c@mxmo86=&snjb_eur5jq2k)!c8pn6-1axoj"
+SECRET_KEY = config('DJANGO_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config('DEBUG', default=False, cast=bool)
 
-ALLOWED_HOSTS = ["testserver", "localhost"]
+
+ALLOWED_HOSTS = config('DJANGO_ALLOWED_HOSTS', default='').split(',')
 
 AUTH_USER_MODEL = "invoice.CustomUser"
 # Application definition
@@ -40,21 +41,19 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "axes",
-    "django_htmx",
 ]
 
 MIDDLEWARE = [
     "django.middleware.cache.UpdateCacheMiddleware",
     # start of cache middleware
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "axes.middleware.AxesMiddleware",
-    "django_htmx.middleware.HtmxMiddleware",
     # end of cache middleware
     "django.middleware.cache.FetchFromCacheMiddleware",
 ]
@@ -72,8 +71,6 @@ ROOT_URLCONF = "main.urls"
 LOGIN_URL = "/invoice"
 LOGIN_REDIRECT_URL = "/invoice/index"
 LOGOUT_REDIRECT_URL = "/invoice"
-
-AXES_RESET_ON_SUCCESS = True
 
 TEMPLATES = [
     {
@@ -100,11 +97,11 @@ WSGI_APPLICATION = "main.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": "gayatri",
-        "USER": "postgres",
-        "PASSWORD": "gayatri",
-        "HOST": "127.0.0.1",
-        "PORT": "5432",
+        "NAME": config('DATABASE_NAME'),
+        "USER": config('DATABASE_USERNAME'),
+        "PASSWORD": config('DATABASE_PASSWORD'),
+        "HOST": config('DATABASE_HOST', default='127.0.0.1'),
+        "PORT": config('DATABASE_PORT', default='5432'),
     }
 }
 
@@ -127,14 +124,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-# authentication backend
-AUTHENTICATION_BACKENDS = [
-    # AxesStandaloneBackend should be the first backend in the AUTHENTICATION_BACKENDS list.
-    'axes.backends.AxesStandaloneBackend',
-
-    # Django ModelBackend is the default authentication backend.
-    'django.contrib.auth.backends.ModelBackend',
-]
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
@@ -151,13 +140,15 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = "static/"
-STATIC_ROOT = os.path.join(BASE_DIR, "static")
-# Default primary key field type
-# https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
+STATIC_URL = '/static/'
+STATIC_ROOT = '/app/staticfiles/'
+
 MEDIA_URL = "/media/"
 MEDIA_DIR = os.path.join(BASE_DIR, "media")
 MEDIA_ROOT = MEDIA_DIR
+
+# Default primary key field type
+# https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
@@ -168,14 +159,10 @@ CACHE_MIDDLEWARE_SECONDS = 86400
 CACHES = {
     "default": {
         "BACKEND": "django.core.cache.backends.memcached.PyMemcacheCache",
-        "LOCATION": "127.0.0.1:11211",
-    },
-    'axes': {
-        'BACKEND': 'django.core.cache.backends.memcached.PyMemcacheCache',
-        'LOCATION': '127.0.0.1:11211',
+        "LOCATION": config('MEMCACHED_HOST_PORT', "memcached:11211"),
     }
 }
-AXES_CACHE = 'axes'
+
 
 # Logging
 ##################

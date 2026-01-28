@@ -1,3 +1,6 @@
+###############
+# PHASE 2
+###############
 from django import forms
 import logging
 from ..models import *
@@ -214,7 +217,7 @@ class open_bal_prod(formClass):
             self.fields['item_code'].choices = db.get_choices(
                 "item_name", "item_code", self.user_id)
             self.fields['unit'].choices = db.get_choices(
-                "units", "units", self.user_id)
+                "units", "unit", self.user_id)
             self.fields['location'].choices = db.get_choices(
                 "location", "location", self.user_id)
             self.fields['party'].choices = db.get_choices(
@@ -249,7 +252,7 @@ class production(formClass):
     indent_no = forms.IntegerField()
     party = forms.ChoiceField(choices=[])
     agent = forms.ChoiceField(choices=[])
-    fsc = forms.ChoiceField(choices=[(True, "yes"), (False, "no")])
+    fsc = forms.BooleanField()
     lot_no = forms.IntegerField()
 
     def __init__(self, *args, **kwargs):
@@ -267,7 +270,8 @@ class production(formClass):
                 "customer", "customer_name", self.user_id)
             self.fields['agent'].choices = db.get_choices(
                 "customer", "agent_or_customer_name", self.user_id)
-            self.fields['unit'].choices = [("ft", "ft"), ("cm", "cm")]
+            self.fields['unit'].choices = db.get_choices(
+                "units", "unit", self.user_id)
 
 
 class prod_plus_minus(formClass):
@@ -311,7 +315,7 @@ class prod_plus_minus(formClass):
             self.fields['item_code'].choices = db.get_choices(
                 "items", "item_code", self.user_id)
             self.fields['unit'].choices = db.get_choices(
-                "units", "unit_of_measurement", self.user_id)
+                "units", "unit", self.user_id)
             self.fields['location'].choices = db.get_choices(
                 "location", "location", self.user_id)
             self.fields['party'].choices = db.get_choices(
@@ -457,7 +461,7 @@ class lot_no_wise_qc(formClass):
             self.fields['item_code'].choices = db.get_choices(
                 "items", "item_code", self.user_id)
             self.fields['unit'].choices = db.get_choices(
-                "units", "unit_of_measurement", self.user_id)
+                "units", "unit", self.user_id)
             self.fields['location'].choices = db.get_choices(
                 "location", "location", self.user_id)
             self.fields['party'].choices = db.get_choices(
@@ -496,7 +500,7 @@ class finishing_house(formClass):
             self.fields['item_code'].choices = db.get_choices(
                 "items", "item_code", self.user_id)
             self.fields['unit'].choices = db.get_choices(
-                "units", "unit_of_measurement", self.user_id)
+                "units", "unit", self.user_id)
             self.fields['location'].choices = db.get_choices(
                 "location", "location", self.user_id)
             self.fields['party'].choices = db.get_choices(

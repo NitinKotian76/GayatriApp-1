@@ -18,16 +18,30 @@
     <a
       href="#"
       class="w3-bar-item w3-button w3-ripple"
-      hx-get="/invoice/form_view"
+      hx-get="/invoice/magent/create"
       hx-target="#formpart"
-      hx-vals='{"form": "customer"}'
       hx-swap="innerHTML"
     >
       <div
-        hx-get="/invoice/table_data_view"
+        hx-get="/invoice/magent"
         hx-trigger="click from:closest (a)"
         hx-target="#tableview"
-        hx-vals='{"form": "customer"}'
+        hx-swap="innerHTML"
+      ></div>
+      Agent
+    </a>
+
+    <a
+      href="#"
+      class="w3-bar-item w3-button w3-ripple"
+      hx-get="/invoice/mcustomer/create"
+      hx-target="#formpart"
+      hx-swap="innerHTML"
+    >
+      <div
+        hx-get="/invoice/mcustomer/"
+        hx-trigger="click from:closest (a)"
+        hx-target="#tableview"
         hx-swap="innerHTML"
       ></div>
       customer
@@ -69,13 +83,13 @@
     <a
       href="#"
       class="w3-bar-item w3-button w3-ripple"
-      hx-get="/invoice/form_view"
+      hx-get="/invoice/mcategory/create"
       hx-target="#formpart"
       hx-vals='{"form":"item_category"}'
       hx-swap="innerHTML"
     >
       <div
-        hx-get="/invoice/table_data_view"
+        hx-get="/invoice/mcategory"
         hx-trigger="click from:closest (a)"
         hx-target="#tableview"
         hx-vals='{"form":"item_category"}'

@@ -1,7 +1,7 @@
 from django.urls import path, include
 from . import views
-from .all_views import *
-from .all_views import common_views
+from .all_views import admin_views, auth_views, common_views, form_views, report_views
+from .all_views.millsoft import millsoft_master_view, millsoft_transaction_view, millsoft_report_view
 
 app_name = "invoice"
 # names with sentencecase are class based views
@@ -46,7 +46,7 @@ table_urlpatterns = [
 main_urlpatterns = [
     path("index", common_views.index, name="index"),
     path("profile_user", common_views.profile_user, name="profile_user"),
-    path("get_notifications", common_views.get_notifications,
+    path("get_notifications", common_views.get_notifications.as_view(),
          name="get_notifications"),
     path("add_formset_field/<str:formname>", common_views.add_formset_field,
          name="add_formset_field"),
@@ -58,7 +58,60 @@ admin_urlpatterns = [
     path("create_table", admin_views.create_table, name="create_table"),
     path("admin_company", admin_views.admin_company, name="admin_company"),
 ]
+# millsoft static
+millsoft_master_urls = [
+    path("magent/create/", millsoft_master_view.MAgent_create.as_view(),
+         name="MAgent_create"),
+    path("magent/<int:pk>/update/", millsoft_master_view.MAgent_update.as_view(),
+         name="MAgent_update"),
+    path("magent/<int:pk>/delete/", millsoft_master_view.MAgent_delete.as_view(),
+         name="MAgent_delete"),
+    path("magent/", millsoft_master_view.MAgent_list.as_view(), name="MAgent_list"),
 
+    path("mcategory/create/", millsoft_master_view.MCategory_create.as_view(),
+         name="MCategory_create"),
+    path("mcategory/<uuid:pk>/update/",
+         millsoft_master_view.MCategory_update.as_view(), name="MCategory_update"),
+    path("mcategory/<uuid:pk>/delete/",
+         millsoft_master_view.MCategory_delete.as_view(), name="MCategory_delete"),
+    path("mcategory/", millsoft_master_view.MCategory_list.as_view(),
+         name="MCategory_list"),
+    path("mcustomer/create/", millsoft_master_view.MCustomer_create.as_view(),
+         name="MCustomer_create"),
+    path("mcustomer/<int:pk>/update/", millsoft_master_view.MCustomer_update.as_view(),
+         name="MCustomer_update"),
+    path("mcustomer/<int:pk>/delete/", millsoft_master_view.MCustomer_delete.as_view(),
+         name="MCustomer_delete"),
+    path("mcustomer/", millsoft_master_view.MCustomer_list.as_view(),
+         name="MCustomer_list"),
+]
+millsoft_transact_urls = [
+    path("tproduction/", millsoft_transaction_view.TProduction_list.as_view(),
+         name="TProduction_list"),
+    path("tproduction/create/", millsoft_transaction_view.TProduction_create.as_view(),
+         name="TProduction_create"),
+    path("tinvoice/create/", millsoft_transaction_view.TInvoice_create.as_view(),
+         name="TInvoice_create"),
+    path("tinvoice/<int:pk>/update/", millsoft_transaction_view.TInvoice_update.as_view(),
+         name="TInvoice_update"),
+    path("tinvoice/<int:pk>/delete/", millsoft_transaction_view.TInvoice_delete.as_view(),
+         name="TInvoice_delete"),
+    path("tinvoice/", millsoft_transaction_view.TInvoice_list.as_view(),
+         name="TInvoice_list"),
+]
+millsoft_report_urls = [
+    path("rchallan/create/", millsoft_report_view.RChallan_create,
+         name="RChallan_create"),
+    path("rchallan/download/<str:filename>/", millsoft_report_view.download_challan,
+         name="download_challan"),
+
+]
+
+millsoft_urlpatterns = (
+    millsoft_master_urls +
+    millsoft_transact_urls +
+    millsoft_report_urls
+)
 # Combine all URL patterns
 urlpatterns = (
     auth_urlpatterns +
@@ -66,5 +119,6 @@ urlpatterns = (
     table_urlpatterns +
     report_urlpatterns +
     admin_urlpatterns +
-    main_urlpatterns
+    main_urlpatterns +
+    millsoft_urlpatterns
 )

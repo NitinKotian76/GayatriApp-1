@@ -1,3 +1,6 @@
+###############
+# PHASE 2
+###############
 import logging
 
 from ..models import *
@@ -10,6 +13,7 @@ TYPE_DATA = [
     ("float", "float"),
     ("int", "int"),
     ("bool", "bool"),
+    ("date", "date")
 ]
 
 
@@ -129,7 +133,7 @@ def set_data(table_name: str, data: dict, user_id: str, company_id: int = None) 
             if mkey not in data.keys():
                 raise ValueError(f"{mkey} doesnt exist")
             if type(data[mkey]).__name__ != tablemeta[0]["table_metadata"][mkey]:
-                logger.debug(type(data[mkey]))
+                logger.debug(type(data[mkey]).__name__)
                 logger.debug(tablemeta[0]["table_metadata"][mkey])
                 raise ValueError(f"{mkey} datatype doesnt match")
 
@@ -140,10 +144,6 @@ def set_data(table_name: str, data: dict, user_id: str, company_id: int = None) 
         logger.info("data stored")
     except Exception as e:
         logger.error("error storing data %s", e)
-
-    # except Exception as e:
-    #     logger.debug(e)
-    #
 
 
 def get_data(table_name: str, user_id: str, company_id: int = None) -> list:
