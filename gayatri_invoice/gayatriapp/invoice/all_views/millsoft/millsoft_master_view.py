@@ -10,7 +10,7 @@ from django.db.models.functions import Cast
 from django.db.models import CharField
 
 from ...form_files import (helperFunct as hf, millsoftForm as mf)
-from ...models import (MAgent, MCategory, MCustomer, MEmployee,
+from ...models import (MAgent, MCategory, MCustomer,
                        MExportFields, MItem, MItemCategory, MItemRate,
                        MLocation, MPlusMinusHead, MShade, MSupplier)
 
@@ -78,7 +78,7 @@ class MAgent_list(ListView):
     paginate_by = 100
 
     def get_queryset(self):
-        return MAgent.objects.values()
+        return MAgent.objects.annotate(pk_str=Cast("pk", output_field=CharField())).values()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -147,6 +147,7 @@ class MCategory_delete(SuccessMessageMixin, DeleteView):
     success_url = reverse_lazy('invoice:MCategory_list')
 
 
+@method_decorator(never_cache, name='dispatch')
 class MCategory_list(SuccessMessageMixin, ListView):
 
     model = MCategory
@@ -225,6 +226,7 @@ class MCustomer_delete(SuccessMessageMixin, DeleteView):
     success_url = reverse_lazy('invoice:MCustomer_list')
 
 
+@method_decorator(never_cache, name='dispatch')
 class MCustomer_list(SuccessMessageMixin, ListView):
 
     model = MCustomer
@@ -234,7 +236,7 @@ class MCustomer_list(SuccessMessageMixin, ListView):
     paginate_by = 100
 
     def get_queryset(self):
-        return MCustomer.objects.values()
+        return MCustomer.objects.annotate(pk_str=Cast("pk", output_field=CharField())).values()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -245,84 +247,6 @@ class MCustomer_list(SuccessMessageMixin, ListView):
                       hx_req_type="hx-get", hx_target="#tableshow")
         ]
         context["modelurl"] = reverse('invoice:MCustomer_list')
-        return context
-
-
-class MEmployee_create(SuccessMessageMixin, CreateView):
-
-    model = MEmployee
-    form_class = mf.MEmployeeForm
-    template_name = "partials/forms.html"
-    context_object_name = "form"
-    success_url = reverse_lazy("invoice:MEmployee_create")
-    success_message = "successfully created"
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["buttons"] = hf.button("submit",
-                                       hx_req=reverse(
-                                           'invoice:MEmployee_create'),
-                                       hx_target="#dynform",
-                                       hx_swap="innerHTML")
-        return context
-
-    def form_valid(self, form):
-        form.save()
-        response = self.render_to_response(self.get_context_data())
-        return trigger_client_event(response, "RefreshTable")
-
-
-class MEmployee_update(SuccessMessageMixin, UpdateView):
-
-    model = MEmployee
-    form_class = mf.MEmployeeForm
-    template_name = "partials/forms.html"
-    context_object_name = "form"
-    success_message = "successfully updated"
-    success_url = reverse_lazy('invoice:MEmployee_create')
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["buttons"] = hf.button("submit",
-                                       hx_req=f"{self.request.path}",
-                                       hx_target="#dynform",
-                                       hx_swap="innerHTML")
-
-        return context
-
-    def form_valid(self, form):
-        form.save()
-        response = self.render_to_response(self.get_context_data())
-        return trigger_client_event(response, "RefreshTable")
-
-
-class MEmployee_delete(SuccessMessageMixin, DeleteView):
-
-    model = MEmployee
-    success_message = "successfully deleted"
-    success_url = reverse_lazy('invoice:MEmployee_list')
-
-
-class MEmployee_list(SuccessMessageMixin, ListView):
-
-    model = MEmployee
-    fields = '__all__'
-    context_object_name = "form"
-    template_name = "partials/tableview.html"
-    paginate_by = 100
-
-    def get_queryset(self):
-        return MEmployee.objects.values()
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        # Already dicts from .values()
-        context['listdata'] = list(context['object_list'])
-        context['buttons'] = [
-            hf.button("Create Agent", hx_req="",
-                      hx_req_type="hx-get", hx_target="#tableshow")
-        ]
-        context["modelurl"] = reverse('invoice:MEmployee_list')
         return context
 
 
@@ -381,6 +305,7 @@ class MExportFields_delete(SuccessMessageMixin, DeleteView):
     success_url = reverse_lazy('invoice:MExportFields_list')
 
 
+@method_decorator(never_cache, name='dispatch')
 class MExportFields_list(SuccessMessageMixin, ListView):
 
     model = MExportFields
@@ -390,7 +315,7 @@ class MExportFields_list(SuccessMessageMixin, ListView):
     paginate_by = 100
 
     def get_queryset(self):
-        return MExportFields.objects.values()
+        return MExportFields.objects.annotate(pk_str=Cast("pk", output_field=CharField())).values()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -458,6 +383,7 @@ class MItem_delete(SuccessMessageMixin, DeleteView):
     success_url = reverse_lazy('invoice:MItem_list')
 
 
+@method_decorator(never_cache, name='dispatch')
 class MItem_list(SuccessMessageMixin, ListView):
 
     model = MItem
@@ -467,7 +393,7 @@ class MItem_list(SuccessMessageMixin, ListView):
     paginate_by = 100
 
     def get_queryset(self):
-        return MItem.objects.values()
+        return MItem.objects.annotate(pk_str=Cast("pk", output_field=CharField())).values()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -535,6 +461,7 @@ class MItemCategory_delete(SuccessMessageMixin, DeleteView):
     success_url = reverse_lazy('invoice:MItem_list')
 
 
+@method_decorator(never_cache, name='dispatch')
 class MItemCategory_list(SuccessMessageMixin, ListView):
 
     model = MItem
@@ -544,7 +471,7 @@ class MItemCategory_list(SuccessMessageMixin, ListView):
     paginate_by = 100
 
     def get_queryset(self):
-        return MItem.objects.values()
+        return MItem.objects.annotate(pk_str=Cast("pk", output_field=CharField())).values()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -613,6 +540,7 @@ class MItemRate_delete(SuccessMessageMixin, DeleteView):
     success_url = reverse_lazy('invoice:MItemRate_list')
 
 
+@method_decorator(never_cache, name='dispatch')
 class MItemRate_list(SuccessMessageMixin, ListView):
 
     model = MItemRate
@@ -622,7 +550,7 @@ class MItemRate_list(SuccessMessageMixin, ListView):
     paginate_by = 100
 
     def get_queryset(self):
-        return MItemRate.objects.values()
+        return MItemRate.objects.annotate(pk_str=Cast("pk", output_field=CharField())).values()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -691,6 +619,7 @@ class MLocation_delete(SuccessMessageMixin, DeleteView):
     success_url = reverse_lazy('invoice:MLocation_list')
 
 
+@method_decorator(never_cache, name='dispatch')
 class MLocation_list(SuccessMessageMixin, ListView):
 
     model = MLocation
@@ -700,7 +629,7 @@ class MLocation_list(SuccessMessageMixin, ListView):
     paginate_by = 100
 
     def get_queryset(self):
-        return MLocation.objects.values()
+        return MLocation.objects.annotate(pk_str=Cast("pk", output_field=CharField())).values()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -769,6 +698,7 @@ class MPlusMinusHead_delete(SuccessMessageMixin, DeleteView):
     success_url = reverse_lazy('invoice:MPlusMinusHead_list')
 
 
+@method_decorator(never_cache, name='dispatch')
 class MPlusMinusHead_list(SuccessMessageMixin, ListView):
 
     model = MPlusMinusHead
@@ -778,7 +708,7 @@ class MPlusMinusHead_list(SuccessMessageMixin, ListView):
     paginate_by = 100
 
     def get_queryset(self):
-        return MPlusMinusHead.objects.values()
+        return MPlusMinusHead.objects.annotate(pk_str=Cast("pk", output_field=CharField())).values()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -846,6 +776,7 @@ class MShade_delete(SuccessMessageMixin, DeleteView):
     success_url = reverse_lazy('invoice:MShade_list')
 
 
+@method_decorator(never_cache, name='dispatch')
 class MShade_list(SuccessMessageMixin, ListView):
 
     model = MShade
@@ -855,7 +786,7 @@ class MShade_list(SuccessMessageMixin, ListView):
     paginate_by = 100
 
     def get_queryset(self):
-        return MShade.objects.values()
+        return MShade.objects.annotate(pk_str=Cast("pk", output_field=CharField())).values()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -924,6 +855,7 @@ class MSupplier_delete(SuccessMessageMixin, DeleteView):
     success_url = reverse_lazy('invoice:MSupplier_list')
 
 
+@method_decorator(never_cache, name='dispatch')
 class MSupplier_list(SuccessMessageMixin, ListView):
 
     model = MSupplier
@@ -933,7 +865,7 @@ class MSupplier_list(SuccessMessageMixin, ListView):
     paginate_by = 100
 
     def get_queryset(self):
-        return MSupplier.objects.values()
+        return MSupplier.objects.annotate(pk_str=Cast("pk", output_field=CharField())).values()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -945,3 +877,8 @@ class MSupplier_list(SuccessMessageMixin, ListView):
         ]
         context["modelurl"] = reverse('invoice:MSupplier_list')
         return context
+
+
+    
+
+

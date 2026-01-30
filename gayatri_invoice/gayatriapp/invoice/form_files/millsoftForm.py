@@ -1,10 +1,9 @@
-from ..models import (MAgent, MCategory, MCustomer, MEmployee,
+from ..models import (MAgent, MCategory, MCustomer,
                       MExportFields, MItem, MItemCategory, MItemRate,
                       MLocation, MPlusMinusHead, MShade, MSupplier)
 from ..models import (TExport, TExportDetails, TIndent,
                       TInvoice, TJumboRollWiseQC, TLOTNoWiseQc, TProduction,
                       TProduction_bck, TProductionReel)
-from ..models import RChallan
 from django import forms
 
 
@@ -29,14 +28,6 @@ class MCustomerForm(forms.ModelForm):
 
     class Meta:
         model = MCustomer
-        fields = "__all__"
-
-
-class MEmployeeForm(forms.ModelForm):
-    template_name = "form_snippet.html"
-
-    class Meta:
-        model = MEmployee
         fields = "__all__"
 
 
@@ -134,6 +125,34 @@ class TInvoiceForm(forms.ModelForm):
     class Meta:
         model = TInvoice
         fields = "__all__"
+        widgets = {
+                "CustID":Select(attrs={
+                    "hx-post":reverse('invoice:TInvoice'),
+                    "hx-trigger":"change",
+                    "hx-swap":"innerHTML",
+                    ""
+                }),
+                "AgentID":Select(attrs={
+                    "hx-post":reverse('invoice:TInvoice'),
+
+                })
+                }
+    def __init__(self,*args,**kwargs):
+
+        cust_id = kwargs.pop("CustID", None)
+        agent_id = kwargs.pop("AgentID",None)
+
+        super().__init__(*args,**kwargs)
+        
+        cid = cust_id or self.data.get("CustID") or (self.instance.CustID if self.instance else None)
+
+        aid = agent_id or self.data.get("AgentID") or (self.instance.AgentID if self.instance else None)
+        if cid:
+            mcust = MCustomer.objects.filter(CustID=cid).values('agentid').select_related()
+            self.fields['AgentID'].queryset =  MAgent.objects.filter("AgentID"=mcust).values()
+        elif aid:
+            self.fields['CustID'].queryset = MCustomer.objects.filter("AgentID"= aid).select_realted("CustID")
+        else:
 
 
 class TJumboRollWiseQCForm(forms.ModelForm):
@@ -175,10 +194,3 @@ class TProductionReelForm(forms.ModelForm):
         model = TProductionReel
         fields = "__all__"
 
-
-class RChallanForm(forms.ModelForm):
-    template_name = "form_snippet.html"
-
-    class Meta:
-        model = RChallan
-        fields = "__all__"

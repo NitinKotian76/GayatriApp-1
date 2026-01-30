@@ -19,8 +19,10 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Company',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('company_name', models.CharField(max_length=255, null=True, verbose_name='company name')),
+                ('id', models.BigAutoField(auto_created=True,
+                 primary_key=True, serialize=False, verbose_name='ID')),
+                ('company_name', models.CharField(
+                    max_length=255, null=True, verbose_name='company name')),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
                 ('updated_at', models.DateTimeField(auto_now=True)),
             ],
@@ -31,7 +33,8 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='MAgent',
             fields=[
-                ('AgentId', models.UUIDField(default=uuid.uuid4, primary_key=True, serialize=False)),
+                ('AgentId', models.UUIDField(
+                    default=uuid.uuid4, primary_key=True, serialize=False)),
                 ('Agentname', models.CharField(max_length=100, null=True)),
                 ('Bname', models.CharField(max_length=250, null=True)),
                 ('Area', models.CharField(max_length=30, null=True)),
@@ -51,7 +54,8 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='MCategory',
             fields=[
-                ('CatID', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
+                ('CatID', models.UUIDField(default=uuid.uuid4,
+                 editable=False, primary_key=True, serialize=False)),
                 ('Cat', models.CharField(max_length=50, null=True)),
                 ('opening', models.FloatField(null=True)),
                 ('unit', models.CharField(max_length=10, null=True)),
@@ -61,8 +65,10 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='MEmployee',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('EMPID', models.UUIDField(default=uuid.uuid4, editable=False, null=True)),
+                ('id', models.BigAutoField(auto_created=True,
+                 primary_key=True, serialize=False, verbose_name='ID')),
+                ('EMPID', models.UUIDField(
+                    default=uuid.uuid4, editable=False, null=True)),
                 ('EmpName', models.CharField(max_length=50, null=True)),
                 ('Designation', models.CharField(max_length=50, null=True)),
             ],
@@ -70,8 +76,10 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='MExportFields',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('ExportID', models.UUIDField(default=uuid.uuid4, editable=False, null=True)),
+                ('id', models.BigAutoField(auto_created=True,
+                 primary_key=True, serialize=False, verbose_name='ID')),
+                ('ExportID', models.UUIDField(
+                    default=uuid.uuid4, editable=False, null=True)),
                 ('DescriptionGoods', models.CharField(max_length=50, null=True)),
                 ('HSNo', models.CharField(max_length=50, null=True)),
                 ('Declaration', models.CharField(max_length=100, null=True)),
@@ -86,7 +94,8 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='MItem',
             fields=[
-                ('Itemid', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
+                ('Itemid', models.UUIDField(default=uuid.uuid4,
+                 editable=False, primary_key=True, serialize=False)),
                 ('ItemCode', models.CharField(max_length=20, null=True)),
                 ('SizeD', models.CharField(max_length=10, null=True)),
                 ('GSM', models.CharField(max_length=10, null=True)),
@@ -95,15 +104,18 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='MLocation',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('LocationID', models.UUIDField(default=uuid.uuid4, editable=False, null=True)),
+                ('id', models.BigAutoField(auto_created=True,
+                 primary_key=True, serialize=False, verbose_name='ID')),
+                ('LocationID', models.UUIDField(
+                    default=uuid.uuid4, editable=False, null=True)),
                 ('Location', models.CharField(max_length=20, null=True)),
             ],
         ),
         migrations.CreateModel(
             name='MPlusMinusHead',
             fields=[
-                ('HeadID', models.UUIDField(default=uuid.uuid4, primary_key=True, serialize=False)),
+                ('HeadID', models.UUIDField(default=uuid.uuid4,
+                 primary_key=True, serialize=False)),
                 ('Head', models.CharField(max_length=50, null=True)),
                 ('Plus_Minus', models.CharField(max_length=10, null=True)),
                 ('Api', models.CharField(max_length=10, null=True)),
@@ -113,7 +125,8 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='MShade',
             fields=[
-                ('ShadeID', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
+                ('ShadeID', models.UUIDField(default=uuid.uuid4,
+                 editable=False, primary_key=True, serialize=False)),
                 ('ShadeCode', models.CharField(max_length=10, null=True)),
                 ('Shade', models.CharField(max_length=50, null=True)),
                 ('APICode', models.CharField(max_length=10, null=True)),
@@ -128,7 +141,8 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='MSupplier',
             fields=[
-                ('SuppId', models.UUIDField(default=uuid.uuid4, primary_key=True, serialize=False)),
+                ('SuppId', models.UUIDField(default=uuid.uuid4,
+                 primary_key=True, serialize=False)),
                 ('Suppname', models.CharField(max_length=100, null=True)),
                 ('Bname', models.CharField(max_length=250, null=True)),
                 ('Area', models.CharField(max_length=30, null=True)),
@@ -144,7 +158,8 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Template',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.BigAutoField(auto_created=True,
+                 primary_key=True, serialize=False, verbose_name='ID')),
                 ('template_name', models.CharField()),
                 ('file_type', models.CharField()),
                 ('file_data', models.FileField(upload_to='ReportTemplates/')),
@@ -160,7 +175,8 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='TExport',
             fields=[
-                ('ExportID', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
+                ('ExportID', models.UUIDField(default=uuid.uuid4,
+                 editable=False, primary_key=True, serialize=False)),
                 ('PreCarriageby', models.CharField(max_length=100, null=True)),
                 ('Receiptby', models.CharField(max_length=100, null=True)),
                 ('VesselFlightNo', models.CharField(max_length=50, null=True)),
@@ -192,7 +208,8 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='MCustomer',
             fields=[
-                ('CustId', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
+                ('CustId', models.UUIDField(default=uuid.uuid4,
+                 editable=False, primary_key=True, serialize=False)),
                 ('Custcode', models.BigIntegerField()),
                 ('Custname', models.CharField(max_length=90, null=True)),
                 ('Bname', models.CharField(max_length=400, null=True)),
@@ -208,44 +225,57 @@ class Migration(migrations.Migration):
                 ('StateCode', models.CharField(max_length=10, null=True)),
                 ('GSTINNo', models.CharField(max_length=20, null=True)),
                 ('CustTransport', models.CharField(max_length=60, null=True)),
-                ('agentid', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='invoice.magent')),
+                ('agentid', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, to='invoice.magent')),
             ],
         ),
         migrations.CreateModel(
             name='MItemCategory',
             fields=[
-                ('CatId', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
+                ('CatId', models.UUIDField(default=uuid.uuid4,
+                 editable=False, primary_key=True, serialize=False)),
                 ('Cat', models.CharField(max_length=100)),
                 ('HSNCode', models.CharField(max_length=20, null=True)),
                 ('remarks', models.CharField(max_length=250, null=True)),
-                ('UnitID', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='invoice.company')),
+                ('UnitID', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, to='invoice.company')),
             ],
         ),
         migrations.CreateModel(
             name='MItemRate',
             fields=[
-                ('ItemRateID', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
+                ('ItemRateID', models.UUIDField(default=uuid.uuid4,
+                 editable=False, primary_key=True, serialize=False)),
                 ('Rate', models.FloatField()),
-                ('AgentID', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='invoice.magent')),
-                ('CatID', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='invoice.mcategory')),
-                ('CustID', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='invoice.mcustomer')),
-                ('ItemID', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='invoice.mitem')),
+                ('AgentID', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, to='invoice.magent')),
+                ('CatID', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, to='invoice.mcategory')),
+                ('CustID', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, to='invoice.mcustomer')),
+                ('ItemID', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, to='invoice.mitem')),
             ],
         ),
         migrations.AddField(
             model_name='mitem',
             name='ShadeID',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='invoice.mshade'),
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE, to='invoice.mshade'),
         ),
         migrations.CreateModel(
             name='TableName',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('table_name', models.CharField(blank=True, max_length=255, null=True, verbose_name='table name')),
-                ('description', models.CharField(blank=True, max_length=255, null=True, verbose_name='table description')),
+                ('id', models.BigAutoField(auto_created=True,
+                 primary_key=True, serialize=False, verbose_name='ID')),
+                ('table_name', models.CharField(blank=True,
+                 max_length=255, null=True, verbose_name='table name')),
+                ('description', models.CharField(blank=True, max_length=255,
+                 null=True, verbose_name='table description')),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
                 ('updated_at', models.DateTimeField(auto_now=True)),
-                ('company', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='tables', to='invoice.company')),
+                ('company', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE,
+                 related_name='tables', to='invoice.company')),
             ],
             options={
                 'ordering': ['-created_at', '-updated_at'],
@@ -254,12 +284,15 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='TableMetaData',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('table_metadata', models.JSONField(blank=True, default=dict, encoder=django.core.serializers.json.DjangoJSONEncoder, null=True, unique=True, verbose_name='table metadata')),
+                ('id', models.BigAutoField(auto_created=True,
+                 primary_key=True, serialize=False, verbose_name='ID')),
+                ('table_metadata', models.JSONField(blank=True, default=dict,
+                 encoder=django.core.serializers.json.DjangoJSONEncoder, null=True, unique=True, verbose_name='table metadata')),
                 ('table_unique', models.BooleanField(null=True)),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
                 ('updated_at', models.DateTimeField(auto_now=True)),
-                ('table_name', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='metadata', to='invoice.tablename')),
+                ('table_name', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE,
+                 related_name='metadata', to='invoice.tablename')),
             ],
             options={
                 'ordering': ['-created_at', '-updated_at'],
@@ -268,13 +301,18 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='TableData',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('table_data', models.JSONField(blank=True, default=dict, encoder=django.core.serializers.json.DjangoJSONEncoder, null=True, verbose_name='table data')),
-                ('json_hash', models.CharField(db_index=True, editable=False, max_length=64, null=True)),
+                ('id', models.BigAutoField(auto_created=True,
+                 primary_key=True, serialize=False, verbose_name='ID')),
+                ('table_data', models.JSONField(blank=True, default=dict,
+                 encoder=django.core.serializers.json.DjangoJSONEncoder, null=True, verbose_name='table data')),
+                ('json_hash', models.CharField(db_index=True,
+                 editable=False, max_length=64, null=True)),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
                 ('updated_at', models.DateTimeField(auto_now=True)),
-                ('company', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='table_data', to='invoice.company')),
-                ('table_name', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='data_rows', to='invoice.tablename')),
+                ('company', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE,
+                 related_name='table_data', to='invoice.company')),
+                ('table_name', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE,
+                 related_name='data_rows', to='invoice.tablename')),
             ],
             options={
                 'ordering': ['-created_at', '-updated_at'],
@@ -283,12 +321,15 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Report',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.BigAutoField(auto_created=True,
+                 primary_key=True, serialize=False, verbose_name='ID')),
                 ('report_name', models.CharField()),
-                ('report_data', models.JSONField(encoder=django.core.serializers.json.DjangoJSONEncoder, null=True)),
+                ('report_data', models.JSONField(
+                    encoder=django.core.serializers.json.DjangoJSONEncoder, null=True)),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
                 ('updated_at', models.DateTimeField(auto_now=True)),
-                ('company', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='invoice.company')),
+                ('company', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, to='invoice.company')),
                 ('group', models.ManyToManyField(to='auth.group')),
                 ('table', models.ManyToManyField(to='invoice.tablename')),
             ],
@@ -301,12 +342,14 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Form',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.BigAutoField(auto_created=True,
+                 primary_key=True, serialize=False, verbose_name='ID')),
                 ('form_name', models.CharField()),
                 ('form_data', models.JSONField(null=True)),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
                 ('updated_at', models.DateTimeField(auto_now=True)),
-                ('company', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='invoice.company')),
+                ('company', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, to='invoice.company')),
                 ('group', models.ManyToManyField(to='auth.group')),
                 ('table', models.ManyToManyField(to='invoice.tablename')),
             ],
@@ -326,13 +369,15 @@ class Migration(migrations.Migration):
                 ('PONo', models.CharField(max_length=20, null=True)),
                 ('PODate', models.DateTimeField(null=True)),
                 ('remark', models.CharField(max_length=150, null=True)),
-                ('CustID', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='invoice.mcustomer')),
+                ('CustID', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, to='invoice.mcustomer')),
             ],
         ),
         migrations.CreateModel(
             name='TInvoice',
             fields=[
-                ('InvoiceID', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
+                ('InvoiceID', models.UUIDField(default=uuid.uuid4,
+                 editable=False, primary_key=True, serialize=False)),
                 ('InvoiceNo', models.BigIntegerField()),
                 ('InvoiceDate', models.DateTimeField(null=True)),
                 ('SalesType', models.CharField(max_length=20, null=True)),
@@ -369,15 +414,19 @@ class Migration(migrations.Migration):
                 ('FlgSaleType', models.IntegerField(null=True)),
                 ('InvoiceType', models.CharField(max_length=20, null=True)),
                 ('Ind_Weight', models.FloatField(null=True)),
-                ('AgentID', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='invoice.magent')),
-                ('CustID', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='invoice.mcustomer')),
-                ('ShadeID', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='invoice.mshade')),
+                ('AgentID', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, to='invoice.magent')),
+                ('CustID', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, to='invoice.mcustomer')),
+                ('ShadeID', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, to='invoice.mshade')),
             ],
         ),
         migrations.CreateModel(
             name='TExportDetails',
             fields=[
-                ('ExportDetailsID', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
+                ('ExportDetailsID', models.UUIDField(default=uuid.uuid4,
+                 editable=False, primary_key=True, serialize=False)),
                 ('ReelNo', models.FloatField(null=True)),
                 ('GWeight', models.FloatField(null=True)),
                 ('TareWeight', models.FloatField(null=True)),
@@ -391,19 +440,23 @@ class Migration(migrations.Migration):
                 ('INvoicedate', models.DateTimeField(null=True)),
                 ('NoOFReam', models.FloatField(null=True)),
                 ('REAMWt', models.FloatField(null=True)),
-                ('ExportID', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='invoice.texport')),
-                ('InvoiceID', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='invoice.tinvoice')),
+                ('ExportID', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, to='invoice.texport')),
+                ('InvoiceID', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, to='invoice.tinvoice')),
             ],
         ),
         migrations.AddField(
             model_name='texport',
             name='InvoiceID',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='invoice.tinvoice'),
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE, to='invoice.tinvoice'),
         ),
         migrations.CreateModel(
             name='RChallan',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.BigAutoField(auto_created=True,
+                 primary_key=True, serialize=False, verbose_name='ID')),
                 ('Custname', models.CharField(max_length=100, null=True)),
                 ('Bname', models.CharField(max_length=100, null=True)),
                 ('City', models.CharField(max_length=20, null=True)),
@@ -433,15 +486,18 @@ class Migration(migrations.Migration):
                 ('BDLS', models.FloatField(null=True)),
                 ('weight', models.FloatField(null=True)),
                 ('REmarks', models.CharField(max_length=100, null=True)),
-                ('InvoiceID', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='invoice.tinvoice')),
+                ('InvoiceID', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, to='invoice.tinvoice')),
             ],
         ),
         migrations.CreateModel(
             name='TJumboRollWiseQC',
             fields=[
-                ('JumboRollWiseQcID', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
+                ('JumboRollWiseQcID', models.UUIDField(default=uuid.uuid4,
+                 editable=False, primary_key=True, serialize=False)),
                 ('JumboRollQCDate', models.DateTimeField(null=True)),
-                ('JumboRollNo', models.DecimalField(decimal_places=0, max_digits=18, null=True)),
+                ('JumboRollNo', models.DecimalField(
+                    decimal_places=0, max_digits=18, null=True)),
                 ('Shift', models.CharField(max_length=10, null=True)),
                 ('GSM', models.CharField(max_length=10, null=True)),
                 ('CALIPER', models.CharField(max_length=10, null=True)),
@@ -465,13 +521,15 @@ class Migration(migrations.Migration):
                 ('FLATNESS', models.CharField(max_length=10, null=True)),
                 ('JumboRollWeight', models.FloatField(null=True)),
                 ('DateM', models.CharField(max_length=10, null=True)),
-                ('ShadeID', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='invoice.mshade')),
+                ('ShadeID', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, to='invoice.mshade')),
             ],
         ),
         migrations.CreateModel(
             name='TLOTNoWiseQc',
             fields=[
-                ('LOTNoWiseQcID', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
+                ('LOTNoWiseQcID', models.UUIDField(default=uuid.uuid4,
+                 editable=False, primary_key=True, serialize=False)),
                 ('LOTNoWiseQcIDDate', models.DateTimeField(null=True)),
                 ('L_E', models.CharField(max_length=10, null=True)),
                 ('Reel_Sheet', models.CharField(max_length=10, null=True)),
@@ -489,19 +547,27 @@ class Migration(migrations.Migration):
                 ('FPNo', models.CharField(max_length=10, null=True)),
                 ('Sized', models.CharField(max_length=10, null=True)),
                 ('GSM', models.CharField(max_length=10, null=True)),
-                ('AgentID', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='invoice.magent')),
-                ('CustID', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='invoice.mcustomer')),
-                ('ItemID', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='invoice.mitem')),
-                ('JumboRollWiseQcID', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='invoice.tjumborollwiseqc')),
-                ('LocationID', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='invoice.mlocation')),
-                ('ShadeID', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='invoice.mshade')),
-                ('UnitID', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='invoice.company')),
+                ('AgentID', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, to='invoice.magent')),
+                ('CustID', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, to='invoice.mcustomer')),
+                ('ItemID', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, to='invoice.mitem')),
+                ('JumboRollWiseQcID', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, to='invoice.tjumborollwiseqc')),
+                ('LocationID', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, to='invoice.mlocation')),
+                ('ShadeID', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, to='invoice.mshade')),
+                ('UnitID', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, to='invoice.company')),
             ],
         ),
         migrations.CreateModel(
             name='TProduction',
             fields=[
-                ('ProductionID', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
+                ('ProductionID', models.UUIDField(default=uuid.uuid4,
+                 editable=False, primary_key=True, serialize=False)),
                 ('RDate', models.DateTimeField(null=True)),
                 ('L_E', models.CharField(max_length=10, null=True)),
                 ('Reel_Sheet', models.CharField(max_length=50, null=True)),
@@ -527,19 +593,27 @@ class Migration(migrations.Migration):
                 ('P_M_Remarks', models.CharField(max_length=60, null=True)),
                 ('Ind_Weight', models.FloatField(null=True)),
                 ('CM_Inch', models.CharField(max_length=10, null=True)),
-                ('AgentID', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='invoice.magent')),
-                ('CatID', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='invoice.mcategory')),
-                ('CustID', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='invoice.mcustomer')),
-                ('ItemID', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='invoice.mitem')),
-                ('LocationID', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='invoice.mlocation')),
-                ('ShadeID', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='invoice.mshade')),
-                ('UnitID', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='invoice.company')),
+                ('AgentID', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, to='invoice.magent')),
+                ('CatID', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, to='invoice.mcategory')),
+                ('CustID', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, to='invoice.mcustomer')),
+                ('ItemID', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, to='invoice.mitem')),
+                ('LocationID', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, to='invoice.mlocation')),
+                ('ShadeID', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, to='invoice.mshade')),
+                ('UnitID', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, to='invoice.company')),
             ],
         ),
         migrations.CreateModel(
             name='TProduction_bck',
             fields=[
-                ('ProductionID', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
+                ('ProductionID', models.UUIDField(default=uuid.uuid4,
+                 editable=False, primary_key=True, serialize=False)),
                 ('RDate', models.DateTimeField(null=True)),
                 ('L_E', models.CharField(max_length=10, null=True)),
                 ('Reel_Sheet', models.CharField(max_length=50, null=True)),
@@ -565,31 +639,41 @@ class Migration(migrations.Migration):
                 ('P_M_Remarks', models.CharField(max_length=60, null=True)),
                 ('Ind_Weight', models.FloatField(null=True)),
                 ('CM_Inch', models.CharField(max_length=10, null=True)),
-                ('AgentID', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='invoice.magent')),
-                ('CatID', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='invoice.mcategory')),
-                ('CustID', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='invoice.mcustomer')),
-                ('ItemID', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='invoice.mitem')),
-                ('LocationID', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='invoice.mlocation')),
-                ('ShadeID', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='invoice.mshade')),
-                ('UnitID', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='invoice.company')),
+                ('AgentID', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, to='invoice.magent')),
+                ('CatID', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, to='invoice.mcategory')),
+                ('CustID', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, to='invoice.mcustomer')),
+                ('ItemID', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, to='invoice.mitem')),
+                ('LocationID', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, to='invoice.mlocation')),
+                ('ShadeID', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, to='invoice.mshade')),
+                ('UnitID', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, to='invoice.company')),
             ],
         ),
         migrations.CreateModel(
             name='TProductionReel',
             fields=[
-                ('ProductionReelID', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
+                ('ProductionReelID', models.UUIDField(default=uuid.uuid4,
+                 editable=False, primary_key=True, serialize=False)),
                 ('ReelNo', models.BigIntegerField(null=True)),
                 ('Stk', models.CharField(max_length=10, null=True)),
                 ('StkDate', models.DateTimeField(null=True)),
                 ('InvDate', models.DateTimeField(null=True)),
                 ('RefProductionReelid', models.UUIDField(null=True)),
-                ('ProductionID', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='invoice.tproduction')),
+                ('ProductionID', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, to='invoice.tproduction')),
             ],
         ),
         migrations.CreateModel(
             name='RChallanExport',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.BigAutoField(auto_created=True,
+                 primary_key=True, serialize=False, verbose_name='ID')),
                 ('City', models.CharField(max_length=50, null=True)),
                 ('State', models.CharField(max_length=20, null=True)),
                 ('StateCode', models.CharField(max_length=10, null=True)),
@@ -616,29 +700,41 @@ class Migration(migrations.Migration):
                 ('weight', models.FloatField(null=True)),
                 ('ReelNo', models.BigIntegerField(null=True)),
                 ('Reel_Sheet', models.CharField(max_length=50, null=True)),
-                ('InvoiceID', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='invoice.tinvoice')),
-                ('ProductionID', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='invoice.tproduction')),
-                ('ProductionReelID', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='invoice.tproductionreel')),
+                ('InvoiceID', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, to='invoice.tinvoice')),
+                ('ProductionID', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, to='invoice.tproduction')),
+                ('ProductionReelID', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, to='invoice.tproductionreel')),
             ],
         ),
         migrations.CreateModel(
             name='CustomUser',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('password', models.CharField(max_length=128, verbose_name='password')),
-                ('last_login', models.DateTimeField(blank=True, null=True, verbose_name='last login')),
-                ('user_name', models.CharField(max_length=50, verbose_name='User Name')),
-                ('email', models.EmailField(max_length=255, verbose_name='email address')),
-                ('user_emp_code', models.CharField(max_length=50, unique=True, verbose_name='Employee Code')),
+                ('id', models.BigAutoField(auto_created=True,
+                 primary_key=True, serialize=False, verbose_name='ID')),
+                ('password', models.CharField(
+                    max_length=128, verbose_name='password')),
+                ('last_login', models.DateTimeField(
+                    blank=True, null=True, verbose_name='last login')),
+                ('user_name', models.CharField(
+                    max_length=50, verbose_name='User Name')),
+                ('email', models.EmailField(
+                    max_length=255, verbose_name='email address')),
+                ('user_emp_code', models.CharField(max_length=50,
+                 unique=True, verbose_name='Employee Code')),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
                 ('updated_at', models.DateTimeField(auto_now=True)),
                 ('is_superuser', models.BooleanField(default=False)),
                 ('is_staff', models.BooleanField(default=False)),
                 ('is_active', models.BooleanField(default=True)),
                 ('is_admin', models.BooleanField(default=False)),
-                ('groups', models.ManyToManyField(blank=True, help_text='The groups this user belongs to. A user will get all permissions granted to each of their groups.', related_name='user_set', related_query_name='user', to='auth.group', verbose_name='groups')),
-                ('user_permissions', models.ManyToManyField(blank=True, help_text='Specific permissions for this user.', related_name='user_set', related_query_name='user', to='auth.permission', verbose_name='user permissions')),
-                ('company', models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='users', to='invoice.company')),
+                ('groups', models.ManyToManyField(blank=True, help_text='The groups this user belongs to. A user will get all permissions granted to each of their groups.',
+                 related_name='user_set', related_query_name='user', to='auth.group', verbose_name='groups')),
+                ('user_permissions', models.ManyToManyField(blank=True, help_text='Specific permissions for this user.',
+                 related_name='user_set', related_query_name='user', to='auth.permission', verbose_name='user permissions')),
+                ('company', models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE,
+                 related_name='users', to='invoice.company')),
             ],
             options={
                 'verbose_name': 'User',
@@ -649,18 +745,22 @@ class Migration(migrations.Migration):
         ),
         migrations.AddConstraint(
             model_name='tablename',
-            constraint=models.UniqueConstraint(fields=('table_name', 'company'), name='unique_table_name_company'),
+            constraint=models.UniqueConstraint(
+                fields=('table_name', 'company'), name='unique_table_name_company'),
         ),
         migrations.AddIndex(
             model_name='tablemetadata',
-            index=django.contrib.postgres.indexes.GinIndex(fields=['table_metadata'], name='table_metadata_gin_idx'),
+            index=django.contrib.postgres.indexes.GinIndex(
+                fields=['table_metadata'], name='table_metadata_gin_idx'),
         ),
         migrations.AddConstraint(
             model_name='tablemetadata',
-            constraint=models.UniqueConstraint(fields=('table_metadata', 'table_name'), name='unique_table_metadata_name'),
+            constraint=models.UniqueConstraint(
+                fields=('table_metadata', 'table_name'), name='unique_table_metadata_name'),
         ),
         migrations.AddIndex(
             model_name='tabledata',
-            index=django.contrib.postgres.indexes.GinIndex(fields=['table_data'], name='table_data_gin_idx'),
+            index=django.contrib.postgres.indexes.GinIndex(
+                fields=['table_data'], name='table_data_gin_idx'),
         ),
     ]

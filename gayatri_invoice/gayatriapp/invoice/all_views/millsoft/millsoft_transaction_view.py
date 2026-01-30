@@ -80,7 +80,7 @@ class TExport_list(SuccessMessageMixin, ListView):
     paginate_by = 100
 
     def get_queryset(self):
-        return TExport.objects.values()
+        return TExport.objects.annotate(pk_str=Cast("pk", output_field=CharField())).values()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -158,7 +158,7 @@ class TExportDetails_list(SuccessMessageMixin, ListView):
     paginate_by = 100
 
     def get_queryset(self):
-        return TExportDetails.objects.values()
+        return TExportDetails.objects.annotate(pk_str=Cast("pk", output_field=CharField())).values()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -236,7 +236,7 @@ class TIndent_list(SuccessMessageMixin, ListView):
     paginate_by = 100
 
     def get_queryset(self):
-        return TIndent.objects.values()
+        return TIndent.objects.annotate(pk_str=Cast("pk", output_field=CharField())).values()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -326,7 +326,7 @@ class TInvoice_list(SuccessMessageMixin, ListView):
     paginate_by = 100
 
     def get_queryset(self):
-        return TInvoice.objects.values()
+        return TInvoice.objects.annotate(pk_str=Cast("pk", output_field=CharField())).values()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -404,7 +404,7 @@ class TJumboRollWiseQC_list(SuccessMessageMixin, ListView):
     paginate_by = 100
 
     def get_queryset(self):
-        return TJumboRollWiseQC.objects.values()
+        return TJumboRollWiseQC.objects.annotate(pk_str=Cast("pk", output_field=CharField())).values()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -482,7 +482,7 @@ class TLOTNoWiseQc_list(SuccessMessageMixin, ListView):
     paginate_by = 100
 
     def get_queryset(self):
-        return TLOTNoWiseQc.objects.values()
+        return TLOTNoWiseQc.objects.annotate(pk_str=Cast("pk", output_field=CharField())).values()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -560,7 +560,7 @@ class TProduction_list(SuccessMessageMixin, ListView):
     paginate_by = 100
 
     def get_queryset(self):
-        return TProduction.objects.values()
+        return TProduction.objects.annotate(pk_str=Cast("pk", output_field=CharField())).values()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -638,7 +638,7 @@ class TProduction_bck_list(SuccessMessageMixin, ListView):
     paginate_by = 100
 
     def get_queryset(self):
-        return TProduction_bck.objects.values()
+        return TProduction_bck.objects.annotate(pk_str=Cast("pk", output_field=CharField())).values()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -716,7 +716,7 @@ class TProductionReel_list(SuccessMessageMixin, ListView):
     paginate_by = 100
 
     def get_queryset(self):
-        return TProductionReel.objects.values()
+        return TProductionReel.objects.annotate(pk_str=Cast("pk", output_field=CharField())).values()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

@@ -9,12 +9,12 @@ from django.db.models.functions import Cast
 from django.db.models import CharField
 
 from ...form_files import (helperFunct as hf, millsoftForm as mf)
-from ...models import (RChallan)
 
 from weasyprint import HTML
 from io import BytesIO
 import os
 import uuid
+import csv
 import logging
 logger = logging.getLogger(__name__)
 
@@ -27,10 +27,11 @@ def RChallan_create(request):
         html_string = render_to_string(
             "DemoTemplate.html", {"company_name": "GAYATRISHAKTI PAPER AND BOARDS LTD"})
         logger.debug(html_string)
+        # weasy
         HTML(string=html_string).write_pdf(pdf_buffer)
 
         filename = f"challan_{uuid.uuid4().hex[:8]}.pdf"
-        pdf_path = os.path.join(settings.MEDIA_ROOT, "challans", filename)
+        pdf_path = os.path.join(settings.MEDIA_ROOT, "Challans", filename)
         os.makedirs(os.path.dirname(pdf_path), exist_ok=True)
 
         with open(pdf_path, 'wb') as f:
@@ -46,21 +47,44 @@ def RChallan_create(request):
 
 
 def download_challan(request, filename):
-    pdf_path = os.path.join(settings.MEDIA_ROOT, "challans", filename)
+    pdf_path = os.path.join(settings.media_root, "Challans", filename)
 
     if not os.path.exists(pdf_path):
-        return HttpResponse("File not Found", status=404)
+        return httpresponse("file not found", status=404)
 
     def file_iterator(file_path, chunk_size=8192):
         with open(pdf_path, "rb") as f:
-            while True:
+            while true:
                 data = f.read(chunk_size)
                 if not data:
                     break
                 yield data
 
-    response = StreamingHttpResponse(
+    response = streaminghttpresponse(
         file_iterator(pdf_path),
         content_type="application/pdf")
-    response['Content-Disposition'] = f'attachment;filename="{filename}"'
+    response['content-disposition'] = f'attachment;filename="{filename}"'
     return response
+
+def download_csv(request, filename):
+    csv_path = os.path.join(settings.media_root, "Reports", filename)
+
+    if not os.path.exists(csv_path):
+        return httpresponse("file not found", status=404)
+
+    def file_iterator(file_path, chunk_size=8192):
+        with open(csv_path, "rb") as f:
+            while true:
+                data = f.read(chunk_size)
+                if not data:
+                    break
+                yield data
+
+    response = streaminghttpresponse(
+        file_iterator(csv_path),
+        content_type="text/csv")
+    response['content-disposition'] = f'attachment;filename="{filename}"'
+    return response
+
+class RPendingOrder():
+    pass

@@ -1,6 +1,7 @@
 from django.test import TestCase, Client
 from django.urls import reverse
 
+
 class TestViews(TestCase):
     def setup(self):
         client = Client(enforce_csrf_checks=False)
@@ -14,14 +15,14 @@ class TestViews(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed("home.html")
         response = self.client.post("/main/form_setup",
-                                        {   "Username":"nixon",
-                                            "Password":"nixon",
-                                            "select*Company":"company1",
-                                            "Login":"Login"
-                                        }
+                                    {"Username": "nixon",
+                                     "Password": "nixon",
+                                     "select*Company": "company1",
+                                     "Login": "Login"
+                                     }
                                     )
         self.assertTemplateUsed("index.html")
-        self.assertRedirects(response,"/main/edit_form")
+        self.assertRedirects(response, "/main/edit_form")
 
     def test_form_config_page(self):
         response = self.client.get("/main/create_form")
@@ -32,4 +33,3 @@ class TestViews(TestCase):
     #     response = self.client.post("/main/delete_form")
     #     self.assertEqual(response.status_code, 200)
     #     self.assertEqual(response.context, "success")
-

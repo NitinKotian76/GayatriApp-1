@@ -286,7 +286,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
 class MAgent(models.Model):
     AgentId = models.UUIDField(
-        primary_key=True, default=uuid.uuid4, null=False)
+        primary_key=True, default=uuid.uuid4, null=False, editable=False)
     Agentname = models.CharField(null=True, max_length=100)
     Bname = models.CharField(null=True, max_length=250)
     Area = models.CharField(null=True, max_length=30)
@@ -375,13 +375,13 @@ class MCustomer(models.Model):
         return self.Custname
 
 
-class MEmployee(models.Model):
-    EMPID = models.UUIDField(null=True, default=uuid.uuid4, editable=False)
-    EmpName = models.CharField(null=True, max_length=50)
-    Designation = models.CharField(null=True, max_length=50)
-
-    def __str__(self):
-        return self.EmpName
+# class MEmployee(models.Model):
+#     EMPID = models.UUIDField(null=True, default=uuid.uuid4, editable=False)
+#     EmpName = models.CharField(null=True, max_length=50)
+#     Designation = models.CharField(null=True, max_length=50)
+#
+#     def __str__(self):
+#         return self.EmpName
 
 
 class MExportFields(models.Model):
@@ -466,7 +466,8 @@ class MLocation(models.Model):
 
 
 class MPlusMinusHead(models.Model):
-    HeadID = models.UUIDField(primary_key=True, default=uuid.uuid4, null=False)
+    HeadID = models.UUIDField(
+        primary_key=True, default=uuid.uuid4, null=False, editable=False)
     Head = models.CharField(null=True, max_length=50)
     Plus_Minus = models.CharField(null=True, max_length=10)
     Api = models.CharField(null=True, max_length=10)
@@ -477,7 +478,8 @@ class MPlusMinusHead(models.Model):
 
 
 class MSupplier(models.Model):
-    SuppId = models.UUIDField(primary_key=True, default=uuid.uuid4, null=False)
+    SuppId = models.UUIDField(
+        primary_key=True, default=uuid.uuid4, null=False, editable=False)
     Suppname = models.CharField(null=True, max_length=100)
     Bname = models.CharField(null=True, max_length=250)
     Area = models.CharField(null=True, max_length=30)
@@ -611,7 +613,7 @@ class TExportDetails(models.Model):
 
 
 class TIndent(models.Model):
-    IndentID = models.AutoField(primary_key=True)
+    IndentID = models.AutoField(primary_key=True, editable=False)
     CustID = models.ForeignKey(
         MCustomer, on_delete=models.CASCADE)
     IndentNo = models.CharField(null=True, max_length=20)
@@ -781,75 +783,3 @@ class TProductionReel(models.Model):
     StkDate = models.DateTimeField(null=True)
     InvDate = models.DateTimeField(null=True)
     RefProductionReelid = models.UUIDField(null=True)
-
-
-class RChallan(models.Model):
-    Custname = models.CharField(null=True, max_length=100)
-    Bname = models.CharField(null=True, max_length=100)
-    City = models.CharField(null=True, max_length=20)
-    State = models.CharField(null=True, max_length=20)
-    StateCode = models.CharField(null=True, max_length=10)
-    PANNO = models.CharField(null=True, max_length=10)
-    GSTINNo = models.CharField(null=True, max_length=20)
-    InvoiceNo = models.CharField(null=True, max_length=10)
-    InvoiceDate = models.DateTimeField(null=True)
-    OrderNo = models.CharField(null=True, max_length=50)
-    OrderDate = models.CharField(null=True, max_length=10)
-    Dispatchto = models.CharField(null=True, max_length=100)
-    LrNo = models.CharField(null=True, max_length=50)
-    LrDate = models.CharField(null=True, max_length=10)
-    VehicleNo = models.CharField(null=True, max_length=100)
-    Transport = models.CharField(null=True, max_length=100)
-    Quality = models.CharField(null=True, max_length=20)
-    Shade = models.CharField(null=True, max_length=20)
-    GSM = models.CharField(null=True, max_length=10)
-    lENGTH = models.FloatField(null=True)
-    Sized = models.FloatField(null=True)
-    Unit = models.CharField(null=True, max_length=10)
-    InvoiceID = models.ForeignKey(TInvoice, on_delete=models.CASCADE)
-    NoOfSheet = models.FloatField(null=True)
-    REAMWt = models.FloatField(null=True)
-    NoOfREAM = models.FloatField(null=True)
-    NoOfBDLS = models.FloatField(null=True)
-    BDLS = models.FloatField(null=True)
-    weight = models.FloatField(null=True)
-    REmarks = models.CharField(null=True, max_length=100)
-
-
-class RChallanExport(models.Model):
-
-    Custname = models.CharField(null=True, max_length=100),
-    Bname = models.CharField(null=True, max_length=100),
-    City = models.CharField(null=True, max_length=50)
-    State = models.CharField(null=True, max_length=20)
-    StateCode = models.CharField(null=True, max_length=10)
-    PANNO = models.CharField(null=True, max_length=10)
-    GSTINNo = models.CharField(null=True, max_length=20)
-    InvoiceNo = models.CharField(null=True, max_length=10)
-    InvoiceDate = models.DateTimeField(null=True)
-    OrderNo = models.CharField(null=True, max_length=20)
-    OrderDate = models.CharField(null=True, max_length=10)
-    Dispatchto = models.CharField(null=True, max_length=100)
-    LrNo = models.CharField(null=True, max_length=50)
-    LrDate = models.CharField(null=True, max_length=10)
-    VehicleNo = models.CharField(null=True, max_length=100),
-    Transport = models.CharField(null=True, max_length=100),
-    Quality = models.CharField(null=True, max_length=20)
-    Shade = models.CharField(null=True, max_length=20)
-    GSM = models.CharField(null=True, max_length=10)
-    lENGTH = models.FloatField(null=True)
-    Sized = models.FloatField(null=True)
-    Unit = models.CharField(null=True, max_length=10)
-    InvoiceID = models.ForeignKey(TInvoice, on_delete=models.CASCADE)
-    NoOfSheet = models.FloatField(null=True)
-    REAMWt = models.FloatField(null=True)
-    NoOfREAM = models.FloatField(null=True)
-    NoOfBDLS = models.FloatField(null=True)
-    BDLS = models.FloatField(null=True)
-    weight = models.FloatField(null=True)
-    REmarks = models.CharField(null=True, max_length=100),
-    ReelNo = models.BigIntegerField(null=True)
-    ProductionReelID = models.ForeignKey(
-        TProductionReel, on_delete=models.CASCADE)
-    ProductionID = models.ForeignKey(TProduction, on_delete=models.CASCADE)
-    Reel_Sheet = models.CharField(null=True, max_length=50)
