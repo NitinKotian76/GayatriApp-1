@@ -1,4 +1,3 @@
-from datetime import datetime
 from django.contrib.messages.views import SuccessMessageMixin
 from django.views.generic import (CreateView, UpdateView, DeleteView, ListView)
 from django.urls import (reverse_lazy, reverse)
@@ -10,7 +9,7 @@ from django.db.models import CharField
 
 from ...form_files import (helperFunct as hf, millsoftForm as mf)
 from ...models import (TExport, TExportDetails, TIndent,
-                       TInvoice, TJumboRollWiseQC, TLOTNoWiseQc, TProduction,
+                       TInvoice, TProduction,
                        TProduction_bck, TProductionReel)
 import logging
 logger = logging.getLogger(__name__)
@@ -340,161 +339,161 @@ class TInvoice_list(SuccessMessageMixin, ListView):
         return context
 
 
-class TJumboRollWiseQC_create(SuccessMessageMixin, CreateView):
-
-    model = TJumboRollWiseQC
-    form_class = mf.TJumboRollWiseQCForm
-    template_name = "partials/forms.html"
-    context_object_name = "form"
-    success_url = reverse_lazy("invoice:TJumboRollWiseQC_create")
-    success_message = "successfully created"
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["buttons"] = hf.button("submit",
-                                       hx_req=reverse(
-                                           'invoice:TJumboRollWiseQC_create'),
-                                       hx_target="#dynform",
-                                       hx_swap="innerHTML")
-        return context
-
-    def form_valid(self, form):
-        form.save()
-        response = self.render_to_response(self.get_context_data())
-        return trigger_client_event(response, "RefreshTable")
-
-
-class TJumboRollWiseQC_update(SuccessMessageMixin, UpdateView):
-
-    model = TJumboRollWiseQC
-    form_class = mf.TJumboRollWiseQCForm
-    template_name = "partials/forms.html"
-    context_object_name = "form"
-    success_message = "successfully updated"
-    success_url = reverse_lazy('invoice:TJumboRollWiseQC_create')
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["buttons"] = hf.button("submit",
-                                       hx_req=f"{self.request.path}",
-                                       hx_target="#dynform",
-                                       hx_swap="innerHTML")
-
-        return context
-
-    def form_valid(self, form):
-        form.save()
-        response = self.render_to_response(self.get_context_data())
-        return trigger_client_event(response, "RefreshTable")
-
-
-class TJumboRollWiseQC_delete(SuccessMessageMixin, DeleteView):
-
-    model = TJumboRollWiseQC
-    success_message = "successfully deleted"
-    success_url = reverse_lazy('invoice:TJumboRollWiseQC_list')
-
-
-class TJumboRollWiseQC_list(SuccessMessageMixin, ListView):
-
-    model = TJumboRollWiseQC
-    fields = '__all__'
-    context_object_name = "form"
-    template_name = "partials/tableview.html"
-    paginate_by = 100
-
-    def get_queryset(self):
-        return TJumboRollWiseQC.objects.annotate(pk_str=Cast("pk", output_field=CharField())).values()
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        # Already dicts from .values()
-        context['listdata'] = list(context['object_list'])
-        context['buttons'] = [
-            hf.button("Create Agent", hx_req="",
-                      hx_req_type="hx-get", hx_target="#tableshow")
-        ]
-        context["modelurl"] = reverse('invoice:TJumboRollWiseQC_list')
-        return context
-
-
-class TLOTNoWiseQc_create(SuccessMessageMixin, CreateView):
-
-    model = TLOTNoWiseQc
-    form_class = mf.TLOTNoWiseQcForm
-    template_name = "partials/forms.html"
-    context_object_name = "form"
-    success_url = reverse_lazy("invoice:TLOTNoWiseQc_create")
-    success_message = "successfully created"
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["buttons"] = hf.button("submit",
-                                       hx_req=reverse(
-                                           'invoice:TLOTNoWiseQc_create'),
-                                       hx_target="#dynform",
-                                       hx_swap="innerHTML")
-        return context
-
-    def form_valid(self, form):
-        form.save()
-        response = self.render_to_response(self.get_context_data())
-        return trigger_client_event(response, "RefreshTable")
-
-
-class TLOTNoWiseQc_update(SuccessMessageMixin, UpdateView):
-
-    model = TLOTNoWiseQc
-    form_class = mf.TLOTNoWiseQcForm
-    template_name = "partials/forms.html"
-    context_object_name = "form"
-    success_message = "successfully updated"
-    success_url = reverse_lazy('invoice:TLOTNoWiseQc_create')
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["buttons"] = hf.button("submit",
-                                       hx_req=f"{self.request.path}",
-                                       hx_target="#dynform",
-                                       hx_swap="innerHTML")
-
-        return context
-
-    def form_valid(self, form):
-        form.save()
-        response = self.render_to_response(self.get_context_data())
-        return trigger_client_event(response, "RefreshTable")
-
-
-class TLOTNoWiseQc_delete(SuccessMessageMixin, DeleteView):
-
-    model = TLOTNoWiseQc
-    success_message = "successfully deleted"
-    success_url = reverse_lazy('invoice:TLOTNoWiseQc_list')
-
-
-class TLOTNoWiseQc_list(SuccessMessageMixin, ListView):
-
-    model = TLOTNoWiseQc
-    fields = '__all__'
-    context_object_name = "form"
-    template_name = "partials/tableview.html"
-    paginate_by = 100
-
-    def get_queryset(self):
-        return TLOTNoWiseQc.objects.annotate(pk_str=Cast("pk", output_field=CharField())).values()
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        # Already dicts from .values()
-        context['listdata'] = list(context['object_list'])
-        context['buttons'] = [
-            hf.button("Create Agent", hx_req="",
-                      hx_req_type="hx-get", hx_target="#tableshow")
-        ]
-        context["modelurl"] = reverse('invoice:TLOTNoWiseQc_list')
-        return context
-
+# class TJumboRollWiseQC_create(SuccessMessageMixin, CreateView):
+#
+#     model = TJumboRollWiseQC
+#     form_class = mf.TJumboRollWiseQCForm
+#     template_name = "partials/forms.html"
+#     context_object_name = "form"
+#     success_url = reverse_lazy("invoice:TJumboRollWiseQC_create")
+#     success_message = "successfully created"
+#
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         context["buttons"] = hf.button("submit",
+#                                        hx_req=reverse(
+#                                            'invoice:TJumboRollWiseQC_create'),
+#                                        hx_target="#dynform",
+#                                        hx_swap="innerHTML")
+#         return context
+#
+#     def form_valid(self, form):
+#         form.save()
+#         response = self.render_to_response(self.get_context_data())
+#         return trigger_client_event(response, "RefreshTable")
+#
+#
+# class TJumboRollWiseQC_update(SuccessMessageMixin, UpdateView):
+#
+#     model = TJumboRollWiseQC
+#     form_class = mf.TJumboRollWiseQCForm
+#     template_name = "partials/forms.html"
+#     context_object_name = "form"
+#     success_message = "successfully updated"
+#     success_url = reverse_lazy('invoice:TJumboRollWiseQC_create')
+#
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         context["buttons"] = hf.button("submit",
+#                                        hx_req=f"{self.request.path}",
+#                                        hx_target="#dynform",
+#                                        hx_swap="innerHTML")
+#
+#         return context
+#
+#     def form_valid(self, form):
+#         form.save()
+#         response = self.render_to_response(self.get_context_data())
+#         return trigger_client_event(response, "RefreshTable")
+#
+#
+# class TJumboRollWiseQC_delete(SuccessMessageMixin, DeleteView):
+#
+#     model = TJumboRollWiseQC
+#     success_message = "successfully deleted"
+#     success_url = reverse_lazy('invoice:TJumboRollWiseQC_list')
+#
+#
+# class TJumboRollWiseQC_list(SuccessMessageMixin, ListView):
+#
+#     model = TJumboRollWiseQC
+#     fields = '__all__'
+#     context_object_name = "form"
+#     template_name = "partials/tableview.html"
+#     paginate_by = 100
+#
+#     def get_queryset(self):
+#         return TJumboRollWiseQC.objects.annotate(pk_str=Cast("pk", output_field=CharField())).values()
+#
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         # Already dicts from .values()
+#         context['listdata'] = list(context['object_list'])
+#         context['buttons'] = [
+#             hf.button("Create Agent", hx_req="",
+#                       hx_req_type="hx-get", hx_target="#tableshow")
+#         ]
+#         context["modelurl"] = reverse('invoice:TJumboRollWiseQC_list')
+#         return context
+#
+#
+# class TLOTNoWiseQc_create(SuccessMessageMixin, CreateView):
+#
+#     model = TLOTNoWiseQc
+#     form_class = mf.TLOTNoWiseQcForm
+#     template_name = "partials/forms.html"
+#     context_object_name = "form"
+#     success_url = reverse_lazy("invoice:TLOTNoWiseQc_create")
+#     success_message = "successfully created"
+#
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         context["buttons"] = hf.button("submit",
+#                                        hx_req=reverse(
+#                                            'invoice:TLOTNoWiseQc_create'),
+#                                        hx_target="#dynform",
+#                                        hx_swap="innerHTML")
+#         return context
+#
+#     def form_valid(self, form):
+#         form.save()
+#         response = self.render_to_response(self.get_context_data())
+#         return trigger_client_event(response, "RefreshTable")
+#
+#
+# class TLOTNoWiseQc_update(SuccessMessageMixin, UpdateView):
+#
+#     model = TLOTNoWiseQc
+#     form_class = mf.TLOTNoWiseQcForm
+#     template_name = "partials/forms.html"
+#     context_object_name = "form"
+#     success_message = "successfully updated"
+#     success_url = reverse_lazy('invoice:TLOTNoWiseQc_create')
+#
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         context["buttons"] = hf.button("submit",
+#                                        hx_req=f"{self.request.path}",
+#                                        hx_target="#dynform",
+#                                        hx_swap="innerHTML")
+#
+#         return context
+#
+#     def form_valid(self, form):
+#         form.save()
+#         response = self.render_to_response(self.get_context_data())
+#         return trigger_client_event(response, "RefreshTable")
+#
+#
+# class TLOTNoWiseQc_delete(SuccessMessageMixin, DeleteView):
+#
+#     model = TLOTNoWiseQc
+#     success_message = "successfully deleted"
+#     success_url = reverse_lazy('invoice:TLOTNoWiseQc_list')
+#
+#
+# class TLOTNoWiseQc_list(SuccessMessageMixin, ListView):
+#
+#     model = TLOTNoWiseQc
+#     fields = '__all__'
+#     context_object_name = "form"
+#     template_name = "partials/tableview.html"
+#     paginate_by = 100
+#
+#     def get_queryset(self):
+#         return TLOTNoWiseQc.objects.annotate(pk_str=Cast("pk", output_field=CharField())).values()
+#
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         # Already dicts from .values()
+#         context['listdata'] = list(context['object_list'])
+#         context['buttons'] = [
+#             hf.button("Create Agent", hx_req="",
+#                       hx_req_type="hx-get", hx_target="#tableshow")
+#         ]
+#         context["modelurl"] = reverse('invoice:TLOTNoWiseQc_list')
+#         return context
+#
 
 class TProduction_create(SuccessMessageMixin, CreateView):
 

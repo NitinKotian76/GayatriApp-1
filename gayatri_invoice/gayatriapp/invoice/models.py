@@ -376,9 +376,9 @@ class MCustomer(models.Model):
 
 
 # class MEmployee(models.Model):
-#     EMPID = models.UUIDField(null=True, default=uuid.uuid4, editable=False)
-#     EmpName = models.CharField(null=True, max_length=50)
-#     Designation = models.CharField(null=True, max_length=50)
+#     EMPID = models.UUIDField(null=True, default=uuid.uuid5, editable=False)
+#     EmpName = models.CharField(null=True, max_length=51)
+#     Designation = models.CharField(null=True, max_length=51)
 #
 #     def __str__(self):
 #         return self.EmpName
@@ -503,14 +503,14 @@ class TInvoice(models.Model):
     AgentID = models.ForeignKey(
         MAgent, on_delete=models.CASCADE)
     InvoiceNo = models.BigIntegerField(null=False)
-    InvoiceDate = models.DateTimeField(null=True)
+    InvoiceDate = models.DateField(null=True,)
     ShadeID = models.ForeignKey(
         MShade, on_delete=models.CASCADE)
     SalesType = models.CharField(null=True, max_length=20)
-    PreTime = models.CharField(null=True, max_length=20)
-    PreDate = models.DateTimeField(null=True)
-    RemTime = models.CharField(null=True, max_length=20)
-    RemDate = models.DateTimeField(null=True)
+    PreTime = models.TimeField(null=True, max_length=20)
+    PreDate = models.DateField(null=True)
+    RemTime = models.TimeField(null=True, max_length=20)
+    RemDate = models.DateField(null=True)
     OrderNo = models.CharField(null=True, max_length=50)
     OrderDate = models.CharField(null=True, max_length=10)
     Transport = models.CharField(null=True, max_length=90)
@@ -604,7 +604,7 @@ class TExportDetails(models.Model):
     UOM = models.CharField(null=True, max_length=10)
     DollarRAte = models.FloatField(null=True)
     InvoiceNo = models.CharField(null=True, max_length=10)
-    INvoicedate = models.DateTimeField(null=True)
+    INvoicedate = models.DateField(null=True)
     NoOFReam = models.FloatField(null=True)
     REAMWt = models.FloatField(null=True)
 
@@ -617,88 +617,88 @@ class TIndent(models.Model):
     CustID = models.ForeignKey(
         MCustomer, on_delete=models.CASCADE)
     IndentNo = models.CharField(null=True, max_length=20)
-    IndentDate = models.DateTimeField(null=True)
+    IndentDate = models.DateField(null=True)
     PONo = models.CharField(null=True, max_length=20)
-    PODate = models.DateTimeField(null=True)
+    PODate = models.DateField(null=True)
     remark = models.CharField(null=True, max_length=150)
 
     def __str__(self):
         return self.IndentNo
 
+#
+# class TJumboRollWiseQC(models.Model):
+#     JumboRollWiseQcID = models.UUIDField(
+#         primary_key=True, default=uuid.uuid4, editable=False)
+#     JumboRollQCDate = models.DateField(null=True)
+#     JumboRollNo = models.DecimalField(
+#         null=True, max_digits=18, decimal_places=0)
+#     Shift = models.CharField(null=True, max_length=10)
+#     ShadeID = models.ForeignKey(
+#         MShade, on_delete=models.CASCADE)
+#     GSM = models.CharField(null=True, max_length=10)
+#     CALIPER = models.CharField(null=True, max_length=10)
+#     BULK_QC = models.CharField(null=True, max_length=10)
+#     COBBTOP = models.CharField(null=True, max_length=10)
+#     BOTTOM = models.CharField(null=True, max_length=10)
+#     MOISTUREavg = models.CharField(null=True, max_length=10)
+#     TABERSTIFFNESSMDCD = models.CharField(null=True, max_length=10)
+#     RATIO = models.CharField(null=True, max_length=10)
+#     BRIGHTNESS = models.CharField(null=True, max_length=10)
+#     GLOSS = models.CharField(null=True, max_length=10)
+#     SOATVALUE = models.CharField(null=True, max_length=10)
+#     PPSROUGHNESS = models.CharField(null=True, max_length=10)
+#     IGTDRYPICK = models.CharField(null=True, max_length=10)
+#     PLYBONDSCOTT = models.CharField(null=True, max_length=10)
+#     SURFACEPH = models.CharField(null=True, max_length=10)
+#     SURACEDUST = models.CharField(null=True, max_length=10)
+#     TOPFORMATION = models.CharField(null=True, max_length=10)
+#     VARNISHABILITY = models.CharField(null=True, max_length=10)
+#     CRACKINGCREASING = models.CharField(null=True, max_length=10)
+#     FLATNESS = models.CharField(null=True, max_length=10)
+#     JumboRollWeight = models.FloatField(null=True)
+#     DateM = models.CharField(null=True, max_length=10)
+#
+#     def __str__(self):
+#         return self.JumboRollNo
+#
 
-class TJumboRollWiseQC(models.Model):
-    JumboRollWiseQcID = models.UUIDField(
-        primary_key=True, default=uuid.uuid4, editable=False)
-    JumboRollQCDate = models.DateTimeField(null=True)
-    JumboRollNo = models.DecimalField(
-        null=True, max_digits=18, decimal_places=0)
-    Shift = models.CharField(null=True, max_length=10)
-    ShadeID = models.ForeignKey(
-        MShade, on_delete=models.CASCADE)
-    GSM = models.CharField(null=True, max_length=10)
-    CALIPER = models.CharField(null=True, max_length=10)
-    BULK_QC = models.CharField(null=True, max_length=10)
-    COBBTOP = models.CharField(null=True, max_length=10)
-    BOTTOM = models.CharField(null=True, max_length=10)
-    MOISTUREavg = models.CharField(null=True, max_length=10)
-    TABERSTIFFNESSMDCD = models.CharField(null=True, max_length=10)
-    RATIO = models.CharField(null=True, max_length=10)
-    BRIGHTNESS = models.CharField(null=True, max_length=10)
-    GLOSS = models.CharField(null=True, max_length=10)
-    SOATVALUE = models.CharField(null=True, max_length=10)
-    PPSROUGHNESS = models.CharField(null=True, max_length=10)
-    IGTDRYPICK = models.CharField(null=True, max_length=10)
-    PLYBONDSCOTT = models.CharField(null=True, max_length=10)
-    SURFACEPH = models.CharField(null=True, max_length=10)
-    SURACEDUST = models.CharField(null=True, max_length=10)
-    TOPFORMATION = models.CharField(null=True, max_length=10)
-    VARNISHABILITY = models.CharField(null=True, max_length=10)
-    CRACKINGCREASING = models.CharField(null=True, max_length=10)
-    FLATNESS = models.CharField(null=True, max_length=10)
-    JumboRollWeight = models.FloatField(null=True)
-    DateM = models.CharField(null=True, max_length=10)
-
-    def __str__(self):
-        return self.JumboRollNo
-
-
-class TLOTNoWiseQc(models.Model):
-    LOTNoWiseQcID = models.UUIDField(
-        primary_key=True, default=uuid.uuid4, editable=False)
-    JumboRollWiseQcID = models.ForeignKey(
-        TJumboRollWiseQC, on_delete=models.CASCADE)
-    LOTNoWiseQcIDDate = models.DateTimeField(null=True)
-    L_E = models.CharField(null=True, max_length=10)
-    ShadeID = models.ForeignKey(MShade, on_delete=models.CASCADE)
-    Reel_Sheet = models.CharField(null=True, max_length=10)
-    ItemID = models.ForeignKey(MItem, on_delete=models.CASCADE)
-    Length = models.CharField(null=True, max_length=10)
-    UnitID = models.ForeignKey(Company, on_delete=models.CASCADE)
-    CM_Inch = models.CharField(null=True, max_length=10)
-    LocationID = models.ForeignKey(MLocation, on_delete=models.CASCADE)
-    IndentNo = models.CharField(null=True, max_length=20)
-    CustID = models.ForeignKey(MCustomer, on_delete=models.CASCADE)
-    AgentID = models.ForeignKey(MAgent, on_delete=models.CASCADE)
-    LotNo = models.CharField(null=True, max_length=50)
-    DateM = models.CharField(null=True, max_length=10)
-    LotNoDateM = models.CharField(null=True, max_length=10)
-    Weight = models.FloatField(null=True)
-    NoOfSheet = models.CharField(null=True, max_length=10)
-    ReamWt = models.CharField(null=True, max_length=10)
-    NoOfReam = models.CharField(null=True, max_length=10)
-    Grain = models.CharField(null=True, max_length=10)
-    FPNo = models.CharField(null=True, max_length=10)
-    Sized = models.CharField(null=True, max_length=10)
-    GSM = models.CharField(null=True, max_length=10)
-
-    def __str__(self):
-        return self.LotNo
+# class TLOTNoWiseQc(models.Model):
+#     LOTNoWiseQcID = models.UUIDField(
+#         primary_key=True, default=uuid.uuid4, editable=False)
+#     JumboRollWiseQcID = models.ForeignKey(
+#         TJumboRollWiseQC, on_delete=models.CASCADE)
+#     LOTNoWiseQcIDDate = models.DateField(null=True)
+#     L_E = models.CharField(null=True, max_length=10)
+#     ShadeID = models.ForeignKey(MShade, on_delete=models.CASCADE)
+#     Reel_Sheet = models.CharField(null=True, max_length=10)
+#     ItemID = models.ForeignKey(MItem, on_delete=models.CASCADE)
+#     Length = models.CharField(null=True, max_length=10)
+#     UnitID = models.ForeignKey(Company, on_delete=models.CASCADE)
+#     CM_Inch = models.CharField(null=True, max_length=10)
+#     LocationID = models.ForeignKey(MLocation, on_delete=models.CASCADE)
+#     IndentNo = models.CharField(null=True, max_length=20)
+#     CustID = models.ForeignKey(MCustomer, on_delete=models.CASCADE)
+#     AgentID = models.ForeignKey(MAgent, on_delete=models.CASCADE)
+#     LotNo = models.CharField(null=True, max_length=50)
+#     DateM = models.DateField(null=True, max_length=10)
+#     LotNoDateM = models.DateField(null=True, max_length=10)
+#     Weight = models.FloatField(null=True)
+#     NoOfSheet = models.CharField(null=True, max_length=10)
+#     ReamWt = models.CharField(null=True, max_length=10)
+#     NoOfReam = models.CharField(null=True, max_length=10)
+#     Grain = models.CharField(null=True, max_length=10)
+#     FPNo = models.CharField(null=True, max_length=10)
+#     Sized = models.CharField(null=True, max_length=10)
+#     GSM = models.CharField(null=True, max_length=10)
+#
+#     def __str__(self):
+#         return self.LotNo
 
 
 class TProduction(models.Model):
     ProductionID = models.UUIDField(
         primary_key=True, default=uuid.uuid4, editable=False)
-    RDate = models.DateTimeField(null=True)
+    RDate = models.DateField(null=True)
     L_E = models.CharField(null=True, max_length=10)
     CatID = models.ForeignKey(MCategory, on_delete=models.CASCADE)
     ShadeID = models.ForeignKey(MShade, on_delete=models.CASCADE)
@@ -718,17 +718,17 @@ class TProduction(models.Model):
     IndentNo = models.CharField(null=True, max_length=20)
     CustID = models.ForeignKey(MCustomer, on_delete=models.CASCADE)
     AgentID = models.ForeignKey(MAgent, on_delete=models.CASCADE)
-    OBFlag = models.IntegerField(null=True)
-    APIFlag = models.CharField(null=True, max_length=10)
-    FAC = models.CharField(null=True, max_length=10)
-    Stk = models.CharField(null=True, max_length=10)
-    Approved = models.BigIntegerField(null=True)
+    OBFlag = models.BooleanField(null=True)  # flag
+    APIFlag = models.BooleanField(null=True)  # flag
+    FAC = models.BooleanField(null=True)  # flag
+    Stk = models.BooleanField(null=True)  # flag
+    Approved = models.BooleanField(null=True)
     EntryType = models.CharField(null=True, max_length=20)
     StockPlus_Minus = models.CharField(null=True, max_length=10)
-    HeadId = models.BigIntegerField(null=True)
+    HeadId = models.BigIntegerField(null=True, editable=False)
     # for remaining stock removal from inventory
-    RefProductionid = models.UUIDField(null=True)
-    P_M_Remarks = models.CharField(null=True, max_length=60)
+    RefProductionid = models.UUIDField(null=True, editable=False)
+    LotNo = models.CharField(null=True, max_length=60)
     Ind_Weight = models.FloatField(null=True)
     CM_Inch = models.CharField(null=True, max_length=10)
 
@@ -739,7 +739,7 @@ class TProduction(models.Model):
 class TProduction_bck(models.Model):
     ProductionID = models.UUIDField(
         primary_key=True, default=uuid.uuid4, editable=False)
-    RDate = models.DateTimeField(null=True)
+    RDate = models.DateField(null=True)
     L_E = models.CharField(null=True, max_length=10)
     CatID = models.ForeignKey(MCategory, on_delete=models.CASCADE)
     ShadeID = models.ForeignKey(MShade, on_delete=models.CASCADE)
@@ -759,15 +759,15 @@ class TProduction_bck(models.Model):
     IndentNo = models.CharField(null=True, max_length=20)
     CustID = models.ForeignKey(MCustomer, on_delete=models.CASCADE)
     AgentID = models.ForeignKey(MAgent, on_delete=models.CASCADE)
-    OBFlag = models.IntegerField(null=True)
-    APIFlag = models.CharField(null=True, max_length=10)
-    FAC = models.CharField(null=True, max_length=10)
-    Stk = models.CharField(null=True, max_length=10)
-    Approved = models.BigIntegerField(null=True)
+    OBFlag = models.BooleanField(null=True)  # flag
+    APIFlag = models.BooleanField(null=True)  # flag
+    FAC = models.BooleanField(null=True)  # flag
+    Stk = models.BooleanField(null=True)  # flag
+    Approved = models.BooleanField(null=True)
     EntryType = models.CharField(null=True, max_length=20)
     StockPlus_Minus = models.CharField(null=True, max_length=10)
-    HeadId = models.BigIntegerField(null=True)
-    RefProductionid = models.UUIDField(null=True)
+    HeadId = models.BigIntegerField(null=True, editable=False)
+    RefProductionid = models.UUIDField(null=True, editable=False)
     P_M_Remarks = models.CharField(null=True, max_length=60)
 
     Ind_Weight = models.FloatField(null=True)
@@ -780,6 +780,6 @@ class TProductionReel(models.Model):
     ProductionID = models.ForeignKey(TProduction, on_delete=models.CASCADE)
     ReelNo = models.BigIntegerField(null=True)
     Stk = models.CharField(null=True, max_length=10)
-    StkDate = models.DateTimeField(null=True)
-    InvDate = models.DateTimeField(null=True)
-    RefProductionReelid = models.UUIDField(null=True)
+    StkDate = models.DateField(null=True)
+    InvDate = models.DateField(null=True)
+    RefProductionReelid = models.UUIDField(null=True, editable=False)

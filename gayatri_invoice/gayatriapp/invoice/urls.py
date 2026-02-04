@@ -1,4 +1,4 @@
-from django.urls import path, include
+from django.urls import path
 from . import views
 from .all_views import admin_views, auth_views, common_views, form_views, report_views
 from .all_views.millsoft import millsoft_master_view, millsoft_transaction_view, millsoft_report_view
@@ -59,7 +59,7 @@ admin_urlpatterns = [
     path("admin_company", admin_views.admin_company, name="admin_company"),
 ]
 # millsoft static
-millsoft_master_urls = [
+millsoft_master_urlpatterns = [
     path("magent/create/", millsoft_master_view.MAgent_create.as_view(),
          name="MAgent_create"),
     path("magent/<int:pk>/update/", millsoft_master_view.MAgent_update.as_view(),
@@ -67,7 +67,6 @@ millsoft_master_urls = [
     path("magent/<int:pk>/delete/", millsoft_master_view.MAgent_delete.as_view(),
          name="MAgent_delete"),
     path("magent/", millsoft_master_view.MAgent_list.as_view(), name="MAgent_list"),
-
     path("mcategory/create/", millsoft_master_view.MCategory_create.as_view(),
          name="MCategory_create"),
     path("mcategory/<uuid:pk>/update/",
@@ -104,30 +103,30 @@ millsoft_master_urls = [
          name="MItemCategory_create"),
     path("mitemcategory/<int:pk>/update/", millsoft_master_view.MItemCategory_update.as_view(),
          name="MItemCategory_update"),
-    path("mitemcategory/<int:pk>/delete/", millsoft_master_view.MItemCategory_delete.as_view(),
-         name="MItemCategory_delete"),
+    path("mitemcategory/<int:pk>/delete/",
+         millsoft_master_view.MItemCategory_delete.as_view(), name="MItemCategory_delete"),
     path("mitemcategory/", millsoft_master_view.MItemCategory_list.as_view(),
          name="MItemCategory_list"),
     path("mitemrate/create/", millsoft_master_view.MItemRate_create.as_view(),
          name="MItemRate_create"),
-    path("mitemrate/<int:pk>/update/", millsoft_master_view.MItemRate_update.as_view(),
-         name="MItemRate_update"),
-    path("mitemrate/<int:pk>/delete/", millsoft_master_view.MItemRate_delete.as_view(),
-         name="MItemRate_delete"),
+    path("mitemrate/<int:pk>/update/",
+         millsoft_master_view.MItemRate_update.as_view(), name="MItemRate_update"),
+    path("mitemrate/<int:pk>/delete/",
+         millsoft_master_view.MItemRate_delete.as_view(), name="MItemRate_delete"),
     path("mitemrate/", millsoft_master_view.MItemRate_list.as_view(),
          name="MItemRate_list"),
     path("mlocation/create/", millsoft_master_view.MLocation_create.as_view(),
          name="MLocation_create"),
-    path("mlocation/<int:pk>/update/", millsoft_master_view.MLocation_update.as_view(),
-         name="MLocation_update"),
-    path("mlocation/<int:pk>/delete/", millsoft_master_view.MLocation_delete.as_view(),
-         name="MLocation_delete"),
+    path("mlocation/<int:pk>/update/",
+         millsoft_master_view.MLocation_update.as_view(), name="MLocation_update"),
+    path("mlocation/<int:pk>/delete/",
+         millsoft_master_view.MLocation_delete.as_view(), name="MLocation_delete"),
     path("mlocation/", millsoft_master_view.MLocation_list.as_view(),
          name="MLocation_list"),
     path("mplusminushead/create/", millsoft_master_view.MPlusMinusHead_create.as_view(),
          name="MPlusMinusHead_create"),
-    path("mplusminushead/<int:pk>/update/", millsoft_master_view.MPlusMinusHead_update.as_view(),
-         name="MPlusMinusHead_update"),
+    path("mplusminushead/<int:pk>/update/",
+         millsoft_master_view.MPlusMinusHead_update.as_view(), name="MPlusMinusHead_update"),
     path("mplusminushead/<int:pk>/delete/", millsoft_master_view.MPlusMinusHead_delete.as_view(),
          name="MPlusMinusHead_delete"),
     path("mplusminushead/", millsoft_master_view.MPlusMinusHead_list.as_view(),
@@ -149,31 +148,14 @@ millsoft_master_urls = [
     path("msupplier/", millsoft_master_view.MSupplier_list.as_view(),
          name="MSupplier_list"),
 ]
-millsoft_transact_urls = [
+
+millsoft_transact_urlpatterns = [
     path("tproduction/", millsoft_transaction_view.TProduction_list.as_view(),
          name="TProduction_list"),
     path("tproduction/create/", millsoft_transaction_view.TProduction_create.as_view(),
          name="TProduction_create"),
-    path("tproduction/<int:pk>/delete/", millsoft_transaction_view.TProduction_delete.as_view(),
-         name="TProduction_delete"),
-    path("tproduction/", millsoft_transaction_view.TProduction_list.as_view(),
-         name="TProduction_list"),
-    path("tinvoice/create/", millsoft_transaction_view.TInvoice_create.as_view(),
-         name="TInvoice_create"),
-    path("tinvoice/<int:pk>/update/", millsoft_transaction_view.TInvoice_update.as_view(),
-         name="TInvoice_update"),
-    path("tinvoice/<int:pk>/delete/", millsoft_transaction_view.TInvoice_delete.as_view(),
-         name="TInvoice_delete"),
-    path("tinvoice/", millsoft_transaction_view.TInvoice_list.as_view(),
-         name="TInvoice_list"),
-    path("texport/create/", millsoft_transaction_view.TExport_create.as_view(),
-         name="TExport_create"),
-    path("texport/<int:pk>/update/", millsoft_transaction_view.TExport_update.as_view(),
-         name="TExport_update"),
-    path("texport/<int:pk>/delete/", millsoft_transaction_view.TExport_delete.as_view(),
-         name="TExport_delete"),
-    path("texport/", millsoft_transaction_view.TExport_list.as_view(),
-         name="TExport_list"),
+    path("tproduction/<int:pk>/delete/",
+         millsoft_transaction_view.TProduction_delete.as_view(), name="TProduction_delete"),
     path("texportdetails/create/", millsoft_transaction_view.TExportDetails_create.as_view(),
          name="TExportDetails_create"),
     path("texportdetails/<int:pk>/update/", millsoft_transaction_view.TExportDetails_update.as_view(),
@@ -190,23 +172,30 @@ millsoft_transact_urls = [
          name="TIndent_delete"),
     path("tindent/", millsoft_transaction_view.TIndent_list.as_view(),
          name="TIndent_list"),
-    
-    path("tjumborollwiseqc/create/", millsoft_transaction_view.TJumboRollWiseQC_create.as_view(),
-         name="TJumboRollWiseQC_create"),
-    path("tjumborollwiseqc/<int:pk>/update/", millsoft_transaction_view.TJumboRollWiseQC_update.as_view(),
-         name="TJumboRollWiseQC_update"),
-    path("tjumborollwiseqc/<int:pk>/delete/", millsoft_transaction_view.TJumboRollWiseQC_delete.as_view(),
-         name="TJumboRollWiseQC_delete"),
-    path("tjumborollwiseqc/", millsoft_transaction_view.TJumboRollWiseQC_list.as_view(),
-         name="TJumboRollWiseQC_list"),
-    path("tlotnowiseqc/create/", millsoft_transaction_view.TLOTNoWiseQc_create.as_view(),
-         name="TLOTNoWiseQc_create"),
-    path("tlotnowiseqc/<int:pk>/update/", millsoft_transaction_view.TLOTNoWiseQc_update.as_view(),
-         name="TLOTNoWiseQc_update"),
-    path("tlotnowiseqc/<int:pk>/delete/", millsoft_transaction_view.TLOTNoWiseQc_delete.as_view(),
-         name="TLOTNoWiseQc_delete"),
-    path("tlotnowiseqc/", millsoft_transaction_view.TLOTNoWiseQc_list.as_view(),
-         name="TLOTNoWiseQc_list"),
+    path("tinvoice/create/", millsoft_transaction_view.TInvoice_create.as_view(),
+         name="TInvoice_create"),
+    path("tinvoice/<int:pk>/update/", millsoft_transaction_view.TInvoice_update.as_view(),
+         name="TInvoice_update"),
+    path("tinvoice/<int:pk>/delete/", millsoft_transaction_view.TInvoice_delete.as_view(),
+         name="TInvoice_delete"),
+    path("tinvoice/", millsoft_transaction_view.TInvoice_list.as_view(),
+         name="TInvoice_list"),
+    # path("tjumborollwiseqc/create/", millsoft_transaction_view.TJumboRollWiseQC_create.as_view(),
+    #      name="TJumboRollWiseQC_create"),
+    # path("tjumborollwiseqc/<int:pk>/update/",
+    #      millsoft_transaction_view.TJumboRollWiseQC_update.as_view(), name="TJumboRollWiseQC_update"),
+    # path("tjumborollwiseqc/<int:pk>/delete/",
+    #      millsoft_transaction_view.TJumboRollWiseQC_delete.as_view(), name="TJumboRollWiseQC_delete"),
+    # path("tjumborollwiseqc/", millsoft_transaction_view.TJumboRollWiseQC_list.as_view(),
+    #      name="TJumboRollWiseQC_list"),
+    # path("tlotnowiseqc/create/", millsoft_transaction_view.TLOTNoWiseQc_create.as_view(),
+    #      name="TLOTNoWiseQc_create"),
+    # path("tlotnowiseqc/<int:pk>/update/", millsoft_transaction_view.TLOTNoWiseQc_update.as_view(),
+    #      name="TLOTNoWiseQc_update"),
+    # path("tlotnowiseqc/<int:pk>/delete/", millsoft_transaction_view.TLOTNoWiseQc_delete.as_view(),
+    #      name="TLOTNoWiseQc_delete"),
+    # path("tlotnowiseqc/", millsoft_transaction_view.TLOTNoWiseQc_list.as_view(),
+    #      name="TLOTNoWiseQc_list"),
     path("tproduction/create/", millsoft_transaction_view.TProduction_create.as_view(),
          name="TProduction_create"),
     path("tproduction/<int:pk>/update/", millsoft_transaction_view.TProduction_update.as_view(),
@@ -232,7 +221,8 @@ millsoft_transact_urls = [
     path("tproductionreel/", millsoft_transaction_view.TProductionReel_list.as_view(),
          name="TProductionReel_list"),
 ]
-millsoft_report_urls = [
+
+millsoft_report_urlpatterns = [
     path("rchallan/create/", millsoft_report_view.RChallan_create,
          name="RChallan_create"),
     path("rchallan/download/<str:filename>/", millsoft_report_view.download_challan,
@@ -241,9 +231,9 @@ millsoft_report_urls = [
 ]
 
 millsoft_urlpatterns = (
-    millsoft_master_urls +
-    millsoft_transact_urls +
-    millsoft_report_urls
+    millsoft_master_urlpatterns +
+    millsoft_transact_urlpatterns +
+    millsoft_report_urlpatterns
 )
 # Combine all URL patterns
 urlpatterns = (

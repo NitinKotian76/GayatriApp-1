@@ -877,8 +877,3 @@ class MSupplier_list(SuccessMessageMixin, ListView):
         ]
         context["modelurl"] = reverse('invoice:MSupplier_list')
         return context
-
-
-    
-
-

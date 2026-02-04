@@ -66,6 +66,7 @@ def download_challan(request, filename):
     response['content-disposition'] = f'attachment;filename="{filename}"'
     return response
 
+
 def download_csv(request, filename):
     csv_path = os.path.join(settings.media_root, "Reports", filename)
 
@@ -85,6 +86,7 @@ def download_csv(request, filename):
         content_type="text/csv")
     response['content-disposition'] = f'attachment;filename="{filename}"'
     return response
+
 
 class RPendingOrder():
     pass

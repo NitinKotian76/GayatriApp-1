@@ -16,6 +16,7 @@ dependencies = [
     "weasyprint>=67.0",
     "django-htmx>=1.27.0",
     "autopep8>=2.3.2",
+]
 [dependency-groups]
 dev = [
     "django-sonar>=0.1.8,<0.2",
