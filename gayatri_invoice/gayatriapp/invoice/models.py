@@ -13,47 +13,90 @@ import uuid
 import json
 import hashlib
 
+from django.db.utils import settings
+
 logger = logging.getLogger(__name__)
-# Create your models here.
+# Create your models here
+
+
+class Audit(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, null=True,
+                                   blank=True, on_delete=models.SET_NULL, editable=False,
+                                   related_name="%(class)s_created")
+    updated_by = models.ForeignKey(settings.AUTH_USER_MODEL, null=True,
+                                   blank=True, on_delete=models.SET_NULL, editable=False,
+                                   related_name="%(class)s_updated")
+
+    class Meta:
+        abstract = True
+        ordering = ['-created_at', '-updated_at']
+
+        indexes = [
+            models.Index(fields=['created_by']),
+            models.Index(fields=['updated_by']),
+            models.Index(fields=['created_at']),
+            models.Index(fields=['updated_at']),
+        ]
 
 # ====================== Phase 2 models =======================================
 
 
-class Company(models.Model):
+class Company(Audit):
     # user based
     company_name = models.CharField(
         max_length=255, null=True, verbose_name="company name")
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    class Meta:
-        ordering = ['-created_at']
+    add = models.CharField(null=True, max_length=250, blank=True)
+    line1 = models.CharField(null=True, max_length=50, blank=True)
+    line2 = models.CharField(null=True, max_length=50, blank=True)
+    line3 = models.CharField(null=True, max_length=50, blank=True)
+    line4 = models.CharField(null=True, max_length=50, blank=True)
+    holine1 = models.CharField(null=True, max_length=50, blank=True)
+    holine2 = models.CharField(null=True, max_length=50, blank=True)
+    holine3 = models.CharField(null=True, max_length=50, blank=True)
+    holine4 = models.CharField(null=True, max_length=50, blank=True)
+    district = models.CharField(null=True, max_length=50, blank=True)
+    tel = models.CharField(null=True, max_length=50, blank=True)
+    fax = models.CharField(null=True, max_length=50, blank=True)
+    gstno = models.CharField(null=True, max_length=20, blank=True)
+    binno = models.CharField(null=True, max_length=50, blank=True)
+    lutno = models.CharField(null=True, max_length=50, blank=True)
+    lutdate = models.CharField(null=True, max_length=20, blank=True)
+    invoiceprefix = models.CharField(null=True, max_length=50, blank=True)
+    iecno = models.CharField(null=True, max_length=50, blank=True)
+    panno = models.CharField(null=True, max_length=50, blank=True)
+    commissionerate = models.CharField(null=True, max_length=50, blank=True)
+    division = models.CharField(null=True, max_length=50, blank=True)
+    range = models.CharField(null=True, max_length=50, blank=True)
+    location_code = models.CharField(null=True, max_length=50, blank=True)
+    examinationl1 = models.CharField(null=True, max_length=100, blank=True)
+    examinationl2 = models.CharField(null=True, max_length=100, blank=True)
+    examinationl3 = models.CharField(null=True, max_length=100, blank=True)
+    examinationl4 = models.CharField(null=True, max_length=100, blank=True)
+    challanprefix = models.CharField(null=True, max_length=10, blank=True)
 
     def __str__(self):
         return self.company_name
 
 
-class TableName(models.Model):
+class TableName(Audit):
     table_name = models.CharField(
         max_length=255, null=True, blank=True, verbose_name="table name")
     description = models.CharField(
         max_length=255, null=True, blank=True, verbose_name="table description")
     company = models.ForeignKey(
-        Company, on_delete=models.CASCADE, related_name="tables")
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+        Company, on_delete=models.SET_NULL, null=True, related_name="tables")
 
     class Meta:
-        ordering = ['-created_at', '-updated_at']
         constraints = [models.UniqueConstraint(
             fields=["table_name", "company"], name="unique_table_name_company")]
-        # IMPROVEMENT NEEDED: Add ordering and indexes for frequently queried fields
 
     def __str__(self):
         return self.table_name
 
 
-class TableMetaData(models.Model):
+class TableMetaData(Audit):
     """
     store nested table metadata
 
@@ -64,24 +107,22 @@ class TableMetaData(models.Model):
         created_at (DateTimeField): stores date time value of record entry
         updated_at (DateTimeField): store date time value of record update
     """
-    table_metadata = models.JSONField(encoder=DjangoJSONEncoder,
-                                      null=True, blank=True, default=dict, unique=True, verbose_name="table metadata")
+    table_metadata = models.JSONField(encoder=DjangoJSONEncoder, null=True,
+                                      blank=True, default=dict, unique=True,
+                                      verbose_name="table metadata")
     table_unique = models.BooleanField(null=True)
     table_name = models.ForeignKey(
-        TableName, on_delete=models.CASCADE, related_name="metadata")
+        TableName, on_delete=models.SET_NULL, null=True, related_name="metadata")
     # Should add: related_name="table_data"
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
 
-    class Meta:
-        ordering = ['-created_at', '-updated_at']
+    class Meta(Audit.Meta):
         constraints = [models.UniqueConstraint(
             fields=["table_metadata", "table_name"], name="unique_table_metadata_name")]
-        indexes = [GinIndex(fields=["table_metadata"],
-                            name="table_metadata_gin_idx")]
+        indexes = Audit.Meta.indexes+[GinIndex(fields=["table_metadata"],
+                                               name="table_metadata_gin_idx")]
 
 
-class TableData(models.Model):
+class TableData(Audit):
     """
     This model stores the nested table data
 
@@ -99,17 +140,14 @@ class TableData(models.Model):
         max_length=64, editable=False, db_index=True, null=True)
     # Should add: related_name="data_rows"
     table_name = models.ForeignKey(
-        TableName, on_delete=models.CASCADE, related_name="data_rows")
+        TableName, on_delete=models.SET_NULL, null=True, related_name="data_rows")
     # Should add: related_name="table_data"
     company = models.ForeignKey(
-        Company, on_delete=models.CASCADE, related_name="table_data")
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+        Company, on_delete=models.SET_NULL, null=True, related_name="table_data")
 
-    class Meta:
-        ordering = ['-created_at', '-updated_at']
-        indexes = [GinIndex(fields=["table_data"],
-                            name="table_data_gin_idx")]
+    class Meta(Audit.Meta):
+        indexes = Audit.Meta.indexes+[GinIndex(fields=["table_data"],
+                                               name="table_data_gin_idx")]
 
     def is_unique(self) -> bool:
         """
@@ -143,7 +181,7 @@ class TableData(models.Model):
         super().save(*args, **kwargs)
 
 
-class Form(models.Model):
+class Form(Audit):
     # IMPROVEMENT NEEDED: Add proper field constraints and validations
     # IMPROVEMENT NEEDED: Add proper verbose_names
     logger.debug("form added")
@@ -153,17 +191,12 @@ class Form(models.Model):
     # Should add: related_name="forms"
     table = models.ManyToManyField(TableName)
     # Should add: related_name="forms"
-    company = models.ForeignKey(Company, on_delete=models.CASCADE)
+    company = models.ForeignKey(Company, on_delete=models.SET_NULL, null=True)
 
     # IMPROVEMENT NEEDED: Add proper validation
     form_data = models.JSONField(null=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
 
-    class Meta:
-        verbose_name = "Form"
-        verbose_name_plural = "Forms"
-        ordering = ['-created_at']
+    class Meta(Audit.Meta):
         permissions = [
             ("edit_form", "can edit form"),
             ("access_form", "can access form")
@@ -171,7 +204,7 @@ class Form(models.Model):
         # IMPROVEMENT NEEDED: Add proper ordering and indexes
 
 
-class Report(models.Model):
+class Report(Audit):
     # IMPROVEMENT NEEDED: Add proper field constraints and validations
     # IMPROVEMENT NEEDED: Add proper verbose_names
     # Should be: models.CharField(max_length=255, verbose_name="Report Name")
@@ -182,28 +215,13 @@ class Report(models.Model):
     # Should add: related_name="reports"
     table = models.ManyToManyField(TableName)
     # Should add: related_name="reports"
-    company = models.ForeignKey(Company, on_delete=models.CASCADE)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    class Meta:
-        verbose_name = "Report"
-        verbose_name_plural = "Reports"
-        ordering = ['-created_at']
+    company = models.ForeignKey(Company, on_delete=models.SET_NULL, null=True)
 
 
-class Template(models.Model):
+class Template(Audit):
     template_name = models.CharField()
     file_type = models.CharField()
     file_data = models.FileField(upload_to="ReportTemplates/")
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    class Meta:
-        verbose_name = "Template"
-        verbose_name_plural = "Templates"
-        ordering = ['-created_at']
-
 
 # =========================User models here =========================
 
@@ -253,12 +271,9 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     )
     company = models.ForeignKey(
         Company,
-        on_delete=models.CASCADE,
-        null=True,
+        on_delete=models.SET_NULL, null=True,
         related_name="users",
     )
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
 
     USERNAME_FIELD = "user_emp_code"
     REQUIRED_FIELDS = ["email", "user_name"]
@@ -272,7 +287,6 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     class Meta:
         verbose_name = "User"
         verbose_name_plural = "Users"
-        ordering = ['-created_at']
         indexes = [
             models.Index(fields=['user_emp_code']),
             models.Index(fields=['email'])
@@ -284,98 +298,62 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 # ========================= Millsoft models Phase 1============================
 
 
-class MAgent(models.Model):
-    AgentId = models.UUIDField(
+class MAgent(Audit):
+    agentid = models.UUIDField(
         primary_key=True, default=uuid.uuid4, null=False, editable=False)
-    Agentname = models.CharField(null=True, max_length=100)
-    Bname = models.CharField(null=True, max_length=250)
-    Area = models.CharField(null=True, max_length=30)
-    Road = models.CharField(null=True, max_length=30)
-    City = models.CharField(null=True, max_length=30)
-    Pin = models.CharField(null=True, max_length=50)
-    State = models.CharField(null=True, max_length=50)
-    Phone = models.CharField(null=True, max_length=50)
-    Cell = models.CharField(null=True, max_length=50)
+    agentname = models.CharField(null=True, max_length=100)
+    bname = models.CharField(null=True, max_length=250)
+    area = models.CharField(null=True, max_length=30)
+    road = models.CharField(null=True, max_length=30)
+    city = models.CharField(null=True, max_length=30)
+    pin = models.CharField(null=True, max_length=50)
+    state = models.CharField(null=True, max_length=50)
+    phone = models.CharField(null=True, max_length=50)
+    cell = models.CharField(null=True, max_length=50)
     range = models.CharField(null=True, max_length=50)
     division = models.CharField(null=True, max_length=50)
 
-    class Meta:
-        ordering = ['pk']
-
     def __str__(self):
-        return self.Agentname
+        return self.agentname
 
 
-class MCategory(models.Model):
-    CatID = models.UUIDField(null=False, primary_key=True,
+class MCategory(Audit):
+    catid = models.UUIDField(null=False, primary_key=True,
                              default=uuid.uuid4, editable=False)
-    Cat = models.CharField(null=True, max_length=50)
+    cat = models.CharField(null=True, max_length=50)
     opening = models.FloatField(null=True)
     unit = models.CharField(null=True, max_length=10)
     chap = models.CharField(null=True, max_length=10)
 
     def __str__(self):
-        return self.Cat
-
-# class MCompany(models.Model):
-    # Compaid = models.UUIDField(
-    #     null=False, primary_key=True, default=uuid.uuid4, editable=False)
-    # Companyname = models.CharField(null=True, max_length=50)
-    # Add = models.CharField(null=True, max_length=250)
-    # Line1 = models.CharField(null=True, max_length=50)
-    # Line2 = models.CharField(null=True, max_length=50)
-    # Line3 = models.CharField(null=True, max_length=50)
-    # Line4 = models.CharField(null=True, max_length=50)
-    # HOLine1 = models.CharField(null=True, max_length=50)
-    # HOLine2 = models.CharField(null=True, max_length=50)
-    # HOLine3 = models.CharField(null=True, max_length=50)
-    # HOLine4 = models.CharField(null=True, max_length=50)
-    # district = models.CharField(null=True, max_length=50)
-    # Tel = models.CharField(null=True, max_length=50)
-    # Fax = models.CharField(null=True, max_length=50)
-    # GSTNO = models.CharField(null=True, max_length=20)
-    # BINNo = models.CharField(null=True, max_length=50)
-    # LUTNo = models.CharField(null=True, max_length=50)
-    # LUTDate = models.CharField(null=True, max_length=20)
-    # InvoicePreFix = models.CharField(null=True, max_length=50)
-    # IECNo = models.CharField(null=True, max_length=50)
-    # PANNo = models.CharField(null=True, max_length=50)
-    # Commissionerate = models.CharField(null=True, max_length=50)
-    # Division = models.CharField(null=True, max_length=50)
-    # Range = models.CharField(null=True, max_length=50)
-    # LocationCode = models.CharField(null=True, max_length=50)
-    # EXAMINATIONL1 = models.CharField(null=True, max_length=100)
-    # EXAMINATIONL2 = models.CharField(null=True, max_length=100)
-    # EXAMINATIONL3 = models.CharField(null=True, max_length=100)
-    # EXAMINATIONL4 = models.CharField(null=True, max_length=100)
-    # ChallanPreFix = models.CharField(null=True, max_length=10)
+        return self.cat
 
 
-class MCustomer(models.Model):
-    CustId = models.UUIDField(
+class MCustomer(Audit):
+    custid = models.UUIDField(
         null=False, primary_key=True, default=uuid.uuid4, editable=False)
-    Custcode = models.BigIntegerField(null=False)
-    Custname = models.CharField(null=True, max_length=90)
-    Bname = models.CharField(null=True, max_length=400)
-    State = models.CharField(null=True, max_length=30)
-    Road = models.CharField(null=True, max_length=30)
-    City = models.CharField(null=True, max_length=50)
-    GSTNo = models.CharField(null=True, max_length=30)
-    PayTerms = models.CharField(null=True, max_length=50)
-    Dispatchto = models.CharField(null=True, max_length=50)
-    District = models.CharField(null=True, max_length=50)
-    InvoiceType = models.CharField(null=True, max_length=50)
-    PANNO = models.CharField(null=True, max_length=15)
-    StateCode = models.CharField(null=True, max_length=10)
-    GSTINNo = models.CharField(null=True, max_length=20)
-    agentid = models.ForeignKey(MAgent, on_delete=models.CASCADE)
-    CustTransport = models.CharField(null=True, max_length=60)
+    custcode = models.BigIntegerField(null=False)
+    custname = models.CharField(null=True, max_length=90)
+    bname = models.CharField(null=True, max_length=400)
+    state = models.CharField(null=True, max_length=30)
+    road = models.CharField(null=True, max_length=30)
+    city = models.CharField(null=True, max_length=50)
+    gstno = models.CharField(null=True, max_length=30)
+    payterms = models.CharField(null=True, max_length=50)
+    dispatchto = models.CharField(null=True, max_length=50)
+    district = models.CharField(null=True, max_length=50)
+    invoicetype = models.CharField(null=True, max_length=50)
+    panno = models.CharField(null=True, max_length=15)
+    statecode = models.CharField(null=True, max_length=10)
+    gstinno = models.CharField(null=True, max_length=20)
+    agentid = models.ForeignKey(MAgent, on_delete=models.SET_NULL, null=True)
+    custtransport = models.CharField(null=True, max_length=60)
 
     def __str__(self):
-        return self.Custname
+        return self.custname
 
 
-# class MEmployee(models.Model):
+# class MEmployee(Audit):
 #     EMPID = models.UUIDField(null=True, default=uuid.uuid5, editable=False)
 #     EmpName = models.CharField(null=True, max_length=51)
 #     Designation = models.CharField(null=True, max_length=51)
@@ -384,402 +362,315 @@ class MCustomer(models.Model):
 #         return self.EmpName
 
 
-class MExportFields(models.Model):
-    ExportID = models.UUIDField(null=True, default=uuid.uuid4, editable=False)
-    DescriptionGoods = models.CharField(null=True, max_length=50)
-    HSNo = models.CharField(null=True, max_length=50)
-    Declaration = models.CharField(null=True, max_length=100)
-    CompCode = models.CharField(null=True, max_length=10)
-    DeclarationLine1 = models.CharField(null=True, max_length=100)
-    DeclarationLine2 = models.CharField(null=True, max_length=100)
-    DeclarationLine3 = models.CharField(null=True, max_length=100)
-    DeclarationLine4 = models.CharField(null=True, max_length=100)
-    INVBackPageHeading = models.CharField(null=True, max_length=100)
+class MExportFields(Audit):
+    exportid = models.UUIDField(null=True, default=uuid.uuid4, editable=False)
+    descriptiongoods = models.CharField(null=True, max_length=50)
+    hsno = models.CharField(null=True, max_length=50)
+    declaration = models.CharField(null=True, max_length=100)
+    compcode = models.CharField(null=True, max_length=10)
+    declarationline1 = models.CharField(null=True, max_length=100)
+    declarationline2 = models.CharField(null=True, max_length=100)
+    declarationline3 = models.CharField(null=True, max_length=100)
+    declarationline4 = models.CharField(null=True, max_length=100)
+    invbackpageheading = models.CharField(null=True, max_length=100)
 
     def __str__(self):
-        return self.ExportID
+        return self.exportid
 
 
-class MShade(models.Model):
-    ShadeID = models.UUIDField(
+class MShade(Audit):
+    shadeid = models.UUIDField(
         null=False, primary_key=True, default=uuid.uuid4, editable=False)
-    ShadeCode = models.CharField(null=True, max_length=10)
-    Shade = models.CharField(null=True, max_length=50)
-    APICode = models.CharField(null=True, max_length=10)
-    Gsm_M = models.FloatField(null=True)
-    FlagGroup = models.BigIntegerField(null=True)
-    BatchGroup = models.CharField(null=True, max_length=20)
-    FieldGroup = models.CharField(null=True, max_length=10)
-    GroupCategory = models.BigIntegerField(null=True)
-    StockTrans_Y_N = models.CharField(null=True, max_length=10)
+    shadecode = models.CharField(null=True, max_length=10)
+    shade = models.CharField(null=True, max_length=50)
+    apicode = models.CharField(null=True, max_length=10)
+    gsm_m = models.FloatField(null=True)
+    flaggroup = models.BigIntegerField(null=True)
+    batchgroup = models.CharField(null=True, max_length=20)
+    fieldgroup = models.CharField(null=True, max_length=10)
+    groupcategory = models.BigIntegerField(null=True)
+    stocktrans_y_n = models.CharField(null=True, max_length=10)
 
     def __str__(self):
-        return self.ShadeCode
+        return self.shadecode
 
 
-class MItem(models.Model):
-    Itemid = models.UUIDField(
-        null=False, primary_key=True, default=uuid.uuid4, editable=False)
-    ItemCode = models.CharField(null=True, max_length=20)
-    ShadeID = models.ForeignKey(
-        MShade, on_delete=models.CASCADE)
-    SizeD = models.CharField(null=True, max_length=10)
-    GSM = models.CharField(null=True, max_length=10)
+class MItem(Audit):
+    itemid = models.UUIDField(null=False, primary_key=True,
+                              default=uuid.uuid4, editable=False)
+    itemcode = models.CharField(null=True, max_length=20)
+    shadeid = models.ForeignKey(MShade, on_delete=models.SET_NULL, null=True)
+    sized = models.CharField(null=True, max_length=10)
+    gsm = models.CharField(null=True, max_length=10)
 
     def __str__(self):
-        return self.ItemCode
+        return self.itemcode
 
 
-class MItemCategory(models.Model):
-    CatId = models.UUIDField(null=False, primary_key=True,
+class MItemCategory(Audit):
+    catid = models.UUIDField(null=False, primary_key=True,
                              default=uuid.uuid4, editable=False)
-    Cat = models.CharField(null=False, max_length=100)
-    HSNCode = models.CharField(null=True, max_length=20)
-    UnitID = models.ForeignKey(
-        Company, on_delete=models.CASCADE)
+    cat = models.CharField(null=False, max_length=100)
+    hsncode = models.CharField(null=True, max_length=20)
+    unitid = models.ForeignKey(
+        Company, on_delete=models.SET_NULL, null=True)
     remarks = models.CharField(null=True, max_length=250)
 
     def __str__(self):
-        return self.HSNCode
+        return self.hsncode
 
 
-class MItemRate(models.Model):
-    ItemRateID = models.UUIDField(null=False,
-                                  primary_key=True, default=uuid.uuid4, editable=False)
-    CatID = models.ForeignKey(MCategory, on_delete=models.CASCADE)
-    ItemID = models.ForeignKey(MItem, on_delete=models.CASCADE)
-    CustID = models.ForeignKey(MCustomer, on_delete=models.CASCADE)
-    AgentID = models.ForeignKey(MAgent, on_delete=models.CASCADE)
-    Rate = models.FloatField(null=False)
-
-    def __str__(self):
-        return self.Rate
-
-
-class MLocation(models.Model):
-    LocationID = models.UUIDField(
+class MLocation(Audit):
+    locationid = models.UUIDField(
         null=True, default=uuid.uuid4, editable=False)
-    Location = models.CharField(null=True, max_length=20)
+    location = models.CharField(null=True, max_length=20)
 
     def __str__(self):
-        return self.Location
+        return self.location
 
 
-class MPlusMinusHead(models.Model):
-    HeadID = models.UUIDField(
+class MPlusMinusHead(Audit):
+    headid = models.UUIDField(
         primary_key=True, default=uuid.uuid4, null=False, editable=False)
-    Head = models.CharField(null=True, max_length=50)
-    Plus_Minus = models.CharField(null=True, max_length=10)
-    Api = models.CharField(null=True, max_length=10)
-    Ref = models.CharField(null=True, max_length=10)
+    head = models.CharField(null=True, max_length=50)
+    plus_minus = models.CharField(null=True, max_length=10)
+    api = models.CharField(null=True, max_length=10)
+    ref = models.CharField(null=True, max_length=10)
 
     def __str__(self):
-        return self.Head
+        return self.head
 
 
-class MSupplier(models.Model):
-    SuppId = models.UUIDField(
+class MSupplier(Audit):
+    suppid = models.UUIDField(
         primary_key=True, default=uuid.uuid4, null=False, editable=False)
-    Suppname = models.CharField(null=True, max_length=100)
-    Bname = models.CharField(null=True, max_length=250)
-    Area = models.CharField(null=True, max_length=30)
-    Road = models.CharField(null=True, max_length=30)
-    City = models.CharField(null=True, max_length=30)
-    Pin = models.CharField(null=True, max_length=50)
-    State = models.CharField(null=True, max_length=50)
-    Cell = models.CharField(null=True, max_length=50)
-    SuppType = models.CharField(null=True, max_length=10)
-    GSTNo = models.CharField(null=True, max_length=50)
+    suppname = models.CharField(null=True, max_length=100)
+    bname = models.CharField(null=True, max_length=250)
+    area = models.CharField(null=True, max_length=30)
+    road = models.CharField(null=True, max_length=30)
+    city = models.CharField(null=True, max_length=30)
+    pin = models.CharField(null=True, max_length=50)
+    state = models.CharField(null=True, max_length=50)
+    cell = models.CharField(null=True, max_length=50)
+    supptype = models.CharField(null=True, max_length=10)
+    gstno = models.CharField(null=True, max_length=50)
 
     def __str__(self):
-        return self.Suppname
+        return self.suppname
 
 
-class TInvoice(models.Model):
-    InvoiceID = models.UUIDField(
+class TInvoice(Audit):
+    invoiceid = models.UUIDField(
         primary_key=True, default=uuid.uuid4, editable=False)
-    CustID = models.ForeignKey(
-        MCustomer, on_delete=models.CASCADE)
-    AgentID = models.ForeignKey(
-        MAgent, on_delete=models.CASCADE)
-    InvoiceNo = models.BigIntegerField(null=False)
-    InvoiceDate = models.DateField(null=True,)
-    ShadeID = models.ForeignKey(
-        MShade, on_delete=models.CASCADE)
-    SalesType = models.CharField(null=True, max_length=20)
-    PreTime = models.TimeField(null=True, max_length=20)
-    PreDate = models.DateField(null=True)
-    RemTime = models.TimeField(null=True, max_length=20)
-    RemDate = models.DateField(null=True)
-    OrderNo = models.CharField(null=True, max_length=50)
-    OrderDate = models.CharField(null=True, max_length=10)
-    Transport = models.CharField(null=True, max_length=90)
-    VehicleNo = models.CharField(null=True, max_length=50)
-    LrNo = models.CharField(null=True, max_length=50)
-    LrDate = models.CharField(null=True, max_length=20)
-    PayTerms = models.CharField(null=True, max_length=10)
-    Remarks = models.CharField(null=True, max_length=60)
-    AssValue = models.FloatField(null=True)
-    Excise = models.CharField(null=True, max_length=10)
-    ExciseAmt = models.FloatField(null=True)
-    Cess = models.CharField(null=True, max_length=10)
-    CessAmt = models.FloatField(null=True)
-    Cst = models.CharField(null=True, max_length=10)
-    CstAmt = models.FloatField(null=True)
-    Vat = models.CharField(null=True, max_length=10)
-    VatAmt = models.FloatField(null=True)
-    AddVat = models.CharField(null=True, max_length=10)
-    AddVatAmt = models.FloatField(null=True)
-    Insurance = models.CharField(null=True, max_length=10)
-    InsuranceAmt = models.FloatField(null=True)
-    GTotal = models.FloatField(null=True)
-    ExciseSubTotal = models.FloatField(null=True)
-    VatSubTotal = models.FloatField(null=True)
-    DeliveryAt = models.CharField(null=True, max_length=60)
-    FlgType = models.IntegerField(null=True)
-    FlgSaleType = models.IntegerField(null=True)
-    InvoiceType = models.CharField(null=True, max_length=20)
-    Ind_Weight = models.FloatField(null=True)
-    # buttons for
-    # CreateUser
-    # CreateDate
-    # UpdateUser
-    # UpdateDate
+    custid = models.ForeignKey(
+        MCustomer, on_delete=models.SET_NULL, null=True)
+    agentid = models.ForeignKey(
+        MAgent, on_delete=models.SET_NULL, null=True)
+    invoiceno = models.BigIntegerField(null=False)
+    invoicedate = models.DateField(null=True,)
+    shadeid = models.ForeignKey(
+        MShade, on_delete=models.SET_NULL, null=True)
+    salestype = models.CharField(null=True, max_length=20)
+    pretime = models.TimeField(null=True, max_length=20)
+    predate = models.DateField(null=True)
+    remtime = models.TimeField(null=True, max_length=20)
+    remdate = models.DateField(null=True)
+    orderno = models.CharField(null=True, max_length=50)
+    orderdate = models.CharField(null=True, max_length=10)
+    transport = models.CharField(null=True, max_length=90)
+    vehicleno = models.CharField(null=True, max_length=50)
+    lrno = models.CharField(null=True, max_length=50)
+    lrdate = models.CharField(null=True, max_length=20)
+    payterms = models.CharField(null=True, max_length=10)
+    remarks = models.CharField(null=True, max_length=60)
+    assvalue = models.FloatField(null=True)
+    excise = models.CharField(null=True, max_length=10)
+    exciseamt = models.FloatField(null=True)
+    cess = models.CharField(null=True, max_length=10)
+    cessamt = models.FloatField(null=True)
+    cst = models.CharField(null=True, max_length=10)
+    cstamt = models.FloatField(null=True)
+    vat = models.CharField(null=True, max_length=10)
+    vatamt = models.FloatField(null=True)
+    addvat = models.CharField(null=True, max_length=10)
+    addvatamt = models.FloatField(null=True)
+    insurance = models.CharField(null=True, max_length=10)
+    insuranceamt = models.FloatField(null=True)
+    gtotal = models.FloatField(null=True)
+    excisesubtotal = models.FloatField(null=True)
+    vatsubtotal = models.FloatField(null=True)
+    deliveryat = models.CharField(null=True, max_length=60)
+    flgtype = models.IntegerField(null=True)
+    flgsaletype = models.IntegerField(null=True)
+    invoicetype = models.CharField(null=True, max_length=20)
+    ind_weight = models.FloatField(null=True)
 
     def __str__(self):
-        return self.InvoiceNo
+        return self.invoiceno
 
 
-class TExport(models.Model):
-    ExportID = models.UUIDField(
+class TExport(Audit):
+    exportid = models.UUIDField(
         primary_key=True, default=uuid.uuid4, editable=False)
-    InvoiceID = models.ForeignKey(
-        TInvoice, on_delete=models.CASCADE)
-    PreCarriageby = models.CharField(null=True, max_length=100)
-    Receiptby = models.CharField(null=True, max_length=100)
-    VesselFlightNo = models.CharField(null=True, max_length=50)
-    PortofLoading = models.CharField(null=True, max_length=90)
-    ContainerNo = models.CharField(null=True, max_length=50)
-    PortofDischarge = models.CharField(null=True, max_length=90)
-    PaymentType = models.CharField(null=True, max_length=50)
-    EmpNAme = models.CharField(null=True, max_length=50)
-    EmpMoNo = models.CharField(null=True, max_length=50)
-    DollarRate = models.FloatField(null=True)
-    ExchangeRate = models.FloatField(null=True)
-    DollarTotal = models.FloatField(null=True)
-    ExchageTotal = models.FloatField(null=True)
-    NoOfReels = models.FloatField(null=True)
-    ContainerSize = models.CharField(null=True, max_length=50)
-    EmptyConWeight = models.CharField(null=True, max_length=50)
-    MaxConWeight = models.CharField(null=True, max_length=50)
-    RFIDSealNo = models.CharField(null=True, max_length=50)
-    LinerSealNo = models.CharField(null=True, max_length=50)
-    BankName = models.CharField(null=True, max_length=50)
-    PaymentTerms = models.CharField(null=True, max_length=50)
-    ShippingBillNo = models.CharField(null=True, max_length=50)
-    ShippingBillDate = models.CharField(null=True, max_length=50)
-    WeighBridge = models.CharField(null=True, max_length=100)
-    HSCode = models.CharField(null=True, max_length=50)
-    DescriptionGoods = models.CharField(null=True, max_length=100)
+    invoiceid = models.ForeignKey(
+        TInvoice, on_delete=models.SET_NULL, null=True)
+    precarriageby = models.CharField(null=True, max_length=100)
+    receiptby = models.CharField(null=True, max_length=100)
+    vesselflightno = models.CharField(null=True, max_length=50)
+    portofloading = models.CharField(null=True, max_length=90)
+    containerno = models.CharField(null=True, max_length=50)
+    portofdischarge = models.CharField(null=True, max_length=90)
+    paymenttype = models.CharField(null=True, max_length=50)
+    empname = models.CharField(null=True, max_length=50)
+    empmono = models.CharField(null=True, max_length=50)
+    dollarrate = models.FloatField(null=True)
+    exchangerate = models.FloatField(null=True)
+    dollartotal = models.FloatField(null=True)
+    exchagetotal = models.FloatField(null=True)
+    noofreels = models.FloatField(null=True)
+    containersize = models.CharField(null=True, max_length=50)
+    emptyconweight = models.CharField(null=True, max_length=50)
+    maxconweight = models.CharField(null=True, max_length=50)
+    rfidsealno = models.CharField(null=True, max_length=50)
+    linersealno = models.CharField(null=True, max_length=50)
+    bankname = models.CharField(null=True, max_length=50)
+    paymentterms = models.CharField(null=True, max_length=50)
+    shippingbillno = models.CharField(null=True, max_length=50)
+    shippingbilldate = models.CharField(null=True, max_length=50)
+    weighbridge = models.CharField(null=True, max_length=100)
+    hscode = models.CharField(null=True, max_length=50)
+    descriptiongoods = models.CharField(null=True, max_length=100)
 
     def __str__(self):
-        return self.ExportID
+        return self.exportid
 
 
-class TExportDetails(models.Model):
-    ExportDetailsID = models.UUIDField(
+class TExportDetails(Audit):
+    exportdetailsid = models.UUIDField(
         primary_key=True, default=uuid.uuid4, editable=False)
-    ExportID = models.ForeignKey(
-        TExport, on_delete=models.CASCADE)
-    ReelNo = models.FloatField(null=True)
-    GWeight = models.FloatField(null=True)
-    TareWeight = models.FloatField(null=True)
-    NetWeight = models.FloatField(null=True)
-    InvoiceID = models.ForeignKey(
-        TInvoice, on_delete=models.CASCADE)
-    # RewinderID = not there for unit 1
-    Size = models.CharField(null=True, max_length=20)
-    GSM = models.FloatField(null=True)
-    NoOfReam_Sheets = models.FloatField(null=True)
-    UOM = models.CharField(null=True, max_length=10)
-    DollarRAte = models.FloatField(null=True)
-    InvoiceNo = models.CharField(null=True, max_length=10)
-    INvoicedate = models.DateField(null=True)
-    NoOFReam = models.FloatField(null=True)
-    REAMWt = models.FloatField(null=True)
+    exportid = models.ForeignKey(TExport, on_delete=models.SET_NULL, null=True)
+    reelno = models.FloatField(null=True)
+    gweight = models.FloatField(null=True)
+    tareweight = models.FloatField(null=True)
+    netweight = models.FloatField(null=True)
+    invoiceid = models.ForeignKey(
+        TInvoice, on_delete=models.SET_NULL, null=True)
+    # rewinderid = not there for unit 1
+    size = models.CharField(null=True, max_length=20)
+    gsm = models.FloatField(null=True)
+    noofream_sheets = models.FloatField(null=True)
+    uom = models.CharField(null=True, max_length=10)
+    dollarrate = models.FloatField(null=True)
+    invoiceno = models.CharField(null=True, max_length=10)
+    invoicedate = models.DateField(null=True)
+    noofream = models.FloatField(null=True)
+    reamwt = models.FloatField(null=True)
 
     def __str__(self):
-        return self.ExportDetailsID
+        return self.exportdetailsid
 
 
-class TIndent(models.Model):
-    IndentID = models.AutoField(primary_key=True, editable=False)
-    CustID = models.ForeignKey(
-        MCustomer, on_delete=models.CASCADE)
-    IndentNo = models.CharField(null=True, max_length=20)
-    IndentDate = models.DateField(null=True)
-    PONo = models.CharField(null=True, max_length=20)
-    PODate = models.DateField(null=True)
+class TIndent(Audit):
+    indentid = models.AutoField(primary_key=True, editable=False)
+    custid = models.ForeignKey(MCustomer, on_delete=models.SET_NULL, null=True)
+    indentno = models.CharField(null=True, max_length=20)
+    indentdate = models.DateField(null=True)
+    pono = models.CharField(null=True, max_length=20)
+    podate = models.DateField(null=True)
     remark = models.CharField(null=True, max_length=150)
 
     def __str__(self):
-        return self.IndentNo
-
-#
-# class TJumboRollWiseQC(models.Model):
-#     JumboRollWiseQcID = models.UUIDField(
-#         primary_key=True, default=uuid.uuid4, editable=False)
-#     JumboRollQCDate = models.DateField(null=True)
-#     JumboRollNo = models.DecimalField(
-#         null=True, max_digits=18, decimal_places=0)
-#     Shift = models.CharField(null=True, max_length=10)
-#     ShadeID = models.ForeignKey(
-#         MShade, on_delete=models.CASCADE)
-#     GSM = models.CharField(null=True, max_length=10)
-#     CALIPER = models.CharField(null=True, max_length=10)
-#     BULK_QC = models.CharField(null=True, max_length=10)
-#     COBBTOP = models.CharField(null=True, max_length=10)
-#     BOTTOM = models.CharField(null=True, max_length=10)
-#     MOISTUREavg = models.CharField(null=True, max_length=10)
-#     TABERSTIFFNESSMDCD = models.CharField(null=True, max_length=10)
-#     RATIO = models.CharField(null=True, max_length=10)
-#     BRIGHTNESS = models.CharField(null=True, max_length=10)
-#     GLOSS = models.CharField(null=True, max_length=10)
-#     SOATVALUE = models.CharField(null=True, max_length=10)
-#     PPSROUGHNESS = models.CharField(null=True, max_length=10)
-#     IGTDRYPICK = models.CharField(null=True, max_length=10)
-#     PLYBONDSCOTT = models.CharField(null=True, max_length=10)
-#     SURFACEPH = models.CharField(null=True, max_length=10)
-#     SURACEDUST = models.CharField(null=True, max_length=10)
-#     TOPFORMATION = models.CharField(null=True, max_length=10)
-#     VARNISHABILITY = models.CharField(null=True, max_length=10)
-#     CRACKINGCREASING = models.CharField(null=True, max_length=10)
-#     FLATNESS = models.CharField(null=True, max_length=10)
-#     JumboRollWeight = models.FloatField(null=True)
-#     DateM = models.CharField(null=True, max_length=10)
-#
-#     def __str__(self):
-#         return self.JumboRollNo
-#
-
-# class TLOTNoWiseQc(models.Model):
-#     LOTNoWiseQcID = models.UUIDField(
-#         primary_key=True, default=uuid.uuid4, editable=False)
-#     JumboRollWiseQcID = models.ForeignKey(
-#         TJumboRollWiseQC, on_delete=models.CASCADE)
-#     LOTNoWiseQcIDDate = models.DateField(null=True)
-#     L_E = models.CharField(null=True, max_length=10)
-#     ShadeID = models.ForeignKey(MShade, on_delete=models.CASCADE)
-#     Reel_Sheet = models.CharField(null=True, max_length=10)
-#     ItemID = models.ForeignKey(MItem, on_delete=models.CASCADE)
-#     Length = models.CharField(null=True, max_length=10)
-#     UnitID = models.ForeignKey(Company, on_delete=models.CASCADE)
-#     CM_Inch = models.CharField(null=True, max_length=10)
-#     LocationID = models.ForeignKey(MLocation, on_delete=models.CASCADE)
-#     IndentNo = models.CharField(null=True, max_length=20)
-#     CustID = models.ForeignKey(MCustomer, on_delete=models.CASCADE)
-#     AgentID = models.ForeignKey(MAgent, on_delete=models.CASCADE)
-#     LotNo = models.CharField(null=True, max_length=50)
-#     DateM = models.DateField(null=True, max_length=10)
-#     LotNoDateM = models.DateField(null=True, max_length=10)
-#     Weight = models.FloatField(null=True)
-#     NoOfSheet = models.CharField(null=True, max_length=10)
-#     ReamWt = models.CharField(null=True, max_length=10)
-#     NoOfReam = models.CharField(null=True, max_length=10)
-#     Grain = models.CharField(null=True, max_length=10)
-#     FPNo = models.CharField(null=True, max_length=10)
-#     Sized = models.CharField(null=True, max_length=10)
-#     GSM = models.CharField(null=True, max_length=10)
-#
-#     def __str__(self):
-#         return self.LotNo
+        return self.indentno
 
 
-class TProduction(models.Model):
-    ProductionID = models.UUIDField(
+class TProduction(Audit):
+    productionid = models.UUIDField(
         primary_key=True, default=uuid.uuid4, editable=False)
-    RDate = models.DateField(null=True)
-    L_E = models.CharField(null=True, max_length=10)
-    CatID = models.ForeignKey(MCategory, on_delete=models.CASCADE)
-    ShadeID = models.ForeignKey(MShade, on_delete=models.CASCADE)
-    Reel_Sheet = models.CharField(null=True, max_length=50)
-    ItemID = models.ForeignKey(MItem, on_delete=models.CASCADE)
-    Length = models.CharField(null=True, max_length=10)
-    UnitID = models.ForeignKey(Company, on_delete=models.CASCADE)
-    ReelNoFrom = models.BigIntegerField(null=False)
-    ReelNoTO = models.BigIntegerField(null=True)
-    NoOfSheet = models.BigIntegerField(null=True)
-    NoOfBDLS = models.FloatField(null=True)
-    NoOfREAM = models.FloatField(null=True)
-    REAMWt = models.FloatField(null=True)
-    Weight = models.FloatField(null=True)
-    Rate = models.FloatField(null=True)
-    LocationID = models.ForeignKey(MLocation, on_delete=models.CASCADE)
-    IndentNo = models.CharField(null=True, max_length=20)
-    CustID = models.ForeignKey(MCustomer, on_delete=models.CASCADE)
-    AgentID = models.ForeignKey(MAgent, on_delete=models.CASCADE)
-    OBFlag = models.BooleanField(null=True)  # flag
-    APIFlag = models.BooleanField(null=True)  # flag
-    FAC = models.BooleanField(null=True)  # flag
-    Stk = models.BooleanField(null=True)  # flag
-    Approved = models.BooleanField(null=True)
-    EntryType = models.CharField(null=True, max_length=20)
-    StockPlus_Minus = models.CharField(null=True, max_length=10)
-    HeadId = models.BigIntegerField(null=True, editable=False)
+    rdate = models.DateField(null=True)
+    l_e = models.CharField(null=True, max_length=10)
+    catid = models.ForeignKey(MCategory, on_delete=models.SET_NULL, null=True)
+    shadeid = models.ForeignKey(MShade, on_delete=models.SET_NULL, null=True)
+    reel_sheet = models.CharField(null=True, max_length=50)
+    itemid = models.ForeignKey(MItem, on_delete=models.SET_NULL, null=True)
+    length = models.CharField(null=True, max_length=10)
+    unitid = models.ForeignKey(Company, on_delete=models.SET_NULL, null=True)
+    reelnofrom = models.BigIntegerField(null=False)
+    reelnoto = models.BigIntegerField(null=True)
+    noofsheet = models.BigIntegerField(null=True)
+    noofbdls = models.FloatField(null=True)
+    noofream = models.FloatField(null=True)
+    reamwt = models.FloatField(null=True)
+    weight = models.FloatField(null=True)
+    rate = models.FloatField(null=True)
+    locationid = models.ForeignKey(
+        MLocation, on_delete=models.SET_NULL, null=True)
+    indentno = models.CharField(null=True, max_length=20)
+    custid = models.ForeignKey(MCustomer, on_delete=models.SET_NULL, null=True)
+    agentid = models.ForeignKey(MAgent, on_delete=models.SET_NULL, null=True)
+    obflag = models.BooleanField(null=True)  # flag
+    apiflag = models.BooleanField(null=True)  # flag
+    fac = models.BooleanField(null=True)  # flag
+    stk = models.BooleanField(null=True)  # flag
+    approved = models.BooleanField(null=True)
+    entrytype = models.CharField(null=True, max_length=20)
+    stockplus_minus = models.CharField(null=True, max_length=10)
+    headid = models.BigIntegerField(null=True, editable=False)
     # for remaining stock removal from inventory
-    RefProductionid = models.UUIDField(null=True, editable=False)
-    LotNo = models.CharField(null=True, max_length=60)
-    Ind_Weight = models.FloatField(null=True)
-    CM_Inch = models.CharField(null=True, max_length=10)
+    refproductionid = models.UUIDField(null=True, editable=False)
+    lotno = models.CharField(null=True, max_length=60)
+    ind_weight = models.FloatField(null=True)
+    cm_inch = models.CharField(null=True, max_length=10)
 
     def __str__(self):
-        return self.ProductionID
+        return self.productionid
 
 
-class TProduction_bck(models.Model):
-    ProductionID = models.UUIDField(
+class TProduction_bck(Audit):
+    productionid = models.UUIDField(
         primary_key=True, default=uuid.uuid4, editable=False)
-    RDate = models.DateField(null=True)
-    L_E = models.CharField(null=True, max_length=10)
-    CatID = models.ForeignKey(MCategory, on_delete=models.CASCADE)
-    ShadeID = models.ForeignKey(MShade, on_delete=models.CASCADE)
-    Reel_Sheet = models.CharField(null=True, max_length=50)
-    ItemID = models.ForeignKey(MItem, on_delete=models.CASCADE)
-    Length = models.CharField(null=True, max_length=10)
-    UnitID = models.ForeignKey(Company, on_delete=models.CASCADE)
-    ReelNoFrom = models.BigIntegerField(null=False)
-    ReelNoTO = models.BigIntegerField(null=True)
-    NoOfSheet = models.BigIntegerField(null=True)
-    NoOfBDLS = models.FloatField(null=True)
-    NoOfREAM = models.FloatField(null=True)
-    REAMWt = models.FloatField(null=True)
-    Weight = models.FloatField(null=True)
-    Rate = models.FloatField(null=True)
-    LocationID = models.ForeignKey(MLocation, on_delete=models.CASCADE)
-    IndentNo = models.CharField(null=True, max_length=20)
-    CustID = models.ForeignKey(MCustomer, on_delete=models.CASCADE)
-    AgentID = models.ForeignKey(MAgent, on_delete=models.CASCADE)
-    OBFlag = models.BooleanField(null=True)  # flag
-    APIFlag = models.BooleanField(null=True)  # flag
-    FAC = models.BooleanField(null=True)  # flag
-    Stk = models.BooleanField(null=True)  # flag
-    Approved = models.BooleanField(null=True)
-    EntryType = models.CharField(null=True, max_length=20)
-    StockPlus_Minus = models.CharField(null=True, max_length=10)
-    HeadId = models.BigIntegerField(null=True, editable=False)
-    RefProductionid = models.UUIDField(null=True, editable=False)
-    P_M_Remarks = models.CharField(null=True, max_length=60)
+    rdate = models.DateField(null=True)
+    l_e = models.CharField(null=True, max_length=10)
+    catid = models.ForeignKey(MCategory, on_delete=models.SET_NULL, null=True)
+    shadeid = models.ForeignKey(MShade, on_delete=models.SET_NULL, null=True)
+    reel_sheet = models.CharField(null=True, max_length=50)
+    itemid = models.ForeignKey(MItem, on_delete=models.SET_NULL, null=True)
+    length = models.CharField(null=True, max_length=10)
+    unitid = models.ForeignKey(Company, on_delete=models.SET_NULL, null=True)
+    reelnofrom = models.BigIntegerField(null=False)
+    reelnoto = models.BigIntegerField(null=True)
+    noofsheet = models.BigIntegerField(null=True)
+    noofbdls = models.FloatField(null=True)
+    noofream = models.FloatField(null=True)
+    reamwt = models.FloatField(null=True)
+    weight = models.FloatField(null=True)
+    rate = models.FloatField(null=True)
+    locationid = models.ForeignKey(
+        MLocation, on_delete=models.SET_NULL, null=True)
+    indentno = models.CharField(null=True, max_length=20)
+    custid = models.ForeignKey(MCustomer, on_delete=models.SET_NULL, null=True)
+    agentid = models.ForeignKey(MAgent, on_delete=models.SET_NULL, null=True)
+    obflag = models.BooleanField(null=True)  # flag
+    apiflag = models.BooleanField(null=True)  # flag
+    fac = models.BooleanField(null=True)  # flag
+    stk = models.BooleanField(null=True)  # flag
+    approved = models.BooleanField(null=True)
+    entrytype = models.CharField(null=True, max_length=20)
+    stockplus_minus = models.CharField(null=True, max_length=10)
+    headid = models.BigIntegerField(null=True, editable=False)
+    refproductionid = models.UUIDField(null=True, editable=False)
+    p_m_remarks = models.CharField(null=True, max_length=60)
 
-    Ind_Weight = models.FloatField(null=True)
-    CM_Inch = models.CharField(null=True, max_length=10)
+    ind_weight = models.FloatField(null=True)
+    cm_inch = models.CharField(null=True, max_length=10)
 
 
-class TProductionReel(models.Model):
-    ProductionReelID = models.UUIDField(
+class TProductionReel(Audit):
+    productionreelid = models.UUIDField(
         primary_key=True, default=uuid.uuid4, editable=False)
-    ProductionID = models.ForeignKey(TProduction, on_delete=models.CASCADE)
-    ReelNo = models.BigIntegerField(null=True)
-    Stk = models.CharField(null=True, max_length=10)
-    StkDate = models.DateField(null=True)
-    InvDate = models.DateField(null=True)
-    RefProductionReelid = models.UUIDField(null=True, editable=False)
+    productionid = models.ForeignKey(
+        TProduction, on_delete=models.SET_NULL, null=True)
+    reelno = models.BigIntegerField(null=True)
+    stk = models.CharField(null=True, max_length=10)
+    stkdate = models.DateField(null=True)
+    invdate = models.DateField(null=True)
+    refproductionreelid = models.UUIDField(null=True, editable=False)

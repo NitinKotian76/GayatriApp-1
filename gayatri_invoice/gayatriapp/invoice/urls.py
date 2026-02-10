@@ -1,7 +1,7 @@
 from django.urls import path
 from . import views
 from .all_views import admin_views, auth_views, common_views, form_views, report_views
-from .all_views.millsoft import millsoft_master_view, millsoft_transaction_view, millsoft_report_view
+from .all_views.millsoft import millsoft_master_view, millsoft_transaction_view, millsoft_report_view, millsoft_utility_view
 
 app_name = "invoice"
 # names with sentencecase are class based views
@@ -107,14 +107,6 @@ millsoft_master_urlpatterns = [
          millsoft_master_view.MItemCategory_delete.as_view(), name="MItemCategory_delete"),
     path("mitemcategory/", millsoft_master_view.MItemCategory_list.as_view(),
          name="MItemCategory_list"),
-    path("mitemrate/create/", millsoft_master_view.MItemRate_create.as_view(),
-         name="MItemRate_create"),
-    path("mitemrate/<int:pk>/update/",
-         millsoft_master_view.MItemRate_update.as_view(), name="MItemRate_update"),
-    path("mitemrate/<int:pk>/delete/",
-         millsoft_master_view.MItemRate_delete.as_view(), name="MItemRate_delete"),
-    path("mitemrate/", millsoft_master_view.MItemRate_list.as_view(),
-         name="MItemRate_list"),
     path("mlocation/create/", millsoft_master_view.MLocation_create.as_view(),
          name="MLocation_create"),
     path("mlocation/<int:pk>/update/",
@@ -147,6 +139,7 @@ millsoft_master_urlpatterns = [
          name="MSupplier_delete"),
     path("msupplier/", millsoft_master_view.MSupplier_list.as_view(),
          name="MSupplier_list"),
+
 ]
 
 millsoft_transact_urlpatterns = [
@@ -180,22 +173,7 @@ millsoft_transact_urlpatterns = [
          name="TInvoice_delete"),
     path("tinvoice/", millsoft_transaction_view.TInvoice_list.as_view(),
          name="TInvoice_list"),
-    # path("tjumborollwiseqc/create/", millsoft_transaction_view.TJumboRollWiseQC_create.as_view(),
-    #      name="TJumboRollWiseQC_create"),
-    # path("tjumborollwiseqc/<int:pk>/update/",
-    #      millsoft_transaction_view.TJumboRollWiseQC_update.as_view(), name="TJumboRollWiseQC_update"),
-    # path("tjumborollwiseqc/<int:pk>/delete/",
-    #      millsoft_transaction_view.TJumboRollWiseQC_delete.as_view(), name="TJumboRollWiseQC_delete"),
-    # path("tjumborollwiseqc/", millsoft_transaction_view.TJumboRollWiseQC_list.as_view(),
-    #      name="TJumboRollWiseQC_list"),
-    # path("tlotnowiseqc/create/", millsoft_transaction_view.TLOTNoWiseQc_create.as_view(),
-    #      name="TLOTNoWiseQc_create"),
-    # path("tlotnowiseqc/<int:pk>/update/", millsoft_transaction_view.TLOTNoWiseQc_update.as_view(),
-    #      name="TLOTNoWiseQc_update"),
-    # path("tlotnowiseqc/<int:pk>/delete/", millsoft_transaction_view.TLOTNoWiseQc_delete.as_view(),
-    #      name="TLOTNoWiseQc_delete"),
-    # path("tlotnowiseqc/", millsoft_transaction_view.TLOTNoWiseQc_list.as_view(),
-    #      name="TLOTNoWiseQc_list"),
+
     path("tproduction/create/", millsoft_transaction_view.TProduction_create.as_view(),
          name="TProduction_create"),
     path("tproduction/<int:pk>/update/", millsoft_transaction_view.TProduction_update.as_view(),
@@ -229,11 +207,17 @@ millsoft_report_urlpatterns = [
          name="download_challan"),
 
 ]
+millsoft_utility_urlpatterns = [
+
+    path("stocktransfer/", millsoft_utility_view.StockTransfer.as_view(),
+         name="StockTransfer"),
+]
 
 millsoft_urlpatterns = (
     millsoft_master_urlpatterns +
     millsoft_transact_urlpatterns +
-    millsoft_report_urlpatterns
+    millsoft_report_urlpatterns +
+    millsoft_utility_urlpatterns
 )
 # Combine all URL patterns
 urlpatterns = (

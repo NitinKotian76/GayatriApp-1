@@ -124,7 +124,7 @@ class TableDataAdmin(admin.ModelAdmin):
 @admin.register(MAgent)
 class MAgentAdmin(admin.ModelAdmin):
     list_display = [
-        "AgentId",
-        "Agentname",
-        "Bname"
+        "agentid",
+        "agentname",
+        "bname"
     ]

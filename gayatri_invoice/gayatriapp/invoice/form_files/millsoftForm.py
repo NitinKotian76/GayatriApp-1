@@ -1,5 +1,5 @@
 from ..models import (MAgent, MCategory, MCustomer,
-                      MExportFields, MItem, MItemCategory, MItemRate,
+                      MExportFields, MItem, MItemCategory,
                       MLocation, MPlusMinusHead, MShade, MSupplier)
 from ..models import (TExport, TExportDetails, TIndent,
                       TInvoice, TProduction,
@@ -57,14 +57,6 @@ class MItemCategoryForm(forms.ModelForm):
         fields = "__all__"
 
 
-class MItemRateForm(forms.ModelForm):
-    template_name = "form_snippet.html"
-
-    class Meta:
-        model = MItemRate
-        fields = "__all__"
-
-
 class MLocationForm(forms.ModelForm):
     template_name = "form_snippet.html"
 
@@ -95,6 +87,19 @@ class MSupplierForm(forms.ModelForm):
     class Meta:
         model = MSupplier
         fields = "__all__"
+
+
+class StockTransferForm(forms.Form):
+    template_name = "form_snippet.html"
+
+    party = forms.ChoiceField()
+    Agent = forms.ChoiceField()
+    Indent_No = forms.CharField()
+    quality = forms.CharField()
+    GSM = forms.CharField()
+    Size = forms.CharField()
+    length = forms.FloatField()
+    Rate = forms.FloatField()
 
 
 class TExportForm(forms.ModelForm):
@@ -128,54 +133,15 @@ class TInvoiceForm(forms.ModelForm):
         model = TInvoice
         fields = "__all__"
         widgets = {
-            "InvoiceDate": forms.DateInput(attrs={'type': 'date'}),
-            "PreDate": forms.DateInput(attrs={'type': 'date'}),
-            "RemDate": forms.DateInput(attrs={'type': 'date'}),
-            "LrDate": forms.DateInput(attrs={'type': 'date'}),
-            "PreTime": forms.TimeInput(attrs={'type': 'time'}),
-            "RemTime": forms.TimeInput(attrs={'type': 'time'}),
+            "invoicedate": forms.DateInput(attrs={'type': 'date'}),
+            "predate": forms.DateInput(attrs={'type': 'date'}),
+            "remdate": forms.DateInput(attrs={'type': 'date'}),
+            "lrdate": forms.DateInput(attrs={'type': 'date'}),
+            "pretime": forms.TimeInput(attrs={'type': 'time'}),
+            "remtime": forms.TimeInput(attrs={'type': 'time'}),
+            # "AgentID":
 
         }
-    #
-    # def __init__(self, *args, **kwargs):
-    #
-    #     cust_id = kwargs.pop("CustID", None)
-    #     agent_id = kwargs.pop("AgentID", None)
-    #
-    #     super().__init__(*args, **kwargs)
-    #
-    #     cid = cust_id or self.data.get("CustId") or (
-    #         self.instance.CustID_id if self.instance and self.instance.pk else None)
-    #
-    #     aid = agent_id or self.data.get("agentid") or (
-    #         self.instance.AgentID_id if self.instance and self.instance.pk else None)
-    #     if cid:
-    #         mcust = MCustomer.objects.filter(
-    #             CustId=cid).values('agentid').select_related()
-    #         self.fields['agentid'].queryset = MAgent.objects.filter(
-    #             agentid=mcust).values()
-    #     elif aid:
-    #         self.fields['CustId'].queryset = MCustomer.objects.filter(
-    #             agentid=aid).select_realted("CustId")
-    #     else:
-    #         pass
-
-#
-# class TJumboRollWiseQCForm(forms.ModelForm):
-#     template_name = "form_snippet.html"
-#
-#     class Meta:
-#         model = TJumboRollWiseQC
-#         fields = "__all__"
-#
-#
-# class TLOTNoWiseQcForm(forms.ModelForm):
-#     template_name = "form_snippet.html"
-#
-#     class Meta:
-#         model = TLOTNoWiseQc
-#         fields = "__all__"
-#
 
 
 class TProductionForm(forms.ModelForm):
@@ -185,7 +151,8 @@ class TProductionForm(forms.ModelForm):
         model = TProduction
         fields = "__all__"
         widgets = {
-            "RDate": forms.DateInput(attrs={'type': 'date'}), }
+            "rdate": forms.DateInput(attrs={'type': 'date'})
+        }
 
 
 class TProduction_bckForm(forms.ModelForm):
@@ -202,3 +169,37 @@ class TProductionReelForm(forms.ModelForm):
     class Meta:
         model = TProductionReel
         fields = "__all__"
+
+
+class HTMXRelatedCompleteMixin:
+
+    htmx_fields = {}
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field_name, config in self.htmx_fields.items():
+            if field_name in self.fields:
+                self.field[field_name].widget.attrs.update({
+                    'hx-get': config['url'],
+                    'hx-target': config['target'],
+                    'hx-trigger': config['trigger'],
+                    'hx-swap': 'outerHTML',
+                })
+
+        # get the relaton object m2m or 121
+          # get the source field
+          # get the target field
+          # filter the target field qs by the field value in source field
+
+        field_name = htmx_fields.keys()
+        source = field_name[0]
+        target = field_name[1]
+
+        if self.data.get():
+            sourcevalue = self.data.get(field_name)
+        # if company var is not available put the first company name  or none
+        if not company:
+            first_company = Company.objects.first()
+            company = first_company.id if not first_company else None
+        # get the list of tablenames for the particular company
+        self.fields[''].queryset

@@ -79,35 +79,6 @@
 
       Invoice
     </a>
-    <!-- <a -->
-    <!--   href="#" -->
-    <!--   class="w3-bar-item w3-button w3-ripple" -->
-    <!--   id="deletereport" -->
-    <!--   hx-get="/invoice/tjumborollwiseqc/create" -->
-    <!--   hx-target="#mainform" -->
-    <!--   ><div -->
-    <!--     hx-get="/invoice/tjumborollwiseqc" -->
-    <!--     hx-trigger="click from:closest (a)" -->
-    <!--     hx-target="#tableview" -->
-    <!--     hx-swap="innerHTML" -->
-    <!--   ></div> -->
-    <!--   Jumbo Roll QC -->
-    <!-- </a> -->
-    <!-- <a -->
-    <!--   href="#" -->
-    <!--   class="w3-bar-item w3-button w3-ripple" -->
-    <!--   id="deletereport" -->
-    <!--   hx-get="/invoice/Tlotnowiseqc/create" -->
-    <!--   hx-target="#mainform" -->
-    <!--   hx-vals='{"form":"lot_no_wise_qc"}' -->
-    <!--   ><div -->
-    <!--     hx-get="/invoice/tlotnowiseqc" -->
-    <!--     hx-trigger="click from:closest (a)" -->
-    <!--     hx-target="#tableview" -->
-    <!--     hx-swap="innerHTML" -->
-    <!--   ></div> -->
-    <!--   LOT no Wise QC -->
-    <!-- </a> -->
     <a
       href="#"
       class="w3-bar-item w3-button w3-ripple"
@@ -218,6 +189,21 @@
     <a
       href="#"
       class="w3-bar-item w3-button w3-ripple"
+      hx-get="/invoice/stocktransfer"
+      hx-target="#mainform"
+      hx-swap="innerHTML"
+    >
+      <div
+        hx-get="/invoice/tproduction"
+        hx-trigger="click from:closest (a)"
+        hx-target="#tableview"
+        hx-swap="innerHTML"
+      ></div>
+      Stock transfer
+    </a>
+    <a
+      href="#"
+      class="w3-bar-item w3-button w3-ripple"
       id="createtable"
       hx-get="/invoice/form_view"
       hx-target="#mainform"
@@ -244,36 +230,6 @@
       hx-vals='{"form":"millsoft_to_orion"}'
     >
       MillSoft To Orion
-    </a>
-    <a
-      href="#"
-      class="w3-bar-item w3-button w3-ripple"
-      id="backup"
-      hx-get="/invoice/form_view"
-      hx-target="#mainform"
-      hx-vals='{"form":"backup"}'
-    >
-      Backup
-    </a>
-    <a
-      href="#"
-      class="w3-bar-item w3-button w3-ripple"
-      id="deletereport"
-      hx-get="/invoice/form_view"
-      hx-target="#mainform"
-      hx-vals='{"form":"}'
-    >
-      Printer Setting
-    </a>
-    <a
-      href="#"
-      class="w3-bar-item w3-button w3-ripple"
-      id="deletereport"
-      hx-get="/invoice/form_view"
-      hx-target="#mainform"
-      hx-vals='{"form":"printer_setting"}'
-    >
-      Calculator
     </a>
   </div>
 </div>

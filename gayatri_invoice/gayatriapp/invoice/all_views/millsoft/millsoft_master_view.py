@@ -1,5 +1,4 @@
 
-from datetime import datetime
 from django.contrib.messages.views import SuccessMessageMixin
 from django.views.generic import (CreateView, UpdateView, DeleteView, ListView)
 from django.urls import (reverse_lazy, reverse)
@@ -11,7 +10,7 @@ from django.db.models import CharField
 
 from ...form_files import (helperFunct as hf, millsoftForm as mf)
 from ...models import (MAgent, MCategory, MCustomer,
-                       MExportFields, MItem, MItemCategory, MItemRate,
+                       MExportFields, MItem, MItemCategory,
                        MLocation, MPlusMinusHead, MShade, MSupplier)
 
 import logging
@@ -409,7 +408,7 @@ class MItem_list(SuccessMessageMixin, ListView):
 
 class MItemCategory_create(SuccessMessageMixin, CreateView):
 
-    model = MItem
+    model = MItemCategory
     form_class = mf.MItemForm
     template_name = "partials/forms.html"
     context_object_name = "form"
@@ -432,7 +431,7 @@ class MItemCategory_create(SuccessMessageMixin, CreateView):
 
 class MItemCategory_update(SuccessMessageMixin, UpdateView):
 
-    model = MItem
+    model = MItemCategory
     form_class = mf.MItemForm
     template_name = "partials/forms.html"
     context_object_name = "form"
@@ -456,7 +455,7 @@ class MItemCategory_update(SuccessMessageMixin, UpdateView):
 
 class MItemCategory_delete(SuccessMessageMixin, DeleteView):
 
-    model = MItem
+    model = MItemCategory
     success_message = "successfully deleted"
     success_url = reverse_lazy('invoice:MItem_list')
 
@@ -464,7 +463,7 @@ class MItemCategory_delete(SuccessMessageMixin, DeleteView):
 @method_decorator(never_cache, name='dispatch')
 class MItemCategory_list(SuccessMessageMixin, ListView):
 
-    model = MItem
+    model = MItemCategory
     fields = '__all__'
     context_object_name = "form"
     template_name = "partials/tableview.html"
@@ -482,85 +481,6 @@ class MItemCategory_list(SuccessMessageMixin, ListView):
                       hx_req_type="hx-get", hx_target="#tableshow")
         ]
         context["modelurl"] = reverse('invoice:MItem_list')
-        return context
-
-
-class MItemRate_create(SuccessMessageMixin, CreateView):
-
-    model = MItemRate
-    form_class = mf.MItemRateForm
-    template_name = "partials/forms.html"
-    context_object_name = "form"
-    success_url = reverse_lazy("invoice:MItemRate_create")
-    success_message = "successfully created"
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["buttons"] = hf.button("submit",
-                                       hx_req=reverse(
-                                           'invoice:MItemRate_create'),
-                                       hx_target="#dynform",
-                                       hx_swap="innerHTML")
-        return context
-
-    def form_valid(self, form):
-        form.save()
-        response = self.render_to_response(self.get_context_data())
-        return trigger_client_event(response, "RefreshTable")
-
-
-class MItemRate_update(SuccessMessageMixin, UpdateView):
-
-    model = MItemRate
-    form_class = mf.MItemRateForm
-    template_name = "partials/forms.html"
-    context_object_name = "form"
-    success_message = "successfully updated"
-    success_url = reverse_lazy('invoice:MItemRate_create')
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["buttons"] = hf.button("submit",
-                                       hx_req=f"{self.request.path}",
-                                       hx_target="#dynform",
-                                       hx_swap="innerHTML")
-
-        return context
-
-    def form_valid(self, form):
-        form.save()
-        response = self.render_to_response(self.get_context_data())
-        return trigger_client_event(response, "RefreshTable")
-
-
-class MItemRate_delete(SuccessMessageMixin, DeleteView):
-
-    model = MItemRate
-    success_message = "successfully deleted"
-    success_url = reverse_lazy('invoice:MItemRate_list')
-
-
-@method_decorator(never_cache, name='dispatch')
-class MItemRate_list(SuccessMessageMixin, ListView):
-
-    model = MItemRate
-    fields = '__all__'
-    context_object_name = "form"
-    template_name = "partials/tableview.html"
-    paginate_by = 100
-
-    def get_queryset(self):
-        return MItemRate.objects.annotate(pk_str=Cast("pk", output_field=CharField())).values()
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        # Already dicts from .values()
-        context['listdata'] = list(context['object_list'])
-        context['buttons'] = [
-            hf.button("Create Agent", hx_req="",
-                      hx_req_type="hx-get", hx_target="#tableshow")
-        ]
-        context["modelurl"] = reverse('invoice:MItemRate_list')
         return context
 
 

@@ -1,5 +1,6 @@
 <div id="dynform">
     {% csrf_token %}
+    {{form.media}}
     {{ form }}
     {% if formset %}
         <div id="formset">{% include 'partials/formset.html' with formset=formset  formset_form=formset_form %}</div>
