@@ -659,7 +659,6 @@ class TProduction_bck(Audit):
     headid = models.BigIntegerField(null=True, editable=False)
     refproductionid = models.UUIDField(null=True, editable=False)
     p_m_remarks = models.CharField(null=True, max_length=60)
-
     ind_weight = models.FloatField(null=True)
     cm_inch = models.CharField(null=True, max_length=10)
 

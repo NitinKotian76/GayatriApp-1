@@ -31,13 +31,11 @@
       id="editreport"
       hx-get="/invoice/tproduction/create"
       hx-target="#mainform"
-      hx-vals='{"form":"production"}'
     >
       <div
         hx-get="/invoice/tproduction"
         hx-trigger="click from:closest (a)"
         hx-target="#tableview"
-        hx-vals='{"table_name": "production"}'
         hx-swap="innerHTML"
       ></div>
       Production

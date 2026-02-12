@@ -60,11 +60,11 @@ def btn_append(handler: dict, item: str) -> str:
     """
     append the list of buttons
         Args:
-        handler = list of objects
-        item = the name of the list of items
+        handler = dict of objects
+        item = the name of the dict of items
 
         returns:
-        buttons = appended list of buttons html fragment
+        buttons = appended list of button html fragments
 
     """
     buttons = []

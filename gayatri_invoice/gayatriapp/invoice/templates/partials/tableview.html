@@ -12,7 +12,7 @@
                        value="{{ search_query|default_if_none:"" }}"
                        name="q"
                        placeholder="search.."
-                       hx-post="/invoice/table_view_search"
+		       hx-post="{{modelurl}}"
                        hx-trigger="keyup changed delay:400ms"
                        hx-vals='{"form_name":"{{ form_name }}"}'
                        hx-target="#tableshow"

@@ -6,6 +6,7 @@ from django.views.decorators.cache import never_cache
 from django.utils.decorators import method_decorator
 from django.db.models.functions import Cast
 from django.db.models import CharField
+from django.db.models import Q, F
 
 from ...form_files import (helperFunct as hf, millsoftForm as mf)
 from ...models import (TExport, TExportDetails, TIndent,
@@ -339,162 +340,6 @@ class TInvoice_list(SuccessMessageMixin, ListView):
         return context
 
 
-# class TJumboRollWiseQC_create(SuccessMessageMixin, CreateView):
-#
-#     model = TJumboRollWiseQC
-#     form_class = mf.TJumboRollWiseQCForm
-#     template_name = "partials/forms.html"
-#     context_object_name = "form"
-#     success_url = reverse_lazy("invoice:TJumboRollWiseQC_create")
-#     success_message = "successfully created"
-#
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         context["buttons"] = hf.button("submit",
-#                                        hx_req=reverse(
-#                                            'invoice:TJumboRollWiseQC_create'),
-#                                        hx_target="#dynform",
-#                                        hx_swap="innerHTML")
-#         return context
-#
-#     def form_valid(self, form):
-#         form.save()
-#         response = self.render_to_response(self.get_context_data())
-#         return trigger_client_event(response, "RefreshTable")
-#
-#
-# class TJumboRollWiseQC_update(SuccessMessageMixin, UpdateView):
-#
-#     model = TJumboRollWiseQC
-#     form_class = mf.TJumboRollWiseQCForm
-#     template_name = "partials/forms.html"
-#     context_object_name = "form"
-#     success_message = "successfully updated"
-#     success_url = reverse_lazy('invoice:TJumboRollWiseQC_create')
-#
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         context["buttons"] = hf.button("submit",
-#                                        hx_req=f"{self.request.path}",
-#                                        hx_target="#dynform",
-#                                        hx_swap="innerHTML")
-#
-#         return context
-#
-#     def form_valid(self, form):
-#         form.save()
-#         response = self.render_to_response(self.get_context_data())
-#         return trigger_client_event(response, "RefreshTable")
-#
-#
-# class TJumboRollWiseQC_delete(SuccessMessageMixin, DeleteView):
-#
-#     model = TJumboRollWiseQC
-#     success_message = "successfully deleted"
-#     success_url = reverse_lazy('invoice:TJumboRollWiseQC_list')
-#
-#
-# class TJumboRollWiseQC_list(SuccessMessageMixin, ListView):
-#
-#     model = TJumboRollWiseQC
-#     fields = '__all__'
-#     context_object_name = "form"
-#     template_name = "partials/tableview.html"
-#     paginate_by = 100
-#
-#     def get_queryset(self):
-#         return TJumboRollWiseQC.objects.annotate(pk_str=Cast("pk", output_field=CharField())).values()
-#
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         # Already dicts from .values()
-#         context['listdata'] = list(context['object_list'])
-#         context['buttons'] = [
-#             hf.button("Create Agent", hx_req="",
-#                       hx_req_type="hx-get", hx_target="#tableshow")
-#         ]
-#         context["modelurl"] = reverse('invoice:TJumboRollWiseQC_list')
-#         return context
-#
-#
-# class TLOTNoWiseQc_create(SuccessMessageMixin, CreateView):
-#
-#     model = TLOTNoWiseQc
-#     form_class = mf.TLOTNoWiseQcForm
-#     template_name = "partials/forms.html"
-#     context_object_name = "form"
-#     success_url = reverse_lazy("invoice:TLOTNoWiseQc_create")
-#     success_message = "successfully created"
-#
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         context["buttons"] = hf.button("submit",
-#                                        hx_req=reverse(
-#                                            'invoice:TLOTNoWiseQc_create'),
-#                                        hx_target="#dynform",
-#                                        hx_swap="innerHTML")
-#         return context
-#
-#     def form_valid(self, form):
-#         form.save()
-#         response = self.render_to_response(self.get_context_data())
-#         return trigger_client_event(response, "RefreshTable")
-#
-#
-# class TLOTNoWiseQc_update(SuccessMessageMixin, UpdateView):
-#
-#     model = TLOTNoWiseQc
-#     form_class = mf.TLOTNoWiseQcForm
-#     template_name = "partials/forms.html"
-#     context_object_name = "form"
-#     success_message = "successfully updated"
-#     success_url = reverse_lazy('invoice:TLOTNoWiseQc_create')
-#
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         context["buttons"] = hf.button("submit",
-#                                        hx_req=f"{self.request.path}",
-#                                        hx_target="#dynform",
-#                                        hx_swap="innerHTML")
-#
-#         return context
-#
-#     def form_valid(self, form):
-#         form.save()
-#         response = self.render_to_response(self.get_context_data())
-#         return trigger_client_event(response, "RefreshTable")
-#
-#
-# class TLOTNoWiseQc_delete(SuccessMessageMixin, DeleteView):
-#
-#     model = TLOTNoWiseQc
-#     success_message = "successfully deleted"
-#     success_url = reverse_lazy('invoice:TLOTNoWiseQc_list')
-#
-#
-# class TLOTNoWiseQc_list(SuccessMessageMixin, ListView):
-#
-#     model = TLOTNoWiseQc
-#     fields = '__all__'
-#     context_object_name = "form"
-#     template_name = "partials/tableview.html"
-#     paginate_by = 100
-#
-#     def get_queryset(self):
-#         return TLOTNoWiseQc.objects.annotate(pk_str=Cast("pk", output_field=CharField())).values()
-#
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         # Already dicts from .values()
-#         context['listdata'] = list(context['object_list'])
-#         context['buttons'] = [
-#             hf.button("Create Agent", hx_req="",
-#                       hx_req_type="hx-get", hx_target="#tableshow")
-#         ]
-#         context["modelurl"] = reverse('invoice:TLOTNoWiseQc_list')
-#         return context
-#
-
 class TProduction_create(SuccessMessageMixin, CreateView):
 
     model = TProduction
@@ -559,7 +404,33 @@ class TProduction_list(SuccessMessageMixin, ListView):
     paginate_by = 100
 
     def get_queryset(self):
-        return TProduction.objects.annotate(pk_str=Cast("pk", output_field=CharField())).values()
+        qs = TProduction.objects.select_related(
+            'agentid', 'custid', 'catid', 'itemid', 'shadeid'
+        ).annotate(
+            pk_str=Cast("pk", output_field=CharField()),
+            agent_name=F('agentid__agentname'),  # agentid → agentname
+            customer_name=F('custid__custname'),  # custid → custname
+            # Add more
+            category_name=F('catid__cat'),
+            item_code=F('itemid__itemcode'),
+            shade_name=F('shadeid__shadecode'),
+        )
+        filters = {k: v for k, v in self.request.GET.items() if k !=
+                   'page' and v.strip()}
+        if filters != {}:
+            q_objects = Q()
+            logger.debug(filters.items())
+            for field, value in filters.items():
+                if field in ['gsm', 'sized']:
+                    lookup = f"itemid__{field}__icontains"
+                else:
+                    lookup = f"{field}__icontains"
+
+                q_objects &= Q(**{lookup: value})
+
+            qs = qs.filter(q_objects)
+
+        return qs.values()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

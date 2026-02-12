@@ -92,14 +92,18 @@ class MSupplierForm(forms.ModelForm):
 class StockTransferForm(forms.Form):
     template_name = "form_snippet.html"
 
-    party = forms.ChoiceField()
-    Agent = forms.ChoiceField()
-    Indent_No = forms.CharField()
-    quality = forms.CharField()
-    GSM = forms.CharField()
-    Size = forms.CharField()
-    length = forms.FloatField()
-    Rate = forms.FloatField()
+    party = forms.ChoiceField(
+        choices=MCustomer.objects.all().values_list("pk", "custname"))
+    agent = forms.ChoiceField(
+        choices=MAgent.objects.all().values_list("pk", "agentname"))
+    # search fields
+    indentno = forms.CharField(
+        widget=forms.TextInput(attrs={"id": "filter"}))
+    # quality = forms.CharField(widget=forms.TextInput(attrs={"id": "filter"}))
+    gsm = forms.CharField(widget=forms.TextInput(attrs={"id": "filter"}))
+    sized = forms.CharField(widget=forms.TextInput(attrs={"id": "filter"}))
+    length = forms.FloatField(widget=forms.TextInput(attrs={"id": "filter"}))
+    rate = forms.FloatField(widget=forms.TextInput(attrs={"id": "filter"}))
 
 
 class TExportForm(forms.ModelForm):
