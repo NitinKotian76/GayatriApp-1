@@ -172,84 +172,6 @@ class TExportDetails_list(SuccessMessageMixin, ListView):
         return context
 
 
-class TIndent_create(SuccessMessageMixin, CreateView):
-
-    model = TIndent
-    form_class = mf.TIndentForm
-    template_name = "partials/forms.html"
-    context_object_name = "form"
-    success_url = reverse_lazy("invoice:TIndent_create")
-    success_message = "successfully created"
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["buttons"] = hf.button("submit",
-                                       hx_req=reverse(
-                                           'invoice:TIndent_create'),
-                                       hx_target="#dynform",
-                                       hx_swap="innerHTML")
-        return context
-
-    def form_valid(self, form):
-        form.save()
-        response = self.render_to_response(self.get_context_data())
-        return trigger_client_event(response, "RefreshTable")
-
-
-class TIndent_update(SuccessMessageMixin, UpdateView):
-
-    model = TIndent
-    form_class = mf.TIndentForm
-    template_name = "partials/forms.html"
-    context_object_name = "form"
-    success_message = "successfully updated"
-    success_url = reverse_lazy('invoice:TIndent_create')
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["buttons"] = hf.button("submit",
-                                       hx_req=f"{self.request.path}",
-                                       hx_target="#dynform",
-                                       hx_swap="innerHTML")
-
-        return context
-
-    def form_valid(self, form):
-        form.save()
-        response = self.render_to_response(self.get_context_data())
-        return trigger_client_event(response, "RefreshTable")
-
-
-class TIndent_delete(SuccessMessageMixin, DeleteView):
-
-    model = TIndent
-    success_message = "successfully deleted"
-    success_url = reverse_lazy('invoice:TIndent_list')
-
-
-class TIndent_list(SuccessMessageMixin, ListView):
-
-    model = TIndent
-    fields = '__all__'
-    context_object_name = "form"
-    template_name = "partials/tableview.html"
-    paginate_by = 100
-
-    def get_queryset(self):
-        return TIndent.objects.annotate(pk_str=Cast("pk", output_field=CharField())).values()
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        # Already dicts from .values()
-        context['listdata'] = list(context['object_list'])
-        context['buttons'] = [
-            hf.button("Create Agent", hx_req="",
-                      hx_req_type="hx-get", hx_target="#tableshow")
-        ]
-        context["modelurl"] = reverse('invoice:TIndent_list')
-        return context
-
-
 class TInvoice_create(SuccessMessageMixin, CreateView):
 
     model = TInvoice
@@ -408,9 +330,8 @@ class TProduction_list(SuccessMessageMixin, ListView):
             'agentid', 'custid', 'catid', 'itemid', 'shadeid'
         ).annotate(
             pk_str=Cast("pk", output_field=CharField()),
-            agent_name=F('agentid__agentname'),  # agentid → agentname
-            customer_name=F('custid__custname'),  # custid → custname
-            # Add more
+            agentname=F('agentid__agentname'),  # agentid → agentname
+            customername=F('custid__custname'),  # custid → custname
             category_name=F('catid__cat'),
             item_code=F('itemid__itemcode'),
             shade_name=F('shadeid__shadecode'),

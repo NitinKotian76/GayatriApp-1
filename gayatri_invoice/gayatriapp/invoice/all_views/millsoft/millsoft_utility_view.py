@@ -1,13 +1,17 @@
-import logging
-
+from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
 from django.template import context
 from django.urls import reverse_lazy
 from django.views.generic import FormView, ListView
-from ...models import TProduction
+from django.http import HttpResponse
 
+from ...models import TProduction
 from ...form_files.helperFunct import btn_append, button
 from ...form_files import millsoftForm as mf
+
+import logging
+from django_htmx.http import trigger_client_event
+
 logger = logging.getLogger(__name__)
 
 
@@ -29,7 +33,9 @@ class StockTransfer(SuccessMessageMixin, FormView):
                     "hx_req": reverse_lazy("invoice:StockTransfer"),
                     "hx_target": "#dynform",
                     "hx_swap": "innerHTML",
-                    "attrs": {"hx-include": "[input[name=selected_rows]]"}
+                    "attrs": {
+                        "hx-include": "[name='selected_row']:checked"
+                    }
                 },
                 "find": {
                     "hx_req_type": "hx-get",
@@ -42,20 +48,37 @@ class StockTransfer(SuccessMessageMixin, FormView):
         }
         context = super().get_context_data(*args, **kwargs)
         context["buttons"] = btn_append(btn, "buttons")
-
         return context
 
+
     def form_valid(self, form):
-        selected_rows = self.request.POST.getlist("selected_rows")
-        customer = self.request.POST.get("customer")
-        agent = self.request.POST.get("agent")
+        logger.debug("form method called")
+        selected_rows = self.request.POST.getlist("selected_row")
+        logger.debug(selected_rows)
+        customer = form.cleaned_data.get("party")
+        agent = form.cleaned_data.get("agent")
 
-        ids = [pk for pk in selected_rows]
-        records = TProduction.objects.filter(pk__in=ids)
-        logger.debug(records.values('pk'))
-        TProduction.objects.bulk_update(records, [customer, agent])
+        records = list(TProduction.objects.filter(pk__in=selected_rows))
+        logger.debug(f"Records:{records}")
 
-        return trigger_client_event(self.request, "RefreshTable")
+        for r in records:
+            if customer:
+                r.custid_id = customer
+            if agent:
+                r.agentid_id = agent
+
+        result = TProduction.objects.bulk_update(
+            records, ["custid", "agentid"])
+        logger.debug(f"updated {result}")
+        messages.success(self.request, self.success_message)
+        response = self.render_to_response(self.get_context_data())
+        return trigger_client_event(response, "RefreshTable")
+
+    def form_invalid(self, form):
+        logger.debug("form_invalid called")
+        logger.debug("form.errors: %s", form.errors.as_data())
+        logger.debug("form.non_field_errors: %s", form.non_field_errors())
+        return super().form_invalid(form)
 
 
 def ApiView(request):

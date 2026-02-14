@@ -98,12 +98,16 @@ class StockTransferForm(forms.Form):
         choices=MAgent.objects.all().values_list("pk", "agentname"))
     # search fields
     indentno = forms.CharField(
-        widget=forms.TextInput(attrs={"id": "filter"}))
+        widget=forms.TextInput(attrs={"id": "filter"}), required=False)
     # quality = forms.CharField(widget=forms.TextInput(attrs={"id": "filter"}))
-    gsm = forms.CharField(widget=forms.TextInput(attrs={"id": "filter"}))
-    sized = forms.CharField(widget=forms.TextInput(attrs={"id": "filter"}))
-    length = forms.FloatField(widget=forms.TextInput(attrs={"id": "filter"}))
-    rate = forms.FloatField(widget=forms.TextInput(attrs={"id": "filter"}))
+    gsm = forms.CharField(widget=forms.TextInput(
+        attrs={"id": "filter"}), required=False)
+    sized = forms.CharField(widget=forms.TextInput(
+        attrs={"id": "filter"}), required=False)
+    length = forms.FloatField(widget=forms.TextInput(
+        attrs={"id": "filter"}), required=False)
+    rate = forms.FloatField(widget=forms.TextInput(
+        attrs={"id": "filter"}), required=False)
 
 
 class TExportForm(forms.ModelForm):
@@ -121,13 +125,6 @@ class TExportDetailsForm(forms.ModelForm):
         model = TExportDetails
         fields = "__all__"
 
-
-class TIndentForm(forms.ModelForm):
-    template_name = "form_snippet.html"
-
-    class Meta:
-        model = TIndent
-        fields = "__all__"
 
 
 class TInvoiceForm(forms.ModelForm):

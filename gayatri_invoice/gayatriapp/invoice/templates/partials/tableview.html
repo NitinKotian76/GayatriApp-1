@@ -12,7 +12,7 @@
                        value="{{ search_query|default_if_none:"" }}"
                        name="q"
                        placeholder="search.."
-		       hx-post="{{modelurl}}"
+                       hx-post="{{ modelurl }}"
                        hx-trigger="keyup changed delay:400ms"
                        hx-vals='{"form_name":"{{ form_name }}"}'
                        hx-target="#tableshow"
@@ -57,7 +57,7 @@
                                 <td>
                                     <button hx-get="{{ modelurl }}{{ data.pk_str }}/update/"
                                             hx-swap="innerHTML"
-                                            hx-target="#formpart"
+                                            hx-target="#dynform"
                                             class="w3-button w3-ripple w3-green">Update</button>
                                     <button hx-post="{{ modelurl }}{{ data.pk_str }}/delete/"
                                             hx-swap="innerHTML"

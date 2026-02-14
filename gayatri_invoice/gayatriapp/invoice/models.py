@@ -570,18 +570,6 @@ class TExportDetails(Audit):
         return self.exportdetailsid
 
 
-class TIndent(Audit):
-    indentid = models.AutoField(primary_key=True, editable=False)
-    custid = models.ForeignKey(MCustomer, on_delete=models.SET_NULL, null=True)
-    indentno = models.CharField(null=True, max_length=20)
-    indentdate = models.DateField(null=True)
-    pono = models.CharField(null=True, max_length=20)
-    podate = models.DateField(null=True)
-    remark = models.CharField(null=True, max_length=150)
-
-    def __str__(self):
-        return self.indentno
-
 
 class TProduction(Audit):
     productionid = models.UUIDField(
@@ -622,7 +610,7 @@ class TProduction(Audit):
     cm_inch = models.CharField(null=True, max_length=10)
 
     def __str__(self):
-        return self.productionid
+        return str(self.productionid)
 
 
 class TProduction_bck(Audit):
