@@ -31,9 +31,10 @@
       id="editreport"
       hx-get="/invoice/tproduction/create"
       hx-target="#mainform"
+      hx-trigger="click"
+      hx-on::after-request="document.body.dispatchEvent(new CustomEvent('showProductionView'))"
     >
-      <div
-        hx-get="/invoice/tproduction"
+      <div hx-get="/invoice/tproduction"
         hx-trigger="click from:closest (a)"
         hx-target="#tableview"
         hx-swap="innerHTML"
@@ -43,20 +44,27 @@
     <a
       href="#"
       class="w3-bar-item w3-button w3-ripple"
-      id="deletereport"
-      hx-get="/invoice/tproduction"
+      hx-get="/invoice/tstockplusminus"
       hx-target="#mainform"
-      hx-vals='{"form":"prod_plus_minus"}'
+      hx-trigger="click"
+      hx-on::after-request="document.body.dispatchEvent(new CustomEvent('showTableview'))"
     >
+      <div
+        hx-get="/invoice/tproduction"
+        hx-trigger="click from:closest (a)"
+        hx-target="#tableview"
+        hx-swap="innerHTML"
+      ></div>
       Stock Plus/minus
     </a>
     <a
       href="#"
       class="w3-bar-item w3-button w3-ripple"
       id="deletereport"
-      hx-get="/invoice/form_view"
+      hx-get="/invoice/prod_approval"
       hx-target="#mainform"
-      hx-vals='{"form":"prod_approval"}'
+      hx-trigger="click"
+      hx-on::after-request="document.body.dispatchEvent(new CustomEvent('showProductionView'))"
     >
       Production Approval
     </a>
@@ -66,12 +74,12 @@
       id="deletereport"
       hx-get="/invoice/tinvoice/create"
       hx-target="#mainform"
-      hx-vals='{"form":"invoice"}'
+      hx-trigger="click"
+      hx-on::after-request="document.body.dispatchEvent(new CustomEvent('showTableview'))"
       ><div
         hx-get="/invoice/tinvoice"
         hx-trigger="click from:closest (a)"
         hx-target="#tableview"
-        hx-vals='{"table_name": "production"}'
         hx-swap="innerHTML"
       ></div>
 
@@ -81,9 +89,10 @@
       href="#"
       class="w3-bar-item w3-button w3-ripple"
       id="deletereport"
-      hx-get="/invoice/form_view"
+      hx-get="/invoice/finishing_house"
       hx-target="#mainform"
-      hx-vals='{"form":"finishing_house"}'
+      hx-trigger="click"
+      hx-on::after-request="document.body.dispatchEvent(new CustomEvent('showTableview'))"
     >
       Finishing House
     </a>
@@ -91,9 +100,9 @@
       href="#"
       class="w3-bar-item w3-button w3-ripple"
       id="deletereport"
-      hx-get="/invoice/form_view"
+      hx-get="/invoice/program_planning"
       hx-target="#mainform"
-      hx-vals='{"form":"program_planning"}'
+      hx-on::after-request="document.body.dispatchEvent(new CustomEvent('showTableview'))"
     >
       Proggram planning
     </a>

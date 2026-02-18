@@ -9,9 +9,9 @@ from django.db.models.functions import Cast
 from django.db.models import CharField
 
 from ...form_files import (helperFunct as hf, millsoftForm as mf)
-from ...models import (MAgent, MCategory, MCustomer,
+from ...models import (MAgent, MUnit, MCustomer,
                        MExportFields, MItem, MItemCategory,
-                       MLocation, MPlusMinusHead, MShade, MSupplier)
+                       MLocation, MPlusMinusHead, MShade)
 
 import logging
 logger = logging.getLogger(__name__)
@@ -36,7 +36,7 @@ class MAgent_create(SuccessMessageMixin, CreateView):
     def form_valid(self, form):
         form.save()
         response = self.render_to_response(self.get_context_data())
-        return trigger_client_event(response, "RefreshTable")
+        return trigger_client_event(response, "RefreshTable", after="settle")
 
 
 class MAgent_update(SuccessMessageMixin, UpdateView):
@@ -59,7 +59,7 @@ class MAgent_update(SuccessMessageMixin, UpdateView):
     def form_valid(self, form):
         form.save()
         response = self.render_to_response(self.get_context_data())
-        return trigger_client_event(response, "RefreshTable")
+        return trigger_client_event(response, "RefreshTable", after="settle")
 
 
 class MAgent_delete(SuccessMessageMixin, DeleteView):
@@ -91,20 +91,18 @@ class MAgent_list(ListView):
         return context
 
 
-class MCategory_create(SuccessMessageMixin, CreateView):
-
-    model = MCategory
-    form_class = mf.MCategoryForm
+class MUnit_create(SuccessMessageMixin, CreateView):
+    model = MUnit
+    form_class = mf.MUnitForm
     template_name = "partials/forms.html"
     context_object_name = "form"
-    success_url = reverse_lazy("invoice:MCategory_create")
+    success_url = reverse_lazy("invoice:MUnit_create")
     success_message = "successfully created"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["buttons"] = hf.button("submit",
-                                       hx_req=reverse(
-                                           'invoice:MCategory_create'),
+                                       hx_req=reverse('invoice:MUnit_create'),
                                        hx_target="#dynform",
                                        hx_swap="innerHTML")
         return context
@@ -112,17 +110,15 @@ class MCategory_create(SuccessMessageMixin, CreateView):
     def form_valid(self, form):
         form.save()
         response = self.render_to_response(self.get_context_data())
-        return trigger_client_event(response, "RefreshTable")
+        return trigger_client_event(response, "RefreshTable", after="settle")
 
-
-class MCategory_update(SuccessMessageMixin, UpdateView):
-
-    model = MCategory
-    form_class = mf.MCategoryForm
+class MUnit_update(SuccessMessageMixin, UpdateView):
+    model = MUnit
+    form_class = mf.MUnitForm
     template_name = "partials/forms.html"
     context_object_name = "form"
     success_message = "successfully updated"
-    success_url = reverse_lazy('invoice:MCategory_create')
+    success_url = reverse_lazy('invoice:MUnit_create')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -130,45 +126,36 @@ class MCategory_update(SuccessMessageMixin, UpdateView):
                                        hx_req=f"{self.request.path}",
                                        hx_target="#dynform",
                                        hx_swap="innerHTML")
-
         return context
 
     def form_valid(self, form):
         form.save()
         response = self.render_to_response(self.get_context_data())
-        return trigger_client_event(response, "RefreshTable")
+        return trigger_client_event(response, "RefreshTable", after="settle")
 
-
-class MCategory_delete(SuccessMessageMixin, DeleteView):
-
-    model = MCategory
+class MUnit_delete(SuccessMessageMixin, DeleteView):
+    model = MUnit
     success_message = "successfully deleted"
-    success_url = reverse_lazy('invoice:MCategory_list')
-
+    success_url = reverse_lazy('invoice:MUnit_list')
 
 @method_decorator(never_cache, name='dispatch')
-class MCategory_list(SuccessMessageMixin, ListView):
-
-    model = MCategory
+class MUnit_list(SuccessMessageMixin, ListView):
+    model = MUnit
     fields = '__all__'
     context_object_name = "form"
     template_name = "partials/tableview.html"
     paginate_by = 100
 
     def get_queryset(self):
-        return MCategory.objects.annotate(pk_str=Cast("pk", output_field=CharField())).values()
+        return MUnit.objects.annotate(pk_str=Cast("pk", output_field=CharField())).values()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         # Already dicts from .values()
         context['listdata'] = list(context['object_list'])
-        context['buttons'] = [
-            hf.button("button", hx_req="",
-                      hx_req_type="hx-get", hx_target="#tableshow")
-        ]
-        context["modelurl"] = reverse('invoice:MCategory_list')
+        context['buttons'] = []
+        context["modelurl"] = reverse('invoice:MUnit_list')
         return context
-
 
 class MCustomer_create(SuccessMessageMixin, CreateView):
 
@@ -191,7 +178,7 @@ class MCustomer_create(SuccessMessageMixin, CreateView):
     def form_valid(self, form):
         form.save()
         response = self.render_to_response(self.get_context_data())
-        return trigger_client_event(response, "RefreshTable")
+        return trigger_client_event(response, "RefreshTable", after="settle")
 
 
 class MCustomer_update(SuccessMessageMixin, UpdateView):
@@ -215,7 +202,7 @@ class MCustomer_update(SuccessMessageMixin, UpdateView):
     def form_valid(self, form):
         form.save()
         response = self.render_to_response(self.get_context_data())
-        return trigger_client_event(response, "RefreshTable")
+        return trigger_client_event(response, "RefreshTable", after="settle")
 
 
 class MCustomer_delete(SuccessMessageMixin, DeleteView):
@@ -241,10 +228,7 @@ class MCustomer_list(SuccessMessageMixin, ListView):
         context = super().get_context_data(**kwargs)
         # Already dicts from .values()
         context['listdata'] = list(context['object_list'])
-        context['buttons'] = [
-            hf.button("Create Agent", hx_req="",
-                      hx_req_type="hx-get", hx_target="#tableshow")
-        ]
+        context['buttons'] = []
         context["modelurl"] = reverse('invoice:MCustomer_list')
         return context
 
@@ -270,7 +254,7 @@ class MExportFields_create(SuccessMessageMixin, CreateView):
     def form_valid(self, form):
         form.save()
         response = self.render_to_response(self.get_context_data())
-        return trigger_client_event(response, "RefreshTable")
+        return trigger_client_event(response, "RefreshTable", after="settle")
 
 
 class MExportFields_update(SuccessMessageMixin, UpdateView):
@@ -294,7 +278,7 @@ class MExportFields_update(SuccessMessageMixin, UpdateView):
     def form_valid(self, form):
         form.save()
         response = self.render_to_response(self.get_context_data())
-        return trigger_client_event(response, "RefreshTable")
+        return trigger_client_event(response, "RefreshTable", after="settle")
 
 
 class MExportFields_delete(SuccessMessageMixin, DeleteView):
@@ -348,7 +332,7 @@ class MItem_create(SuccessMessageMixin, CreateView):
     def form_valid(self, form):
         form.save()
         response = self.render_to_response(self.get_context_data())
-        return trigger_client_event(response, "RefreshTable")
+        return trigger_client_event(response, "RefreshTable", after="settle")
 
 
 class MItem_update(SuccessMessageMixin, UpdateView):
@@ -372,7 +356,7 @@ class MItem_update(SuccessMessageMixin, UpdateView):
     def form_valid(self, form):
         form.save()
         response = self.render_to_response(self.get_context_data())
-        return trigger_client_event(response, "RefreshTable")
+        return trigger_client_event(response, "RefreshTable", after="settle")
 
 
 class MItem_delete(SuccessMessageMixin, DeleteView):
@@ -409,16 +393,16 @@ class MItem_list(SuccessMessageMixin, ListView):
 class MItemCategory_create(SuccessMessageMixin, CreateView):
 
     model = MItemCategory
-    form_class = mf.MItemForm
+    form_class = mf.MItemCategoryForm
     template_name = "partials/forms.html"
     context_object_name = "form"
-    success_url = reverse_lazy("invoice:MItem_create")
+    success_url = reverse_lazy("invoice:MItemCategory_create")
     success_message = "successfully created"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["buttons"] = hf.button("submit",
-                                       hx_req=reverse('invoice:MItem_create'),
+                                       hx_req=reverse('invoice:MItemCategory_create'),
                                        hx_target="#dynform",
                                        hx_swap="innerHTML")
         return context
@@ -426,17 +410,17 @@ class MItemCategory_create(SuccessMessageMixin, CreateView):
     def form_valid(self, form):
         form.save()
         response = self.render_to_response(self.get_context_data())
-        return trigger_client_event(response, "RefreshTable")
+        return trigger_client_event(response, "RefreshTable", after="settle")
 
 
 class MItemCategory_update(SuccessMessageMixin, UpdateView):
 
     model = MItemCategory
-    form_class = mf.MItemForm
+    form_class = mf.MItemCategoryForm
     template_name = "partials/forms.html"
     context_object_name = "form"
     success_message = "successfully updated"
-    success_url = reverse_lazy('invoice:MItem_create')
+    success_url = reverse_lazy('invoice:MItemCategory_create')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -450,14 +434,14 @@ class MItemCategory_update(SuccessMessageMixin, UpdateView):
     def form_valid(self, form):
         form.save()
         response = self.render_to_response(self.get_context_data())
-        return trigger_client_event(response, "RefreshTable")
+        return trigger_client_event(response, "RefreshTable", after="settle")
 
 
 class MItemCategory_delete(SuccessMessageMixin, DeleteView):
 
     model = MItemCategory
     success_message = "successfully deleted"
-    success_url = reverse_lazy('invoice:MItem_list')
+    success_url = reverse_lazy('invoice:MItemCategory_list')
 
 
 @method_decorator(never_cache, name='dispatch')
@@ -470,7 +454,7 @@ class MItemCategory_list(SuccessMessageMixin, ListView):
     paginate_by = 100
 
     def get_queryset(self):
-        return MItem.objects.annotate(pk_str=Cast("pk", output_field=CharField())).values()
+        return MItemCategory.objects.annotate(pk_str=Cast("pk", output_field=CharField())).values()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -480,7 +464,7 @@ class MItemCategory_list(SuccessMessageMixin, ListView):
             hf.button("Create Agent", hx_req="",
                       hx_req_type="hx-get", hx_target="#tableshow")
         ]
-        context["modelurl"] = reverse('invoice:MItem_list')
+        context["modelurl"] = reverse('invoice:MItemCategory_list')
         return context
 
 
@@ -505,7 +489,7 @@ class MLocation_create(SuccessMessageMixin, CreateView):
     def form_valid(self, form):
         form.save()
         response = self.render_to_response(self.get_context_data())
-        return trigger_client_event(response, "RefreshTable")
+        return trigger_client_event(response, "RefreshTable", after="settle")
 
 
 class MLocation_update(SuccessMessageMixin, UpdateView):
@@ -529,7 +513,7 @@ class MLocation_update(SuccessMessageMixin, UpdateView):
     def form_valid(self, form):
         form.save()
         response = self.render_to_response(self.get_context_data())
-        return trigger_client_event(response, "RefreshTable")
+        return trigger_client_event(response, "RefreshTable", after="settle")
 
 
 class MLocation_delete(SuccessMessageMixin, DeleteView):
@@ -584,7 +568,7 @@ class MPlusMinusHead_create(SuccessMessageMixin, CreateView):
     def form_valid(self, form):
         form.save()
         response = self.render_to_response(self.get_context_data())
-        return trigger_client_event(response, "RefreshTable")
+        return trigger_client_event(response, "RefreshTable", after="settle")
 
 
 class MPlusMinusHead_update(SuccessMessageMixin, UpdateView):
@@ -608,7 +592,7 @@ class MPlusMinusHead_update(SuccessMessageMixin, UpdateView):
     def form_valid(self, form):
         form.save()
         response = self.render_to_response(self.get_context_data())
-        return trigger_client_event(response, "RefreshTable")
+        return trigger_client_event(response, "RefreshTable", after="settle")
 
 
 class MPlusMinusHead_delete(SuccessMessageMixin, DeleteView):
@@ -662,7 +646,7 @@ class MShade_create(SuccessMessageMixin, CreateView):
     def form_valid(self, form):
         form.save()
         response = self.render_to_response(self.get_context_data())
-        return trigger_client_event(response, "RefreshTable")
+        return trigger_client_event(response, "RefreshTable", after="settle")
 
 
 class MShade_update(SuccessMessageMixin, UpdateView):
@@ -686,7 +670,7 @@ class MShade_update(SuccessMessageMixin, UpdateView):
     def form_valid(self, form):
         form.save()
         response = self.render_to_response(self.get_context_data())
-        return trigger_client_event(response, "RefreshTable")
+        return trigger_client_event(response, "RefreshTable", after="settle")
 
 
 class MShade_delete(SuccessMessageMixin, DeleteView):
@@ -717,83 +701,4 @@ class MShade_list(SuccessMessageMixin, ListView):
                       hx_req_type="hx-get", hx_target="#tableshow")
         ]
         context["modelurl"] = reverse('invoice:MShade_list')
-        return context
-
-
-class MSupplier_create(SuccessMessageMixin, CreateView):
-
-    model = MSupplier
-    form_class = mf.MSupplierForm
-    template_name = "partials/forms.html"
-    context_object_name = "form"
-    success_url = reverse_lazy("invoice:MSupplier_create")
-    success_message = "successfully created"
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["buttons"] = hf.button("submit",
-                                       hx_req=reverse(
-                                           'invoice:MSupplier_create'),
-                                       hx_target="#dynform",
-                                       hx_swap="innerHTML")
-        return context
-
-    def form_valid(self, form):
-        form.save()
-        response = self.render_to_response(self.get_context_data())
-        return trigger_client_event(response, "RefreshTable")
-
-
-class MSupplier_update(SuccessMessageMixin, UpdateView):
-
-    model = MSupplier
-    form_class = mf.MSupplierForm
-    template_name = "partials/forms.html"
-    context_object_name = "form"
-    success_message = "successfully updated"
-    success_url = reverse_lazy('invoice:MSupplier_create')
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["buttons"] = hf.button("submit",
-                                       hx_req=f"{self.request.path}",
-                                       hx_target="#dynform",
-                                       hx_swap="innerHTML")
-
-        return context
-
-    def form_valid(self, form):
-        form.save()
-        response = self.render_to_response(self.get_context_data())
-        return trigger_client_event(response, "RefreshTable")
-
-
-class MSupplier_delete(SuccessMessageMixin, DeleteView):
-
-    model = MSupplier
-    success_message = "successfully deleted"
-    success_url = reverse_lazy('invoice:MSupplier_list')
-
-
-@method_decorator(never_cache, name='dispatch')
-class MSupplier_list(SuccessMessageMixin, ListView):
-
-    model = MSupplier
-    fields = '__all__'
-    context_object_name = "form"
-    template_name = "partials/tableview.html"
-    paginate_by = 100
-
-    def get_queryset(self):
-        return MSupplier.objects.annotate(pk_str=Cast("pk", output_field=CharField())).values()
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        # Already dicts from .values()
-        context['listdata'] = list(context['object_list'])
-        context['buttons'] = [
-            hf.button("Create Agent", hx_req="",
-                      hx_req_type="hx-get", hx_target="#tableshow")
-        ]
-        context["modelurl"] = reverse('invoice:MSupplier_list')
         return context

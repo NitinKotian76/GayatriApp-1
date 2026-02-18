@@ -1,7 +1,6 @@
-<div id="notif"
-     class="w3-card-4 w3-display-topmiddle w3-animate-top w3-animate-fadeout">
+<div class="notif-inner w3-card-4">
     {% if messages %}
-        <div class="w3-bar-block ">
+        <div class="w3-bar-block">
             {% for message in messages %}
                 <div {% if message.tags == "error" %} class="w3-red w3-bar-item" {% elif message.tags == "success" %} class="w3-green w3-bar-item" {% elif message.tags == "info" %} class="w3-blue w3-bar-item" {% endif %}>
                     {{ message }}

@@ -17,7 +17,6 @@ from invoice.models import (
     MItemRate,
     MLocation,
     MPlusMinusHead,
-    MSupplier,
     TInvoice,
     TExport,
     TExportDetails,
@@ -153,11 +152,8 @@ class TestMillsoftMasterModels(TestCase):
         self.assertEqual(rate.AgentID, self.agent)
         self.assertTrue(str(item_category))
 
-    def test_supplier_and_plus_minus_head_creation(self) -> None:
-        supplier = MSupplier.objects.create(Suppname="Supp A")
-        head = MPlusMinusHead.objects.create(Head="Head A")
-
-        self.assertEqual(str(supplier), "Supp A")
+    def test_plus_minus_head_creation(self) -> None:
+        head = MPlusMinusHead.objects.create(head="Head A")
         self.assertEqual(str(head), "Head A")
 
 

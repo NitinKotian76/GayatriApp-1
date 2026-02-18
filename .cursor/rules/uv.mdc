@@ -1,0 +1,26 @@
+---
+description: Use uv for Python package management and execution in this project
+alwaysApply: true
+---
+
+# Python Package Management with uv
+
+Use uv exclusively for Python package management in this project. The Python project lives in `gayatri_invoice/` — run uv commands from that directory.
+
+## Package Management Commands
+
+- All Python dependencies **must be installed, synchronized, and locked** using uv
+- Never use pip, pip-tools, poetry, or conda directly for dependency management
+
+Use these commands (from `gayatri_invoice/`):
+
+- Install dependencies: `uv add <package>`
+- Remove dependencies: `uv remove <package>`
+- Sync dependencies: `uv sync`
+
+## Running Python Code
+
+- Run a Python script with `uv run <script-name>.py` (from `gayatri_invoice/`)
+- Run Django management commands: `uv run python manage.py <command>` (from `gayatri_invoice/gayatriapp/`)
+- Run tools like pytest: `uv run pytest`
+- Launch a Python REPL: `uv run python`

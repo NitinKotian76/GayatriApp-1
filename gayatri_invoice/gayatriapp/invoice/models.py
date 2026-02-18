@@ -1,3 +1,4 @@
+from unicodedata import category
 from django.db import models
 from django.contrib.auth.base_user import (
     BaseUserManager,
@@ -12,7 +13,7 @@ from django.core.serializers.json import DjangoJSONEncoder
 import uuid
 import json
 import hashlib
-
+from django import forms
 from django.db.utils import settings
 
 logger = logging.getLogger(__name__)
@@ -28,11 +29,9 @@ class Audit(models.Model):
     updated_by = models.ForeignKey(settings.AUTH_USER_MODEL, null=True,
                                    blank=True, on_delete=models.SET_NULL, editable=False,
                                    related_name="%(class)s_updated")
-
     class Meta:
         abstract = True
         ordering = ['-created_at', '-updated_at']
-
         indexes = [
             models.Index(fields=['created_by']),
             models.Index(fields=['updated_by']),
@@ -317,18 +316,6 @@ class MAgent(Audit):
         return self.agentname
 
 
-class MCategory(Audit):
-    catid = models.UUIDField(null=False, primary_key=True,
-                             default=uuid.uuid4, editable=False)
-    cat = models.CharField(null=True, max_length=50)
-    opening = models.FloatField(null=True)
-    unit = models.CharField(null=True, max_length=10)
-    chap = models.CharField(null=True, max_length=10)
-
-    def __str__(self):
-        return self.cat
-
-
 class MCustomer(Audit):
     custid = models.UUIDField(
         null=False, primary_key=True, default=uuid.uuid4, editable=False)
@@ -377,6 +364,14 @@ class MExportFields(Audit):
     def __str__(self):
         return self.exportid
 
+class MUnit(Audit):
+    unitid = models.UUIDField(
+        primary_key=True, default=uuid.uuid4, null=False, editable=False)
+    unit = models.CharField(null=True, max_length=10)
+    unit_type = models.CharField(null=True, max_length=10)
+
+    def __str__(self):
+        return self.unit
 
 class MShade(Audit):
     shadeid = models.UUIDField(
@@ -389,18 +384,17 @@ class MShade(Audit):
     batchgroup = models.CharField(null=True, max_length=20)
     fieldgroup = models.CharField(null=True, max_length=10)
     groupcategory = models.BigIntegerField(null=True)
-    stocktrans_y_n = models.CharField(null=True, max_length=10)
+    stocktransfer = models.BooleanField(null=True)
 
     def __str__(self):
         return self.shadecode
-
 
 class MItem(Audit):
     itemid = models.UUIDField(null=False, primary_key=True,
                               default=uuid.uuid4, editable=False)
     itemcode = models.CharField(null=True, max_length=20)
     shadeid = models.ForeignKey(MShade, on_delete=models.SET_NULL, null=True)
-    sized = models.CharField(null=True, max_length=10)
+    size = models.CharField(null=True, max_length=10)
     gsm = models.CharField(null=True, max_length=10)
 
     def __str__(self):
@@ -413,11 +407,11 @@ class MItemCategory(Audit):
     cat = models.CharField(null=False, max_length=100)
     hsncode = models.CharField(null=True, max_length=20)
     unitid = models.ForeignKey(
-        Company, on_delete=models.SET_NULL, null=True)
+        MUnit, on_delete=models.SET_NULL, null=True)
     remarks = models.CharField(null=True, max_length=250)
 
     def __str__(self):
-        return self.hsncode
+        return self.cat
 
 
 class MLocation(Audit):
@@ -439,24 +433,6 @@ class MPlusMinusHead(Audit):
 
     def __str__(self):
         return self.head
-
-
-class MSupplier(Audit):
-    suppid = models.UUIDField(
-        primary_key=True, default=uuid.uuid4, null=False, editable=False)
-    suppname = models.CharField(null=True, max_length=100)
-    bname = models.CharField(null=True, max_length=250)
-    area = models.CharField(null=True, max_length=30)
-    road = models.CharField(null=True, max_length=30)
-    city = models.CharField(null=True, max_length=30)
-    pin = models.CharField(null=True, max_length=50)
-    state = models.CharField(null=True, max_length=50)
-    cell = models.CharField(null=True, max_length=50)
-    supptype = models.CharField(null=True, max_length=10)
-    gstno = models.CharField(null=True, max_length=50)
-
-    def __str__(self):
-        return self.suppname
 
 
 class TInvoice(Audit):
@@ -575,17 +551,38 @@ class TProduction(Audit):
     productionid = models.UUIDField(
         primary_key=True, default=uuid.uuid4, editable=False)
     rdate = models.DateField(null=True)
-    l_e = models.CharField(null=True, max_length=10)
-    catid = models.ForeignKey(MCategory, on_delete=models.SET_NULL, null=True)
-    shadeid = models.ForeignKey(MShade, on_delete=models.SET_NULL, null=True)
-    reel_sheet = models.CharField(null=True, max_length=50)
-    itemid = models.ForeignKey(MItem, on_delete=models.SET_NULL, null=True)
+    custid = models.ForeignKey(MCustomer, on_delete=models.SET_NULL, null=True)
+    agentid = models.ForeignKey(MAgent, on_delete=models.SET_NULL, null=True)
+    local_or_export = models.CharField(null=True, max_length=10)
+    category = models.ForeignKey(
+        MItemCategory, on_delete=models.SET_NULL, null=True, db_column='catid_id'
+    )
+    shadecode = models.ForeignKey(
+        MShade, on_delete=models.SET_NULL, null=True, db_column='shadeid_id'
+    )
+    type_of_reel_sheet = models.CharField(null=True, max_length=50)
+    itemcode = models.ForeignKey(
+        MItem, on_delete=models.SET_NULL, null=True, db_column='itemid_id'
+    )
     length = models.CharField(null=True, max_length=10)
-    unitid = models.ForeignKey(Company, on_delete=models.SET_NULL, null=True)
-    reelnofrom = models.BigIntegerField(null=False)
-    reelnoto = models.BigIntegerField(null=True)
-    noofsheet = models.BigIntegerField(null=True)
+    length_unit = models.ForeignKey(
+        MUnit,
+        on_delete=models.SET_NULL,
+        null=True,
+        limit_choices_to={'unit_type__in': ['Length', '2']},
+        related_name='tproduction_length_unit',
+    )
+    weight_unit = models.ForeignKey(
+        MUnit,
+        on_delete=models.SET_NULL,
+        null=True,
+        limit_choices_to={'unit_type__in': ['Weight', '1']},
+        related_name='tproduction_weight_unit',
+    )
     noofbdls = models.FloatField(null=True)
+    excise_from = models.BigIntegerField(null=True)
+    excise_to = models.BigIntegerField(null=True)
+    noofsheet = models.BigIntegerField(null=True)
     noofream = models.FloatField(null=True)
     reamwt = models.FloatField(null=True)
     weight = models.FloatField(null=True)
@@ -593,62 +590,22 @@ class TProduction(Audit):
     locationid = models.ForeignKey(
         MLocation, on_delete=models.SET_NULL, null=True)
     indentno = models.CharField(null=True, max_length=20)
-    custid = models.ForeignKey(MCustomer, on_delete=models.SET_NULL, null=True)
-    agentid = models.ForeignKey(MAgent, on_delete=models.SET_NULL, null=True)
     obflag = models.BooleanField(null=True)  # flag
     apiflag = models.BooleanField(null=True)  # flag
     fac = models.BooleanField(null=True)  # flag
     stk = models.BooleanField(null=True)  # flag
-    approved = models.BooleanField(null=True)
-    entrytype = models.CharField(null=True, max_length=20)
-    stockplus_minus = models.CharField(null=True, max_length=10)
-    headid = models.BigIntegerField(null=True, editable=False)
-    # for remaining stock removal from inventory
+    approved = models.BooleanField(null=True) # flag
+    entrytype = models.CharField(null=True, max_length=20) # flag
+    stockplus_minus = models.ForeignKey(
+        MPlusMinusHead, on_delete=models.SET_NULL, null=True, db_column='headid_id'
+    )
+    headid = models.BigIntegerField(null=True, editable=False) # for production chaining head determining the no of edits in the record
     refproductionid = models.UUIDField(null=True, editable=False)
     lotno = models.CharField(null=True, max_length=60)
-    ind_weight = models.FloatField(null=True)
-    cm_inch = models.CharField(null=True, max_length=10)
+    ind_weight = models.FloatField(null=True) # individual weight of the bundle 
 
     def __str__(self):
         return str(self.productionid)
-
-
-class TProduction_bck(Audit):
-    productionid = models.UUIDField(
-        primary_key=True, default=uuid.uuid4, editable=False)
-    rdate = models.DateField(null=True)
-    l_e = models.CharField(null=True, max_length=10)
-    catid = models.ForeignKey(MCategory, on_delete=models.SET_NULL, null=True)
-    shadeid = models.ForeignKey(MShade, on_delete=models.SET_NULL, null=True)
-    reel_sheet = models.CharField(null=True, max_length=50)
-    itemid = models.ForeignKey(MItem, on_delete=models.SET_NULL, null=True)
-    length = models.CharField(null=True, max_length=10)
-    unitid = models.ForeignKey(Company, on_delete=models.SET_NULL, null=True)
-    reelnofrom = models.BigIntegerField(null=False)
-    reelnoto = models.BigIntegerField(null=True)
-    noofsheet = models.BigIntegerField(null=True)
-    noofbdls = models.FloatField(null=True)
-    noofream = models.FloatField(null=True)
-    reamwt = models.FloatField(null=True)
-    weight = models.FloatField(null=True)
-    rate = models.FloatField(null=True)
-    locationid = models.ForeignKey(
-        MLocation, on_delete=models.SET_NULL, null=True)
-    indentno = models.CharField(null=True, max_length=20)
-    custid = models.ForeignKey(MCustomer, on_delete=models.SET_NULL, null=True)
-    agentid = models.ForeignKey(MAgent, on_delete=models.SET_NULL, null=True)
-    obflag = models.BooleanField(null=True)  # flag
-    apiflag = models.BooleanField(null=True)  # flag
-    fac = models.BooleanField(null=True)  # flag
-    stk = models.BooleanField(null=True)  # flag
-    approved = models.BooleanField(null=True)
-    entrytype = models.CharField(null=True, max_length=20)
-    stockplus_minus = models.CharField(null=True, max_length=10)
-    headid = models.BigIntegerField(null=True, editable=False)
-    refproductionid = models.UUIDField(null=True, editable=False)
-    p_m_remarks = models.CharField(null=True, max_length=60)
-    ind_weight = models.FloatField(null=True)
-    cm_inch = models.CharField(null=True, max_length=10)
 
 
 class TProductionReel(Audit):
@@ -661,3 +618,6 @@ class TProductionReel(Audit):
     stkdate = models.DateField(null=True)
     invdate = models.DateField(null=True)
     refproductionreelid = models.UUIDField(null=True, editable=False)
+    
+    class Meta:
+        ordering = ['reelno']

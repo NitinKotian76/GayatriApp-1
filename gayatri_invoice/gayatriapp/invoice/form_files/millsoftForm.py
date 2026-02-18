@@ -1,11 +1,9 @@
-from ..models import (MAgent, MCategory, MCustomer,
+from ..models import (MAgent, MCustomer, MUnit,
                       MExportFields, MItem, MItemCategory,
-                      MLocation, MPlusMinusHead, MShade, MSupplier)
-from ..models import (TExport, TExportDetails, TIndent,
-                      TInvoice, TProduction,
-                      TProduction_bck, TProductionReel)
-
-from django.urls import (reverse_lazy, reverse)
+                      MLocation, MPlusMinusHead, MShade)
+from ..models import (TExport, TExportDetails,
+                      TInvoice, TProduction, TProductionReel)
+from django.urls import (reverse_lazy)
 from django import forms
 
 
@@ -15,6 +13,10 @@ class MAgentForm(forms.ModelForm):
     class Meta:
         model = MAgent
         fields = "__all__"
+        widgets = {
+            "invoicetype": forms.Select(choices=[(1, 'Tax Invoice'), (2, 'Retail Invoice')])
+
+        }
 
 
 class MCustomerForm(forms.ModelForm):
@@ -25,12 +27,6 @@ class MCustomerForm(forms.ModelForm):
         fields = "__all__"
 
 
-class MCategoryForm(forms.ModelForm):
-    template_name = "form_snippet.html"
-
-    class Meta:
-        model = MCategory
-        fields = "__all__"
 
 
 class MExportFieldsForm(forms.ModelForm):
@@ -40,6 +36,15 @@ class MExportFieldsForm(forms.ModelForm):
         model = MExportFields
         fields = "__all__"
 
+class MUnitForm(forms.ModelForm):
+    template_name = "form_snippet.html"
+
+    class Meta:
+        model = MUnit
+        fields = "__all__"
+        widgets = {
+            "unit_type": forms.Select(choices=[(1, 'Weight'), (2, 'Length'), (3, 'Area'), (4, 'Volume'), (5, 'Time'), (6, 'Currency'), (7, 'Other')])
+        }
 
 class MItemForm(forms.ModelForm):
     template_name = "form_snippet.html"
@@ -47,6 +52,14 @@ class MItemForm(forms.ModelForm):
     class Meta:
         model = MItem
         fields = "__all__"
+
+class MShadeForm(forms.ModelForm):
+    template_name = "form_snippet.html"
+
+    class Meta:
+        model = MShade
+        fields = "__all__"
+
 
 
 class MItemCategoryForm(forms.ModelForm):
@@ -71,31 +84,28 @@ class MPlusMinusHeadForm(forms.ModelForm):
     class Meta:
         model = MPlusMinusHead
         fields = "__all__"
+        widgets = {
+            "plus_minus": forms.Select(choices=[('PLUS', 'Plus'), ('MINUS', 'Minus')]),
+            "api": forms.Select(choices=[(True, 'True'), (False, 'False')]),
+            "ref": forms.Select(choices=[('WITHREF', 'WITHREF'), ('WITHOUTREF', 'WITHOUTREF')]),
+        }
 
-
-class MShadeForm(forms.ModelForm):
-    template_name = "form_snippet.html"
-
-    class Meta:
-        model = MShade
-        fields = "__all__"
-
-
-class MSupplierForm(forms.ModelForm):
-    template_name = "form_snippet.html"
-
-    class Meta:
-        model = MSupplier
-        fields = "__all__"
 
 
 class StockTransferForm(forms.Form):
     template_name = "form_snippet.html"
 
-    party = forms.ChoiceField(
-        choices=MCustomer.objects.all().values_list("pk", "custname"))
-    agent = forms.ChoiceField(
-        choices=MAgent.objects.all().values_list("pk", "agentname"))
+    party = forms.ChoiceField(choices=[])
+    agent = forms.ChoiceField(choices=[])
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["party"].choices = [
+            (pk, name) for pk, name in MCustomer.objects.values_list("pk", "custname")
+        ]
+        self.fields["agent"].choices = [
+            (pk, name) for pk, name in MAgent.objects.values_list("pk", "agentname")
+        ]
     # search fields
     indentno = forms.CharField(
         widget=forms.TextInput(attrs={"id": "filter"}), required=False)
@@ -147,22 +157,68 @@ class TInvoiceForm(forms.ModelForm):
 
 class TProductionForm(forms.ModelForm):
     template_name = "form_snippet.html"
+    
+    size = forms.CharField(required=False, max_length=10, label="Size")
+    gsm = forms.CharField(required=False, max_length=10, label="GSM")
 
     class Meta:
         model = TProduction
-        fields = "__all__"
-        widgets = {
-            "rdate": forms.DateInput(attrs={'type': 'date'})
+        labels = {
+            "rdate": "Production Date",
+            "custid": "Customer",
+            "agentid": "Agent",
+            "category": "Category",
+            "shadecode": "Shade",
+            "itemcode": "Item Code",
+            "length": "Length",
+            "length_unit": "Length Unit",
+            "weight_unit": "Weight Unit",
+            "noofbdls": "No of Bundles",
+            "excise_from": "Excise From",
+            "excise_to": "Excise To",
+            "noofsheet": "No of Sheets",
+            "noofream": "No of Reams",
+            "reamwt": "Ream Weight",
+            "weight": "Weight",
+            "rate": "Rate",
+            "locationid": "Location",
+            "indentno": "Indent No",
+            "lotno": "Lot No",
         }
-
-
-class TProduction_bckForm(forms.ModelForm):
-    template_name = "form_snippet.html"
-
-    class Meta:
-        model = TProduction_bck
-        fields = "__all__"
-
+        exclude = ("productionid", "apiflag", "fac", "stk", "approved", "entrytype", "headid","ind_weight","obflag")
+        widgets = {
+            "rdate": forms.DateInput(attrs={'type': 'date'}),
+            "itemcode": forms.Select(attrs={
+                'hx-get': reverse_lazy('invoice:TProduction_create'),
+                'hx-target': '#dynform',
+                'hx-trigger': 'change',
+                'hx-swap': 'innerHTML',
+                'hx-include': 'closest form',
+            }),
+            "noofbdls": forms.NumberInput(attrs={
+                'hx-get': reverse_lazy('invoice:TProduction_create'),
+                'hx-target': '#dynform',
+                'hx-trigger': 'change',
+                'hx-swap': 'innerHTML',
+                'hx-include': 'closest form',
+            }),
+            "noofream": forms.NumberInput(attrs={
+                'hx-get': reverse_lazy('invoice:TProduction_create'),
+                'hx-target': '#dynform',
+                'hx-trigger': 'change',
+                'hx-swap': 'innerHTML',
+                'hx-include': 'closest form',
+            }),
+            "reamwt": forms.NumberInput(attrs={
+                'hx-get': reverse_lazy('invoice:TProduction_create'),
+                'hx-target': '#dynform',
+                'hx-trigger': 'change',
+                'hx-swap': 'innerHTML',
+                'hx-include': 'closest form',
+            }),
+            "local_or_export": forms.Select(choices=[("LOCAL", 'Local'), ("EXPORT", 'Export')]),
+            "type_of_reel_sheet": forms.Select(choices=[("BUNDLE", "BUNDLE"), ("BUNDLE-LOOSE", "BUNDLE-LOOSE"), ("BULK", "BULK"), ("PALLET", "PALLET"), ("REEL", "REEL"), ("LOOSE", "LOOSE"), ("REEL-STITCHED", "REEL-STITCHED"), ("REEL-UNSTITCHED", "REEL-UNSTITCHED"), ("BUNDLE-LOOSE", "BUNDLE-LOOSE")]),
+        }
 
 class TProductionReelForm(forms.ModelForm):
     template_name = "form_snippet.html"
@@ -170,6 +226,24 @@ class TProductionReelForm(forms.ModelForm):
     class Meta:
         model = TProductionReel
         fields = "__all__"
+
+
+
+class TStockplusminusForm(forms.ModelForm):
+    """
+    Form for stock plus/minus with production record chaining.
+    Same fields as TProduction including excise_from and excise_to to search
+    the record to update. Creates a new record with refproductionid
+    instead of updating the existing one.
+    """
+    template_name = "form_snippet.html"
+
+    class Meta:
+        model = TProduction
+        exclude = ("refproductionid", "productionid", "headid")
+        widgets = {
+            "rdate": forms.DateInput(attrs={'type': 'date'})
+        }
 
 
 class HTMXRelatedCompleteMixin:

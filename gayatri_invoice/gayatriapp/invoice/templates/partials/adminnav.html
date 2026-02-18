@@ -5,7 +5,8 @@
     >Masters
   </a>
   <div class="w3-dropdown-content w3-bar-block w3-card-4">
-    <a
+    <!-- phase 2-->
+    <!-- <a
       href="#"
       class="w3-bar-item w3-button w3-ripple"
       hx-get="/invoice/admin_company"
@@ -14,16 +15,18 @@
       hx-swap="innerHTML"
     >
       Select Company
-    </a>
+    </a> -->
     <a
       href="#"
       class="w3-bar-item w3-button w3-ripple"
       hx-get="/invoice/magent/create"
       hx-target="#formpart"
+      hx-trigger="click"
+      hx-on::after-request="document.body.dispatchEvent(new CustomEvent('showTableview'))"
       hx-swap="innerHTML"
     >
       <div
-        hx-get="/invoice/magent"
+        hx-get="/invoice/magent/"
         hx-trigger="click from:closest (a)"
         hx-target="#tableview"
         hx-swap="innerHTML"
@@ -36,6 +39,8 @@
       class="w3-bar-item w3-button w3-ripple"
       hx-get="/invoice/mcustomer/create"
       hx-target="#formpart"
+      hx-trigger="click"
+      hx-on::after-request="document.body.dispatchEvent(new CustomEvent('showTableview'))"
       hx-swap="innerHTML"
     >
       <div
@@ -49,23 +54,10 @@
     <a
       href="#"
       class="w3-bar-item w3-button w3-ripple"
-      hx-get="/invoice/msupplier/create"
-      hx-target="#formpart"
-      hx-swap="innerHTML"
-    >
-      <div
-        hx-get="/invoice/msupplier/"
-        hx-trigger="click from:closest (a)"
-        hx-target="#tableview"
-        hx-swap="innerHTML"
-      ></div>
-      Supplier
-    </a>
-    <a
-      href="#"
-      class="w3-bar-item w3-button w3-ripple"
       hx-get="/invoice/mexportfields/create"
       hx-target="#formpart"
+      hx-trigger="click"
+      hx-on::after-request="document.body.dispatchEvent(new CustomEvent('showTableview'))"
       hx-swap="innerHTML"
     >
       <div
@@ -79,44 +71,48 @@
     <a
       href="#"
       class="w3-bar-item w3-button w3-ripple"
-      hx-get="/invoice/mcategory/create"
+      hx-get="/invoice/mitemcategory/create"
       hx-target="#formpart"
-      hx-vals='{"form":"item_category"}'
+      hx-trigger="click"
+      hx-on::after-request="document.body.dispatchEvent(new CustomEvent('showTableview'))"
       hx-swap="innerHTML"
     >
       <div
-        hx-get="/invoice/mcategory"
+        hx-get="/invoice/mitemcategory/"
         hx-trigger="click from:closest (a)"
         hx-target="#tableview"
-        hx-vals='{"form":"item_category"}'
-        hx-swap="innerHTML"
+         hx-swap="innerHTML"
       ></div>
-      Category
+      Item Category
     </a>
     <a
       href="#"
       class="w3-bar-item w3-button w3-ripple"
       hx-get="/invoice/mshade/create"
       hx-target="#formpart"
+      hx-trigger="click"
+      hx-on::after-request="document.body.dispatchEvent(new CustomEvent('showTableview'))"
       hx-swap="innerHTML"
     >
       <div
-        hx-get="/invoice/mshade"
+        hx-get="/invoice/mshade/"
         hx-trigger="click from:closest (a)"
         hx-target="#tableview"
         hx-swap="innerHTML"
       ></div>
-      Shade/Variety
+      Item Shade/Variety
     </a>
     <a
       href="#"
       class="w3-bar-item w3-button w3-ripple"
       hx-get="/invoice/mitem/create"
       hx-target="#formpart"
+      hx-trigger="click"
+      hx-on::after-request="document.body.dispatchEvent(new CustomEvent('showTableview'))"
       hx-swap="innerHTML"
     >
       <div
-        hx-get="/invoice/mitem"
+        hx-get="/invoice/mitem/"
         hx-trigger="click from:closest (a)"
         hx-target="#tableview"
         hx-swap="innerHTML"
@@ -128,25 +124,29 @@
       class="w3-bar-item w3-button w3-ripple"
       hx-get="/invoice/mplusminushead/create"
       hx-target="#formpart"
+      hx-trigger="click"
+      hx-on::after-request="document.body.dispatchEvent(new CustomEvent('showTableview'))"
       hx-swap="innerHTML"
     >
       <div
-        hx-get="/invoice/mplusminushead"
+        hx-get="/invoice/mplusminushead/"
         hx-trigger="click from:closest (a)"
         hx-target="#tableview"
         hx-swap="innerHTML"
       ></div>
-      Stock Plus minus head
+      Stock Plus/Minus Head
     </a>
     <a
       href="#"
       class="w3-bar-item w3-button w3-ripple"
       hx-get="/invoice/mlocation/create"
       hx-target="#formpart"
+      hx-trigger="click"
+      hx-on::after-request="document.body.dispatchEvent(new CustomEvent('showTableview'))"
       hx-swap="innerHTML"
     >
       <div
-        hx-get="/invoice/mlocation"
+        hx-get="/invoice/mlocation/"
         hx-trigger="click from:closest (a)"
         hx-target="#tableview"
         hx-swap="innerHTML"
@@ -159,18 +159,21 @@
       hx-get="/invoice/munit/create"
       hx-target="#formpart"
       hx-swap="innerHTML"
+      hx-trigger="click"
+      hx-on::after-request="document.body.dispatchEvent(new CustomEvent('showTableview'))"
     >
       <div
-        hx-get="/invoice/munit"
+        hx-get="/invoice/munit/"
         hx-trigger="click from:closest (a)"
         hx-target="#tableview"
         hx-swap="innerHTML"
       ></div>
-      units
+      Units
     </a>
   </div>
 </div>
-<div class="w3-dropdown-hover w3-round-large w3-light-blue">
+<!-- phase 2 -->
+<!-- <div class="w3-dropdown-hover w3-round-large w3-light-blue">
   <a
     href="#"
     class="w3-button w3ripple w3-margin-right w3-round-large w3-light-grey w3-hover-dark-grey"
@@ -310,7 +313,7 @@
       backup
     </a>
   </div>
-</div>
+</div> -->
 <div class="w3-dropdown-hover w3-round-large w3-light-blue">
   <a
     href="#"

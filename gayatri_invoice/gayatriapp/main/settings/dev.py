@@ -32,7 +32,7 @@ ALLOWED_HOSTS = ["testserver", "localhost"]
 AUTH_USER_MODEL = "invoice.CustomUser"
 # Application definition
 INSTALLED_APPS = [
-    "invoice.apps.MainConfig",
+    "invoice",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -41,7 +41,6 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "axes",
     "django_htmx",
-
 ]
 
 MIDDLEWARE = [

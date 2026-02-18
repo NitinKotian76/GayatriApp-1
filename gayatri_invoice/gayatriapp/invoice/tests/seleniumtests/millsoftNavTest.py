@@ -63,8 +63,6 @@ def test_millsoft_master_navigation() -> None:
         _assert_hx_get(driver, "Agent", "/invoice/magent/create")
         # Customer
         _assert_hx_get(driver, "customer", "/invoice/mcustomer/create")
-        # Supplier
-        _assert_hx_get(driver, "Supplier", "/invoice/msupplier/create")
         # Export
         _assert_hx_get(driver, "Export", "/invoice/mexportfields/create")
         # Category

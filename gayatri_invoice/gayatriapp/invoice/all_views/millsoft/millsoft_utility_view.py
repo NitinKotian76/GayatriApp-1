@@ -72,7 +72,7 @@ class StockTransfer(SuccessMessageMixin, FormView):
         logger.debug(f"updated {result}")
         messages.success(self.request, self.success_message)
         response = self.render_to_response(self.get_context_data())
-        return trigger_client_event(response, "RefreshTable")
+        return trigger_client_event(response, "RefreshTableview", after="settle")
 
     def form_invalid(self, form):
         logger.debug("form_invalid called")

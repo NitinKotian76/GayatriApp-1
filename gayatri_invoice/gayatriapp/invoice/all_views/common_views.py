@@ -76,7 +76,6 @@ def profile_user(request):
 @method_decorator(never_cache, name='dispatch')
 class get_notifications(View):
     def get(self, request, *args, **kwargs):
-        messages = msg.get_messages(request)
-        if messages:
-            return HttpResponse(render_to_string("partials/notif.html", {"messages": messages}))
-        return HttpResponse(status=204)
+        messages = list(msg.get_messages(request))
+        html = render_to_string("partials/notif.html", {"messages": messages})
+        return HttpResponse(html)

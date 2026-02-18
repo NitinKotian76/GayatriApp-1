@@ -1,17 +1,46 @@
 {% extends 'base.html' %}
 {% block content %}
-    <form>
-        {% csrf_token %}
-        <section id="mainform" class="w3-container">
-            <div id="formpart">{% include 'partials/forms.html' %}</div>
-        </section>
-    </form>
-    <form>
-        {% csrf_token %}
-        <section class="w3-container">
-            <div id="tableview">{% include 'partials/tableview.html' %}</div>
-        </section>
-    </form>
+    <div class="w3-container">
+        <div class="w3-row">
+            <form id="form-column" class="w3-col m6" style="padding-right: 8px;">
+                {% csrf_token %}
+                <section id="mainform">
+                    <div id="formpart">{% include 'partials/forms.html' %}</div>
+                </section>
+            </form>
+            <form id="reelview-section" class="w3-col m6" style="padding-left: 8px; display: none;">
+                {% csrf_token %}
+                <section>
+                    {% include 'partials/reel_preview.html' %}
+                </section>
+            </form>
+        </div>
+        <div class="w3-row" id="tableview-section" style="display: none;">
+            <form class="w3-col">
+                {% csrf_token %}
+                <section>
+                    <div id="tableview"></div>
+                </section>
+            </form>
+        </div>
+    </div>
+    <script>
+        document.body.addEventListener('showReelview', function() {
+            document.getElementById('reelview-section').style.display = '';
+            document.getElementById('tableview-section').style.display = 'none';
+            document.getElementById('form-column').className = 'w3-col m6';
+        });
+        document.body.addEventListener('showTableview', function() {
+            document.getElementById('reelview-section').style.display = 'none';
+            document.getElementById('tableview-section').style.display = '';
+            document.getElementById('form-column').className = 'w3-col m12';
+        });
+        document.body.addEventListener('showProductionView', function() {
+            document.getElementById('reelview-section').style.display = '';
+            document.getElementById('tableview-section').style.display = '';
+            document.getElementById('form-column').className = 'w3-col m6';
+        });
+    </script>
 {% endblock %}
 {% block modal %}
     <form>

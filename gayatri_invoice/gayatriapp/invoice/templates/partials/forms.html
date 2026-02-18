@@ -1,13 +1,13 @@
 <div id="dynform">
     {% csrf_token %}
-    {{form.media}}
-    {{ form }}
-    {% if formset %}
-        <div id="formset">{% include 'partials/formset.html' with formset=formset  formset_form=formset_form %}</div>
+    {% if form %}
+        {{ form.media }}
+        {{ form }}
+        {% if formset %}
+            <div id="formset">{% include 'partials/formset.html' with formset=formset  formset_form=formset_form %}</div>
+        {% endif %}
+        {% if buttons %}{% autoescape off %}<div>{% for button in buttons %}{{ button }}{% endfor %}</div>{% endautoescape %}{% endif %}
+    {% else %}
+        <p class="w3-text-grey w3-padding">Select an option from the menu to get started.</p>
     {% endif %}
-    {% autoescape off %}
-        <div>
-            {% for button in buttons %}{{ button }}{% endfor %}
-        </div>
-    {% endautoescape %}
 </div>
