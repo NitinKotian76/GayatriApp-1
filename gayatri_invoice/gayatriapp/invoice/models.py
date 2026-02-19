@@ -585,7 +585,7 @@ class TProduction(Audit):
     noofsheet = models.BigIntegerField(null=True)
     noofream = models.FloatField(null=True)
     reamwt = models.FloatField(null=True)
-    weight = models.FloatField(null=True)
+    weight = models.FloatField(null=True) # total weight of the production
     rate = models.FloatField(null=True)
     locationid = models.ForeignKey(
         MLocation, on_delete=models.SET_NULL, null=True)
@@ -612,7 +612,7 @@ class TProductionReel(Audit):
     productionreelid = models.UUIDField(
         primary_key=True, default=uuid.uuid4, editable=False)
     productionid = models.ForeignKey(
-        TProduction, on_delete=models.SET_NULL, null=True)
+        TProduction, on_delete=models.CASCADE, null=True, related_name='productionreels')
     reelno = models.BigIntegerField(null=True)
     stk = models.CharField(null=True, max_length=10)
     stkdate = models.DateField(null=True)

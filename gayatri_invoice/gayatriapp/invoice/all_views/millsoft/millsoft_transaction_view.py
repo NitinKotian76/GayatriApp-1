@@ -329,14 +329,18 @@ class TProduction_create(SuccessMessageMixin, CreateView):
         # reamwt (ind_weight) is only calculated when type is not REEL
         if type_of_reel_sheet != "REEL" and size and gsm and noofsheet and length:
             try:
-                # size(cm) * gsm(gm) * length(cm) / 10000000000 * noofsheet (sheets)
-                form_data["reamwt"] = str(int(float(size) * float(gsm) * float(length) /1000000)* int(noofsheet))
+                sheet_area = float(size) * float(length)/10000 # if in cm then convert to m
+                form_data["reamwt"] = str(int(sheet_area * float(gsm))* int(noofsheet)/1000) # in kg
             except (ValueError, TypeError):
                 pass
 
         if reamwt and noofream:
             try:
-                form_data["weight"] = str(int(reamwt) * int(noofream))
+                r = float(reamwt) if str(reamwt).strip() else 0
+                n = float(noofream) if str(noofream).strip() else 0
+                b = float(noofbdls) if str(noofbdls).strip() else 0
+                if r and n:
+                    form_data["weight"] = str(int(r * n * b))
             except (ValueError, TypeError):
                 pass
 
@@ -356,6 +360,20 @@ class TProduction_create(SuccessMessageMixin, CreateView):
             # HTMX change event (itemcode, noofbdls, noofream, reamwt) - preserve form data
             form_data = self._get_dynamic_form_data(request.GET)
             form = self.form_class(data=form_data)
+            weight = form_data.get("weight", "")
+            noofbdls = form_data.get("noofbdls", "")
+            noofream = form_data.get("noofream", "")
+            reamwt = form_data.get("reamwt", "")
+            try:
+                reamwt_int = int(float(reamwt)) if reamwt else 0
+                noofream_int = int(float(noofream)) if noofream else 0
+                weight_per_row = reamwt_int * noofream_int
+                noofbdls_per_row = 1
+                noofream_per_row = noofream_int
+            except (ValueError, TypeError):
+                weight_per_row = reamwt_int * noofream_int
+                noofbdls_per_row = 1
+                noofream_per_row = 0
             reel_numbers = self._get_reel_numbers(
                 form_data.get("excise_from"),
                 form_data.get("excise_to"),
@@ -380,7 +398,15 @@ class TProduction_create(SuccessMessageMixin, CreateView):
             form_html = render_to_string(self.template_name, context, request=request)
             preview_html = render_to_string(
                 "partials/reel_preview.html",
-                {"reel_numbers": reel_numbers, "reel_total": reel_total},
+                {
+                    "reel_numbers": reel_numbers, 
+                    "reel_total": reel_total,
+                    "weight": weight,
+                    "noofbdls_per_row": noofbdls_per_row,
+                    "noofream_per_row": noofream_per_row,
+                    "reamwt_per_row": reamwt_int,
+                    "weight_per_row": weight_per_row,
+                },
                 request=request,
             )
             return HttpResponse(form_html + preview_html)
@@ -414,38 +440,17 @@ class TProduction_create(SuccessMessageMixin, CreateView):
         response = self.render_to_response(self.get_context_data())
         return trigger_client_event(response, "RefreshTableview", after="settle")
 
-
-
-# class TProduction_update(SuccessMessageMixin, UpdateView):
-
-#     model = TProduction
-#     form_class = mf.TProductionForm
-#     template_name = "partials/forms.html"
-#     context_object_name = "form"
-#     success_message = "successfully updated"
-#     success_url = reverse_lazy('invoice:TProduction_create')
-
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         context["buttons"] = hf.button("submit",
-#                                        hx_req=f"{self.request.path}",
-#                                        hx_target="#dynform",
-#                                        hx_swap="innerHTML")
-
-#         return context
-
-#     def form_valid(self, form):
-#         form.save()
-#         response = self.render_to_response(self.get_context_data())
-#         return trigger_client_event(response, "RefreshTableview", after="settle")
-
-
 class TProduction_delete(SuccessMessageMixin, DeleteView):
 
     model = TProduction
     success_message = "successfully deleted"
     success_url = reverse_lazy('invoice:TProduction_list')
 
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        # Delete associated TProductionReel rows so they are not orphaned
+        TProductionReel.objects.filter(productionid=self.object).delete()
+        return super().delete(request, *args, **kwargs)
 
 @method_decorator(never_cache, name='dispatch')
 class TProduction_list(SuccessMessageMixin, ListView):
@@ -477,26 +482,246 @@ class TProduction_list(SuccessMessageMixin, ListView):
         context['show_reel_button'] = True
         return context
 
-class TStockplusminus(SuccessMessageMixin, UpdateView):
-
-    model = TProduction
-    form_class = mf.TStockplusminusForm
+class TStockplusminus(SuccessMessageMixin, FormView):
+    """Landing when user opens Stock Plus/minus without selecting a production."""
     template_name = "partials/forms.html"
+    form_class = mf.TProductionForm
     context_object_name = "form"
-    success_message = "successfully updated"
     success_url = reverse_lazy('invoice:TStockplusminus')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["buttons"] = hf.button("submit",
-                                       hx_req=f"{self.request.path}",
+                                       hx_req=reverse(
+                                           'invoice:TStockplusminus'),
                                        hx_target="#dynform",
                                        hx_swap="innerHTML")
-
         return context
 
     def form_valid(self, form):
         form.save()
+        response = self.render_to_response(self.get_context_data())
+        return trigger_client_event(response, "RefreshTableview", after="settle")
+
+
+class TStockplusminus_update(SuccessMessageMixin, UpdateView):
+    """
+    Loads form for the selected production; on submit creates a new TProduction
+    with refproductionid set to the selected (original) production, plus new
+    TProductionReel rows matching the (possibly reduced) excise_from/excise_to.
+    Reel preview works like TProduction_create: HTMX GET with form params returns
+    form + reel_preview fragment.
+    """
+    model = TProduction
+    form_class = mf.TProductionForm
+    template_name = "partials/forms.html"
+    context_object_name = "form"
+    success_message = "New production record created with correction."
+    success_url = reverse_lazy('invoice:TStockplusminus')
+
+    def _get_reel_numbers(self, excise_from, excise_to, max_preview=50):
+        """Return list of reel numbers from excise_from to excise_to (inclusive). Capped for preview."""
+        try:
+            start = int(excise_from) if excise_from else 0
+            end = int(excise_to) if excise_to else start
+            if start <= end:
+                count = end - start + 1
+                if count <= max_preview:
+                    return list(range(start, end + 1))
+                return list(range(start, start + max_preview))  # Show first N
+        except (ValueError, TypeError):
+            pass
+        return []
+
+    def _get_dynamic_form_data(self, data):
+        """Build form data with preserved user values and computed size, gsm, weight, excise fields."""
+        form_data = data.copy()
+        if hasattr(form_data, '_mutable'):
+            form_data._mutable = True
+
+        itemcode_val = data.get("itemcode", "")
+        noofbdls = data.get("noofbdls", "")
+        noofream = data.get("noofream", "")
+        reamwt = data.get("reamwt", "")
+        size = data.get("size", "")
+        gsm = data.get("gsm", "")
+        noofsheet = data.get("noofsheet", "")
+        length = data.get("length", "")
+        type_of_reel_sheet = data.get("type_of_reel_sheet", "")
+
+        # Get MItem by pk (ForeignKey value) or by itemcode string
+        itemcode_obj = None
+        if itemcode_val:
+            try:
+                itemcode_obj = MItem.objects.get(pk=itemcode_val)
+            except (MItem.DoesNotExist, ValueError):
+                itemcode_obj = MItem.objects.filter(itemcode=itemcode_val).first()
+
+        if itemcode_obj:
+            form_data["size"] = itemcode_obj.size or ""
+            form_data["gsm"] = itemcode_obj.gsm or ""
+        
+        # reamwt (ind_weight) is only calculated when type is not REEL
+        if type_of_reel_sheet != "REEL" and size and gsm and noofsheet and length:
+            try:
+                sheet_area = float(size) * float(length)/10000 # if in cm then convert to m
+                form_data["reamwt"] = str(int(sheet_area * float(gsm))* int(noofsheet)/1000) # in kg
+            except (ValueError, TypeError):
+                pass
+
+        if reamwt and noofream:
+            try:
+                r = float(reamwt) if str(reamwt).strip() else 0
+                n = float(noofream) if str(noofream).strip() else 0
+                b = float(noofbdls) if str(noofbdls).strip() else 0
+                if r and n:
+                    form_data["weight"] = str(int(r * n * b))
+            except (ValueError, TypeError):
+                pass
+
+        last_reel = TProductionReel.objects.last()
+        base_reelno = int(last_reel.reelno) + 1 if last_reel else 1
+        form_data["excise_from"] = str(base_reelno)
+        if noofbdls:
+            try:
+                form_data["excise_to"] = str(base_reelno + int(float(noofbdls)))
+            except (ValueError, TypeError):
+                form_data["excise_to"] = str(base_reelno)
+
+        return form_data
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["htmx_get_url"] = self.request.path
+        return kwargs
+
+    def get(self, request, *args, **kwargs):
+        if request.htmx and request.GET:
+            form_data = self._get_dynamic_form_data(request.GET)
+            form = self.form_class(data=form_data)
+            weight = form_data.get("weight", "")
+            noofbdls = form_data.get("noofbdls", "")
+            noofream = form_data.get("noofream", "")
+            reamwt = form_data.get("reamwt", "")
+            try:
+                reamwt_int = int(float(reamwt)) if reamwt else 0
+                noofream_int = int(float(noofream)) if noofream else 0
+                weight_per_row = reamwt_int * noofream_int
+                noofbdls_per_row = 1
+                noofream_per_row = noofream_int
+            except (ValueError, TypeError):
+                weight_per_row = reamwt_int * noofream_int
+                noofbdls_per_row = 1
+                noofream_per_row = 0
+            reel_numbers = self._get_reel_numbers(
+                form_data.get("excise_from"),
+                form_data.get("excise_to"),
+            )
+            excise_from = form_data.get("excise_from") or 0
+            excise_to = form_data.get("excise_to") or excise_from
+            try:
+                reel_total = int(excise_to) - int(excise_from) + 1 if excise_from and excise_to else len(reel_numbers)
+            except (ValueError, TypeError):
+                reel_total = len(reel_numbers)
+
+            reel_preview_context = {
+                "reel_numbers": reel_numbers,
+                "reel_total": reel_total,
+                "weight": weight,
+                "noofbdls_per_row": noofbdls_per_row,
+                "noofream_per_row": noofream_per_row,
+                "reamwt_per_row": reamwt_int,
+                "weight_per_row": weight_per_row,
+            }
+
+        else:
+            self.object = self.get_object()
+            form = self.get_form()
+            excise_from = getattr(self.object, "excise_from", None)
+            excise_to = getattr(self.object, "excise_to", None)
+            reel_numbers = self._get_reel_numbers(excise_from, excise_to)
+            try:
+                ef = int(excise_from) if excise_from else 0
+                et = int(excise_to) if excise_to else ef
+                reel_total = et - ef + 1 if ef <= et else len(reel_numbers)
+            except (ValueError, TypeError):
+                reel_total = len(reel_numbers)
+            weight = getattr(self.object, "weight", None)
+            noofbdls = getattr(self.object, "noofbdls", None)
+            noofream = getattr(self.object, "noofream", None)
+            reamwt = getattr(self.object, "reamwt", None)
+            try:
+                reamwt_int = int(float(reamwt)) if reamwt else 0
+                noofream_int = int(float(noofream)) if noofream else 0
+                weight_per_row = reamwt_int * noofream_int
+                noofbdls_per_row = 1
+                noofream_per_row = noofream_int
+            except (ValueError, TypeError):
+                weight_per_row = reamwt_int * noofream_int
+                noofbdls_per_row = 1
+                noofream_per_row = 0
+
+            reel_preview_context = {
+                "reel_numbers": reel_numbers,
+                "reel_total": reel_total,
+                "weight": weight,
+                "noofbdls_per_row": noofbdls_per_row,
+                "noofream_per_row": noofream_per_row,
+                "reamwt_per_row": reamwt_int,
+                "weight_per_row": weight_per_row,
+            }
+
+
+        context = {
+            "form": form,
+            "buttons": hf.button(
+                "submit",
+                hx_req=self.request.path,
+                hx_target="#dynform",
+                hx_swap="innerHTML",
+            ),
+            **reel_preview_context
+        }
+        form_html = render_to_string(self.template_name, context, request=request)
+        preview_html = render_to_string(
+            "partials/reel_preview.html",
+            reel_preview_context,
+            request=request,
+        )
+        return HttpResponse(form_html + preview_html)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["buttons"] = hf.button(
+            "submit",
+            hx_req=f"{self.request.path}",
+            hx_target="#dynform",
+            hx_swap="innerHTML",
+        )
+        return context
+
+    def form_valid(self, form):
+        original = self.object
+        # Capture original PK before we mutate the instance (form instance is the same object as original)
+        original_productionid = original.productionid
+        # Create new TProduction from form, do not update the original
+        new_production = form.save(commit=False)
+        new_production.pk = None
+        new_production.productionid = None
+        new_production.refproductionid = original_productionid
+        if new_production.reamwt is not None:
+            new_production.ind_weight = new_production.reamwt
+        new_production.save()
+        form.save_m2m()
+        # Create TProductionReel rows for the new production (match excise_from/excise_to)
+        excise_from = new_production.excise_from or 0
+        excise_to = new_production.excise_to or excise_from
+        for reelno in range(int(excise_from), int(excise_to) + 1):
+            TProductionReel.objects.create(
+                productionid=new_production,
+                reelno=reelno,
+                stkdate=new_production.rdate,
+            )
         response = self.render_to_response(self.get_context_data())
         return trigger_client_event(response, "RefreshTableview", after="settle")
 

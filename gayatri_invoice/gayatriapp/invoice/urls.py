@@ -175,6 +175,8 @@ millsoft_transact_urlpatterns = [
          name="TProductionReel_list"),
     path("tstockplusminus/", millsoft_transaction_view.TStockplusminus.as_view(),
          name="TStockplusminus"),
+    path("tstockplusminus/<uuid:pk>/update/", millsoft_transaction_view.TStockplusminus_update.as_view(),
+         name="TStockplusminus_update"),
 ]
 
 millsoft_report_urlpatterns = [

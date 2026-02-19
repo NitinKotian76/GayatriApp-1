@@ -11,23 +11,6 @@
     <a
       href="#"
       class="w3-bar-item w3-button w3-ripple"
-      id="newreport"
-      hx-get="/invoice/form_view"
-      hx-target="#mainform"
-      hx-vals='{"form":"open_bal_prod"}'
-    >
-      <div
-        hx-get="/invoice/table_data_view"
-        hx-trigger="click from:closest (a)"
-        hx-target="#tableview"
-        hx-vals='{"table_name":"production"}'
-        hx-swap="innerHTML"
-      ></div>
-      Opening balance Production
-    </a>
-    <a
-      href="#"
-      class="w3-bar-item w3-button w3-ripple"
       id="editreport"
       hx-get="/invoice/tproduction/create"
       hx-target="#mainform"
@@ -44,10 +27,10 @@
     <a
       href="#"
       class="w3-bar-item w3-button w3-ripple"
-      hx-get="/invoice/tstockplusminus"
+      hx-get="/invoice/tstockplusminus/"
       hx-target="#mainform"
       hx-trigger="click"
-      hx-on::after-request="document.body.dispatchEvent(new CustomEvent('showTableview'))"
+      hx-on::after-request="document.body.dispatchEvent(new CustomEvent('showProductionView'))"
     >
       <div
         hx-get="/invoice/tproduction"

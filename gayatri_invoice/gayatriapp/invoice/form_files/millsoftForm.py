@@ -157,9 +157,23 @@ class TInvoiceForm(forms.ModelForm):
 
 class TProductionForm(forms.ModelForm):
     template_name = "form_snippet.html"
-    
+
     size = forms.CharField(required=False, max_length=10, label="Size")
     gsm = forms.CharField(required=False, max_length=10, label="GSM")
+
+    def __init__(self, *args, htmx_get_url=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        if htmx_get_url is not None:
+            htmx_attrs = {
+                "hx-get": htmx_get_url,
+                "hx-target": "#dynform",
+                "hx-trigger": "change",
+                "hx-swap": "innerHTML",
+                "hx-include": "closest form",
+            }
+            for name in ("itemcode", "noofbdls", "noofream", "reamwt"):
+                if name in self.fields:
+                    self.fields[name].widget.attrs.update(htmx_attrs)
 
     class Meta:
         model = TProduction
@@ -226,24 +240,6 @@ class TProductionReelForm(forms.ModelForm):
     class Meta:
         model = TProductionReel
         fields = "__all__"
-
-
-
-class TStockplusminusForm(forms.ModelForm):
-    """
-    Form for stock plus/minus with production record chaining.
-    Same fields as TProduction including excise_from and excise_to to search
-    the record to update. Creates a new record with refproductionid
-    instead of updating the existing one.
-    """
-    template_name = "form_snippet.html"
-
-    class Meta:
-        model = TProduction
-        exclude = ("refproductionid", "productionid", "headid")
-        widgets = {
-            "rdate": forms.DateInput(attrs={'type': 'date'})
-        }
 
 
 class HTMXRelatedCompleteMixin:
