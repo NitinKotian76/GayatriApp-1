@@ -29,6 +29,8 @@ class StockTransfer(SuccessMessageMixin, FormView):
         btn = {
             "buttons": {
                 "transfer": {
+                    "type": "submit",
+                    "value": "transfer",
                     "hx_req_type": "hx-post",
                     "hx_req": reverse_lazy("invoice:StockTransfer"),
                     "hx_target": "#dynform",
@@ -38,6 +40,8 @@ class StockTransfer(SuccessMessageMixin, FormView):
                     }
                 },
                 "find": {
+                    "type": "button",
+                    "value": "find",
                     "hx_req_type": "hx-get",
                     "hx_req": reverse_lazy("invoice:TProduction_list"),
                     "hx_target": "#tableshow",

@@ -2,43 +2,62 @@
 {% block content %}
     <div class="w3-container">
         <div class="w3-row">
-            <form id="form-column" class="w3-col m6" style="padding-right: 8px;">
+        <div class="w3-grid" style="grid-template-columns: 1fr 1fr 1fr;">
+            <form id="form-column" style="grid-column: 1 / 3;">
                 {% csrf_token %}
                 <section id="mainform">
                     <div id="formpart">{% include 'partials/forms.html' %}</div>
                 </section>
             </form>
-            <form id="reelview-section" class="w3-col m6" style="padding-left: 8px; display: none;">
+            <form id="reelpreview-section" style="grid-column: 3 / 4; display: none;">
                 {% csrf_token %}
                 <section>
                     {% include 'partials/reel_preview.html' %}
                 </section>
             </form>
         </div>
+        </div>
         <div class="w3-row" id="tableview-section" style="display: none;">
-            <form class="w3-col">
+            <form>
                 {% csrf_token %}
                 <section>
                     <div id="tableview"></div>
                 </section>
             </form>
         </div>
+        <div class="w3-row" id="reelview-section" style="display: none;">
+            <form>
+                {% csrf_token %}
+                <section>
+                    <div id="reelview"></div>
+                </section>
+            </form>
+        </div>
     </div>
     <script>
-        document.body.addEventListener('showReelview', function() {
-            document.getElementById('reelview-section').style.display = '';
+        document.body.addEventListener('showReelpreview', function() {
+            document.getElementById('reelpreview-section').style.display = '';
             document.getElementById('tableview-section').style.display = 'none';
+            document.getElementById('reelview-section').style.display = 'none';
             document.getElementById('form-column').className = 'w3-col m6';
         });
         document.body.addEventListener('showTableview', function() {
-            document.getElementById('reelview-section').style.display = 'none';
+            document.getElementById('reelpreview-section').style.display = 'none';
             document.getElementById('tableview-section').style.display = '';
+            document.getElementById('reelview-section').style.display = 'none';
             document.getElementById('form-column').className = 'w3-col m12';
         });
         document.body.addEventListener('showProductionView', function() {
-            document.getElementById('reelview-section').style.display = '';
+            document.getElementById('reelpreview-section').style.display = '';
             document.getElementById('tableview-section').style.display = '';
+            document.getElementById('reelview-section').style.display = 'none';
             document.getElementById('form-column').className = 'w3-col m6';
+        });
+        document.body.addEventListener('showReeView', function(){
+            document.getElementById('reelpreview-section').style.display = 'none';
+            document.getElementById('tableview-section').style.display = 'none';
+            document.getElementById('reelview-section').style.display = '';
+            document.getElementById('form-column').className = 'w3-col m12';
         });
     </script>
 {% endblock %}

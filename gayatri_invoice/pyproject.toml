@@ -17,6 +17,7 @@ dependencies = [
     "django-htmx>=1.27.0",
     "autopep8>=2.3.2",
     "django-autocomplete-light>=3.12.1",
+    "xlsxtpl>=0.3.1",
 ]
 [dependency-groups]
 dev = [

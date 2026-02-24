@@ -1,5 +1,5 @@
 from django.contrib.messages.views import SuccessMessageMixin
-from django.views.generic import (CreateView, UpdateView, DeleteView, ListView, FormView)
+from django.views.generic import (CreateView, UpdateView, DeleteView, ListView, FormView, View)
 from django.urls import (reverse_lazy, reverse)
 from django_htmx.http import trigger_client_event
 from django.views.decorators.cache import never_cache
@@ -9,10 +9,15 @@ from django.db.models import CharField
 from django.db.models import Q, F
 from django.shortcuts import render
 from django.template.loader import render_to_string
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib import messages
+from django.utils.html import format_html
+from urllib.parse import urlparse, parse_qs
 
-
+from .services import (
+    _set_invoice_productions_out_of_stock,
+    _set_invoice_details,
+)
 from ...form_files import (helperFunct as hf, millsoftForm as mf)
 from ...models import (TExport, TExportDetails,
                        TInvoice, TProduction,
@@ -32,18 +37,19 @@ class TExport_create(SuccessMessageMixin, CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["buttons"] = hf.button("submit",
+        context["buttons"] = hf.button(type="submit",
+                                       value="submit",
                                        hx_req=reverse(
                                            'invoice:TExport_create'),
                                        hx_target="#dynform",
-                                       hx_swap="innerHTML")
+                                       hx_swap="innerHTML",
+                                       )
         return context
 
     def form_valid(self, form):
         form.save()
         response = self.render_to_response(self.get_context_data())
         return trigger_client_event(response, "RefreshTableview", after="settle")
-
 
 class TExport_update(SuccessMessageMixin, UpdateView):
 
@@ -56,10 +62,12 @@ class TExport_update(SuccessMessageMixin, UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["buttons"] = hf.button("submit",
+        context["buttons"] = hf.button(type="submit",
+                                       value="submit",
                                        hx_req=f"{self.request.path}",
                                        hx_target="#dynform",
-                                       hx_swap="innerHTML")
+                                       hx_swap="innerHTML",
+                                       )
 
         return context
 
@@ -68,13 +76,11 @@ class TExport_update(SuccessMessageMixin, UpdateView):
         response = self.render_to_response(self.get_context_data())
         return trigger_client_event(response, "RefreshTableview", after="settle")
 
-
 class TExport_delete(SuccessMessageMixin, DeleteView):
 
     model = TExport
     success_message = "successfully deleted"
     success_url = reverse_lazy('invoice:TExport_list')
-
 
 class TExport_list(SuccessMessageMixin, ListView):
 
@@ -98,7 +104,6 @@ class TExport_list(SuccessMessageMixin, ListView):
         context["modelurl"] = reverse('invoice:TExport_list')
         return context
 
-
 class TExportDetails_create(SuccessMessageMixin, CreateView):
 
     model = TExportDetails
@@ -110,18 +115,19 @@ class TExportDetails_create(SuccessMessageMixin, CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["buttons"] = hf.button("submit",
+        context["buttons"] = hf.button(type="submit",
+                                       value="submit",
                                        hx_req=reverse(
                                            'invoice:TExportDetails_create'),
                                        hx_target="#dynform",
-                                       hx_swap="innerHTML")
+                                       hx_swap="innerHTML",
+                                       )
         return context
 
     def form_valid(self, form):
         form.save()
         response = self.render_to_response(self.get_context_data())
         return trigger_client_event(response, "RefreshTableview", after="settle")
-
 
 class TExportDetails_update(SuccessMessageMixin, UpdateView):
 
@@ -134,10 +140,12 @@ class TExportDetails_update(SuccessMessageMixin, UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["buttons"] = hf.button("submit",
+        context["buttons"] = hf.button(type="submit",
+                                       value="submit",
                                        hx_req=f"{self.request.path}",
                                        hx_target="#dynform",
-                                       hx_swap="innerHTML")
+                                       hx_swap="innerHTML",
+                                       )
 
         return context
 
@@ -146,13 +154,11 @@ class TExportDetails_update(SuccessMessageMixin, UpdateView):
         response = self.render_to_response(self.get_context_data())
         return trigger_client_event(response, "RefreshTableview", after="settle")
 
-
 class TExportDetails_delete(SuccessMessageMixin, DeleteView):
 
     model = TExportDetails
     success_message = "successfully deleted"
     success_url = reverse_lazy('invoice:TExportDetails_list')
-
 
 class TExportDetails_list(SuccessMessageMixin, ListView):
 
@@ -176,7 +182,6 @@ class TExportDetails_list(SuccessMessageMixin, ListView):
         context["modelurl"] = reverse('invoice:TExportDetails_list')
         return context
 
-
 class TInvoice_create(SuccessMessageMixin, CreateView):
 
     model = TInvoice
@@ -188,37 +193,44 @@ class TInvoice_create(SuccessMessageMixin, CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["buttons"] = hf.btn_append(
-            {
-                "buttons": {
-                    "submit": {
-                        "hx_req": reverse('invoice:TInvoice_create'),
-                        "hx_target": "#dynform",
-                        "hx_swap": "innerHTML"
-                    },
-                    "challan": {
-                        "hx_req": reverse('invoice:RChallan_create'),
-                        "hx_swap": "none",
-                    },
-                    "gate_pass": {
-                        "hx_req": reverse('invoice:GatePass_create'),
-                        "hx_swap": "none",
-                    },
-                    "invoice": {
-                        "hx_req": reverse('invoice:Invoice_create'),
-                        "hx_swap": "none",
-                    }
-                }
-            },
-            "buttons"
-        )
+        btn = { 
+            "buttons": {
+                "submit": {
+                    "type": "submit",
+                    "value": "submit",
+                    "hx_req": reverse('invoice:TInvoice_create'),
+                    "hx_target": "#dynform",
+                    "hx_swap": "innerHTML",
+                },
+                "challan": {
+                    "type": "button",
+                    "value": "Challan",
+                    "hx_req": reverse('invoice:RChallanCreateView'),
+                    "hx_swap": "none",
+                },
+                "invoice": {
+                    "type": "button",
+                    "value": "Invoice",
+                    "hx_req": reverse('invoice:RInvoiceCreateView'),
+                    "hx_swap": "none",
+                },
+                "gate_pass": {
+                    "type": "button",
+                    "value": "Gate Pass",
+                    "hx_req": reverse('invoice:RGatePassCreateView'),
+                    "hx_swap": "none",
+                },
+            }
+        }
+        context["buttons"] = hf.btn_append(btn, "buttons")
         return context
 
     def form_valid(self, form):
         form.save()
+        # Remove linked Production records from stock (stk=False) when invoice is created
+        _set_invoice_productions_out_of_stock(form.instance)
         response = self.render_to_response(self.get_context_data())
         return trigger_client_event(response, "RefreshTableview", after="settle")
-
 
 class TInvoice_update(SuccessMessageMixin, UpdateView):
 
@@ -231,18 +243,18 @@ class TInvoice_update(SuccessMessageMixin, UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["buttons"] = hf.button("submit",
-                                       hx_req=f"{self.request.path}",
-                                       hx_target="#dynform",
-                                       hx_swap="innerHTML")
+        context["buttons"] = [
+            hf.button(type="submit", value="submit", hx_req=f"{self.request.path}", hx_target="#dynform", hx_swap="innerHTML"),
+        ]
 
         return context
 
     def form_valid(self, form):
         form.save()
+        # Remove linked Production records from stock when invoice is updated (e.g. details added)
+        _set_invoice_productions_out_of_stock(form.instance)
         response = self.render_to_response(self.get_context_data())
         return trigger_client_event(response, "RefreshTableview", after="settle")
-
 
 class TInvoice_delete(SuccessMessageMixin, DeleteView):
 
@@ -250,12 +262,11 @@ class TInvoice_delete(SuccessMessageMixin, DeleteView):
     success_message = "successfully deleted"
     success_url = reverse_lazy('invoice:TInvoice_list')
 
-
 @method_decorator(never_cache, name='dispatch')
 class TInvoice_list(SuccessMessageMixin, ListView):
 
     model = TInvoice
-    fields = '__all__'
+    exclude = ["invoiceid", "apiflag", "fac", "stk"] 
     context_object_name = "form"
     template_name = "partials/tableview.html"
     paginate_by = 100
@@ -267,14 +278,9 @@ class TInvoice_list(SuccessMessageMixin, ListView):
         context = super().get_context_data(**kwargs)
         # Already dicts from .values()
         context['listdata'] = list(context['object_list'])
-        context['buttons'] = [
-            hf.button("Create Agent", hx_req="",
-                      hx_req_type="hx-get", hx_target="#tableshow")
-        ]
         context["modelurl"] = reverse('invoice:TInvoice_list')
         return context
-
-
+    
 class TProduction_create(SuccessMessageMixin, CreateView):
 
     model = TProduction
@@ -387,11 +393,11 @@ class TProduction_create(SuccessMessageMixin, CreateView):
             context = {
                 "form": form,
                 "buttons": hf.button(
-                    "submit",
+                    type="submit",
+                    value="submit",
                     hx_req=reverse("invoice:TProduction_create"),
                     hx_target="#dynform",
-                    hx_swap="innerHTML",
-                ),
+                    hx_swap="innerHTML"),
                 "reel_numbers": reel_numbers,
                 "reel_total": reel_total,
             }
@@ -414,12 +420,14 @@ class TProduction_create(SuccessMessageMixin, CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["buttons"] = hf.button("submit",
+        context["buttons"] = hf.button(type="submit",
+                                       value="submit",
                                        hx_req=reverse(
                                            'invoice:TProduction_create'),
                                        hx_target="#dynform",
                                        hx_swap="innerHTML",
-                                       hx_confirm="Are you sure you want to create these reels?")
+                                       attrs={"hx-confirm": "Are you sure you want to create these reels?"},
+                                       )
         return context
 
     def form_valid(self, form):
@@ -474,12 +482,11 @@ class TProduction_list(SuccessMessageMixin, ListView):
         context = super().get_context_data(*args, **kwargs)
         # Already dicts from .values()
         context['listdata'] = list(context['object_list'])
-        context['buttons'] = [
-            hf.button("Create ", hx_req="",
-                      hx_req_type="hx-get", hx_target="#tableshow")
-        ]
         context["modelurl"] = reverse('invoice:TProduction_list')
-        context['show_reel_button'] = True
+        if self.request.GET.get("show_reel_button", "false") == "true":
+            context["show_reel_button"] = True
+        else:
+            context["show_reel_button"] = False
         return context
 
 class TStockplusminus(SuccessMessageMixin, FormView):
@@ -491,18 +498,18 @@ class TStockplusminus(SuccessMessageMixin, FormView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["buttons"] = hf.button("submit",
+        context["buttons"] = hf.button(type="submit",
+                                       value="submit",
                                        hx_req=reverse(
                                            'invoice:TStockplusminus'),
                                        hx_target="#dynform",
-                                       hx_swap="innerHTML")
+                                       hx_swap="innerHTML"),
         return context
 
     def form_valid(self, form):
         form.save()
         response = self.render_to_response(self.get_context_data())
         return trigger_client_event(response, "RefreshTableview", after="settle")
-
 
 class TStockplusminus_update(SuccessMessageMixin, UpdateView):
     """
@@ -675,11 +682,10 @@ class TStockplusminus_update(SuccessMessageMixin, UpdateView):
         context = {
             "form": form,
             "buttons": hf.button(
-                "submit",
+                type="submit", value="submit",
                 hx_req=self.request.path,
                 hx_target="#dynform",
-                hx_swap="innerHTML",
-            ),
+                hx_swap="innerHTML"),
             **reel_preview_context
         }
         form_html = render_to_string(self.template_name, context, request=request)
@@ -693,10 +699,10 @@ class TStockplusminus_update(SuccessMessageMixin, UpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["buttons"] = hf.button(
-            "submit",
+            type="submit", value="submit",
             hx_req=f"{self.request.path}",
             hx_target="#dynform",
-            hx_swap="innerHTML",
+            hx_swap="innerHTML"
         )
         return context
 
@@ -725,8 +731,6 @@ class TStockplusminus_update(SuccessMessageMixin, UpdateView):
         response = self.render_to_response(self.get_context_data())
         return trigger_client_event(response, "RefreshTableview", after="settle")
 
-
-
 class TProductionReel_create(SuccessMessageMixin, CreateView):
 
     model = TProductionReel
@@ -738,18 +742,18 @@ class TProductionReel_create(SuccessMessageMixin, CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["buttons"] = hf.button("submit",
+        context["buttons"] = hf.button(type="submit",
+                                       value="submit",
                                        hx_req=reverse(
                                            'invoice:TProductionReel_create'),
                                        hx_target="#dynform",
-                                       hx_swap="innerHTML")
+                                       hx_swap="innerHTML"),
         return context
 
     def form_valid(self, form):
         form.save()
         response = self.render_to_response(self.get_context_data())
         return trigger_client_event(response, "RefreshReelview", after="settle")
-
 
 class TProductionReel_update(SuccessMessageMixin, UpdateView):
 
@@ -762,10 +766,11 @@ class TProductionReel_update(SuccessMessageMixin, UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["buttons"] = hf.button("submit",
+        context["buttons"] = hf.button(type="submit",
+                                       value="submit",
                                        hx_req=f"{self.request.path}",
                                        hx_target="#dynform",
-                                       hx_swap="innerHTML")
+                                       hx_swap="innerHTML"),
 
         return context
 
@@ -774,43 +779,149 @@ class TProductionReel_update(SuccessMessageMixin, UpdateView):
         response = self.render_to_response(self.get_context_data())
         return trigger_client_event(response, "RefreshReelview", after="settle")
 
-
 class TProductionReel_delete(SuccessMessageMixin, DeleteView):
 
     model = TProductionReel
     success_message = "successfully deleted"
     success_url = reverse_lazy('invoice:TProductionReel_list')
 
-
 class TProductionReel_list(SuccessMessageMixin, ListView):
 
     model = TProductionReel
-    fields = '__all__'
+    exclude = ["productionreelid", "apiflag", "fac", "stk"]
     context_object_name = "form"
-    template_name = "partials/tableview.html"
+    template_name = "partials/reelview.html"
     paginate_by = 100
 
     def get_queryset(self):
         qs = TProductionReel.objects.annotate(
             pk_str=Cast("pk", output_field=CharField())
         )
-        production_id = self.request.GET.get('production')
+        production_id = self.request.GET.get("production")
+        custid = self.request.GET.get("custid")
+        agentid = self.request.GET.get("agentid")
         if production_id:
             qs = qs.filter(productionid_id=production_id)
+        else:
+            # Invoice context: reels from productions for this party and/or agent (in stock only)
+            if custid or agentid:
+                qs = qs.filter(productionid__stk=True)
+                if custid and agentid:
+                    qs = qs.filter(
+                        Q(productionid__custid_id=custid)
+                        | Q(productionid__agentid_id=agentid)
+                    )
+                elif custid:
+                    qs = qs.filter(productionid__custid_id=custid)
+                elif agentid:
+                    qs = qs.filter(productionid__agentid_id=agentid)
         return qs.values()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # Already dicts from .values()
-        context['listdata'] = list(context['object_list'])
-        context['buttons'] = [
-            hf.button("Create Agent", hx_req="",
-                      hx_req_type="hx-get", hx_target="#tableshow")
-        ]
-        base_url = reverse('invoice:TProductionReel_list')
-        production_id = self.request.GET.get('production')
+        context["listdata"] = list(context["object_list"])
+        base_url = reverse("invoice:TProductionReel_list")
+        params = []
+        production_id = self.request.GET.get("production")
+        custid = self.request.GET.get("custid")
+        agentid = self.request.GET.get("agentid")
         if production_id:
-            context["modelurl"] = f"{base_url}?production={production_id}"
+            params.append(f"production={production_id}")
+        if custid:
+            params.append(f"custid={custid}")
+        if agentid:
+            params.append(f"agentid={agentid}")
+        context["modelurl"] = f"{base_url}?{'&'.join(params)}" if params else base_url
+        context["reelview_id"] = "reelview"
+        return context
+
+class ProductionApproval(SuccessMessageMixin, FormView):
+    """Filter form for Production Approval (reuses TProduction-style rdate). Table shows non-approved only."""
+    form_class = mf.ProductionApprovalFilterForm
+    template_name = "partials/forms.html"
+    context_object_name = "form"
+    success_url = reverse_lazy("invoice:ProductionApproval_list")
+
+    def get_context_data(self, *args, **kwargs):
+        base_list_url = reverse("invoice:ProductionApproval_list")
+        select_all_js = (
+            "document.querySelectorAll('#table-body input[name=selected_row]').forEach("
+            "function(c){ c.checked = true; }); return false;"
+        )
+        btn = {
+            "buttons": {
+                "select_all": {
+                    "type": "button",
+                    "value": "Select all",
+                    "attrs": {"onclick": select_all_js},
+                },
+                "Find": {
+                    "type": "button",
+                    "value": "Find",
+                    "hx_req_type": "hx-get",
+                    "hx_req": base_list_url,
+                    "hx_target": "#tableview-tableshow",
+                    "hx_swap": "outerHTML",
+                    "attrs": {"hx-include": "closest form"},
+                },
+                "Approve": {
+                    "type": "button",
+                    "value": "Approve",
+                    "hx_req_type": "hx-post",
+                    "hx_req": reverse("invoice:ProductionApproval_approve"),
+                    "hx_target": "#tableview-tableshow",
+                    "hx_swap": "outerHTML",
+                    "attrs": {"hx-include": "[name='selected_row']:checked, [name=rdate]"},
+                },
+            }
+        }
+        context = super().get_context_data(*args, **kwargs)
+        context["buttons"] = hf.btn_append(btn,"buttons")
+        return context
+
+class ProductionApproval_list(ListView):
+    """Table of TProduction entries that are not approved; optional filter by rdate."""
+    model = TProduction
+    exclude = ["productionid", "apiflag", "fac", "stk",
+               "entrytype", "headid", "ind_weight",
+               "obflag", "refproductionid"]
+    context_object_name = "form"
+    template_name = "partials/tableview.html"
+    paginate_by = 100
+
+    def get_queryset(self):
+        qs = TProduction.objects.exclude(approved=True).annotate(
+            pk_str=Cast("pk", output_field=CharField())
+        )
+        rdate = self.request.GET.get("rdate")
+        if rdate:
+            qs = qs.filter(rdate=rdate)
+        return qs.select_related(
+            "agentid", "custid", "category", "itemcode", "shadecode"
+        ).values()
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["listdata"] = list(context["object_list"])
+        base_url = reverse("invoice:ProductionApproval_list")
+        rdate = self.request.GET.get("rdate")
+        if rdate:
+            context["modelurl"] = f"{base_url}?rdate={rdate}"
         else:
             context["modelurl"] = base_url
         return context
+
+class ProductionApproval_approve(View):
+    """POST with selected_row: set approved=True on those TProduction records and re-render table."""
+
+    def post(self, request, *args, **kwargs):
+        selected = request.POST.getlist("selected_row")
+        if selected:
+            TProduction.objects.filter(pk__in=selected).update(approved=True,stk=True)
+            messages.success(request, "Production entries approved.")
+        rdate = request.POST.get("rdate")
+        if not rdate and request.META.get("HTTP_REFERER"):
+            query = parse_qs(urlparse(request.META["HTTP_REFERER"]).query)
+            rdate = (query.get("rdate") or [None])[0]
+        # Re-render the list table with same filters by dispatching a GET to the list view
+        return HttpResponseRedirect(reverse_lazy("invoice:ProductionApproval_list", kwargs={"rdate": rdate} if rdate else {}))

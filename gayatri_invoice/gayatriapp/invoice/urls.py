@@ -177,14 +177,31 @@ millsoft_transact_urlpatterns = [
          name="TStockplusminus"),
     path("tstockplusminus/<uuid:pk>/update/", millsoft_transaction_view.TStockplusminus_update.as_view(),
          name="TStockplusminus_update"),
+    path("prod_approval/list", millsoft_transaction_view.ProductionApproval_list.as_view(),
+         name="ProductionApproval_list"),
+    path("prod_approval/approve/", millsoft_transaction_view.ProductionApproval_approve.as_view(),
+         name="ProductionApproval_approve"),
+    path("prod_approval/", millsoft_transaction_view.ProductionApproval.as_view(),
+         name="ProductionApproval"),
 ]
 
 millsoft_report_urlpatterns = [
-    path("rchallan/create/", millsoft_report_view.RChallan_create,
-         name="RChallan_create"),
-    path("rchallan/download/<str:filename>/", millsoft_report_view.download_challan,
-         name="download_challan"),
-
+    path("rchallan/create/", millsoft_report_view.RChallanCreateView.as_view(),
+         name="RChallanCreateView"),
+    path("rchallan/download/<str:filename>/", millsoft_report_view.DownloadPdfView.as_view(),
+         name="DownloadPdfView"),
+    path("rchallan/download/<str:filename>/", millsoft_report_view.DownloadCsvView.as_view(),
+         name="DownloadCsvView"),
+    path("rchallan/download/<str:filename>/", millsoft_report_view.DownloadExcelView.as_view(),
+         name="DownloadExcelView"),
+    path("rinvoice/create/", millsoft_report_view.RInvoiceCreateView.as_view(),
+         name="RInvoiceCreateView"),
+    path("rdispatchdetails/create/", millsoft_report_view.RDispatchDetailsCreateView.as_view(),
+         name="RDispatchDetailsCreateView"),
+    path("rgatepass/create/", millsoft_report_view.RGatePassCreateView.as_view(),
+         name="RGatePassCreateView"),
+    path("rstock/create/", millsoft_report_view.RStockCreateView.as_view(),
+         name="RStockCreateView"),
 ]
 millsoft_utility_urlpatterns = [
 

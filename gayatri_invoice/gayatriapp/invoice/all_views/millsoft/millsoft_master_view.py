@@ -27,7 +27,7 @@ class MAgent_create(SuccessMessageMixin, CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["buttons"] = hf.button("submit",
+        context["buttons"] = hf.button(type="submit", value="submit",
                                        hx_req=reverse('invoice:MAgent_create'),
                                        hx_target="#dynform",
                                        hx_swap="innerHTML")
@@ -49,7 +49,7 @@ class MAgent_update(SuccessMessageMixin, UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["buttons"] = hf.button("submit",
+        context["buttons"] = hf.button(type="submit", value="submit",
                                        hx_req=f"{self.request.path}",
                                        hx_target="#dynform",
                                        hx_swap="innerHTML")
@@ -101,7 +101,7 @@ class MUnit_create(SuccessMessageMixin, CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["buttons"] = hf.button("submit",
+        context["buttons"] = hf.button(type="submit", value="submit",
                                        hx_req=reverse('invoice:MUnit_create'),
                                        hx_target="#dynform",
                                        hx_swap="innerHTML")
@@ -122,7 +122,7 @@ class MUnit_update(SuccessMessageMixin, UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["buttons"] = hf.button("submit",
+        context["buttons"] = hf.button(type="submit", value="submit",
                                        hx_req=f"{self.request.path}",
                                        hx_target="#dynform",
                                        hx_swap="innerHTML")
@@ -168,7 +168,7 @@ class MCustomer_create(SuccessMessageMixin, CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["buttons"] = hf.button("submit",
+        context["buttons"] = hf.button(type="submit", value="submit",
                                        hx_req=reverse(
                                            'invoice:MCustomer_create'),
                                        hx_target="#dynform",
@@ -192,7 +192,7 @@ class MCustomer_update(SuccessMessageMixin, UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["buttons"] = hf.button("submit",
+        context["buttons"] = hf.button(type="submit", value="submit",
                                        hx_req=f"{self.request.path}",
                                        hx_target="#dynform",
                                        hx_swap="innerHTML")
@@ -244,7 +244,7 @@ class MExportFields_create(SuccessMessageMixin, CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["buttons"] = hf.button("submit",
+        context["buttons"] = hf.button(type="submit", value="submit",
                                        hx_req=reverse(
                                            'invoice:MExportFields_create'),
                                        hx_target="#dynform",
@@ -268,7 +268,7 @@ class MExportFields_update(SuccessMessageMixin, UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["buttons"] = hf.button("submit",
+        context["buttons"] = hf.button(type="submit", value="submit",
                                        hx_req=f"{self.request.path}",
                                        hx_target="#dynform",
                                        hx_swap="innerHTML")
@@ -323,7 +323,7 @@ class MItem_create(SuccessMessageMixin, CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["buttons"] = hf.button("submit",
+        context["buttons"] = hf.button(type="submit", value="submit",
                                        hx_req=reverse('invoice:MItem_create'),
                                        hx_target="#dynform",
                                        hx_swap="innerHTML")
@@ -346,7 +346,7 @@ class MItem_update(SuccessMessageMixin, UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["buttons"] = hf.button("submit",
+        context["buttons"] = hf.button(type="submit", value="submit",
                                        hx_req=f"{self.request.path}",
                                        hx_target="#dynform",
                                        hx_swap="innerHTML")
@@ -401,7 +401,7 @@ class MItemCategory_create(SuccessMessageMixin, CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["buttons"] = hf.button("submit",
+        context["buttons"] = hf.button(type="submit", value="submit",
                                        hx_req=reverse('invoice:MItemCategory_create'),
                                        hx_target="#dynform",
                                        hx_swap="innerHTML")
@@ -424,7 +424,7 @@ class MItemCategory_update(SuccessMessageMixin, UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["buttons"] = hf.button("submit",
+        context["buttons"] = hf.button(type="submit", value="submit",
                                        hx_req=f"{self.request.path}",
                                        hx_target="#dynform",
                                        hx_swap="innerHTML")
@@ -479,7 +479,7 @@ class MLocation_create(SuccessMessageMixin, CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["buttons"] = hf.button("submit",
+        context["buttons"] = hf.button(type="submit", value="submit",
                                        hx_req=reverse(
                                            'invoice:MLocation_create'),
                                        hx_target="#dynform",
@@ -503,7 +503,7 @@ class MLocation_update(SuccessMessageMixin, UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["buttons"] = hf.button("submit",
+        context["buttons"] = hf.button(type="submit", value="submit",
                                        hx_req=f"{self.request.path}",
                                        hx_target="#dynform",
                                        hx_swap="innerHTML")
@@ -558,7 +558,7 @@ class MPlusMinusHead_create(SuccessMessageMixin, CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["buttons"] = hf.button("submit",
+        context["buttons"] = hf.button(type="submit", value="submit",
                                        hx_req=reverse(
                                            'invoice:MPlusMinusHead_create'),
                                        hx_target="#dynform",
@@ -582,7 +582,7 @@ class MPlusMinusHead_update(SuccessMessageMixin, UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["buttons"] = hf.button("submit",
+        context["buttons"] = hf.button(type="submit", value="submit",
                                        hx_req=f"{self.request.path}",
                                        hx_target="#dynform",
                                        hx_swap="innerHTML")
@@ -637,7 +637,7 @@ class MShade_create(SuccessMessageMixin, CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["buttons"] = hf.button("submit",
+        context["buttons"] = hf.button(type="submit", value="submit",
                                        hx_req=reverse('invoice:MShade_create'),
                                        hx_target="#dynform",
                                        hx_swap="innerHTML")
@@ -660,7 +660,7 @@ class MShade_update(SuccessMessageMixin, UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["buttons"] = hf.button("submit",
+        context["buttons"] = hf.button(type="submit", value="submit",
                                        hx_req=f"{self.request.path}",
                                        hx_target="#dynform",
                                        hx_swap="innerHTML")

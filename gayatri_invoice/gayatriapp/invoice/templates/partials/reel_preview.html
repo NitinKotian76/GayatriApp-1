@@ -1,8 +1,7 @@
 <div id="reel-preview" class="w3-container w3-margin-top" hx-swap-oob="true">
-    <h4>Reels to be created</h4>
     {% if reel_numbers %}
-        <p class="w3-small">Reel numbers: {{ reel_numbers|join:", " }}{% if reel_total and reel_total > reel_numbers|length %} ... ({{ reel_total }} total){% endif %}</p>
-        <table class="w3-table-all w3-tiny w3-responsive " style="height: 200px; overflow-y:auto;">
+        <p class="w3-small">Reels: {{ reel_total }}</p>
+        <table class="w3-table-all w3-tiny w3-responsive " style="height:400px;width:fit-content; overflow-y:auto;">
             <thead>
                 <tr>
                     <th>Reel No</th>
@@ -25,7 +24,5 @@
             </tbody>
         </table>
         <p class="w3-small w3-text-grey">Total: {{ weight|default:0 }}</p>
-    {% else %}
-        <p class="w3-small w3-text-grey">Enter excise_from and excise_to (or noofbdls) to see reels that will be created.</p>
     {% endif %}
 </div>

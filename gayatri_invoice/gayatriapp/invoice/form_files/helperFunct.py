@@ -21,7 +21,7 @@ def getInputFields(object):
     return methods_list
 
 
-def button(name: str, **kwargs):
+def button(**kwargs):
     """ 
     this function specificaly uses buttons  so the attr are only which are needed
     """
@@ -32,25 +32,32 @@ def button(name: str, **kwargs):
     hx_target = kwargs.get("hx_target", "#dynform")
     hx_swap = kwargs.get("hx_swap", "innerHTML")
     attrs = kwargs.get("attrs", {})
+    type = kwargs.get("type", "button")
+    value = kwargs.get("value", "")
 
     attrs_html = format_html_join(" ", '{}="{}"', attrs.items())
 
-    html = format_html("<input class='w3-button w3-ripple w3-green w3-padding w3-margin'"
-                       "type='button' value='{}' "
-                       "{}='{}'"
-                       "hx-target='{}'"
-                       "hx-swap='{}'"
-                       "{}/>", name, hx_req_type, hx_req,
-                       hx_target, hx_swap, attrs_html)
-    if hx_vals != "":
+    if hx_req == "" and hx_vals == "" and hx_target == "" and hx_swap == "": # no htmx attributes
         html = format_html("<input class='w3-button w3-ripple w3-green w3-padding w3-margin'"
-                           "type='button' value='{}' "
+                       "type='{}' value='{}' "
+                       "{}/>",type, value, attrs_html)
+    elif hx_vals != "": # hx-vals attribute is present
+        html = format_html("<input class='w3-button w3-ripple w3-green w3-padding w3-margin'"
+                           "type='{}' value='{}' "
                            "{}='{}'"
                            "hx-vals='{}'"
                            "hx-target='{}'"
                            "hx-swap='{}'"
-                           "{}/>", name, hx_req_type, hx_req,
+                           "{}/>",type, value, hx_req_type, hx_req,
                            json.dumps(hx_vals),
+                           hx_target, hx_swap, attrs_html)
+    else: #with htmx attributes
+        html = format_html("<input class='w3-button w3-ripple w3-green w3-padding w3-margin'"
+                           "type='{}' value='{}' "
+                           "{}='{}'"
+                           "hx-target='{}'"
+                           "hx-swap='{}'"
+                           "{}/>",type, value, hx_req_type, hx_req,
                            hx_target, hx_swap, attrs_html)
 
     return html
@@ -70,6 +77,12 @@ def btn_append(handler: dict, item: str) -> str:
     buttons = []
     for key in handler[item]:
         call_args = {}
+        if handler[item][key].get("type"):
+            call_args["type"] = handler[item][key].get("type")
+
+        if handler[item][key].get("value"):
+            call_args["value"] = handler[item][key].get("value")
+
         if handler[item][key].get("hx_req_type"):
             call_args["hx_req_type"] = handler[item][key].get("hx_req_type")
 
@@ -89,7 +102,7 @@ def btn_append(handler: dict, item: str) -> str:
             call_args["attrs"] = handler[item][key].get("attrs")
 
         # adds all the args for the current item
-        btn = button(key, **call_args)
+        btn = button(**call_args)
         buttons.append(btn)
     return buttons
 

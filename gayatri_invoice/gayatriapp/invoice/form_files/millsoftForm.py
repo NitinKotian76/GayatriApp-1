@@ -92,6 +92,16 @@ class MPlusMinusHeadForm(forms.ModelForm):
 
 
 
+class ProductionApprovalFilterForm(forms.Form):
+    """Filter form for Production Approval: filter by rdate (reuses TProduction-style field)."""
+    template_name = "form_snippet.html"
+    rdate = forms.DateField(
+        required=False,
+        label="Production Date",
+        widget=forms.DateInput(attrs={"type": "date", "id": "filter"}),
+    )
+
+
 class StockTransferForm(forms.Form):
     template_name = "form_snippet.html"
 
@@ -142,7 +152,7 @@ class TInvoiceForm(forms.ModelForm):
 
     class Meta:
         model = TInvoice
-        fields = "__all__"
+        exclude = ("invoiceid", "apiflag", "fac", "stk", "productionid","ind_weight")
         widgets = {
             "invoicedate": forms.DateInput(attrs={'type': 'date'}),
             "predate": forms.DateInput(attrs={'type': 'date'}),
@@ -150,8 +160,20 @@ class TInvoiceForm(forms.ModelForm):
             "lrdate": forms.DateInput(attrs={'type': 'date'}),
             "pretime": forms.TimeInput(attrs={'type': 'time'}),
             "remtime": forms.TimeInput(attrs={'type': 'time'}),
-            # "AgentID":
-
+            "custid": forms.Select(attrs={
+                'hx-get': reverse_lazy('invoice:TProductionReel_list'),
+                'hx-target': '#reelview',
+                'hx-trigger': 'change',
+                'hx-swap': 'innerHTML',
+                'hx-include': 'closest form',
+            }),
+            "agentid": forms.Select(attrs={
+                'hx-get': reverse_lazy('invoice:TProductionReel_list'),
+                'hx-target': '#reelview',
+                'hx-trigger': 'change',
+                'hx-swap': 'innerHTML',
+                'hx-include': 'closest form',
+            }),
         }
 
 

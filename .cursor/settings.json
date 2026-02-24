@@ -2,6 +2,9 @@
   "plugins": {
     "browserstack": {
       "enabled": true
+    },
+    "continual-learning": {
+      "enabled": true
     }
   }
 }
