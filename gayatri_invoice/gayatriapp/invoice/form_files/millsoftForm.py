@@ -152,7 +152,7 @@ class TInvoiceForm(forms.ModelForm):
 
     class Meta:
         model = TInvoice
-        exclude = ("invoiceid", "apiflag", "fac", "stk", "productionid","ind_weight")
+        exclude = ("invoiceid", "apiflag", "fsc", "stk", "productionid","ind_weight")
         widgets = {
             "invoicedate": forms.DateInput(attrs={'type': 'date'}),
             "predate": forms.DateInput(attrs={'type': 'date'}),
@@ -161,14 +161,21 @@ class TInvoiceForm(forms.ModelForm):
             "pretime": forms.TimeInput(attrs={'type': 'time'}),
             "remtime": forms.TimeInput(attrs={'type': 'time'}),
             "custid": forms.Select(attrs={
-                'hx-get': reverse_lazy('invoice:TProductionReel_list'),
-                'hx-target': '#reelview',
+                'hx-get': reverse_lazy('invoice:TInvoice_production_list'),
+                'hx-target': '#id_agentid',
                 'hx-trigger': 'change',
                 'hx-swap': 'innerHTML',
                 'hx-include': 'closest form',
             }),
             "agentid": forms.Select(attrs={
-                'hx-get': reverse_lazy('invoice:TProductionReel_list'),
+                'hx-get': reverse_lazy('invoice:TInvoice_production_list'),
+                'hx-target': '#reelview',
+                'hx-trigger': 'change',
+                'hx-swap': 'innerHTML',
+                'hx-include': 'closest form',
+            }),
+            "shadeid": forms.Select(attrs={
+                'hx-get': reverse_lazy('invoice:TInvoice_production_list'),
                 'hx-target': '#reelview',
                 'hx-trigger': 'change',
                 'hx-swap': 'innerHTML',
@@ -221,7 +228,7 @@ class TProductionForm(forms.ModelForm):
             "indentno": "Indent No",
             "lotno": "Lot No",
         }
-        exclude = ("productionid", "apiflag", "fac", "stk", "approved", "entrytype", "headid","ind_weight","obflag")
+        exclude = ("productionid", "apiflag", "fsc", "stk", "approved", "entrytype", "headid","ind_weight","obflag")
         widgets = {
             "rdate": forms.DateInput(attrs={'type': 'date'}),
             "itemcode": forms.Select(attrs={

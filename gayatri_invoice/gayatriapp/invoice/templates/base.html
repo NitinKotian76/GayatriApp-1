@@ -11,7 +11,6 @@
     <link rel="stylesheet" href="{% static 'invoice/css/w3.css' %}">
     <link rel="stylesheet" href="{% static 'invoice/css/style.css' %}">
     <script src="{% static 'invoice/script/htmx.min.js'%}" defer></script>
-    <script src="{% static 'invoice/script/jquery-4.0.0.min.js'%}" defer></script>
     <script src="{% static 'invoice/script/json-enc.js'%}" defer></script>
     <script src="{% static 'invoice/script/CustomScript.js'%}" defer></script>
     <!-- <script src="{% static 'invoice/script/all.min.js'%}" defer></script> -->
@@ -83,5 +82,16 @@
         <address>
         </address>
     </footer>
+    {% if debug %}
+    <script>
+        if (typeof window.htmx !== "undefined") {
+            htmx.on("htmx:afterSettle", function(detail) {
+                if (typeof window.djdt !== "undefined" && detail.target instanceof HTMLBodyElement) {
+                    djdt.show_toolbar();
+                }
+            });
+        }
+    </script>
+    {% endif %}
 </body>
 </html>

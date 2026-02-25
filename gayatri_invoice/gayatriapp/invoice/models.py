@@ -468,9 +468,9 @@ class TProduction(Audit):
     locationid = models.ForeignKey(
         MLocation, on_delete=models.SET_NULL, null=True)
     indentno = models.CharField(null=True, max_length=20)
-    obflag = models.BooleanField(null=True)  # flag
-    apiflag = models.BooleanField(null=True)  # flag
-    fac = models.BooleanField(null=True)  # flag
+    obflag = models.BooleanField(null=True)  # flag opening balance
+    apiflag = models.BooleanField(null=True)  # flag api
+    fsc = models.CharField(null=True, max_length=10) # fsc code
     stk = models.BooleanField(null=True)  # flag
     approved = models.BooleanField(null=True) # flag
     entrytype = models.CharField(null=True, max_length=20) # flag
@@ -520,13 +520,13 @@ class TInvoice(Audit):
     invoiceid = models.UUIDField(
         primary_key=True, default=uuid.uuid4, editable=False)
     custid = models.ForeignKey(
-        MCustomer, on_delete=models.SET_NULL, null=True)
+        MCustomer, on_delete=models.SET_NULL, null=True) # filter
     agentid = models.ForeignKey(
-        MAgent, on_delete=models.SET_NULL, null=True)
+        MAgent, on_delete=models.SET_NULL, null=True) # filter
     shadeid = models.ForeignKey(
-        MShade, on_delete=models.SET_NULL, null=True)
+        MShade, on_delete=models.SET_NULL, null=True) # filter
     productionid = models.ManyToManyField(
-        TProduction, null=True, related_name='invoices')
+        TProduction, null=True, related_name='invoices', blank=True)
     invoiceno = models.BigIntegerField(null=False)
     invoicedate = models.DateField(null=True,)
     salestype = models.CharField(null=True, max_length=20)

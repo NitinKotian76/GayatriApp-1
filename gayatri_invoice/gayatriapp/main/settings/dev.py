@@ -27,7 +27,7 @@ SECRET_KEY = "django-insecure-$q6n3t_3#gv#w9c@mxmo86=&snjb_eur5jq2k)!c8pn6-1axoj
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["testserver", "localhost"]
+ALLOWED_HOSTS = ['testserver', 'localhost', '127.0.0.1']
 
 AUTH_USER_MODEL = "invoice.CustomUser"
 # Application definition
@@ -39,14 +39,16 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "debug_toolbar",
     "axes",
     "django_htmx",
 ]
 
 MIDDLEWARE = [
-    "django.middleware.cache.UpdateCacheMiddleware",
-    # start of cache middleware
+    # Cache middleware disabled in dev so Debug Toolbar can inject into responses.
+    # "django.middleware.cache.UpdateCacheMiddleware",
     "django.middleware.security.SecurityMiddleware",
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -55,8 +57,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "axes.middleware.AxesMiddleware",
     "django_htmx.middleware.HtmxMiddleware",
-    # end of cache middleware
-    "django.middleware.cache.FetchFromCacheMiddleware",
+    # "django.middleware.cache.FetchFromCacheMiddleware",
 ]
 FILE_UPLOAD_HANDLERS = [
 
@@ -92,7 +93,10 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "main.wsgi.application"
-
+INTERNAL_IPS = [
+    'localhost',
+    '127.0.0.1',
+]
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
