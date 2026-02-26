@@ -18,12 +18,12 @@ from .services import (
     _set_invoice_productions_out_of_stock,
     _get_reel_numbers,
     _get_dynamic_form_data,
-    _get_production_list_data,
+    _get_productionreel_list_data,
 )
 from ...form_files import (helperFunct as hf, millsoftForm as mf)
 from ...models import (TExport, TExportDetails,
                        TInvoice, TProduction,
-                       TProductionReel, MItem)
+                       TProductionReel, MItem, MCustomer)
 import logging
 logger = logging.getLogger(__name__)
 
@@ -283,6 +283,31 @@ class TProduction_create(SuccessMessageMixin, CreateView):
             )
         response = self.render_to_response(self.get_context_data())
         return trigger_client_event(response, "RefreshTableview", after="settle")
+    
+class TProduction_update(SuccessMessageMixin, UpdateView):
+
+    model = TProduction
+    form_class = mf.TProductionForm
+    template_name = "partials/forms.html"
+    context_object_name = "form"
+    success_message = "successfully updated"
+    success_url = reverse_lazy('invoice:TProduction_create')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["buttons"] = hf.button(type="submit",
+                                       value="submit",
+                                       hx_req=f"{self.request.path}",
+                                       hx_target="#dynform",
+                                       hx_swap="innerHTML",
+                                       )
+
+        return context
+
+    def form_valid(self, form):
+        form.save()
+        response = self.render_to_response(self.get_context_data())
+        return trigger_client_event(response, "RefreshTableview", after="settle")
 
 class TProduction_delete(SuccessMessageMixin, DeleteView):
 
@@ -342,6 +367,7 @@ class TInvoice_create(SuccessMessageMixin, CreateView):
             if custid:
                 agentid = MCustomer.objects.get(custid=custid).agentid
                 initial["agentid"] = agentid
+                initial["custid"] = custid
         return initial
 
     def get_context_data(self, **kwargs):
@@ -415,16 +441,6 @@ class TInvoice_delete(SuccessMessageMixin, DeleteView):
     success_message = "successfully deleted"
     success_url = reverse_lazy('invoice:TInvoice_list')
 
-class TInvoice_production_list(TProduction_list):
-    """List of productions for the selected invoice."""
-    def get_queryset(self):
-        if self.request.htmx and self.request.GET:
-            qs = _get_production_list_data(self.request.GET)
-            return qs.annotate(pk_str=Cast("pk", output_field=CharField()))
-        else:
-            return super().get_queryset()
-
- 
 
 
 
@@ -484,77 +500,6 @@ class TStockplusminus_update(SuccessMessageMixin, UpdateView):
     success_message = "New production record created with correction."
     success_url = reverse_lazy('invoice:TStockplusminus')
 
-    def _get_reel_numbers(self, excise_from, excise_to, max_preview=50):
-        """Return list of reel numbers from excise_from to excise_to (inclusive). Capped for preview."""
-        try:
-            start = int(excise_from) if excise_from else 0
-            end = int(excise_to) if excise_to else start
-            if start <= end:
-                count = end - start + 1
-                if count <= max_preview:
-                    return list(range(start, end + 1))
-                return list(range(start, start + max_preview))  # Show first N
-        except (ValueError, TypeError):
-            pass
-        return []
-
-    def _get_dynamic_form_data(self, data):
-        """Build form data with preserved user values and computed size, gsm, weight, excise fields."""
-        form_data = data.copy()
-        if hasattr(form_data, '_mutable'):
-            form_data._mutable = True
-
-        itemcode_val = data.get("itemcode", "")
-        noofbdls = data.get("noofbdls", "")
-        noofream = data.get("noofream", "")
-        reamwt = data.get("reamwt", "")
-        size = data.get("size", "")
-        gsm = data.get("gsm", "")
-        noofsheet = data.get("noofsheet", "")
-        length = data.get("length", "")
-        type_of_reel_sheet = data.get("type_of_reel_sheet", "")
-
-        # Get MItem by pk (ForeignKey value) or by itemcode string
-        itemcode_obj = None
-        if itemcode_val:
-            try:
-                itemcode_obj = MItem.objects.get(pk=itemcode_val)
-            except (MItem.DoesNotExist, ValueError):
-                itemcode_obj = MItem.objects.filter(itemcode=itemcode_val).first()
-
-        if itemcode_obj:
-            form_data["size"] = itemcode_obj.size or ""
-            form_data["gsm"] = itemcode_obj.gsm or ""
-        
-        # reamwt (ind_weight) is only calculated when type is not REEL
-        if type_of_reel_sheet != "REEL" and size and gsm and noofsheet and length:
-            try:
-                sheet_area = float(size) * float(length)/10000 # if in cm then convert to m
-                form_data["reamwt"] = str(int(sheet_area * float(gsm))* int(noofsheet)/1000) # in kg
-            except (ValueError, TypeError):
-                pass
-
-        if reamwt and noofream:
-            try:
-                r = float(reamwt) if str(reamwt).strip() else 0
-                n = float(noofream) if str(noofream).strip() else 0
-                b = float(noofbdls) if str(noofbdls).strip() else 0
-                if r and n:
-                    form_data["weight"] = str(int(r * n * b))
-            except (ValueError, TypeError):
-                pass
-
-        last_reel = TProductionReel.objects.last()
-        base_reelno = int(last_reel.reelno) + 1 if last_reel else 1
-        form_data["excise_from"] = str(base_reelno)
-        if noofbdls:
-            try:
-                form_data["excise_to"] = str(base_reelno + int(float(noofbdls)))
-            except (ValueError, TypeError):
-                form_data["excise_to"] = str(base_reelno)
-
-        return form_data
-
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
         kwargs["htmx_get_url"] = self.request.path
@@ -562,7 +507,7 @@ class TStockplusminus_update(SuccessMessageMixin, UpdateView):
 
     def get(self, request, *args, **kwargs):
         if request.htmx and request.GET:
-            form_data = self._get_dynamic_form_data(request.GET)
+            form_data = _get_dynamic_form_data(request.GET)
             form = self.form_class(data=form_data)
             weight = form_data.get("weight", "")
             noofbdls = form_data.get("noofbdls", "")
@@ -604,7 +549,7 @@ class TStockplusminus_update(SuccessMessageMixin, UpdateView):
             form = self.get_form()
             excise_from = getattr(self.object, "excise_from", None)
             excise_to = getattr(self.object, "excise_to", None)
-            reel_numbers = self._get_reel_numbers(excise_from, excise_to)
+            reel_numbers = _get_reel_numbers(excise_from, excise_to)
             try:
                 ef = int(excise_from) if excise_from else 0
                 et = int(excise_to) if excise_to else ef
@@ -779,18 +724,51 @@ class TProductionReel_list(SuccessMessageMixin, ListView):
         context = super().get_context_data(**kwargs)
         context["listdata"] = list(context["object_list"])
         base_url = reverse("invoice:TProductionReel_list")
+        # Template uses /invoice/{{ modelurl }} for some links; pass path relative to /invoice/
+        if base_url.startswith("/invoice/"):
+            base_url = base_url[len("/invoice/"):]
         params = []
         production_id = self.request.GET.get("production")
         custid = self.request.GET.get("custid")
         agentid = self.request.GET.get("agentid")
+        shadeid = self.request.GET.get("shadeid")
         if production_id:
             params.append(f"production={production_id}")
         if custid:
             params.append(f"custid={custid}")
         if agentid:
             params.append(f"agentid={agentid}")
+        if shadeid:
+            params.append(f"shadeid={shadeid}")
         context["modelurl"] = f"{base_url}?{'&'.join(params)}" if params else base_url
+        context["modelurl_base"] = base_url
         context["reelview_id"] = "reelview"
+        return context
+
+class TInvoice_productionreel_list(TProductionReel_list):
+    """List of production for the selected invoice."""
+    def get_queryset(self):
+        qs = super().get_queryset()
+        if self.request.htmx and self.request.GET:
+             qs = _get_productionreel_list_data(self.request.GET,qs)
+        return qs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        select_all_js = (
+            "document.querySelectorAll('#table-body input[name=selected_row]').forEach("
+            "function(c){ c.checked = true; }); return false;"
+        )
+        btn = {
+            "buttons": {
+                "select_all": {
+                    "type": "button",
+                    "value": "Select all",
+                    "attrs": {"onclick": select_all_js},
+                },
+            }
+        }
+        context["buttons"] = hf.btn_append(btn,"buttons")
         return context
 
 class ProductionApproval(SuccessMessageMixin, FormView):

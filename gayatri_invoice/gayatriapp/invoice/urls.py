@@ -154,13 +154,14 @@ millsoft_transact_urlpatterns = [
          name="TInvoice_update"),
     path("tinvoice/<uuid:pk>/delete/", millsoft_transaction_view.TInvoice_delete.as_view(),
          name="TInvoice_delete"),
+    path("tinvoice_productionreel_list/", millsoft_transaction_view.TInvoice_productionreel_list.as_view(),
+         name="TInvoice_productionreel_list"),
     path("tinvoice/", millsoft_transaction_view.TInvoice_list.as_view(),
          name="TInvoice_list"),
-
     path("tproduction/create/", millsoft_transaction_view.TProduction_create.as_view(),
          name="TProduction_create"),
-#     path("tproduction/<uuid:pk>/update/", millsoft_transaction_view.TProduction_update.as_view(),
-#          name="TProduction_update"),
+    path("tproduction/<uuid:pk>/update/", millsoft_transaction_view.TProduction_update.as_view(),
+         name="TProduction_update"),
     path("tproduction/<uuid:pk>/delete/", millsoft_transaction_view.TProduction_delete.as_view(),
          name="TProduction_delete"),
     path("tproduction/", millsoft_transaction_view.TProduction_list.as_view(),
@@ -183,6 +184,8 @@ millsoft_transact_urlpatterns = [
          name="ProductionApproval_approve"),
     path("prod_approval/", millsoft_transaction_view.ProductionApproval.as_view(),
          name="ProductionApproval"),
+
+     
 ]
 
 millsoft_report_urlpatterns = [

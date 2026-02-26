@@ -25,7 +25,7 @@ class table_list(forms.Form):
         choices=[], attrs={
             "id": "table_list",
             "hx-get": "/invoice/table_data_view",
-            "hx-trigger": "change delay:400ms ",
+            "hx-trigger": "change delay:400ms",
             "hx-target": "#tableshow",
             "hx-swap": "innerHTML",
         }))

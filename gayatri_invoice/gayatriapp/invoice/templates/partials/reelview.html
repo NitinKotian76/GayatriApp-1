@@ -76,13 +76,13 @@
             </div>
             {% if page_obj.has_previous %}
                 <a href="#"
-                   hx-get="/invoice/{{ modelurl }}/?page=1"
+                   hx-get="/invoice/{{ modelurl }}{% if '?' in modelurl %}&{% else %}?{% endif %}page=1"
                    hx-vals='{"form":"{{ form_name }}", "table_name":"{{ table_name }}", "page":"1"}'
                    hx-swap="innerHTML"
                    hx-target="#{{ reelview_id }}"
                    class="w3-button">&laquo; first</a>
                 <a href="#"
-                   hx-get="/invoice/{{ modelurl }}/?page={{ page_obj.previous_page_number }}"
+                   hx-get="/invoice/{{ modelurl }}{% if '?' in modelurl %}&{% else %}?{% endif %}page={{ page_obj.previous_page_number }}"
                    hx-vals='{"form":"{{ form_name }}", "table_name":"{{ table_name }}", "page":"{{ page_obj.previous_page_number }}"}'
                    hx-swap="innerHTML"
                    hx-target="#{{ reelview_id }}"
@@ -91,13 +91,13 @@
             <span class="w3-center w3-margin">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
             {% if page_obj.has_next %}
                 <a href="#"
-                   hx-get="/invoice/{{ modelurl }}/?page={{ page_obj.next_page_number }}"
+                   hx-get="/invoice/{{ modelurl }}{% if '?' in modelurl %}&{% else %}?{% endif %}page={{ page_obj.next_page_number }}"
                    hx-vals='{"form":"{{ form_name }}", "table_name":"{{ table_name }}", "page":"{{ page_obj.next_page_number }}"}'
                    hx-swap="innerHTML"
                    hx-target="#{{ reelview_id }}"
                    class="w3-button">next</a>
                 <a href="#"
-                   hx-get="/invoice/{{ modelurl }}/?page={{ page_obj.paginator.num_pages }}"
+                   hx-get="/invoice/{{ modelurl }}{% if '?' in modelurl %}&{% else %}?{% endif %}page={{ page_obj.paginator.num_pages }}"
                    hx-vals='{"form":"{{ form_name }}", "table_name":"{{ table_name }}", "page":"{{ page_obj.paginator.num_pages }}"}'
                    hx-swap="innerHTML"
                    hx-target="#{{ reelview_id }}"

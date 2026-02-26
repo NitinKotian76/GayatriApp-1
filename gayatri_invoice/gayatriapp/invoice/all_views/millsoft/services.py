@@ -1,8 +1,6 @@
-from ...models import (MItem, TProduction)
+from ...models import (MItem, TProduction, TProductionReel)
 
-
-
-def _get_reel_numbers(self, excise_from, excise_to, max_preview=50):
+def _get_reel_numbers(excise_from, excise_to, max_preview=50):
     """Return list of reel numbers from excise_from to excise_to (inclusive). Capped for preview."""
     try:
         start = int(excise_from) if excise_from else 0
@@ -16,7 +14,7 @@ def _get_reel_numbers(self, excise_from, excise_to, max_preview=50):
         pass
     return []
 
-def _get_dynamic_form_data(self, data):
+def _get_dynamic_form_data(data):
     """Build form data with preserved user values and computed size, gsm, weight, excise fields."""
     form_data = data.copy()
     if hasattr(form_data, '_mutable'):
@@ -81,13 +79,24 @@ def _set_invoice_productions_out_of_stock(invoice):
     if productions:
         productions.update(stk=False)
 
-def _get_production_list_data(data):
+def _get_productionreel_list_data(data,qs):
     custid = data.get("custid", "")
     agentid = data.get("agentid", "")
     shadeid = data.get("shadeid", "")
     if custid and agentid and shadeid:
-        qs = TProduction.objects.filter(custid_id=custid, agentid_id=agentid, shadeid_id=shadeid, stk=True)
+        productionids= TProduction.objects.filter(
+            custid_id=custid, agentid_id=agentid, shadecode_id=shadeid,
+             stk=True).values_list("productionid", flat=True)
+        if productionids:   
+            qs= qs.filter(productionid_id__in=productionids)
+        else:
+            return qs.none()
     else:
-        qs = TProduction.objects.filter(stk=True)
+        productionids = TProduction.objects.filter(
+            stk=True).values_list("productionid", flat=True)
+        if productionids:
+            qs= qs.filter(productionid_id__in=productionids)
+        else:
+            return qs.none()
     return qs
 
