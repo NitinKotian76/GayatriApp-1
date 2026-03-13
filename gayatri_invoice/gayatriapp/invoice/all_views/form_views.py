@@ -141,7 +141,7 @@ def table_data_view(request):
 @require_POST
 def select_row(request):
     if request.method == "POST":
-        row_id = request.POST.get('row_id')
+        row_id = request.POST.get('row_id') or request.POST.get('listdata_id')
         selected_rows = request.session.get('selected_rows', [])
         # Toggle selection
         if row_id in selected_rows:

@@ -1,89 +1,57 @@
-from django.contrib import messages
-from django.contrib.messages.views import SuccessMessageMixin
-from django.template import context
-from django.urls import reverse_lazy
-from django.views.generic import FormView, ListView
-from django.http import HttpResponse
+from django.conf import settings
+from django.http import HttpResponse, StreamingHttpResponse
+from django.views import View
+import os
 
-from ...models import TProduction
-from ...form_files.helperFunct import btn_append, button
-from ...form_files import millsoftForm as mf
-
-import logging
-from django_htmx.http import trigger_client_event
-
-logger = logging.getLogger(__name__)
+from .services import _stream_file
 
 
-class StockTransfer(SuccessMessageMixin, FormView):
-    """
-    for transferring stock from one agent/customer/excessStocklot to another 
-    """
-    form_class = mf.StockTransferForm
-    template_name = "partials/forms.html"
-    context_object_name = "form"
-    success_url = reverse_lazy("invoice:StockTransfer")
-    success_message = "successfully transferred"
+class DownloadPdfView(View):
+    """Stream a challan PDF for download."""
 
-    def get_context_data(self, *args, **kwargs):
-        btn = {
-            "buttons": {
-                "transfer": {
-                    "type": "submit",
-                    "value": "transfer",
-                    "hx_req_type": "hx-post",
-                    "hx_req": reverse_lazy("invoice:StockTransfer"),
-                    "hx_target": "#dynform",
-                    "hx_swap": "innerHTML",
-                    "attrs": {
-                        "hx-include": "[name='selected_row']:checked"
-                    }
-                },
-                "find": {
-                    "type": "button",
-                    "value": "find",
-                    "hx_req_type": "hx-get",
-                    "hx_req": reverse_lazy("invoice:TProduction_list"),
-                    "hx_target": "#tableshow",
-                    "hx_swap": "innerHTML",
-                    "attrs": {"hx-include": "input#filter"}
-                },
-            }
-        }
-        context = super().get_context_data(*args, **kwargs)
-        context["buttons"] = btn_append(btn, "buttons")
-        return context
+    def get(self, request, filename, *args, **kwargs):
+        pdf_path = os.path.join(settings.MEDIA_ROOT, "Challans", filename)
+
+        if not os.path.exists(pdf_path):
+            return HttpResponse("file not found", status=404)
+
+        response = StreamingHttpResponse(
+            _stream_file(pdf_path),
+            content_type="application/pdf",
+        )
+        response["Content-Disposition"] = f'attachment; filename="{filename}"'
+        return response
 
 
-    def form_valid(self, form):
-        logger.debug("form method called")
-        selected_rows = self.request.POST.getlist("selected_row")
-        logger.debug(selected_rows)
-        customer = form.cleaned_data.get("party")
-        agent = form.cleaned_data.get("agent")
+class DownloadCsvView(View):
+    """Stream a report CSV for download."""
 
-        records = list(TProduction.objects.filter(pk__in=selected_rows))
-        logger.debug(f"Records:{records}")
+    def get(self, request, filename, *args, **kwargs):
+        csv_path = os.path.join(settings.MEDIA_ROOT, "Reports", filename)
 
-        for r in records:
-            if customer:
-                r.custid_id = customer
-            if agent:
-                r.agentid_id = agent
+        if not os.path.exists(csv_path):
+            return HttpResponse("file not found", status=404)
 
-        result = TProduction.objects.bulk_update(
-            records, ["custid", "agentid"])
-        logger.debug(f"updated {result}")
-        messages.success(self.request, self.success_message)
-        response = self.render_to_response(self.get_context_data())
-        return trigger_client_event(response, "RefreshTableview", after="settle")
-
-    def form_invalid(self, form):
-        logger.debug("form_invalid called")
-        logger.debug("form.errors: %s", form.errors.as_data())
-        logger.debug("form.non_field_errors: %s", form.non_field_errors())
-        return super().form_invalid(form)
+        response = StreamingHttpResponse(
+            _stream_file(csv_path),
+            content_type="text/csv",
+        )
+        response["Content-Disposition"] = f'attachment; filename="{filename}"'
+        return response
 
 
-def ApiView(request):
-    pass
+class DownloadExcelView(View):
+    """Stream a report Excel for download."""
+
+    def get(self, request, filename, *args, **kwargs):
+        excel_path = os.path.join(settings.MEDIA_ROOT, "Reports", filename)
+
+        if not os.path.exists(excel_path):
+            return HttpResponse("file not found", status=404)
+
+        response = StreamingHttpResponse(
+            _stream_file(excel_path),
+            content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        )
+        response["Content-Disposition"] = f'attachment; filename="{filename}"'
+        return response

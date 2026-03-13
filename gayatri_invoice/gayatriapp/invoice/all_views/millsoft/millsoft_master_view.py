@@ -12,9 +12,10 @@ from ...form_files import (helperFunct as hf, millsoftForm as mf)
 from ...models import (MAgent, MUnit, MCustomer,
                        MExportFields, MItem, MItemCategory,
                        MLocation, MPlusMinusHead, MShade)
-
+from .services import (_set_initial_values_from_form_data, _itemcode_from_shadeid)
 import logging
 logger = logging.getLogger(__name__)
+
 
 
 class MAgent_create(SuccessMessageMixin, CreateView):
@@ -83,10 +84,6 @@ class MAgent_list(ListView):
         context = super().get_context_data(**kwargs)
         # Already dicts from .values()
         context['listdata'] = list(context['object_list'])
-        context['buttons'] = [
-            hf.button("Create Agent", hx_req="",
-                      hx_req_type="hx-get", hx_target="#tableshow")
-        ]
         context["modelurl"] = reverse('invoice:MAgent_list')
         return context
 
@@ -304,10 +301,6 @@ class MExportFields_list(SuccessMessageMixin, ListView):
         context = super().get_context_data(**kwargs)
         # Already dicts from .values()
         context['listdata'] = list(context['object_list'])
-        context['buttons'] = [
-            hf.button("Create Agent", hx_req="",
-                      hx_req_type="hx-get", hx_target="#tableshow")
-        ]
         context["modelurl"] = reverse('invoice:MExportFields_list')
         return context
 
@@ -320,6 +313,15 @@ class MItem_create(SuccessMessageMixin, CreateView):
     context_object_name = "form"
     success_url = reverse_lazy("invoice:MItem_create")
     success_message = "successfully created"
+
+    def get_initial(self):
+
+        initial = super().get_initial()
+        if self.request.htmx and self.request.GET:
+            form_data = self.request.GET
+            initial = _set_initial_values_from_form_data(initial, form_data)
+            initial = _itemcode_from_shadeid(initial)
+        return initial
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -382,10 +384,6 @@ class MItem_list(SuccessMessageMixin, ListView):
         context = super().get_context_data(**kwargs)
         # Already dicts from .values()
         context['listdata'] = list(context['object_list'])
-        context['buttons'] = [
-            hf.button("Create Agent", hx_req="",
-                      hx_req_type="hx-get", hx_target="#tableshow")
-        ]
         context["modelurl"] = reverse('invoice:MItem_list')
         return context
 
@@ -460,10 +458,6 @@ class MItemCategory_list(SuccessMessageMixin, ListView):
         context = super().get_context_data(**kwargs)
         # Already dicts from .values()
         context['listdata'] = list(context['object_list'])
-        context['buttons'] = [
-            hf.button("Create Agent", hx_req="",
-                      hx_req_type="hx-get", hx_target="#tableshow")
-        ]
         context["modelurl"] = reverse('invoice:MItemCategory_list')
         return context
 
@@ -539,10 +533,6 @@ class MLocation_list(SuccessMessageMixin, ListView):
         context = super().get_context_data(**kwargs)
         # Already dicts from .values()
         context['listdata'] = list(context['object_list'])
-        context['buttons'] = [
-            hf.button("Create Agent", hx_req="",
-                      hx_req_type="hx-get", hx_target="#tableshow")
-        ]
         context["modelurl"] = reverse('invoice:MLocation_list')
         return context
 
@@ -618,10 +608,6 @@ class MPlusMinusHead_list(SuccessMessageMixin, ListView):
         context = super().get_context_data(**kwargs)
         # Already dicts from .values()
         context['listdata'] = list(context['object_list'])
-        context['buttons'] = [
-            hf.button("Create Agent", hx_req="",
-                      hx_req_type="hx-get", hx_target="#tableshow")
-        ]
         context["modelurl"] = reverse('invoice:MPlusMinusHead_list')
         return context
 
@@ -696,9 +682,5 @@ class MShade_list(SuccessMessageMixin, ListView):
         context = super().get_context_data(**kwargs)
         # Already dicts from .values()
         context['listdata'] = list(context['object_list'])
-        context['buttons'] = [
-            hf.button("Create Agent", hx_req="",
-                      hx_req_type="hx-get", hx_target="#tableshow")
-        ]
         context["modelurl"] = reverse('invoice:MShade_list')
         return context

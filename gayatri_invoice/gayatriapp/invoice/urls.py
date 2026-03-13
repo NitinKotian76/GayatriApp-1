@@ -1,7 +1,14 @@
 from django.urls import path
 from . import views
 from .all_views import admin_views, auth_views, common_views, form_views, report_views
-from .all_views.millsoft import millsoft_master_view, millsoft_transaction_view, millsoft_report_view, millsoft_utility_view
+from .all_views.millsoft import (
+     millsoft_master_view,
+     millsoft_transaction_view,
+     millsoft_report_view,
+     millsoft_utility_view,
+     millsoft_helper_view,
+     millsoft_misc_view,
+)
 
 app_name = "invoice"
 # names with sentencecase are class based views
@@ -59,6 +66,7 @@ admin_urlpatterns = [
     path("admin_company", admin_views.admin_company, name="admin_company"),
 ]
 # millsoft static
+# Master URLs
 millsoft_master_urlpatterns = [
     path("magent/create/", millsoft_master_view.MAgent_create.as_view(),
          name="MAgent_create"),
@@ -133,6 +141,7 @@ millsoft_master_urlpatterns = [
 
 ]
 
+# Transaction URLs
 millsoft_transact_urlpatterns = [
     path("tproduction/", millsoft_transaction_view.TProduction_list.as_view(),
          name="TProduction_list"),
@@ -188,15 +197,10 @@ millsoft_transact_urlpatterns = [
      
 ]
 
+# Report URLs
 millsoft_report_urlpatterns = [
     path("rchallan/create/", millsoft_report_view.RChallanCreateView.as_view(),
          name="RChallanCreateView"),
-    path("rchallan/download/<str:filename>/", millsoft_report_view.DownloadPdfView.as_view(),
-         name="DownloadPdfView"),
-    path("rchallan/download/<str:filename>/", millsoft_report_view.DownloadCsvView.as_view(),
-         name="DownloadCsvView"),
-    path("rchallan/download/<str:filename>/", millsoft_report_view.DownloadExcelView.as_view(),
-         name="DownloadExcelView"),
     path("rinvoice/create/", millsoft_report_view.RInvoiceCreateView.as_view(),
          name="RInvoiceCreateView"),
     path("rdispatchdetails/create/", millsoft_report_view.RDispatchDetailsCreateView.as_view(),
@@ -206,19 +210,39 @@ millsoft_report_urlpatterns = [
     path("rstock/create/", millsoft_report_view.RStockCreateView.as_view(),
          name="RStockCreateView"),
 ]
-millsoft_utility_urlpatterns = [
 
-    path("stocktransfer/", millsoft_utility_view.StockTransfer.as_view(),
+# Misc URLs
+millsoft_misc_urlpatterns = [
+    path("stocktransfer/", millsoft_misc_view.StockTransfer.as_view(),
          name="StockTransfer"),
 ]
 
+# Utility URLs
+millsoft_utility_urlpatterns = [
+    path("reports/excel/<str:filename>/", millsoft_utility_view.DownloadExcelView.as_view(),
+         name="DownloadExcelView"),
+    path("reports/csv/<str:filename>/", millsoft_utility_view.DownloadCsvView.as_view(),
+         name="DownloadCsvView"),
+    path("reports/pdf/<str:filename>/", millsoft_utility_view.DownloadPdfView.as_view(),
+         name="DownloadPdfView"),
+]
+
+# Helper URLs
+millsoft_helper_urlpatterns = [
+    path("reel_preview/", millsoft_helper_view.ReelPreview.as_view(),
+         name="ReelPreview"),
+]
+
+# Combine all URL patterns
 millsoft_urlpatterns = (
     millsoft_master_urlpatterns +
     millsoft_transact_urlpatterns +
     millsoft_report_urlpatterns +
-    millsoft_utility_urlpatterns
+    millsoft_utility_urlpatterns +
+    millsoft_helper_urlpatterns+
+    millsoft_misc_urlpatterns
 )
-# Combine all URL patterns
+
 urlpatterns = (
     auth_urlpatterns +
     form_urlpatterns +

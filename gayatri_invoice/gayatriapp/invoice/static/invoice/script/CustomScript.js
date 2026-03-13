@@ -65,12 +65,21 @@ function w3_close() {
 //   }
 // }
 
-//
-// function clearSelectedRows() {
-//   const allInputs = document.querySelectorAll("#tableform input"); // Selects all input elements within the form
-//   allInputs.forEach((input) => {
-//     input.checked = false;
-//     input.value = "";
-//   });
-//   console.log("cleared input ");
-// }
+// Row selection: shared selector for table view / reel view checkboxes
+const ROW_CHECKBOX_SELECTOR = "#tableform input[name=selected_row]";
+
+/** Unchecks all row-selection checkboxes in the table form. Does not clear search or other inputs. */
+function clearSelectedRows() {
+  document.querySelectorAll(ROW_CHECKBOX_SELECTOR).forEach((input) => {
+    input.checked = false;
+  });
+  return false;
+}
+
+/** Checks all row-selection checkboxes. Use return value in onclick to prevent default (e.g. form submit). */
+function selectAll() {
+  document.querySelectorAll(ROW_CHECKBOX_SELECTOR).forEach((input) => {
+    input.checked = true;
+  });
+  return false;
+}

@@ -1,4 +1,4 @@
-<div id="dynform">
+<form id="dynform">
     {% csrf_token %}
     {% if form %}
         {{ form.media }}
@@ -10,4 +10,4 @@
     {% else %}
         <p class="w3-text-grey w3-padding">Select an option from the menu to get started.</p>
     {% endif %}
-</div>
+</form>

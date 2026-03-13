@@ -1,4 +1,13 @@
-<div id="reel-preview" class="w3-container w3-margin-top" hx-swap-oob="true">
+{% with reelpreview_id=reelpreview_id|default:"reel-preview" %}
+<div 
+    id="reel-preview"
+    hx-get="{% url 'invoice:ReelPreview' %}"
+    hx-target="#reel-preview"
+    hx-trigger="RefreshReelPreview from:body"
+    hx-swap="outerHTML"
+    hx-include="#form-column"
+    class="w3-container w3-margin-top" 
+>
     {% if reel_numbers %}
         <p class="w3-small">Reels: {{ reel_total }}</p>
         <table class="w3-table-all w3-tiny w3-responsive " style="height:400px;width:fit-content; overflow-y:auto;">
@@ -26,3 +35,4 @@
         <p class="w3-small w3-text-grey">Total: {{ weight|default:0 }}</p>
     {% endif %}
 </div>
+{% endwith %}

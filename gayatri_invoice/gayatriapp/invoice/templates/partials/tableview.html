@@ -3,7 +3,7 @@
      hx-get="{{ modelurl }}"
      hx-target="#{{ tableshow_id }}"
      hx-swap="outerHTML"
-     hx-trigger="RefreshTable from:body, RefreshTableview from:body">
+     hx-trigger="RefreshTableview from:body">
     <form id="tableform">
         {% csrf_token %}
         <div id="searchbar" class="w3-margin-top">
@@ -59,19 +59,22 @@
                                     {% if show_reel_button %}
                                     <button type="button"
                                             hx-get="/invoice/tstockplusminus/{{ data.pk_str }}/update/"
-                                            hx-target="#mainform"
-                                            hx-swap="innerHTML"
+                                            hx-target="#dynform"
+                                            hx-swap="outerHTML"
                                             class="w3-button w3-ripple w3-light-grey w3-margin-right">Stock +/-</button>
+                                    {% else %}
+                                    <button type="button"
+                                            hx-get="{{ modelurl }}{{ data.pk_str }}/update/"
+                                            hx-swap="outerHTML"
+                                            hx-target="{{ update_target|default:'#dynform' }}"
+                                            class="w3-button w3-ripple w3-green">Update</button>
                                     {% endif %}
                                     <button hx-post="{{ modelurl }}{{ data.pk_str }}/delete/"
-                                            hx-swap="innerHTML"
-                                            hx-target="{{ delete_target|default:'#tableview' }}"
+                                            hx-swap="outerHTML"
+                                            hx-target="{{ delete_target|default:tableshow_id }}"
                                             hx-confirm="Delete {{ data.Agentname|default:data.pk_str }}"
                                             class="w3-button w3-ripple w3-green">Delete</button>
-                                    <button hx-post="{{ modelurl }}{{ data.pk_str }}/update/"
-                                            hx-swap="innerHTML"
-                                            hx-target="{{ update_target|default:'#mainform' }}"
-                                            class="w3-button w3-ripple w3-green">Update</button>
+
                                 </td>
                             </tr>
                         {% endfor %}

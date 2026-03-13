@@ -3,35 +3,27 @@
     <div class="w3-container">
         <div class="w3-row">
         <div class="w3-grid" style="grid-template-columns: 1fr 1fr;">
-            <form id="form-column">
-                {% csrf_token %}
+            <div id="form-column">
                 <section id="mainform">
-                    <div id="formpart">{% include 'partials/forms.html' %}</div>
+                        <div id="formpart">{% include 'partials/forms.html' %}</div>
                 </section>
-            </form>
-            <form id="reelpreview-section" style="display: none;">
-                {% csrf_token %}
+            </div>
+            <div id="reelpreview-section" style="display: none;">
                 <section>
                     {% include 'partials/reel_preview.html' %}
                 </section>
-            </form>
+            </div>
         </div>
         </div>
         <div class="w3-row" id="tableview-section" style="display: none;">
-            <form>
-                {% csrf_token %}
                 <section>
                     <div id="tableview"></div>
                 </section>
-            </form>
         </div>
         <div class="w3-row" id="reelview-section" style="display: none;">
-            <form>
-                {% csrf_token %}
                 <section>
                     <div id="reelview"></div>
                 </section>
-            </form>
         </div>
     </div>
     <script>

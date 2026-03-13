@@ -461,10 +461,10 @@ class TProduction(Audit):
     excise_from = models.BigIntegerField(null=True)
     excise_to = models.BigIntegerField(null=True)
     noofsheet = models.BigIntegerField(null=True)
-    noofream = models.FloatField(null=True)
-    reamwt = models.FloatField(null=True)
-    weight = models.FloatField(null=True) # total weight of the production
-    rate = models.FloatField(null=True)
+    noofream = models.DecimalField(null=True, decimal_places=1, max_digits=10)
+    reamwt = models.DecimalField(null=True, decimal_places=1, max_digits=10)
+    weight = models.DecimalField(null=True, decimal_places=1, max_digits=10) # total weight of the production
+    rate = models.DecimalField(null=True, decimal_places=1, max_digits=10)
     locationid = models.ForeignKey(
         MLocation, on_delete=models.SET_NULL, null=True)
     indentno = models.CharField(null=True, max_length=20)
@@ -514,7 +514,7 @@ class TProductionReel(Audit):
         ]
 
     def __str__(self):
-        return str(self.reelno)
+        return str(self.reelno) 
 
 class TInvoice(Audit):
     invoiceid = models.UUIDField(

@@ -16,9 +16,13 @@ from urllib.parse import urlparse, parse_qs
 
 from .services import (
     _set_invoice_productions_out_of_stock,
+    _set_selected_reels_and_productions_out_of_stock,
     _get_reel_numbers,
-    _get_dynamic_form_data,
+    _autocomplete_form_data,
     _get_productionreel_list_data,
+    _set_initial_values_from_form_data,
+    _agentid_from_custid,
+    _data_for_reel_preview,
 )
 from ...form_files import (helperFunct as hf, millsoftForm as mf)
 from ...models import (TExport, TExportDetails,
@@ -43,7 +47,7 @@ class TExport_create(SuccessMessageMixin, CreateView):
                                        value="submit",
                                        hx_req=reverse(
                                            'invoice:TExport_create'),
-                                       hx_target="#dynform",
+                                       hx_target="#form-column",
                                        hx_swap="innerHTML",
                                        )
         return context
@@ -54,6 +58,7 @@ class TExport_create(SuccessMessageMixin, CreateView):
         return trigger_client_event(response, "RefreshTableview", after="settle")
 
 
+@method_decorator(never_cache, name='dispatch')
 class TExport_update(SuccessMessageMixin, UpdateView):
 
     model = TExport
@@ -68,7 +73,7 @@ class TExport_update(SuccessMessageMixin, UpdateView):
         context["buttons"] = hf.button(type="submit",
                                        value="submit",
                                        hx_req=f"{self.request.path}",
-                                       hx_target="#dynform",
+                                       hx_target="#form-column",
                                        hx_swap="innerHTML",
                                        )
 
@@ -122,7 +127,7 @@ class TExportDetails_create(SuccessMessageMixin, CreateView):
                                        value="submit",
                                        hx_req=reverse(
                                            'invoice:TExportDetails_create'),
-                                       hx_target="#dynform",
+                                       hx_target="#form-column",
                                        hx_swap="innerHTML",
                                        )
         return context
@@ -132,6 +137,7 @@ class TExportDetails_create(SuccessMessageMixin, CreateView):
         response = self.render_to_response(self.get_context_data())
         return trigger_client_event(response, "RefreshTableview", after="settle")
 
+@method_decorator(never_cache, name='dispatch')
 class TExportDetails_update(SuccessMessageMixin, UpdateView):
 
     model = TExportDetails
@@ -146,7 +152,7 @@ class TExportDetails_update(SuccessMessageMixin, UpdateView):
         context["buttons"] = hf.button(type="submit",
                                        value="submit",
                                        hx_req=f"{self.request.path}",
-                                       hx_target="#dynform",
+                                       hx_target="#form-column",
                                        hx_swap="innerHTML",
                                        )
 
@@ -195,74 +201,44 @@ class TProduction_create(SuccessMessageMixin, CreateView):
     success_url = reverse_lazy("invoice:TProduction_create")
     success_message = "successfully created"
 
+    # this is only used for reel preview
+    def get_initial(self):
+        initial = super().get_initial()
+        if self.request.htmx and self.request.GET:
+            form_data = self.request.GET
+            initial = _set_initial_values_from_form_data(initial, form_data) # gets the user input from form_data and sets it to initial
+            initial= _agentid_from_custid(initial) # gets the agentid from the custid
+            initial = _autocomplete_form_data(initial) # gets the autocomplete data using initial
+        return initial
 
     def get(self, request, *args, **kwargs):
-        if request.htmx and request.GET:
-            # HTMX change event (itemcode, noofbdls, noofream, reamwt) - preserve form data
-            form_data = _get_dynamic_form_data(request.GET)
-            form = self.form_class(data=form_data)
-            weight = form_data.get("weight", "")
-            noofbdls = form_data.get("noofbdls", "")
-            noofream = form_data.get("noofream", "")
-            reamwt = form_data.get("reamwt", "")
-            try:
-                reamwt_int = int(float(reamwt)) if reamwt else 0
-                noofream_int = int(float(noofream)) if noofream else 0
-                weight_per_row = reamwt_int * noofream_int
-                noofbdls_per_row = 1
-                noofream_per_row = noofream_int
-            except (ValueError, TypeError):
-                weight_per_row = reamwt_int * noofream_int
-                noofbdls_per_row = 1
-                noofream_per_row = 0
-            reel_numbers = _get_reel_numbers(
-                form_data.get("excise_from"),
-                form_data.get("excise_to"),
-            )
-            excise_from = form_data.get("excise_from") or 0
-            excise_to = form_data.get("excise_to") or excise_from
-            try:
-                reel_total = int(excise_to) - int(excise_from) + 1 if excise_from and excise_to else len(reel_numbers)
-            except (ValueError, TypeError):
-                reel_total = len(reel_numbers)
-            context = {
-                "form": form,
-                "buttons": hf.button(
-                    type="submit",
-                    value="submit",
-                    hx_req=reverse("invoice:TProduction_create"),
-                    hx_target="#dynform",
-                    hx_swap="innerHTML"),
-                "reel_numbers": reel_numbers,
-                "reel_total": reel_total,
-            }
-            form_html = render_to_string(self.template_name, context, request=request)
-            preview_html = render_to_string(
-                "partials/reel_preview.html",
-                {
-                    "reel_numbers": reel_numbers, 
-                    "reel_total": reel_total,
-                    "weight": weight,
-                    "noofbdls_per_row": noofbdls_per_row,
-                    "noofream_per_row": noofream_per_row,
-                    "reamwt_per_row": reamwt_int,
-                    "weight_per_row": weight_per_row,
-                },
-                request=request,
-            )
-            return HttpResponse(form_html + preview_html)
-        return super().get(request, *args, **kwargs)
+        response=super().get(request, *args, **kwargs)
+        if self.request.htmx:
+            if hasattr(response, "render"):
+                response.render()
+            response = trigger_client_event(response, "RefreshReelPreview", after="settle")
+        return response
+
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["buttons"] = hf.button(type="submit",
-                                       value="submit",
-                                       hx_req=reverse(
-                                           'invoice:TProduction_create'),
-                                       hx_target="#dynform",
-                                       hx_swap="innerHTML",
-                                       attrs={"hx-confirm": "Are you sure you want to create these reels?"},
-                                       )
+        btn = {
+            "buttons": {
+                "submit": {
+                    "type": "submit",
+                    "value": "submit",
+                    "hx_req": f"{self.request.path}",
+                    "hx_target": "#form-column",
+                    "hx_swap": "outerHTML",
+                },
+                "formula": {
+                    "type": "checkbox",
+                    "value": "formula",
+                    "attrs":{"id":"formula"},
+                }
+            }
+        }
+        context["buttons"] = hf.btn_append(btn, "buttons")
         return context
 
     def form_valid(self, form):
@@ -280,10 +256,12 @@ class TProduction_create(SuccessMessageMixin, CreateView):
                 productionid=production,
                 reelno=reelno,
                 stkdate=production.rdate,
+                stk="true",
             )
         response = self.render_to_response(self.get_context_data())
         return trigger_client_event(response, "RefreshTableview", after="settle")
     
+@method_decorator(never_cache, name='dispatch')
 class TProduction_update(SuccessMessageMixin, UpdateView):
 
     model = TProduction
@@ -293,21 +271,74 @@ class TProduction_update(SuccessMessageMixin, UpdateView):
     success_message = "successfully updated"
     success_url = reverse_lazy('invoice:TProduction_create')
 
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["htmx_get_url"] = self.request.path
+        return kwargs
+    # this is only used for reel preview
+    def get_initial(self):
+        initial = super().get_initial()
+        if self.request.htmx and self.request.GET:
+            form_data = self.request.GET
+            initial = _set_initial_values_from_form_data(initial, form_data) # gets the user input from form_data and sets it to initial
+            initial= _agentid_from_custid(initial) # gets the agentid from the custid
+            initial = _autocomplete_form_data(initial) # gets the autocomplete data using initial
+        return initial
+
+    def get(self, request, *args, **kwargs):
+        response=super().get(request, *args, **kwargs)
+        if self.request.htmx:
+            if hasattr(response, "render"):
+                response.render()
+            response = trigger_client_event(response, "RefreshReelPreview", after="settle")
+        return response
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["buttons"] = hf.button(type="submit",
-                                       value="submit",
-                                       hx_req=f"{self.request.path}",
-                                       hx_target="#dynform",
-                                       hx_swap="innerHTML",
-                                       )
-
+        btn = {
+            "buttons": {
+                "submit": {
+                    "type": "submit",
+                    "value": "submit",
+                    "hx_req": f"{self.request.path}",
+                    "hx_target": "#form-column",
+                    "hx_swap": "outerHTML",
+                },
+                "formula": {
+                    "type": "checkbox",
+                    "value": "formula",
+                    "attrs":{"id":"formula"},
+                }
+            }
+        }
+        context["buttons"] = hf.btn_append(btn, "buttons")
         return context
 
     def form_valid(self, form):
-        form.save()
+        original = self.object
+        # Capture original PK before we mutate the instance (form instance is the same object as original)
+        original_productionid = original.productionid
+        # Create new TProduction from form, do not update the original
+        new_production = form.save(commit=False)
+        new_production.pk = None
+        new_production.productionid = None
+        new_production.refproductionid = original_productionid
+        if new_production.reamwt is not None:
+            new_production.ind_weight = new_production.reamwt
+        new_production.save()
+        form.save_m2m()
+        # Create TProductionReel rows for the new production (match excise_from/excise_to)
+        excise_from = new_production.excise_from or 0
+        excise_to = new_production.excise_to or excise_from
+        for reelno in range(int(excise_from), int(excise_to) + 1):
+            TProductionReel.objects.create(
+                productionid=new_production,
+                reelno=reelno,
+                stkdate=new_production.rdate,
+            )
         response = self.render_to_response(self.get_context_data())
         return trigger_client_event(response, "RefreshTableview", after="settle")
+
 
 class TProduction_delete(SuccessMessageMixin, DeleteView):
 
@@ -363,22 +394,30 @@ class TInvoice_create(SuccessMessageMixin, CreateView):
     def get_initial(self):
         initial = super().get_initial()
         if self.request.htmx and self.request.GET:
-            custid = self.request.GET.get("custid")
-            if custid:
-                agentid = MCustomer.objects.get(custid=custid).agentid
-                initial["agentid"] = agentid
-                initial["custid"] = custid
+            form_data = self.request.GET
+            initial = _set_initial_values_from_form_data(initial, form_data)
+            initial= _agentid_from_custid(initial)
         return initial
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         btn = { 
             "buttons": {
+                "select_all": {
+                    "type": "button",
+                    "value": "Select all",
+                    "attrs": {"onclick": "selectAll()"},
+                },
+                "clear_selected_rows": {
+                    "type": "button",
+                    "value": "Clear selected rows",
+                    "attrs": {"onclick": "clearSelectedRows()"},
+                },
                 "submit": {
                     "type": "submit",
                     "value": "submit",
                     "hx_req": reverse('invoice:TInvoice_create'),
-                    "hx_target": "#dynform",
+                    "hx_target": "#form-column",
                     "hx_swap": "innerHTML",
                 },
                 "challan": {
@@ -406,11 +445,17 @@ class TInvoice_create(SuccessMessageMixin, CreateView):
 
     def form_valid(self, form):
         form.save()
-        # Remove linked Production records from stock (stk=False) when invoice is created
-        _set_invoice_productions_out_of_stock(form.instance)
+        selected_reel_ids = self.request.session.get("selected_rows") or []
+        if selected_reel_ids:
+            _set_selected_reels_and_productions_out_of_stock(form.instance, selected_reel_ids)
+            self.request.session["selected_rows"] = []
+            self.request.session.modified = True
+        else:
+            _set_invoice_productions_out_of_stock(form.instance)
         response = self.render_to_response(self.get_context_data())
         return trigger_client_event(response, "RefreshTableview", after="settle")
 
+@method_decorator(never_cache, name='dispatch')
 class TInvoice_update(SuccessMessageMixin, UpdateView):
 
     model = TInvoice
@@ -423,15 +468,20 @@ class TInvoice_update(SuccessMessageMixin, UpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["buttons"] = [
-            hf.button(type="submit", value="submit", hx_req=f"{self.request.path}", hx_target="#dynform", hx_swap="innerHTML"),
+            hf.button(type="submit", value="submit", hx_req=f"{self.request.path}", hx_target="#form-column", hx_swap="outerHTML"),
         ]
 
         return context
 
     def form_valid(self, form):
         form.save()
-        # Remove linked Production records from stock when invoice is updated (e.g. details added)
-        _set_invoice_productions_out_of_stock(form.instance)
+        selected_reel_ids = self.request.session.get("selected_rows") or []
+        if selected_reel_ids:
+            _set_selected_reels_and_productions_out_of_stock(form.instance, selected_reel_ids)
+            self.request.session["selected_rows"] = []
+            self.request.session.modified = True
+        else:
+            _set_invoice_productions_out_of_stock(form.instance)
         response = self.render_to_response(self.get_context_data())
         return trigger_client_event(response, "RefreshTableview", after="settle")
 
@@ -440,8 +490,6 @@ class TInvoice_delete(SuccessMessageMixin, DeleteView):
     model = TInvoice
     success_message = "successfully deleted"
     success_url = reverse_lazy('invoice:TInvoice_list')
-
-
 
 
 @method_decorator(never_cache, name='dispatch')
@@ -476,8 +524,8 @@ class TStockplusminus(SuccessMessageMixin, FormView):
                                        value="submit",
                                        hx_req=reverse(
                                            'invoice:TStockplusminus'),
-                                       hx_target="#dynform",
-                                       hx_swap="innerHTML"),
+                                       hx_target="#form-column",
+                                       hx_swap="outerHTML"),
         return context
 
     def form_valid(self, form):
@@ -485,6 +533,7 @@ class TStockplusminus(SuccessMessageMixin, FormView):
         response = self.render_to_response(self.get_context_data())
         return trigger_client_event(response, "RefreshTableview", after="settle")
 
+@method_decorator(never_cache, name='dispatch')
 class TStockplusminus_update(SuccessMessageMixin, UpdateView):
     """
     Loads form for the selected production; on submit creates a new TProduction
@@ -505,112 +554,37 @@ class TStockplusminus_update(SuccessMessageMixin, UpdateView):
         kwargs["htmx_get_url"] = self.request.path
         return kwargs
 
+    def get_initial(self):
+        initial = super().get_initial()
+        if self.request.htmx and self.request.GET:
+            form_data = self.request.GET
+            initial = _set_initial_values_from_form_data(initial, form_data) # gets the user input from form_data and sets it to initial
+            initial= _agentid_from_custid(initial) # gets the agentid from the custid
+            initial = _autocomplete_form_data(initial) # gets the autocomplete data using initial
+        return initial
+
     def get(self, request, *args, **kwargs):
-        if request.htmx and request.GET:
-            form_data = _get_dynamic_form_data(request.GET)
-            form = self.form_class(data=form_data)
-            weight = form_data.get("weight", "")
-            noofbdls = form_data.get("noofbdls", "")
-            noofream = form_data.get("noofream", "")
-            reamwt = form_data.get("reamwt", "")
-            try:
-                reamwt_int = int(float(reamwt)) if reamwt else 0
-                noofream_int = int(float(noofream)) if noofream else 0
-                weight_per_row = reamwt_int * noofream_int
-                noofbdls_per_row = 1
-                noofream_per_row = noofream_int
-            except (ValueError, TypeError):
-                weight_per_row = reamwt_int * noofream_int
-                noofbdls_per_row = 1
-                noofream_per_row = 0
-            reel_numbers = self._get_reel_numbers(
-                form_data.get("excise_from"),
-                form_data.get("excise_to"),
-            )
-            excise_from = form_data.get("excise_from") or 0
-            excise_to = form_data.get("excise_to") or excise_from
-            try:
-                reel_total = int(excise_to) - int(excise_from) + 1 if excise_from and excise_to else len(reel_numbers)
-            except (ValueError, TypeError):
-                reel_total = len(reel_numbers)
+        response=super().get(request, *args, **kwargs)
+        if self.request.htmx:
+            if hasattr(response, "render"):
+                response.render()
+            response = trigger_client_event(response, "RefreshReelPreview", after="settle")
+        return response
 
-            reel_preview_context = {
-                "reel_numbers": reel_numbers,
-                "reel_total": reel_total,
-                "weight": weight,
-                "noofbdls_per_row": noofbdls_per_row,
-                "noofream_per_row": noofream_per_row,
-                "reamwt_per_row": reamwt_int,
-                "weight_per_row": weight_per_row,
-            }
-
-        else:
-            self.object = self.get_object()
-            form = self.get_form()
-            excise_from = getattr(self.object, "excise_from", None)
-            excise_to = getattr(self.object, "excise_to", None)
-            reel_numbers = _get_reel_numbers(excise_from, excise_to)
-            try:
-                ef = int(excise_from) if excise_from else 0
-                et = int(excise_to) if excise_to else ef
-                reel_total = et - ef + 1 if ef <= et else len(reel_numbers)
-            except (ValueError, TypeError):
-                reel_total = len(reel_numbers)
-            weight = getattr(self.object, "weight", None)
-            noofbdls = getattr(self.object, "noofbdls", None)
-            noofream = getattr(self.object, "noofream", None)
-            reamwt = getattr(self.object, "reamwt", None)
-            try:
-                reamwt_int = int(float(reamwt)) if reamwt else 0
-                noofream_int = int(float(noofream)) if noofream else 0
-                weight_per_row = reamwt_int * noofream_int
-                noofbdls_per_row = 1
-                noofream_per_row = noofream_int
-            except (ValueError, TypeError):
-                weight_per_row = reamwt_int * noofream_int
-                noofbdls_per_row = 1
-                noofream_per_row = 0
-
-            reel_preview_context = {
-                "reel_numbers": reel_numbers,
-                "reel_total": reel_total,
-                "weight": weight,
-                "noofbdls_per_row": noofbdls_per_row,
-                "noofream_per_row": noofream_per_row,
-                "reamwt_per_row": reamwt_int,
-                "weight_per_row": weight_per_row,
-            }
-
-
-        context = {
-            "form": form,
-            "buttons": hf.button(
-                type="submit", value="submit",
-                hx_req=self.request.path,
-                hx_target="#dynform",
-                hx_swap="innerHTML"),
-            **reel_preview_context
-        }
-        form_html = render_to_string(self.template_name, context, request=request)
-        preview_html = render_to_string(
-            "partials/reel_preview.html",
-            reel_preview_context,
-            request=request,
-        )
-        return HttpResponse(form_html + preview_html)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["buttons"] = hf.button(
             type="submit", value="submit",
             hx_req=f"{self.request.path}",
-            hx_target="#dynform",
-            hx_swap="innerHTML"
+            hx_target="#form-column",
+            hx_swap="outerHTML"
         )
         return context
 
     def form_valid(self, form):
         original = self.object
+        original_reels = TProductionReel.objects.filter(productionid=original)
         # Capture original PK before we mutate the instance (form instance is the same object as original)
         original_productionid = original.productionid
         # Create new TProduction from form, do not update the original
@@ -620,17 +594,23 @@ class TStockplusminus_update(SuccessMessageMixin, UpdateView):
         new_production.refproductionid = original_productionid
         if new_production.reamwt is not None:
             new_production.ind_weight = new_production.reamwt
+        new_production.stk = True
+        original.stk = False
+        original_reels.update(stk=False)
+        original.save()
         new_production.save()
         form.save_m2m()
         # Create TProductionReel rows for the new production (match excise_from/excise_to)
         excise_from = new_production.excise_from or 0
         excise_to = new_production.excise_to or excise_from
         for reelno in range(int(excise_from), int(excise_to) + 1):
-            TProductionReel.objects.create(
+            new_reel = TProductionReel.objects.create(
                 productionid=new_production,
                 reelno=reelno,
                 stkdate=new_production.rdate,
+                stk="True",
             )
+            new_reel.save()
         response = self.render_to_response(self.get_context_data())
         return trigger_client_event(response, "RefreshTableview", after="settle")
 
@@ -649,8 +629,8 @@ class TProductionReel_create(SuccessMessageMixin, CreateView):
                                        value="submit",
                                        hx_req=reverse(
                                            'invoice:TProductionReel_create'),
-                                       hx_target="#dynform",
-                                       hx_swap="innerHTML"),
+                                       hx_target="#form-column",
+                                       hx_swap="outerHTML"),
         return context
 
     def form_valid(self, form):
@@ -658,6 +638,7 @@ class TProductionReel_create(SuccessMessageMixin, CreateView):
         response = self.render_to_response(self.get_context_data())
         return trigger_client_event(response, "RefreshReelview", after="settle")
 
+@method_decorator(never_cache, name='dispatch')
 class TProductionReel_update(SuccessMessageMixin, UpdateView):
 
     model = TProductionReel
@@ -672,8 +653,8 @@ class TProductionReel_update(SuccessMessageMixin, UpdateView):
         context["buttons"] = hf.button(type="submit",
                                        value="submit",
                                        hx_req=f"{self.request.path}",
-                                       hx_target="#dynform",
-                                       hx_swap="innerHTML"),
+                                       hx_target="#form-column",
+                                       hx_swap="outerHTML"),
 
         return context
 
@@ -753,23 +734,14 @@ class TInvoice_productionreel_list(TProductionReel_list):
              qs = _get_productionreel_list_data(self.request.GET,qs)
         return qs
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        select_all_js = (
-            "document.querySelectorAll('#table-body input[name=selected_row]').forEach("
-            "function(c){ c.checked = true; }); return false;"
-        )
-        btn = {
-            "buttons": {
-                "select_all": {
-                    "type": "button",
-                    "value": "Select all",
-                    "attrs": {"onclick": select_all_js},
-                },
-            }
-        }
-        context["buttons"] = hf.btn_append(btn,"buttons")
-        return context
+    def get(self, request, *args, **kwargs):
+        response = super().get(request, *args, **kwargs)
+        if self.request.htmx:
+            if hasattr(response, "render"):
+                response.render()
+            response = trigger_client_event(response, "RefreshTableview", after="settle")
+        return response
+
 
 class ProductionApproval(SuccessMessageMixin, FormView):
     """Filter form for Production Approval (reuses TProduction-style rdate). Table shows non-approved only."""
@@ -780,16 +752,12 @@ class ProductionApproval(SuccessMessageMixin, FormView):
 
     def get_context_data(self, *args, **kwargs):
         base_list_url = reverse("invoice:ProductionApproval_list")
-        select_all_js = (
-            "document.querySelectorAll('#table-body input[name=selected_row]').forEach("
-            "function(c){ c.checked = true; }); return false;"
-        )
         btn = {
             "buttons": {
                 "select_all": {
                     "type": "button",
                     "value": "Select all",
-                    "attrs": {"onclick": select_all_js},
+                    "attrs": {"onclick": "selectAll(); return false;"},
                 },
                 "Find": {
                     "type": "button",
