@@ -54,6 +54,23 @@
     <a
       href="#"
       class="w3-bar-item w3-button w3-ripple"
+      hx-get="/invoice/company/create"
+      hx-target="#formpart"
+      hx-trigger="click"
+      hx-on::after-request="document.body.dispatchEvent(new CustomEvent('showTableview'))"
+      hx-swap="innerHTML"
+    >
+      <div
+        hx-get="/invoice/company/"
+        hx-trigger="click from:closest (a)"
+        hx-target="#tableview"
+        hx-swap="innerHTML"
+      ></div>
+      Company
+    </a>
+    <a
+      href="#"
+      class="w3-bar-item w3-button w3-ripple"
       hx-get="/invoice/mexportfields/create"
       hx-target="#formpart"
       hx-trigger="click"

@@ -3,6 +3,7 @@ from ..models import (MAgent, MCustomer, MUnit,
                       MLocation, MPlusMinusHead, MShade)
 from ..models import (TExport, TExportDetails,
                       TInvoice, TProduction, TProductionReel)
+from ..models import Company
 from django.urls import (reverse_lazy)
 from django import forms
 
@@ -24,6 +25,14 @@ class MCustomerForm(forms.ModelForm):
 
     class Meta:
         model = MCustomer
+        fields = "__all__"
+
+
+class CompanyForm(forms.ModelForm):
+    template_name = "form_snippet.html"
+
+    class Meta:
+        model = Company
         fields = "__all__"
 
 
@@ -73,9 +82,15 @@ class MItemForm(forms.ModelForm):
 class MShadeForm(forms.ModelForm):
     template_name = "form_snippet.html"
 
+    fieldgroup = [("gsm", "GSM"), ("bdls", "BDLS"),]
+
     class Meta:
         model = MShade
         fields = "__all__"
+        widgets = {
+            "fieldgroup": forms.Select(choices=fieldgroup),
+
+        }
 
 
 class MItemCategoryForm(forms.ModelForm):
@@ -281,7 +296,6 @@ class RStockForm(forms.Form):
     choices = [(1, "all"), (2, "group by category")]
     date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
     type_of_report = forms.ChoiceField(choices=choices)
-
 
 
 class RDispatchForm(forms.Form):

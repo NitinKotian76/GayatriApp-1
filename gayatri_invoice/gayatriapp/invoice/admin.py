@@ -126,5 +126,5 @@ class MAgentAdmin(admin.ModelAdmin):
     list_display = [
         "agentid",
         "agentname",
-        "bname"
+        "branch_name"
     ]

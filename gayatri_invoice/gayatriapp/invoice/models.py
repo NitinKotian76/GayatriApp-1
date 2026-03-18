@@ -29,6 +29,7 @@ class Audit(models.Model):
     updated_by = models.ForeignKey(settings.AUTH_USER_MODEL, null=True,
                                    blank=True, on_delete=models.SET_NULL, editable=False,
                                    related_name="%(class)s_updated")
+
     class Meta:
         abstract = True
         ordering = ['-created_at', '-updated_at']
@@ -91,7 +92,8 @@ class TableName(Audit):
         constraints = [models.UniqueConstraint(
             fields=["table_name", "company"], name="unique_table_name_company")]
         indexes = [
-            models.Index(fields=["table_name"], name="tablename_table_name_idx"),
+            models.Index(fields=["table_name"],
+                         name="tablename_table_name_idx"),
         ]
 
     def __str__(self):
@@ -301,11 +303,12 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
 # ========================= Millsoft models Phase 1============================
 
+
 class MAgent(Audit):
     agentid = models.UUIDField(
         primary_key=True, default=uuid.uuid4, null=False, editable=False)
     agentname = models.CharField(null=True, max_length=100, db_index=True)
-    bname = models.CharField(null=True, max_length=250)
+    branch_name = models.CharField(null=True, max_length=250)
     area = models.CharField(null=True, max_length=30)
     road = models.CharField(null=True, max_length=30)
     city = models.CharField(null=True, max_length=30)
@@ -313,16 +316,14 @@ class MAgent(Audit):
     state = models.CharField(null=True, max_length=50)
     phone = models.CharField(null=True, max_length=50)
     cell = models.CharField(null=True, max_length=50)
-    range = models.CharField(null=True, max_length=50)
-    division = models.CharField(null=True, max_length=50)
 
     def __str__(self):
         return self.agentname
 
+
 class MCustomer(Audit):
     custid = models.UUIDField(
         null=False, primary_key=True, default=uuid.uuid4, editable=False)
-    custcode = models.BigIntegerField(null=False, db_index=True)
     custname = models.CharField(null=True, max_length=90, db_index=True)
     bname = models.CharField(null=True, max_length=400)
     state = models.CharField(null=True, max_length=30)
@@ -342,12 +343,14 @@ class MCustomer(Audit):
     def __str__(self):
         return self.custname
 
+
 class MExportFields(Audit):
     exportid = models.UUIDField(null=True, default=uuid.uuid4, editable=False)
-    descriptiongoods = models.CharField(null=True, max_length=50)
-    hsno = models.CharField(null=True, max_length=50)
-    declaration = models.CharField(null=True, max_length=100)
-    compcode = models.CharField(null=True, max_length=10)
+    company_code = models.ForeignKey(
+        Company, on_delete=models.SET_NULL, null=True)
+    description_of_goods = models.CharField(null=True, max_length=50)
+    hs_no = models.CharField(null=True, max_length=50)
+    tax_declaration = models.CharField(null=True, max_length=100)
     declarationline1 = models.CharField(null=True, max_length=100)
     declarationline2 = models.CharField(null=True, max_length=100)
     declarationline3 = models.CharField(null=True, max_length=100)
@@ -356,6 +359,7 @@ class MExportFields(Audit):
 
     def __str__(self):
         return self.exportid
+
 
 class MUnit(Audit):
     unitid = models.UUIDField(
@@ -366,6 +370,7 @@ class MUnit(Audit):
 
     def __str__(self):
         return self.unit
+
 
 class MShade(Audit):
     shadeid = models.UUIDField(
@@ -383,6 +388,7 @@ class MShade(Audit):
     def __str__(self):
         return self.shadecode
 
+
 class MItem(Audit):
     itemid = models.UUIDField(null=False, primary_key=True,
                               default=uuid.uuid4, editable=False)
@@ -393,6 +399,7 @@ class MItem(Audit):
 
     def __str__(self):
         return self.itemcode
+
 
 class MItemCategory(Audit):
     catid = models.UUIDField(null=False, primary_key=True,
@@ -406,6 +413,7 @@ class MItemCategory(Audit):
     def __str__(self):
         return self.cat
 
+
 class MLocation(Audit):
     locationid = models.UUIDField(
         null=True, default=uuid.uuid4, editable=False)
@@ -413,6 +421,7 @@ class MLocation(Audit):
 
     def __str__(self):
         return self.location
+
 
 class MPlusMinusHead(Audit):
     headid = models.UUIDField(
@@ -424,6 +433,9 @@ class MPlusMinusHead(Audit):
 
     def __str__(self):
         return self.head
+
+# transaction models
+
 
 class TProduction(Audit):
     productionid = models.UUIDField(
@@ -463,36 +475,42 @@ class TProduction(Audit):
     noofsheet = models.BigIntegerField(null=True)
     noofream = models.DecimalField(null=True, decimal_places=1, max_digits=10)
     reamwt = models.DecimalField(null=True, decimal_places=1, max_digits=10)
-    weight = models.DecimalField(null=True, decimal_places=1, max_digits=10) # total weight of the production
+    # total weight of the production
+    weight = models.DecimalField(null=True, decimal_places=1, max_digits=10)
     rate = models.DecimalField(null=True, decimal_places=1, max_digits=10)
     locationid = models.ForeignKey(
         MLocation, on_delete=models.SET_NULL, null=True)
     indentno = models.CharField(null=True, max_length=20)
     obflag = models.BooleanField(null=True)  # flag opening balance
     apiflag = models.BooleanField(null=True)  # flag api
-    fsc = models.CharField(null=True, max_length=10) # fsc code
+    fsc = models.CharField(null=True, max_length=10)  # fsc code
     stk = models.BooleanField(null=True)  # flag
-    approved = models.BooleanField(null=True) # flag
-    entrytype = models.CharField(null=True, max_length=20) # flag
+    approved = models.BooleanField(null=True)  # flag
+    entrytype = models.CharField(null=True, max_length=20)  # flag
     stockplus_minus = models.ForeignKey(
         MPlusMinusHead, on_delete=models.SET_NULL, null=True, db_column='headid_id'
     )
-    headid = models.BigIntegerField(null=True, editable=False) # for production chaining head determining the no of edits in the record
+    # for production chaining head determining the no of edits in the record
+    headid = models.BigIntegerField(null=True, editable=False)
     refproductionid = models.UUIDField(null=True, editable=False)
     lotno = models.CharField(null=True, max_length=60)
-    ind_weight = models.FloatField(null=True) # individual weight of the bundle 
+    # individual weight of the bundle
+    ind_weight = models.FloatField(null=True)
 
     class Meta(Audit.Meta):
         indexes = Audit.Meta.indexes + [
             models.Index(fields=["rdate"], name="tproduction_rdate_idx"),
             models.Index(fields=["stk"], name="tproduction_stk_idx"),
             models.Index(fields=["approved"], name="tproduction_approved_idx"),
-            models.Index(fields=["custid", "stk"], name="tproduction_custid_stk_idx"),
-            models.Index(fields=["agentid", "stk"], name="tproduction_agentid_stk_idx"),
+            models.Index(fields=["custid", "stk"],
+                         name="tproduction_custid_stk_idx"),
+            models.Index(fields=["agentid", "stk"],
+                         name="tproduction_agentid_stk_idx"),
         ]
 
     def __str__(self):
         return str(self.productionid)
+
 
 class TProductionReel(Audit):
     productionreelid = models.UUIDField(
@@ -509,22 +527,25 @@ class TProductionReel(Audit):
         ordering = ["reelno"]
         indexes = Audit.Meta.indexes + [
             models.Index(fields=["reelno"], name="tproductionreel_reelno_idx"),
-            models.Index(fields=["productionid", "reelno"], name="tproductionreel_prod_reel_idx"),
-            models.Index(fields=["stkdate"], name="tproductionreel_stkdate_idx"),
+            models.Index(fields=["productionid", "reelno"],
+                         name="tproductionreel_prod_reel_idx"),
+            models.Index(fields=["stkdate"],
+                         name="tproductionreel_stkdate_idx"),
         ]
 
     def __str__(self):
-        return str(self.reelno) 
+        return str(self.reelno)
+
 
 class TInvoice(Audit):
     invoiceid = models.UUIDField(
         primary_key=True, default=uuid.uuid4, editable=False)
     custid = models.ForeignKey(
-        MCustomer, on_delete=models.SET_NULL, null=True) # filter
+        MCustomer, on_delete=models.SET_NULL, null=True)  # filter
     agentid = models.ForeignKey(
-        MAgent, on_delete=models.SET_NULL, null=True) # filter
+        MAgent, on_delete=models.SET_NULL, null=True)  # filter
     shadeid = models.ForeignKey(
-        MShade, on_delete=models.SET_NULL, null=True) # filter
+        MShade, on_delete=models.SET_NULL, null=True)  # filter
     productionid = models.ManyToManyField(
         TProduction, null=True, related_name='invoices', blank=True)
     invoiceno = models.BigIntegerField(null=False)
@@ -567,11 +588,13 @@ class TInvoice(Audit):
     class Meta(Audit.Meta):
         indexes = Audit.Meta.indexes + [
             models.Index(fields=["invoiceno"], name="tinvoice_invoiceno_idx"),
-            models.Index(fields=["invoicedate"], name="tinvoice_invoicedate_idx"),
+            models.Index(fields=["invoicedate"],
+                         name="tinvoice_invoicedate_idx"),
         ]
 
     def __str__(self):
         return self.invoiceno
+
 
 class TExport(Audit):
     exportid = models.UUIDField(
@@ -608,6 +631,7 @@ class TExport(Audit):
     def __str__(self):
         return self.exportid
 
+
 class TExportDetails(Audit):
     exportdetailsid = models.UUIDField(
         primary_key=True, default=uuid.uuid4, editable=False)
@@ -616,7 +640,7 @@ class TExportDetails(Audit):
     gweight = models.FloatField(null=True)
     tareweight = models.FloatField(null=True)
     netweight = models.FloatField(null=True)
-    
+
     # rewinderid = not there for unit 1
     size = models.CharField(null=True, max_length=20)
     gsm = models.FloatField(null=True)
@@ -628,8 +652,10 @@ class TExportDetails(Audit):
 
     class Meta(Audit.Meta):
         indexes = Audit.Meta.indexes + [
-            models.Index(fields=["exportid"], name="texportdetails_export_idx"),
+            models.Index(fields=["exportid"],
+                         name="texportdetails_export_idx"),
         ]
 
     def __str__(self):
         return self.exportdetailsid
+

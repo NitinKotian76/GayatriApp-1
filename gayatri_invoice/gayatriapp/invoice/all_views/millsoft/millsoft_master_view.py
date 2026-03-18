@@ -12,10 +12,10 @@ from ...form_files import (helperFunct as hf, millsoftForm as mf)
 from ...models import (MAgent, MUnit, MCustomer,
                        MExportFields, MItem, MItemCategory,
                        MLocation, MPlusMinusHead, MShade)
+from ...models import Company
 from .services import (_set_initial_values_from_form_data, _itemcode_from_shadeid)
 import logging
 logger = logging.getLogger(__name__)
-
 
 
 class MAgent_create(SuccessMessageMixin, CreateView):
@@ -229,6 +229,60 @@ class MCustomer_list(SuccessMessageMixin, ListView):
         context["modelurl"] = reverse('invoice:MCustomer_list')
         return context
 
+class Company_create(SuccessMessageMixin, CreateView):
+    model = Company
+    form_class = mf.CompanyForm
+    template_name = "partials/forms.html"
+    context_object_name = "form"
+    success_url = reverse_lazy("invoice:Company_create")
+    success_message = "successfully created"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["buttons"] = hf.button(type="submit", value="submit",
+                                       hx_req=reverse('invoice:Company_create'),
+                                       hx_target="#dynform",
+                                       hx_swap="innerHTML")
+        return context
+
+    def form_valid(self, form):
+        form.save()
+        response = self.render_to_response(self.get_context_data())
+        return trigger_client_event(response, "RefreshTableview", after="settle")
+
+class Company_update(SuccessMessageMixin, UpdateView):
+    model = Company
+    form_class = mf.CompanyForm
+    template_name = "partials/forms.html"
+    context_object_name = "form"
+    success_message = "successfully updated"
+    success_url = reverse_lazy('invoice:Company_create')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["buttons"] = hf.button(type="submit", value="submit",
+                                       hx_req=f"{self.request.path}",
+                                       hx_target="#dynform",
+                                       hx_swap="innerHTML")
+        return context
+
+    def form_valid(self, form):
+        form.save()
+        response = self.render_to_response(self.get_context_data())
+        return trigger_client_event(response, "RefreshTableview", after="settle")
+
+class Company_delete(SuccessMessageMixin, DeleteView):
+    model = Company
+    success_message = "successfully deleted"
+    success_url = reverse_lazy('invoice:Company_list')
+
+@method_decorator(never_cache, name='dispatch')
+class Company_list(SuccessMessageMixin, ListView):
+    model = Company
+    fields = '__all__'
+    context_object_name = "form"
+    template_name = "partials/tableview.html"   
+
 
 class MExportFields_create(SuccessMessageMixin, CreateView):
 
@@ -251,7 +305,7 @@ class MExportFields_create(SuccessMessageMixin, CreateView):
     def form_valid(self, form):
         form.save()
         response = self.render_to_response(self.get_context_data())
-        return trigger_client_event(response, "RefreshTable", after="settle")
+        return trigger_client_event(response, "RefreshTableview", after="settle")
 
 
 class MExportFields_update(SuccessMessageMixin, UpdateView):
@@ -275,7 +329,7 @@ class MExportFields_update(SuccessMessageMixin, UpdateView):
     def form_valid(self, form):
         form.save()
         response = self.render_to_response(self.get_context_data())
-        return trigger_client_event(response, "RefreshTable", after="settle")
+        return trigger_client_event(response, "RefreshTableview", after="settle")
 
 
 class MExportFields_delete(SuccessMessageMixin, DeleteView):
@@ -334,7 +388,7 @@ class MItem_create(SuccessMessageMixin, CreateView):
     def form_valid(self, form):
         form.save()
         response = self.render_to_response(self.get_context_data())
-        return trigger_client_event(response, "RefreshTable", after="settle")
+        return trigger_client_event(response, "RefreshTableview", after="settle")
 
 
 class MItem_update(SuccessMessageMixin, UpdateView):
@@ -358,7 +412,7 @@ class MItem_update(SuccessMessageMixin, UpdateView):
     def form_valid(self, form):
         form.save()
         response = self.render_to_response(self.get_context_data())
-        return trigger_client_event(response, "RefreshTable", after="settle")
+        return trigger_client_event(response, "RefreshTableview", after="settle")
 
 
 class MItem_delete(SuccessMessageMixin, DeleteView):
@@ -408,7 +462,7 @@ class MItemCategory_create(SuccessMessageMixin, CreateView):
     def form_valid(self, form):
         form.save()
         response = self.render_to_response(self.get_context_data())
-        return trigger_client_event(response, "RefreshTable", after="settle")
+        return trigger_client_event(response, "RefreshTableview", after="settle")
 
 
 class MItemCategory_update(SuccessMessageMixin, UpdateView):
@@ -432,7 +486,7 @@ class MItemCategory_update(SuccessMessageMixin, UpdateView):
     def form_valid(self, form):
         form.save()
         response = self.render_to_response(self.get_context_data())
-        return trigger_client_event(response, "RefreshTable", after="settle")
+        return trigger_client_event(response, "RefreshTableview", after="settle")
 
 
 class MItemCategory_delete(SuccessMessageMixin, DeleteView):
@@ -483,7 +537,7 @@ class MLocation_create(SuccessMessageMixin, CreateView):
     def form_valid(self, form):
         form.save()
         response = self.render_to_response(self.get_context_data())
-        return trigger_client_event(response, "RefreshTable", after="settle")
+        return trigger_client_event(response, "RefreshTableview", after="settle")
 
 
 class MLocation_update(SuccessMessageMixin, UpdateView):
@@ -507,7 +561,7 @@ class MLocation_update(SuccessMessageMixin, UpdateView):
     def form_valid(self, form):
         form.save()
         response = self.render_to_response(self.get_context_data())
-        return trigger_client_event(response, "RefreshTable", after="settle")
+        return trigger_client_event(response, "RefreshTableview", after="settle")
 
 
 class MLocation_delete(SuccessMessageMixin, DeleteView):
@@ -558,7 +612,7 @@ class MPlusMinusHead_create(SuccessMessageMixin, CreateView):
     def form_valid(self, form):
         form.save()
         response = self.render_to_response(self.get_context_data())
-        return trigger_client_event(response, "RefreshTable", after="settle")
+        return trigger_client_event(response, "RefreshTableview", after="settle")
 
 
 class MPlusMinusHead_update(SuccessMessageMixin, UpdateView):
@@ -582,7 +636,7 @@ class MPlusMinusHead_update(SuccessMessageMixin, UpdateView):
     def form_valid(self, form):
         form.save()
         response = self.render_to_response(self.get_context_data())
-        return trigger_client_event(response, "RefreshTable", after="settle")
+        return trigger_client_event(response, "RefreshTableview", after="settle")
 
 
 class MPlusMinusHead_delete(SuccessMessageMixin, DeleteView):
@@ -632,7 +686,7 @@ class MShade_create(SuccessMessageMixin, CreateView):
     def form_valid(self, form):
         form.save()
         response = self.render_to_response(self.get_context_data())
-        return trigger_client_event(response, "RefreshTable", after="settle")
+        return trigger_client_event(response, "RefreshTableview", after="settle")
 
 
 class MShade_update(SuccessMessageMixin, UpdateView):
@@ -656,7 +710,7 @@ class MShade_update(SuccessMessageMixin, UpdateView):
     def form_valid(self, form):
         form.save()
         response = self.render_to_response(self.get_context_data())
-        return trigger_client_event(response, "RefreshTable", after="settle")
+        return trigger_client_event(response, "RefreshTableview", after="settle")
 
 
 class MShade_delete(SuccessMessageMixin, DeleteView):

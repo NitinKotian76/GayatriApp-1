@@ -51,6 +51,12 @@
             document.getElementById('reelview-section').style.display = '';
             document.getElementById('form-column').className = 'w3-col m12';
         });
+        document.body.addEventListener('no_tableview', function() {
+            document.getElementById('reelpreview-section').style.display = 'none';
+            document.getElementById('tableview-section').style.display = 'none';
+            document.getElementById('reelview-section').style.display = 'none';
+            document.getElementById('form-column').className = 'w3-col m12';
+        });
     </script>
 {% endblock %}
 {% block modal %}

@@ -114,6 +114,7 @@
       hx-get="/invoice/rpending_order/create"
       hx-target="#mainform"
       hx-vals='{"form":"pending_order"}'
+      hx-on::after-request="document.body.dispatchEvent(new CustomEvent('no_tableview'))"
     >
       Pending Order
     </a>
@@ -124,6 +125,7 @@
       hx-get="/invoice/rprod_record/create"
       hx-target="#mainform"
       hx-vals='{"form":"prod_record"}'
+      hx-on::after-request="document.body.dispatchEvent(new CustomEvent('no_tableview'))"
     >
       Production Record
     </a>
@@ -133,6 +135,7 @@
       hx-get="/invoice/rdispatchdetails/create"
       hx-target="#mainform"
       hx-vals='{"form":"dispatch_details"}'
+      hx-on::after-request="document.body.dispatchEvent(new CustomEvent('no_tableview'))"
     >
       Dispatch Details
     </a>
@@ -141,6 +144,7 @@
       class="w3-bar-item w3-button w3-ripple"
       hx-get="/invoice/rstock/create"
       hx-target="#mainform"
+      hx-on::after-request="document.body.dispatchEvent(new CustomEvent('no_tableview'))"
     >
       Stock
     </a>
@@ -150,6 +154,7 @@
       hx-get="/invoice/rloader_report/create"
       hx-target="#mainform"
       hx-vals='{"form":"loader_report"}'
+      hx-on::after-request="document.body.dispatchEvent(new CustomEvent('no_tableview'))"
     >
       Loader Report
     </a>
@@ -159,6 +164,7 @@
       hx-get="/invoice/report_view"
       hx-target="#mainform"
       hx-vals='{"form":"qc_report"}'
+      hx-on::after-request="document.body.dispatchEvent(new CustomEvent('no_tableview'))"
     >
       QC Report
     </a>
@@ -168,8 +174,9 @@
       hx-get="/invoice/report_view"
       hx-target="#mainform"
       hx-vals='{"form":"stock_plus_minus"}'
+      hx-on::after-request="document.body.dispatchEvent(new CustomEvent('no_tableview'))"
     >
-      Stock Plus/minus
+      Stock Plus/minus Report
     </a>
   </div>
 </div>
@@ -189,6 +196,7 @@
       hx-get="/invoice/stocktransfer"
       hx-target="#mainform"
       hx-swap="innerHTML"
+      hx-on::after-request="document.body.dispatchEvent(new CustomEvent('showTableview'))"
     >
       <div
         hx-get="/invoice/tproduction"
@@ -205,6 +213,7 @@
       hx-get="/invoice/form_view"
       hx-target="#mainform"
       hx-vals='{"form":"api"}'
+      hx-on::after-request="document.body.dispatchEvent(new CustomEvent('no_tableview'))"
     >
       API
     </a>
@@ -215,6 +224,7 @@
       hx-get="/invoice/form_view"
       hx-target="#mainform"
       hx-vals='{"form":"multiple_export_packing_slip"}'
+      hx-on::after-request="document.body.dispatchEvent(new CustomEvent('showTableview'))"
     >
       Multiple Export Packing Slip
     </a>
@@ -225,6 +235,7 @@
       hx-get="/invoice/form_view"
       hx-target="#mainform"
       hx-vals='{"form":"millsoft_to_orion"}'
+      hx-on::after-request="document.body.dispatchEvent(new CustomEvent('no_tableview'))"
     >
       MillSoft To Orion
     </a>
