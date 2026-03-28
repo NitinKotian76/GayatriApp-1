@@ -82,13 +82,11 @@ class MItemForm(forms.ModelForm):
 class MShadeForm(forms.ModelForm):
     template_name = "form_snippet.html"
 
-    fieldgroup = [("gsm", "GSM"), ("bdls", "BDLS"),]
-
     class Meta:
         model = MShade
         fields = "__all__"
         widgets = {
-            "fieldgroup": forms.Select(choices=fieldgroup),
+            "fieldgroup": forms.Select(choices=[("gsm", "GSM"), ("bdls", "BDLS"),]),
 
         }
 

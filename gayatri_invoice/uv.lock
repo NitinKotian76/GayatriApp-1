@@ -364,6 +364,7 @@ dependencies = [
     { name = "psycopg2-binary" },
     { name = "pymemcache" },
     { name = "python-decouple" },
+    { name = "sphinx" },
     { name = "weasyprint" },
 ]
 
@@ -397,6 +398,7 @@ requires-dist = [
     { name = "psycopg2-binary", specifier = ">=2.9.10,<3" },
     { name = "pymemcache", specifier = ">=4.0.0,<5" },
     { name = "python-decouple", specifier = ">=3.8" },
+    { name = "sphinx", specifier = ">=8.2.3" },
     { name = "weasyprint", specifier = ">=67.0" },
 ]
 
